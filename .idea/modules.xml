@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/scalalr.iml" filepath="$PROJECT_DIR$/.idea/modules/scalalr.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/scalalr.bootstrap.iml" filepath="$PROJECT_DIR$/.idea/modules/scalalr.bootstrap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/scalalr.loggingApi.iml" filepath="$PROJECT_DIR$/.idea/modules/scalalr.loggingApi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/scalalr.scalalr.iml" filepath="$PROJECT_DIR$/.idea/modules/scalalr.scalalr.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/scalalr.scalalr-build.iml" filepath="$PROJECT_DIR$/.idea/modules/scalalr.scalalr-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/scalalr.shared.iml" filepath="$PROJECT_DIR$/.idea/modules/scalalr.shared.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/scalalr.testbed.iml" filepath="$PROJECT_DIR$/.idea/modules/scalalr.testbed.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/scalalr.utilities.iml" filepath="$PROJECT_DIR$/.idea/modules/scalalr.utilities.iml" />
+    </modules>
+  </component>
+</project>

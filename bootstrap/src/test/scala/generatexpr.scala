@@ -1,0 +1,100 @@
+package org.sufrin.scalalr
+
+/**
+ * Run this app to generate the appropriate %package files in testbed/scala
+ * Make sure the artefact: scalalr.jar is linked from testbed/scala/
+ * From testbed/scala/: scala-cli runsmall.scala small
+ */
+object generatexpr extends App {
+    import Notation.{Lexical, Syntax}
+    import Syntax.Parser
+
+    val source =
+      """%notation  Expr
+        |%package   testbed.scala.expr.generated.Expr
+        |//%scanner   Scanner
+        |//%type      ielr
+        |//%extending Token
+        |
+        |%include {
+        |   import org.sufrin.utility.SourceTextCursor
+        |   import org.sufrin.scalalr.SourceLocation
+        |
+        |    object Scanner {
+        |      def apply(chars: SourceTextCursor): Scanner = new Scanner(chars)
+        |    }
+        |
+        |    class Scanner(chars: SourceTextCursor) extends Iterator[Token] {
+        |      def sourceLocation(): SourceLocation = SourceLocation(chars.lines,  chars.chars)
+        |      @inline def hasChar: Boolean = chars.hasCurrent
+        |      @inline def theChar: Char = chars.current
+        |      @inline def nextChar(): Unit = chars.next()
+        |      @inline def afterNextChar(t: Token): Token = {
+        |        nextChar()
+        |        t
+        |      }
+        |
+        |      def hasNext: Boolean = chars.hasCurrent
+        |      def next(): Token = {
+        |          chars.current match {
+        |            case '(' => afterNextChar(`(`)
+        |            case ')' => afterNextChar(`)`)
+        |            case '[' => afterNextChar(`[`)
+        |            case ']' => afterNextChar(`]`)
+        |            case '+' => afterNextChar(`+`)
+        |            case '*' => afterNextChar(`*`)
+        |            case ';' => afterNextChar(`;`)
+        |            case c if c.isLetter =>
+        |              val prefix = chars.takeWhile(_.isLetterOrDigit)
+        |              ID((prefix).mkString(""))
+        |             case c if c.isWhitespace =>
+        |               while (hasChar && theChar.isWhitespace) nextChar()
+        |               if (hasChar) next() else $end
+        |             case other =>
+        |               LEXICALERROR(s"Unrecognised $other (at ${sourceLocation()}")
+        |
+        |          }
+        |      }
+        |    }
+        |
+        |
+        |
+        |}
+        |
+        |%token ID(String) `(` `)` `[` `]` `;` LEXICALERROR(String)
+        |%left `+`
+        |%left `*`
+        |
+        |%rules
+        |
+        |%include {
+        | import org.sufrin.scalalr.SourceLocation
+        | trait Expr
+        | case class Id(s: String, loc: SourceLocation) extends Expr
+        | case class Binop(op: String, l: Expr, r: Expr, loc: SourceLocation) extends Expr
+        | case class Bra(expr: Expr, loc: SourceLocation)extends Expr
+        |}
+        |
+        |exprs: (List[Expr]) = expr            { List($expr) }
+        |                  |   exprs `;` expr  { $expr::$exprs }
+        |                  |   error           { List(Id("RECOVER", $START)) }
+        |                  ;
+        |
+        |expr: Expr = ID                  { Id($ID, $START) }
+        |           | l:expr `*` r:expr   { Binop("*", $l, $r, $START) }
+        |           | l:expr `+` r:expr   { Binop("+", $l, $r, $START) }
+        |           | "(" expr ")"        { Bra($expr, $START) }
+        |           | `[` expr `]`        { $expr }
+        |           ;
+        |""".stripMargin
+    import Notation.{Lexical, Syntax}
+    import Syntax.Parser
+    import org.sufrin.utility._
+    val scanner = Lexical.Scanner(SourceTextCursor(source))
+    val notation = Parser(scanner).parseNotation()
+    //notation.prettyPrint()
+    val translation = Translation(notation)
+    translation.makeFiles()
+
+  }
+

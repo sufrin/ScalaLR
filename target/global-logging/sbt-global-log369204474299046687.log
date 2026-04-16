@@ -1,9 +1,0 @@
-[0m[[0m[0mdebug[0m] [0m[0m> Exec(all {file:/Users/sufrin/GitHomes/ScalaLR/}bootstrap/products {file:/Users/sufrin/GitHomes/ScalaLR/}bootstrap/test:products, None, None)[0m
-[0m[[0m[0mdebug[0m] [0m[0mEvaluating tasks: bootstrap / Compile / products, bootstrap / Test / products[0m
-[0m[[0m[0mdebug[0m] [0m[0mRunning task... Cancel: Signal, check cycles: false, forcegc: true[0m
-[0m[[0m[0minfo[0m] [0m[0mcompiling 2 Scala sources to /Users/sufrin/GitHomes/ScalaLR/bootstrap/target/classes ...[0m
-[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m
-[0m[[0m[0minfo[0m] [0m[0mcompiling 1 Scala source to /Users/sufrin/GitHomes/ScalaLR/bootstrap/target/test-classes ...[0m
-[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m
-[0m[[0m[32msuccess[0m] [0m[0mTotal time: 2 s, completed 15 Apr 2026, 08:31:08[0m
-[0m[[0m[0mdebug[0m] [0m[0m> Exec(idea-shell, None, None)[0m

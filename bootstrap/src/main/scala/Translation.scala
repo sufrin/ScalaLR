@@ -27,7 +27,10 @@ class Translation(val notation: Notation) {
 
   import java.nio.file.Path
 
-  val thePath = Path.of(thePackage.replace('/', '.').replace('.', '/')).getParent().toString // Normalize
+  val thePath =
+    if (explicitPath.isEmpty)
+         Path.of(thePackage.replace('/', '.').replace('.', '/')).getParent().toString // Normalize
+    else Path.of(explicitPath)
   val theNotationName = Path.of(theName.replace('/', '.').replace('.', '/')).getFileName.toString // Normalize
 
   def makeFiles(): Unit = {

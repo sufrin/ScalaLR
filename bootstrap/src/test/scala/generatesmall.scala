@@ -1,19 +1,16 @@
 package org.sufrin.scalalr
 
 /**
- * Run this app to generate testbed.scala.small.generated.Small files
- * Make sure the artefact: scalalr.jar is linked from testbed/scala/
- * From testbed/scala/: scala-cli runsmall.scala small
+ * Run this app to generate the "testbed/src/main/scala/small" files
  */
 
 object generatesmall extends App {
 
   val source =
     """%notation  Small
-      |%package   testbed.scala.small.generated.Small
-      |%scanner   Scanner
+      |%package   small.Small
+      |%path      "testbed/src/main/scala/small"
       |%type      lr
-      |%extending Token
       |
       |%include {
       |   import org.sufrin.utility.{SourceTextCursor}

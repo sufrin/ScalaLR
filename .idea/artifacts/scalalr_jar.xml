@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="scalalr:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/scalalr_jar</output-path>
+  <artifact type="jar" name="scalalr:jar">
+    <output-path>$PROJECT_DIR$/</output-path>
     <root id="archive" name="scalalr.jar">
       <element id="module-output" name="scalalr.utilities" />
       <element id="module-output" name="scalalr.shared" />

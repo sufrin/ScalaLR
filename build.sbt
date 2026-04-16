@@ -6,8 +6,12 @@ ThisBuild / version := "0.8.0"
 ThisBuild / libraryDependencies +=
   "org.scala-lang.modules" %% "scala-xml" % "2.3.0"
 
+ThisBuild / scalacOptions ++= Seq(
+  "-deprecation"
+)
+
 lazy val root = (project in file("."))
-  .aggregate(bootstrap, shared, scalalr, utilities)
+  .aggregate(bootstrap, shared, scalalr, utilities, testbed)
   .settings(
     publish / skip := true,
     name := "scalalr",
@@ -23,7 +27,10 @@ lazy val bootstrap = (project in file("bootstrap"))
   .dependsOn(shared, utilities)
 
 lazy val scalalr = (project in file("scalalr"))
-  .dependsOn(shared, utilities)
+  .dependsOn(shared, utilities, bootstrap)
 
 lazy val utilities = (project in file("utilities"))
   .dependsOn(loggingApi)
+
+lazy val testbed =  (project in file("testbed"))
+  .dependsOn(shared, utilities, bootstrap)

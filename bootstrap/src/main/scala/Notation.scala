@@ -73,6 +73,7 @@ object Notation {
     case object RULES               extends Atom
     case object SCAN                extends Atom
     case object EXTENDING           extends Atom
+    case object PATH                extends Atom
     case object INCLUDE             extends Atom
     case object EOF                 extends Atom
 
@@ -159,6 +160,7 @@ object Notation {
                   case "extending"    => EXTENDING
                   case "notation"     => NOTATION
                   case "package"      => PACKAGE
+                  case "path"         => PATH
                   case "token"        => TOKEN
                   case "left"         => LEFT
                   case "right"        => RIGHT
@@ -320,11 +322,20 @@ object Notation {
       }
 
       def parseNameAfter(symbol: Atom): String = {
-          Skip(symbol)
-          Expecting {
-            case ID(name) => Shift(name)
-            case other       => syntaxError(s"Expecting an ID, found $other after %scanner (at ${scanner.sourceLocation})")
-          }
+        Skip(symbol)
+        Expecting {
+          case ID(name) => Shift(name)
+          case other    => syntaxError(s"Expecting an ID, found $other after $symbol (at ${scanner.sourceLocation})")
+        }
+      }
+
+      def parsePathAfter(symbol: Atom): String = {
+        Skip(symbol)
+        Expecting {
+          case ID(s"\"$name\"") => Shift(name)
+          case ID(name)         => Shift(name)
+          case other            => syntaxError(s"Expecting a quoted path or name, found $other after $symbol (at ${scanner.sourceLocation})")
+        }
       }
 
       def parseExending(): String = {
@@ -347,6 +358,7 @@ object Notation {
         var scannerName = "Scanner"
         var traitName = "Token"
         var tokensInclude = ""
+        var explicitPath = ""
         var go = true
         while (go) {
           finest(s"Paragraph: ${scan.current} (${scanner.sourceLocation})")
@@ -356,6 +368,7 @@ object Notation {
             case INCLUDE      => tokensInclude = parseInclude()
             case SCAN         => scannerName = parseNameAfter(SCAN)
             case EXTENDING    => traitName = parseExending()
+            case PATH         => explicitPath = parsePathAfter(PATH)
             case other        => go = false
           }
         }
@@ -367,7 +380,7 @@ object Notation {
         val rulesInclude = parseInclude()
         val rules = parseRules().toList
 
-        Notation(packageName, name, tablesType, scannerName, new Type(traitName), tokenDefs, rules, tokensInclude, rulesInclude)
+        Notation(packageName, name, explicitPath, tablesType, scannerName, new Type(traitName), tokenDefs, rules, tokensInclude, rulesInclude)
       }
 
 
@@ -461,6 +474,7 @@ object Notation {
     case class Notation
     (thePackage: String,
      theName: String,
+     explicitPath: String, // the destination for all generated files
      tablesType: String,
      theScannerName: String,
      theTokenType: Type,

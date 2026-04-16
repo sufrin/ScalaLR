@@ -146,7 +146,8 @@ object LRParser {
           case ACCEPT =>
             parseState = ACCEPTED(values(1))
           case ERROR =>
-            //println(recoveryState())
+            println(s"Syntax error: ${sourceLocation()}")
+            throw new Error (diagnosis(input, currentState))
             parseState = ERRONEOUS(diagnosis(input, currentState))
 
           case REDUCE(lhsSymbol, production, size) =>

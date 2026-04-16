@@ -1,0 +1,776 @@
+Terminals unused in grammar
+
+    NUM
+    COMMENT
+    LEXICALERROR
+    "{"
+    "}"
+    NL
+    "%type"
+
+
+Grammar
+
+    0 $accept: command $end
+
+    1 command: Notation
+
+    2 Notation: "%notation" ID "%package" ID "%path" ID OptInclude Tokens "%rules" OptInclude Rules OptSemicolon
+
+    3 OptInclude: "%empty"
+    4           | "%include" CODE
+
+    5 Tokens: ε
+    6       | TokenSpec Tokens
+
+    7 TokenSpec: "%left" TypedTerminals
+    8          | "%right" TypedTerminals
+    9          | "%non" TypedTerminals
+   10          | "%token" TypedTerminals
+
+   11 TypedTerminals: TypedTerminal
+   12               | TypedTerminal TypedTerminals
+
+   13 TypedTerminal: ID ":" Type
+   14              | ID
+
+   15 Rules: Rule
+   16      | Rules ";" Rule
+
+   17 Rule: LHS "=" RHS
+
+   18 OptSemicolon: ε
+   19             | ";"
+
+   20 LHS: ID ":" Type
+   21    | ID
+
+   22 RHS: Production
+   23    | Production "|" RHS
+
+   24 Production: NamedFields Action Precedence
+
+   25 NamedFields: "%empty"
+   26            | NamedField
+   27            | NamedField NamedFields
+
+   28 NamedField: ID
+   29           | ID ":" ID
+
+   30 Action: ε
+   31       | CODE
+
+   32 Precedence: ε
+   33           | "%prec" ID
+
+   34 Type: ID
+   35     | ID "[" Types "]"
+   36     | "(" Types ")"
+   37     | "(" ")"
+
+   38 Types: Type
+   39      | Type "," Types
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    ID (258) 2 13 14 20 21 28 29 33 34 35
+    NUM (259)
+    CODE (260) 4 31
+    COMMENT (261)
+    LEXICALERROR (262)
+    "[" (263) 35
+    "]" (264) 35
+    ";" (265) 16 19
+    "=" (266) 17
+    "|" (267) 23
+    ":" (268) 13 20 29
+    "{" (269)
+    "}" (270)
+    "(" (271) 36 37
+    ")" (272) 36 37
+    "," (273) 39
+    NL (274)
+    "%path" (275) 2
+    "%type" (276)
+    "%empty" (277) 3 25
+    "%notation" (278) 2
+    "%package" (279) 2
+    "%token" (280) 10
+    "%left" (281) 7
+    "%right" (282) 8
+    "%non" (283) 9
+    "%rules" (284) 2
+    "%include" (285) 4
+    "%prec" (286) 33
+
+
+Nonterminals, with rules where they appear
+
+    $accept (32)
+        on left: 0
+    command (33)
+        on left: 1
+        on right: 0
+    Notation (34)
+        on left: 2
+        on right: 1
+    OptInclude (35)
+        on left: 3 4
+        on right: 2
+    Tokens (36)
+        on left: 5 6
+        on right: 2 6
+    TokenSpec (37)
+        on left: 7 8 9 10
+        on right: 6
+    TypedTerminals (38)
+        on left: 11 12
+        on right: 7 8 9 10 12
+    TypedTerminal (39)
+        on left: 13 14
+        on right: 11 12
+    Rules (40)
+        on left: 15 16
+        on right: 2 16
+    Rule (41)
+        on left: 17
+        on right: 15 16
+    OptSemicolon (42)
+        on left: 18 19
+        on right: 2
+    LHS (43)
+        on left: 20 21
+        on right: 17
+    RHS (44)
+        on left: 22 23
+        on right: 17 23
+    Production (45)
+        on left: 24
+        on right: 22 23
+    NamedFields (46)
+        on left: 25 26 27
+        on right: 24 27
+    NamedField (47)
+        on left: 28 29
+        on right: 26 27
+    Action (48)
+        on left: 30 31
+        on right: 24
+    Precedence (49)
+        on left: 32 33
+        on right: 24
+    Type (50)
+        on left: 34 35 36 37
+        on right: 13 20 38 39
+    Types (51)
+        on left: 38 39
+        on right: 35 36 39
+
+
+State 0
+
+    0 $accept: • command $end
+
+    "%notation"  shift, and go to state 1
+
+    command   go to state 2
+    Notation  go to state 3
+
+
+State 1
+
+    2 Notation: "%notation" • ID "%package" ID "%path" ID OptInclude Tokens "%rules" OptInclude Rules OptSemicolon
+
+    ID  shift, and go to state 4
+
+
+State 2
+
+    0 $accept: command • $end
+
+    $end  shift, and go to state 5
+
+
+State 3
+
+    1 command: Notation •
+
+    $default  reduce using rule 1 (command)
+
+
+State 4
+
+    2 Notation: "%notation" ID • "%package" ID "%path" ID OptInclude Tokens "%rules" OptInclude Rules OptSemicolon
+
+    "%package"  shift, and go to state 6
+
+
+State 5
+
+    0 $accept: command $end •
+
+    $default  accept
+
+
+State 6
+
+    2 Notation: "%notation" ID "%package" • ID "%path" ID OptInclude Tokens "%rules" OptInclude Rules OptSemicolon
+
+    ID  shift, and go to state 7
+
+
+State 7
+
+    2 Notation: "%notation" ID "%package" ID • "%path" ID OptInclude Tokens "%rules" OptInclude Rules OptSemicolon
+
+    "%path"  shift, and go to state 8
+
+
+State 8
+
+    2 Notation: "%notation" ID "%package" ID "%path" • ID OptInclude Tokens "%rules" OptInclude Rules OptSemicolon
+
+    ID  shift, and go to state 9
+
+
+State 9
+
+    2 Notation: "%notation" ID "%package" ID "%path" ID • OptInclude Tokens "%rules" OptInclude Rules OptSemicolon
+
+    "%empty"  shift, and go to state 10
+    "%include"  shift, and go to state 11
+
+    OptInclude  go to state 12
+
+
+State 10
+
+    3 OptInclude: "%empty" •
+
+    $default  reduce using rule 3 (OptInclude)
+
+
+State 11
+
+    4 OptInclude: "%include" • CODE
+
+    CODE  shift, and go to state 13
+
+
+State 12
+
+    2 Notation: "%notation" ID "%package" ID "%path" ID OptInclude • Tokens "%rules" OptInclude Rules OptSemicolon
+
+    "%token"  shift, and go to state 14
+    "%left"  shift, and go to state 15
+    "%right"  shift, and go to state 16
+    "%non"  shift, and go to state 17
+
+    $default  reduce using rule 5 (Tokens)
+
+    Tokens     go to state 18
+    TokenSpec  go to state 19
+
+
+State 13
+
+    4 OptInclude: "%include" CODE •
+
+    $default  reduce using rule 4 (OptInclude)
+
+
+State 14
+
+   10 TokenSpec: "%token" • TypedTerminals
+
+    ID  shift, and go to state 20
+
+    TypedTerminals  go to state 21
+    TypedTerminal   go to state 22
+
+
+State 15
+
+    7 TokenSpec: "%left" • TypedTerminals
+
+    ID  shift, and go to state 20
+
+    TypedTerminals  go to state 23
+    TypedTerminal   go to state 22
+
+
+State 16
+
+    8 TokenSpec: "%right" • TypedTerminals
+
+    ID  shift, and go to state 20
+
+    TypedTerminals  go to state 24
+    TypedTerminal   go to state 22
+
+
+State 17
+
+    9 TokenSpec: "%non" • TypedTerminals
+
+    ID  shift, and go to state 20
+
+    TypedTerminals  go to state 25
+    TypedTerminal   go to state 22
+
+
+State 18
+
+    2 Notation: "%notation" ID "%package" ID "%path" ID OptInclude Tokens • "%rules" OptInclude Rules OptSemicolon
+
+    "%rules"  shift, and go to state 26
+
+
+State 19
+
+    6 Tokens: TokenSpec • Tokens
+
+    "%token"  shift, and go to state 14
+    "%left"  shift, and go to state 15
+    "%right"  shift, and go to state 16
+    "%non"  shift, and go to state 17
+
+    $default  reduce using rule 5 (Tokens)
+
+    Tokens     go to state 27
+    TokenSpec  go to state 19
+
+
+State 20
+
+   13 TypedTerminal: ID • ":" Type
+   14              | ID •
+
+    ":"  shift, and go to state 28
+
+    $default  reduce using rule 14 (TypedTerminal)
+
+
+State 21
+
+   10 TokenSpec: "%token" TypedTerminals •
+
+    $default  reduce using rule 10 (TokenSpec)
+
+
+State 22
+
+   11 TypedTerminals: TypedTerminal •
+   12               | TypedTerminal • TypedTerminals
+
+    ID  shift, and go to state 20
+
+    $default  reduce using rule 11 (TypedTerminals)
+
+    TypedTerminals  go to state 29
+    TypedTerminal   go to state 22
+
+
+State 23
+
+    7 TokenSpec: "%left" TypedTerminals •
+
+    $default  reduce using rule 7 (TokenSpec)
+
+
+State 24
+
+    8 TokenSpec: "%right" TypedTerminals •
+
+    $default  reduce using rule 8 (TokenSpec)
+
+
+State 25
+
+    9 TokenSpec: "%non" TypedTerminals •
+
+    $default  reduce using rule 9 (TokenSpec)
+
+
+State 26
+
+    2 Notation: "%notation" ID "%package" ID "%path" ID OptInclude Tokens "%rules" • OptInclude Rules OptSemicolon
+
+    "%empty"  shift, and go to state 10
+    "%include"  shift, and go to state 11
+
+    OptInclude  go to state 30
+
+
+State 27
+
+    6 Tokens: TokenSpec Tokens •
+
+    $default  reduce using rule 6 (Tokens)
+
+
+State 28
+
+   13 TypedTerminal: ID ":" • Type
+
+    ID      shift, and go to state 31
+    "("  shift, and go to state 32
+
+    Type  go to state 33
+
+
+State 29
+
+   12 TypedTerminals: TypedTerminal TypedTerminals •
+
+    $default  reduce using rule 12 (TypedTerminals)
+
+
+State 30
+
+    2 Notation: "%notation" ID "%package" ID "%path" ID OptInclude Tokens "%rules" OptInclude • Rules OptSemicolon
+
+    ID  shift, and go to state 34
+
+    Rules  go to state 35
+    Rule   go to state 36
+    LHS    go to state 37
+
+
+State 31
+
+   34 Type: ID •
+   35     | ID • "[" Types "]"
+
+    "["  shift, and go to state 38
+
+    $default  reduce using rule 34 (Type)
+
+
+State 32
+
+   36 Type: "(" • Types ")"
+   37     | "(" • ")"
+
+    ID      shift, and go to state 31
+    "("  shift, and go to state 32
+    ")"  shift, and go to state 39
+
+    Type   go to state 40
+    Types  go to state 41
+
+
+State 33
+
+   13 TypedTerminal: ID ":" Type •
+
+    $default  reduce using rule 13 (TypedTerminal)
+
+
+State 34
+
+   20 LHS: ID • ":" Type
+   21    | ID •
+
+    ":"  shift, and go to state 42
+
+    $default  reduce using rule 21 (LHS)
+
+
+State 35
+
+    2 Notation: "%notation" ID "%package" ID "%path" ID OptInclude Tokens "%rules" OptInclude Rules • OptSemicolon
+   16 Rules: Rules • ";" Rule
+
+    ";"  shift, and go to state 43
+
+    $default  reduce using rule 18 (OptSemicolon)
+
+    OptSemicolon  go to state 44
+
+
+State 36
+
+   15 Rules: Rule •
+
+    $default  reduce using rule 15 (Rules)
+
+
+State 37
+
+   17 Rule: LHS • "=" RHS
+
+    "="  shift, and go to state 45
+
+
+State 38
+
+   35 Type: ID "[" • Types "]"
+
+    ID      shift, and go to state 31
+    "("  shift, and go to state 32
+
+    Type   go to state 40
+    Types  go to state 46
+
+
+State 39
+
+   37 Type: "(" ")" •
+
+    $default  reduce using rule 37 (Type)
+
+
+State 40
+
+   38 Types: Type •
+   39      | Type • "," Types
+
+    ","  shift, and go to state 47
+
+    $default  reduce using rule 38 (Types)
+
+
+State 41
+
+   36 Type: "(" Types • ")"
+
+    ")"  shift, and go to state 48
+
+
+State 42
+
+   20 LHS: ID ":" • Type
+
+    ID      shift, and go to state 31
+    "("  shift, and go to state 32
+
+    Type  go to state 49
+
+
+State 43
+
+   16 Rules: Rules ";" • Rule
+   19 OptSemicolon: ";" •
+
+    ID  shift, and go to state 34
+
+    $default  reduce using rule 19 (OptSemicolon)
+
+    Rule  go to state 50
+    LHS   go to state 37
+
+
+State 44
+
+    2 Notation: "%notation" ID "%package" ID "%path" ID OptInclude Tokens "%rules" OptInclude Rules OptSemicolon •
+
+    $default  reduce using rule 2 (Notation)
+
+
+State 45
+
+   17 Rule: LHS "=" • RHS
+
+    ID      shift, and go to state 51
+    "%empty"  shift, and go to state 52
+
+    RHS          go to state 53
+    Production   go to state 54
+    NamedFields  go to state 55
+    NamedField   go to state 56
+
+
+State 46
+
+   35 Type: ID "[" Types • "]"
+
+    "]"  shift, and go to state 57
+
+
+State 47
+
+   39 Types: Type "," • Types
+
+    ID      shift, and go to state 31
+    "("  shift, and go to state 32
+
+    Type   go to state 40
+    Types  go to state 58
+
+
+State 48
+
+   36 Type: "(" Types ")" •
+
+    $default  reduce using rule 36 (Type)
+
+
+State 49
+
+   20 LHS: ID ":" Type •
+
+    $default  reduce using rule 20 (LHS)
+
+
+State 50
+
+   16 Rules: Rules ";" Rule •
+
+    $default  reduce using rule 16 (Rules)
+
+
+State 51
+
+   28 NamedField: ID •
+   29           | ID • ":" ID
+
+    ":"  shift, and go to state 59
+
+    $default  reduce using rule 28 (NamedField)
+
+
+State 52
+
+   25 NamedFields: "%empty" •
+
+    $default  reduce using rule 25 (NamedFields)
+
+
+State 53
+
+   17 Rule: LHS "=" RHS •
+
+    $default  reduce using rule 17 (Rule)
+
+
+State 54
+
+   22 RHS: Production •
+   23    | Production • "|" RHS
+
+    "|"  shift, and go to state 60
+
+    $default  reduce using rule 22 (RHS)
+
+
+State 55
+
+   24 Production: NamedFields • Action Precedence
+
+    CODE  shift, and go to state 61
+
+    $default  reduce using rule 30 (Action)
+
+    Action  go to state 62
+
+
+State 56
+
+   26 NamedFields: NamedField •
+   27            | NamedField • NamedFields
+
+    ID      shift, and go to state 51
+    "%empty"  shift, and go to state 52
+
+    $default  reduce using rule 26 (NamedFields)
+
+    NamedFields  go to state 63
+    NamedField   go to state 56
+
+
+State 57
+
+   35 Type: ID "[" Types "]" •
+
+    $default  reduce using rule 35 (Type)
+
+
+State 58
+
+   39 Types: Type "," Types •
+
+    $default  reduce using rule 39 (Types)
+
+
+State 59
+
+   29 NamedField: ID ":" • ID
+
+    ID  shift, and go to state 64
+
+
+State 60
+
+   23 RHS: Production "|" • RHS
+
+    ID      shift, and go to state 51
+    "%empty"  shift, and go to state 52
+
+    RHS          go to state 65
+    Production   go to state 54
+    NamedFields  go to state 55
+    NamedField   go to state 56
+
+
+State 61
+
+   31 Action: CODE •
+
+    $default  reduce using rule 31 (Action)
+
+
+State 62
+
+   24 Production: NamedFields Action • Precedence
+
+    "%prec"  shift, and go to state 66
+
+    $default  reduce using rule 32 (Precedence)
+
+    Precedence  go to state 67
+
+
+State 63
+
+   27 NamedFields: NamedField NamedFields •
+
+    $default  reduce using rule 27 (NamedFields)
+
+
+State 64
+
+   29 NamedField: ID ":" ID •
+
+    $default  reduce using rule 29 (NamedField)
+
+
+State 65
+
+   23 RHS: Production "|" RHS •
+
+    $default  reduce using rule 23 (RHS)
+
+
+State 66
+
+   33 Precedence: "%prec" • ID
+
+    ID  shift, and go to state 68
+
+
+State 67
+
+   24 Production: NamedFields Action Precedence •
+
+    $default  reduce using rule 24 (Production)
+
+
+State 68
+
+   33 Precedence: "%prec" ID •
+
+    $default  reduce using rule 33 (Precedence)

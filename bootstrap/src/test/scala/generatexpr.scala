@@ -1,9 +1,9 @@
 package org.sufrin.scalalr
 
 /**
- * Run this app to generate the appropriate %package files in testbed/scala
+ * Run this app to generate the appropriate %package files in testbed/src
  * Make sure the artefact: scalalr.jar is linked from testbed/scala/
- * From testbed/scala/: scala-cli runsmall.scala small
+ * From testbed/scala/: scala-cli runexpr.scala expr
  */
 object generatexpr extends App {
     import Notation.{Lexical, Syntax}
@@ -11,10 +11,8 @@ object generatexpr extends App {
 
     val source =
       """%notation  Expr
-        |%package   testbed.scala.expr.generated.Expr
-        |//%scanner   Scanner
-        |//%type      ielr
-        |//%extending Token
+        |%package   expr.Expr
+        |%path      "testbed/src/main/scala/expr"
         |
         |%include {
         |   import org.sufrin.utility.SourceTextCursor

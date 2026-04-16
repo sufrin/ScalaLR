@@ -1,7 +1,7 @@
 # ScalaLR
 
 Here we have a straightforward LR parser generator for Scala, using
-(the latest) **GNU Bison** as a workhorse to generate LR shift-reduce
+**GNU Bison (version 3.8.2)** as a workhorse to generate LR shift-reduce
 parser tables. **ScalaLR** is built on the assumption the code it generates will
 become part of a parser that will yield an abstract syntax tree. *Of course
 there's no harm in the parser yielding (say) a numeric value, or even being
@@ -15,7 +15,8 @@ sufficient for a knowledgeable reader to inspect the files `generatesmall.scala`
 with `runsmall.scala` and `generatexpr.scala` with `runexpr.scala`
 ````
 %notation  Expr
-%package   testbed.scala.expr.generated.Expr
+%package   expr.Expr
+%path      "testbed/src/main/scala/expr"
 
 %include {
    // Scala source to be included in a generated file that supports or implements a lexer
@@ -113,15 +114,17 @@ file shows the grammar symbols as given in grammar notation.
 ### Testing
 [TODO: needs updating]
 Some test grammars appear in `bootstrap/src/test/scala` as embedded strings: for example 
-`generatexpr.scala` and `generatesmall.scala` -- they can be used generate scala code
-by running them as from IntelliJ (or elsewhere). Those mentioned above generate code 
-in `testbed/scala/expr/generated` and `testbed/scala/small/generated` that can be 
-tested from `testbed/scala` with `scala-cli` using
+`generatexpr.scala` and `generatesmall.scala` and `generatetinyfun.scala` -- they can be used 
+generate scala code  by running them as from IntelliJ (or elsewhere). Those mentioned above generate code 
+under `testbed/scala/src/main/scala` in the directories  `{expr,small,tinyfun}` that can be 
+tested by running one of `{runsmall,runexpr,runtinyfun}` from IntelliJ 
+or using `scala-cli` in `testbed/scala/src/main/scala` with one of the
+commands:
 
-At present I test the resulting parsers from `testbed/` using the scala-cli commands:
+scala-cli run runsmall.scala small --jar ../../../../scalalr.jar
+scala-cli run runexpr.scala expr --jar ../../../../scalalr.jar
+scala-cli run runtinyfun.scala TinyFun.scala tinyfun --jar ../../../../scalalr.jar
 
-  scala-cli run runexpr.scala expr
-  scala-cli run runsmall.scala small
 
 The ScalaLR jar file in `testbed/` links to an artefact that I get
 IntelliJ to build; but sbt is configured to do the same. Most of the

@@ -97,7 +97,7 @@ object generatetinyfun extends App {
       |        | error NL        { () }
       |        ;
       |
-      |command: Unit = expr { Fun.Syntax.run(List($expr)) };
+      |command: Unit = expr { run(List($expr)) };
       |
       |
       |expr: Expr =

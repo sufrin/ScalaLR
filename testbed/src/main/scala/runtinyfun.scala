@@ -1,3 +1,6 @@
+//> using scala "2.13"
+//> using jar "scalalr.jar"
+
 import org.sufrin.utility.SourceTextCursor
 
 object runtinyfun  {
@@ -11,7 +14,7 @@ object runtinyfun  {
 
   def main(args: Array[String]): Unit = {
     val log  = args.contains("-l")
-    val pull = args.contains("-p")
+    val pull = !args.contains("-push")
     val file = (args.toList.filterNot(_.startsWith("-")) ++ List("/dev/tty")).head
 
     if (pull) {

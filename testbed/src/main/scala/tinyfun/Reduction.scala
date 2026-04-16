@@ -15,10 +15,10 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
  // loop: Unit = error NL { () }
  case 3 => 
   { case List(_, _) =>   ()  } 
- // command: Unit = expr { Fun.Syntax.run(List($expr)) }
+ // command: Unit = expr { run(List($expr)) }
  case 4 => 
   { case List(dol$expr: Expr) => 
-         Fun.Syntax.run(List(dol$expr)) 
+         run(List(dol$expr)) 
   }
  // expr: Expr = ID { Id($ID, $START) }
  case 5 => 
@@ -77,7 +77,7 @@ def parsetreereduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  
  case 3 => 
   { case trees$trees => PARSETREE("""loop: Unit = error NL { () }""", 3, trees$trees ) }
  case 4 => 
-  { case trees$trees => PARSETREE("""command: Unit = expr { Fun.Syntax.run(List($expr)) }""", 4, trees$trees ) }
+  { case trees$trees => PARSETREE("""command: Unit = expr { run(List($expr)) }""", 4, trees$trees ) }
  case 5 => 
   { case trees$trees => PARSETREE("""expr: Expr = ID { Id($ID, $START) }""", 5, trees$trees ) }
  case 6 => 

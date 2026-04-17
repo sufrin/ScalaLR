@@ -15,7 +15,7 @@ object generatetinyfun extends App {
       |
       |
       |%notation TinyFun
-      |%package  tinyfun/TinyFun
+      |%package  tinyfun
       |%path     "testbed/src/main/scala/tinyfun"
       |
       |%include {
@@ -54,9 +54,13 @@ object generatetinyfun extends App {
       |            case '+' => afterNextChar(`+`)
       |            case '*' => afterNextChar(`*`)
       |            case ',' => afterNextChar(`,`)
+      |            case '=' => afterNextChar(ASSIGN)
       |            case c if c.isLetter =>
       |              val prefix = chars.takeWhile(_.isLetterOrDigit)
-      |              ID((prefix).mkString(""))
+      |              prefix.mkString("") match {
+      |                case "quit" => QUIT
+      |                case other  => ID(other)
+      |              }
       |            case c if c.isDigit =>
       |              val prefix = chars.takeWhile(c=>c.isDigit||c=='.')
       |              NUM((prefix).mkString(""))
@@ -71,9 +75,12 @@ object generatetinyfun extends App {
       |    }
       |}
       |
-      |%token NUM: String ID: String `(` `)` `[` `]` `,` LEXICALERROR: (String) NL
+      |%token NUM: String ID: String  `(` `)` `[` `]` `,` LEXICALERROR: (String) NL QUIT
+      |%non ASSIGN
       |%left `+` `-`
       |%left `*` `/`
+      |
+      |
       |
       |%rules
       |
@@ -94,15 +101,15 @@ object generatetinyfun extends App {
       |loop: Unit =
       |          %empty          { () }
       |        | loop command NL { () }
-      |        | error NL        { () }
       |        ;
       |
-      |command: Unit = expr { run(List($expr)) };
+      |command: Unit = expr { run(List($expr)) } | QUIT { System.exit(0) };
       |
       |
       |expr: Expr =
       |          ID                  { Id($ID, $START) }
       |        | NUM                 { Num($NUM.toDouble, $START) }
+      |        | ID ASSIGN expr      { Assign($ID, $expr, $START) }
       |        | l:expr `*` r:expr   { Binop("*", $l, $r, $START) }
       |        | l:expr `+` r:expr   { Binop("+", $l, $r, $START) }
       |        | l:expr `/` r:expr   { Binop("/", $l, $r, $START) }

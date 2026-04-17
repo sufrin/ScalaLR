@@ -17,6 +17,8 @@ object runtinyfun  {
     val pull = !args.contains("-push")
     val file = (args.toList.filterNot(_.startsWith("-")) ++ List("/dev/tty")).head
 
+    print("Welcome to TinyFun\n> ")
+
     if (pull) {
       val scanner = Scanner(SourceTextCursor(Paths.get(file)))
       def next(): Token = if (scanner.hasNext) scanner.next() else $end

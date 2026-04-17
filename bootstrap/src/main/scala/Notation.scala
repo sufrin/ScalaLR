@@ -105,18 +105,18 @@ object Notation {
       def eatComment(): Unit = {
         var level = 0
         var go = true
-        println(s"start comment $theChar")
+        //println(s"start comment $theChar")
         nextChar() // skip the *
         while (go && hasChar) {
-          print(theChar)
+          //print(theChar)
           chars.dropWhile( c=>c!='*')
           // theChar=='*' or !hasChar
-          print(theChar)
+          //print(theChar)
           nextChar()
-          println(theChar)
+          //println(theChar)
           if (theChar=='/') go=false
         }
-        println("end comment")
+        //println("end comment")
         nextChar()
       }
 

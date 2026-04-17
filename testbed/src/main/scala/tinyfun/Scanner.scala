@@ -37,9 +37,13 @@ object Scanner {
             case '+' => afterNextChar(`+`)
             case '*' => afterNextChar(`*`)
             case ',' => afterNextChar(`,`)
+            case '=' => afterNextChar(ASSIGN)
             case c if c.isLetter =>
               val prefix = chars.takeWhile(_.isLetterOrDigit)
-              ID((prefix).mkString(""))
+              prefix.mkString("") match {
+                case "quit" => QUIT
+                case other  => ID(other)
+              }
             case c if c.isDigit =>
               val prefix = chars.takeWhile(c=>c.isDigit||c=='.')
               NUM((prefix).mkString(""))
@@ -63,10 +67,12 @@ case object `]` extends Token { val value = (); val symbol = 8 }
 case object `,` extends Token { val value = (); val symbol = 9 }
 case class LEXICALERROR(value: String) extends Token { val symbol = 10 }
 case object NL extends Token { val value = (); val symbol = 11 }
-case object `+` extends Token { val value = (); val symbol = 12 }
-case object `-` extends Token { val value = (); val symbol = 13 }
-case object `*` extends Token { val value = (); val symbol = 14 }
-case object `/` extends Token { val value = (); val symbol = 15 }
+case object QUIT extends Token { val value = (); val symbol = 12 }
+case object ASSIGN extends Token { val value = (); val symbol = 13 }
+case object `+` extends Token { val value = (); val symbol = 14 }
+case object `-` extends Token { val value = (); val symbol = 15 }
+case object `*` extends Token { val value = (); val symbol = 16 }
+case object `/` extends Token { val value = (); val symbol = 17 }
 case object $end extends Token { val value = (); val symbol = 0 }
 case object error extends Token { val value = (); val symbol = 1 }
 case object UNDEF extends Token { val value = (); val symbol = 2 }
@@ -84,16 +90,18 @@ val symbolName: Map[Int, String] = collection.immutable.ListMap[Int, String](
 , 9 -> ","
 , 10 -> "LEXICALERROR"
 , 11 -> "NL"
-, 12 -> "+"
-, 13 -> "-"
-, 14 -> "*"
-, 15 -> "/"
+, 12 -> "QUIT"
+, 13 -> "ASSIGN"
+, 14 -> "+"
+, 15 -> "-"
+, 16 -> "*"
+, 17 -> "/"
 // GLOSSARY OF NONTERMINAL SYMBOL NAMES
-, 16 -> "$accept" 
-, 17 -> "loop" 
-, 18 -> "command" 
-, 19 -> "expr" 
-, 20 -> "exprs" 
+, 18 -> "$accept" 
+, 19 -> "loop" 
+, 20 -> "command" 
+, 21 -> "expr" 
+, 22 -> "exprs" 
 )
 
 }

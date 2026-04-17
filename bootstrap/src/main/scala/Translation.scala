@@ -171,7 +171,7 @@ class Translation(val notation: Notation) {
         if (toks.nonEmpty) out("\n%token ")
         out(toks.map(forBison(_)).mkString(" "))
       case Right(toks) =>
-        if (toks.nonEmpty) out("\n%token")
+        if (toks.nonEmpty) out("\n%token ")
         out(toks.map(forBison(_)).mkString(" "))
       case Nonassoc(toks) =>
         if (toks.nonEmpty) out("\n%token ")

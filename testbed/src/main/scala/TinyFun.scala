@@ -3,16 +3,29 @@
 //> using jar "scalalr.jar"
 
 package tinyfun
+
+import scala.collection.mutable
+
 object TinyFun {
 
   import org.sufrin.scalalr.SourceLocation
+
+  val store = new mutable.LinkedHashMap[String, Double]
 
   trait Expr { def value: Double }
 
   case class Num(value: Double, loc: SourceLocation) extends Expr
 
-  case class Id(s: String, loc: SourceLocation) extends Expr {
-    val value=0.0
+  case class Id(id: String, loc: SourceLocation) extends Expr {
+    val value=store.getOrElse(id, 0.0)
+  }
+
+  case class Assign(id: String, expr: Expr, loc: SourceLocation) extends Expr {
+    def value: Double = {
+      val v = expr.value
+      store(id) = v
+      v
+    }
   }
 
   case class Binop(op: String, l: Expr, r: Expr, loc: SourceLocation) extends Expr {
@@ -44,6 +57,8 @@ object TinyFun {
       }
     }
   }
+
+
 
   def run(exprs: Seq[Expr]): Unit = {
     println(exprs.map(_.value).mkString(" "));

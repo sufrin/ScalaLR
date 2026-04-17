@@ -2,12 +2,12 @@
 //> using jar "scalalr.jar"
 
 /*
-        The is the driver for the post-bootstrap generator
+        The is the driver for the post-bootstrap runScalaLR
 */
 
 
 
-object generator  {
+object runScalaLR  {
   import org.sufrin.scalalr._
   import org.sufrin.utility.PrettyPrint._
   import org.sufrin.utility.SourceTextCursor
@@ -46,7 +46,7 @@ object generator  {
 }
 
 object generateTinyFun extends App {
-  generator.main(Array("scalalr/src/test/tinyfun.scalalr"))
+  runScalaLR.main(Array("scalalr/src/test/tinyfun.scalalr"))
 }
 
 

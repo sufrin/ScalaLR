@@ -85,6 +85,8 @@ object Scanner {
           next()
         case '{' => // } to balance the %include
           nextChar(); afterNextChar(CODE(chars.takeNested('{', '}')  .mkString("")))
+        case '«' => // » to balance the %include
+          nextChar(); afterNextChar(CODE(chars.takeNested('«', '»')  .mkString("")))
         case '"'  => nextChar(); afterNextChar(ID(chars.takeWhile( c => c!='"')  .mkString("\"", "", "\"")))
         case '\'' => nextChar(); afterNextChar(ID(chars.takeWhile( c => c!='\'') .mkString("\"", "", "\"")))
         case '`' => nextChar(); afterNextChar(ID(chars.takeWhile( c => c!='`') .mkString("\"", "", "\"")))

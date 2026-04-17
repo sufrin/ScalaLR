@@ -30,7 +30,7 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
   { case List(dol$NUM: String) => 
          Num(dol$NUM.toDouble, dol$START) 
   }
- // expr: Expr = ID ASSIGN expr { Assign($ID, $expr, $START) }
+ // expr: Expr = ID "=" expr { Assign($ID, $expr, $START) }
  case 7 => 
   { case List(dol$ID: String, _, dol$expr: Expr) => 
          Assign(dol$ID, dol$expr, dol$START) 
@@ -88,7 +88,7 @@ def parsetreereduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  
  case 6 => 
   { case trees$trees => PARSETREE("""expr: Expr = NUM { Num($NUM.toDouble, $START) }""", 6, trees$trees ) }
  case 7 => 
-  { case trees$trees => PARSETREE("""expr: Expr = ID ASSIGN expr { Assign($ID, $expr, $START) }""", 7, trees$trees ) }
+  { case trees$trees => PARSETREE("""expr: Expr = ID "=" expr { Assign($ID, $expr, $START) }""", 7, trees$trees ) }
  case 8 => 
   { case trees$trees => PARSETREE("""expr: Expr = l: expr "*" r: expr { Binop("*", $l, $r, $START) }""", 8, trees$trees ) }
  case 9 => 

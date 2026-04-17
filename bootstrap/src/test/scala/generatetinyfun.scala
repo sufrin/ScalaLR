@@ -54,7 +54,7 @@ object generatetinyfun extends App {
       |            case '+' => afterNextChar(`+`)
       |            case '*' => afterNextChar(`*`)
       |            case ',' => afterNextChar(`,`)
-      |            case '=' => afterNextChar(ASSIGN)
+      |            case '=' => afterNextChar(`=`)
       |            case c if c.isLetter =>
       |              val prefix = chars.takeWhile(_.isLetterOrDigit)
       |              prefix.mkString("") match {
@@ -76,7 +76,7 @@ object generatetinyfun extends App {
       |}
       |
       |%token NUM: String ID: String  `(` `)` `[` `]` `,` LEXICALERROR: (String) NL QUIT
-      |%right ASSIGN
+      |%right `=`
       |%left `+` `-`
       |%left `*` `/`
       |
@@ -109,7 +109,7 @@ object generatetinyfun extends App {
       |expr: Expr =
       |          ID                  { Id($ID, $START) }
       |        | NUM                 { Num($NUM.toDouble, $START) }
-      |        | ID ASSIGN expr      { Assign($ID, $expr, $START) }
+      |        | ID `=` expr         { Assign($ID, $expr, $START) }
       |        | l:expr `*` r:expr   { Binop("*", $l, $r, $START) }
       |        | l:expr `+` r:expr   { Binop("+", $l, $r, $START) }
       |        | l:expr `/` r:expr   { Binop("/", $l, $r, $START) }

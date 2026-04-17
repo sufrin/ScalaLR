@@ -2,10 +2,10 @@
 // notation TinyFun
 %define lr.type lalr
 %token NUM ID TOK-5 TOK-6 TOK-7 TOK-8 TOK-9 LEXICALERROR NL QUIT
-%token ASSIGN
+%token TOK-13
 %token TOK-14 TOK-15
 %token TOK-16 TOK-17
-%right ASSIGN
+%right TOK-13
 %left TOK-14 TOK-15
 %left TOK-16 TOK-17
 // Special symbols
@@ -14,6 +14,7 @@
 // "[" TOK-7
 // "]" TOK-8
 // "," TOK-9
+// "=" TOK-13
 // "+" TOK-14
 // "-" TOK-15
 // "*" TOK-16
@@ -25,7 +26,7 @@ command:  expr;
 command:  QUIT;
 expr:  ID;
 expr:  NUM;
-expr:  ID ASSIGN expr;
+expr:  ID TOK-13 expr;
 expr:  expr TOK-16 expr;
 expr:  expr TOK-14 expr;
 expr:  expr TOK-17 expr;

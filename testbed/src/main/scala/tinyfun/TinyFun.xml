@@ -55,7 +55,7 @@
         <lhs>expr</lhs>
         <rhs>
           <symbol>ID</symbol>
-          <symbol>ASSIGN</symbol>
+          <symbol>TOK-13</symbol>
           <symbol>expr</symbol>
         </rhs>
       </rule>
@@ -136,7 +136,7 @@
       <terminal symbol-number="10" token-number="265" name="LEXICALERROR" type="" usefulness="unused-in-grammar"/>
       <terminal symbol-number="11" token-number="266" name="NL" type="" usefulness="useful"/>
       <terminal symbol-number="12" token-number="267" name="QUIT" type="" usefulness="useful"/>
-      <terminal symbol-number="13" token-number="268" name="ASSIGN" type="" usefulness="useful" prec="1" assoc="right"/>
+      <terminal symbol-number="13" token-number="268" name="TOK-13" type="" usefulness="useful" prec="1" assoc="right"/>
       <terminal symbol-number="14" token-number="269" name="TOK-14" type="" usefulness="useful" prec="2" assoc="left"/>
       <terminal symbol-number="15" token-number="270" name="TOK-15" type="" usefulness="useful" prec="2" assoc="left"/>
       <terminal symbol-number="16" token-number="271" name="TOK-16" type="" usefulness="useful" prec="3" assoc="left"/>
@@ -250,7 +250,7 @@
       <actions>
         <transitions>
           <transition type="shift" symbol="TOK-5" state="9"/>
-          <transition type="shift" symbol="ASSIGN" state="10"/>
+          <transition type="shift" symbol="TOK-13" state="10"/>
         </transitions>
         <errors/>
         <reductions>
@@ -607,10 +607,10 @@
         </reductions>
       </actions>
       <solved-conflicts>
-        <resolution rule="7" symbol="TOK-14" type="shift">ASSIGN &lt; TOK-14</resolution>
-        <resolution rule="7" symbol="TOK-15" type="shift">ASSIGN &lt; TOK-15</resolution>
-        <resolution rule="7" symbol="TOK-16" type="shift">ASSIGN &lt; TOK-16</resolution>
-        <resolution rule="7" symbol="TOK-17" type="shift">ASSIGN &lt; TOK-17</resolution>
+        <resolution rule="7" symbol="TOK-14" type="shift">TOK-13 &lt; TOK-14</resolution>
+        <resolution rule="7" symbol="TOK-15" type="shift">TOK-13 &lt; TOK-15</resolution>
+        <resolution rule="7" symbol="TOK-16" type="shift">TOK-13 &lt; TOK-16</resolution>
+        <resolution rule="7" symbol="TOK-17" type="shift">TOK-13 &lt; TOK-17</resolution>
       </solved-conflicts>
     </state>
 

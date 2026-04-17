@@ -37,7 +37,7 @@ object Scanner {
             case '+' => afterNextChar(`+`)
             case '*' => afterNextChar(`*`)
             case ',' => afterNextChar(`,`)
-            case '=' => afterNextChar(ASSIGN)
+            case '=' => afterNextChar(`=`)
             case c if c.isLetter =>
               val prefix = chars.takeWhile(_.isLetterOrDigit)
               prefix.mkString("") match {
@@ -68,7 +68,7 @@ case object `,` extends Token { val value = (); val symbol = 9 }
 case class LEXICALERROR(value: String) extends Token { val symbol = 10 }
 case object NL extends Token { val value = (); val symbol = 11 }
 case object QUIT extends Token { val value = (); val symbol = 12 }
-case object ASSIGN extends Token { val value = (); val symbol = 13 }
+case object `=` extends Token { val value = (); val symbol = 13 }
 case object `+` extends Token { val value = (); val symbol = 14 }
 case object `-` extends Token { val value = (); val symbol = 15 }
 case object `*` extends Token { val value = (); val symbol = 16 }
@@ -91,7 +91,7 @@ val symbolName: Map[Int, String] = collection.immutable.ListMap[Int, String](
 , 10 -> "LEXICALERROR"
 , 11 -> "NL"
 , 12 -> "QUIT"
-, 13 -> "ASSIGN"
+, 13 -> "="
 , 14 -> "+"
 , 15 -> "-"
 , 16 -> "*"

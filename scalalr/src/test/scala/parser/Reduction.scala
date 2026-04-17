@@ -3,6 +3,7 @@ package scalalr.parser.ScalaLR
 object Reduction {
 
  import org.sufrin.scalalr.AST._
+ import org.sufrin.scalalr.TranslateScalaLR._
  import org.sufrin.utility.SourceTextCursor
  import org.sufrin.scalalr.SourceLocation
  import org.sufrin.utility.PrettyPrint._
@@ -14,10 +15,10 @@ object Reduction {
      }
 
 def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufrin.scalalr.SourceLocation, n: Int): PartialFunction[List[Any], Any] = n match {
- // command: Unit = Notation { $Notation.prettyPrint }
+ // command: Unit = Notation { translate($Notation) }
  case 1 => 
   { case List(dol$Notation: Notation) => 
-         dol$Notation.prettyPrint 
+         translate(dol$Notation) 
   }
  // Notation: Notation = "%notation" theName: ID "%package" thePackage: ID "%path" thePath: ID tokensInclude: OptInclude Tokens "%rules" rulesInclude: OptInclude Rules OptSemicolon { Notation($thePackage, $theName, $thePath, "Tables", "Scanner", Type("Token", Nil), $Tokens, $Rules, $tokensInclude, $rulesInclude) }
  case 2 => 
@@ -188,7 +189,7 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
 case class PARSETREE(prod: String, rule: Int, trees:List[Any])
 def parsetreereduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufrin.scalalr.SourceLocation, n: Int): PartialFunction[List[Any], Any] = n match {
  case 1 => 
-  { case trees$trees => PARSETREE("""command: Unit = Notation { $Notation.prettyPrint }""", 1, trees$trees ) }
+  { case trees$trees => PARSETREE("""command: Unit = Notation { translate($Notation) }""", 1, trees$trees ) }
  case 2 => 
   { case trees$trees => PARSETREE("""Notation: Notation = "%notation" theName: ID "%package" thePackage: ID "%path" thePath: ID tokensInclude: OptInclude Tokens "%rules" rulesInclude: OptInclude Rules OptSemicolon { Notation($thePackage, $theName, $thePath, "Tables", "Scanner", Type("Token", Nil), $Tokens, $Rules, $tokensInclude, $rulesInclude) }""", 2, trees$trees ) }
  case 3 => 

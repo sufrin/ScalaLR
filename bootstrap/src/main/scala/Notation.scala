@@ -145,6 +145,8 @@ object Notation {
               next()
             case '{' =>
               nextChar(); afterNextChar(CODE(chars.takeNested('{', '}')  .mkString("")))
+            case '«' =>
+              nextChar(); afterNextChar(CODE(chars.takeNested('«', '»')  .mkString("")))
             case '(' =>
               nextChar(); afterNextChar(TYPE(chars.takeNested('(', ')')  .mkString("")))
             case ';' => afterNextChar(SEMICOLON)

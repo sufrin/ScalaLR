@@ -1,10 +1,7 @@
 package org.sufrin.scalalr
 
-object GenerateLR extends App {
-  {
-
-
-    val source =
+object GenerateScalaLR extends App {
+  { val source =
       """%notation  ScalaLR
         |%package   scalalr.parser.ScalaLR
         |%path      "scalalr/src/test/scala/parser"
@@ -93,6 +90,8 @@ object GenerateLR extends App {
         |          next()
         |        case '{' => // } to balance the %include
         |          nextChar(); afterNextChar(CODE(chars.takeNested('{', '}')  .mkString("")))
+        |        case '«' => // » to balance the %include
+        |          nextChar(); afterNextChar(CODE(chars.takeNested('«', '»')  .mkString("")))
         |        case '"'  => nextChar(); afterNextChar(ID(chars.takeWhile( c => c!='"')  .mkString("\"", "", "\"")))
         |        case '\'' => nextChar(); afterNextChar(ID(chars.takeWhile( c => c!='\'') .mkString("\"", "", "\"")))
         |        case '`' => nextChar(); afterNextChar(ID(chars.takeWhile( c => c!='`') .mkString("\"", "", "\"")))
@@ -124,6 +123,7 @@ object GenerateLR extends App {
         |
         |%include {
         | import org.sufrin.scalalr.AST._
+        | import org.sufrin.scalalr.TranslateScalaLR._
         | import org.sufrin.utility.SourceTextCursor
         | import org.sufrin.scalalr.SourceLocation
         | import org.sufrin.utility.PrettyPrint._
@@ -138,7 +138,7 @@ object GenerateLR extends App {
         |
         |
         |
-        |command: Unit = Notation { $Notation.prettyPrint };
+        |command: Unit = Notation { translate($Notation) };
         |
         |
         |Notation: Notation =

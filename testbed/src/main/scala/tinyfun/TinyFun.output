@@ -17,7 +17,7 @@ Grammar
 
     5 expr: ID
     6     | NUM
-    7     | ID ASSIGN expr
+    7     | ID "=" expr
     8     | expr "*" expr
     9     | expr "+" expr
    10     | expr "/" expr
@@ -43,7 +43,7 @@ Terminals, with rules where they appear
     LEXICALERROR (265)
     NL (266) 2
     QUIT (267) 4
-    ASSIGN (268) 7
+    "=" (268) 7
     "+" (269) 9
     "-" (270) 11
     "*" (271) 8
@@ -109,11 +109,11 @@ State 3
 State 4
 
     5 expr: ID •
-    7     | ID • ASSIGN expr
+    7     | ID • "=" expr
    13     | ID • "(" exprs ")"
 
     "("   shift, and go to state 9
-    ASSIGN  shift, and go to state 10
+    "="  shift, and go to state 10
 
     $default  reduce using rule 5 (expr)
 
@@ -173,7 +173,7 @@ State 9
 
 State 10
 
-    7 expr: ID ASSIGN • expr
+    7 expr: ID "=" • expr
 
     NUM    shift, and go to state 3
     ID     shift, and go to state 4
@@ -275,7 +275,7 @@ State 18
 
 State 19
 
-    7 expr: ID ASSIGN expr •
+    7 expr: ID "=" expr •
     8     | expr • "*" expr
     9     | expr • "+" expr
    10     | expr • "/" expr

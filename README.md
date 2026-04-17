@@ -130,10 +130,31 @@ IntelliJ to build. Most of the jar is destined for use at scala
 code-generation time; but the LRParser automata live there too at the moment.
 
 ### Gotchas
-Error recovery is not yet properly implemented. The `Pull` automaton 
-reports the first syntax error and bails. The `Push` automaton does likewise if there
-is no `error`-handling state available, and  "recovery" that otherwise results 
-is not properly implemented or documented.
+1. **Error recovery** is not yet properly implemented. 
+The `Pull` automaton 
+reports the first syntax error and bails by throwing anexception. 
+The `Push` automaton does likewise if there
+is no `error`-handling state available (see Bison documentation for an explanation of 
+the `error` virtual token), and the "recovery" that otherwise results 
+is not properly implemented or documented. Despite this it is straightforward to 
+construct an REP-type interface that appears to recover from syntax errors. 
+For an example, see `runtinyfun`
+2. **Scala code quotations** such as appear in `%include` passages and as action 
+expressions
+need a little care. The normal form of a code quotation is a passage that opens with `{`, has
+properly-nested occurences of `{` and `}` within it and ends with a closing `}` that matches 
+the opening. **But** if an unmatched brace appears (for example in a character or string 
+quote or in a comment)
+it can upset balance. One solution is to use the alternative braces 
+«» to quote code. Another solution, "forcibly" balancing the quotation, is exemplified by the following
+extract from a code quotation defining the scanner for the Scalalr notation itself.
+````
+           case '{' => // } to balance the code quotation
+           nextChar(); afterNextChar(CODE(chars.takeNested('{', '}')  .mkString("")))
+           case '«' => // » to balance the code quotation
+           nextChar(); afterNextChar(CODE(chars.takeNested('«', '»')  .mkString("")))
+ ````
+
 
 ### Roadmap
 We aim to accomplish the following tasks as soon as we can. They are listed

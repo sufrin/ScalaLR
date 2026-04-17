@@ -247,7 +247,8 @@ object LRParser {
               println(s"error SHIFT($newState)")
               parseState = NEXTSTEP
             } else  {
-              parseState = ERRONEOUS(diagnosis(input, currentState))
+              println(s"Syntax error: ${sourceLocation()}")
+              throw new Error (diagnosis(input, currentState))
             }
 
           case REDUCE(lhsSymbol, production, size) =>

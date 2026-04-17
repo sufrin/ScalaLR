@@ -112,8 +112,7 @@ one need not know anything about these (or inspect the `.y` file), because the `
 file shows the grammar symbols as given in grammar notation.
 
 ### Testing
-[TODO: needs updating]
-Some test grammars appear in `bootstrap/src/test/scala` as embedded strings: for example 
+Some test grammars (for the bootstrap generator) appear in `bootstrap/src/test/scala` as embedded strings: for example 
 `generatexpr.scala` and `generatesmall.scala` and `generatetinyfun.scala` -- they can be used 
 generate scala code  by running them as from IntelliJ (or elsewhere). Those mentioned above generate code 
 under `testbed/scala/src/main/scala` in the directories  `{expr,small,tinyfun}` that can be 
@@ -126,10 +125,44 @@ scala-cli run runexpr.scala expr --jar ../../../../scalalr.jar
 scala-cli run runtinyfun.scala TinyFun.scala tinyfun --jar ../../../../scalalr.jar
 
 
-The ScalaLR jar file in `testbed/` links to an artefact that I get
-IntelliJ to build; but sbt is configured to do the same. Most of the
-jar is destined for use at scala code-generation time; but the LRParser
-automata lives there too at the moment.
+The ScalaLR jar file in the root is an artefact that I get
+IntelliJ to build. Most of the jar is destined for use at scala 
+code-generation time; but the LRParser automata live there too at the moment.
+
+### Gotchas
+Error recovery is not yet properly implemented. The `Pull` automaton 
+reports the first syntax error and bails. The `Push` automaton does likewise if there
+is no `error`-handling state available, and  "recovery" that otherwise results 
+is not properly implemented or documented.
+
+### Roadmap
+We aim to accomplish the following tasks as soon as we can. They are listed
+here in no particular order.
+
+1. Error recovery properly implemented.
+
+2. System to be self-hosting: ie using a scalalr-derived parser rather
+   than the present hand-coded recursive descent parser. 
+
+3. Higher-level constructs such as %list, %option to express complex 
+   grammar expressions that would normally have to be "hand-coded" such as:
+````     
+      exprlist: List[Expr]  = exprlistr { $exprlistr.reverse }
+      exprlistr: List[Expr] = 
+                expr { List($expr) } | exprlist1 ',' expr  { $expr :: $exprlistr }
+      exprlist: List[Expr] = 
+                expr { List($expr) } | expr ',' exprlist  { $expr :: $exprlist }
+      optexpr: Option[Expr] = 
+            { None } | expr { Some($expr) }
+````
+These could be expressed more concisely in-situ, for example:
+````          
+      ID '(' exprlist: (%revlist expr ',') ')' { Apply($ID, $exprlist) }  
+      ID '(' exprlist: (%list    expr ',') ')' { Apply($ID, $exprlist) }
+      RETURN optexpr: (%option expr) ';'       { Return($optexpr) }
+````
+
+The published code will reflect current partial progress towards them when appropriate.
 
 BS: April 14th, 2026
 

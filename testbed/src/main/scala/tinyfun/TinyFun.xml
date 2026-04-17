@@ -136,7 +136,7 @@
       <terminal symbol-number="10" token-number="265" name="LEXICALERROR" type="" usefulness="unused-in-grammar"/>
       <terminal symbol-number="11" token-number="266" name="NL" type="" usefulness="useful"/>
       <terminal symbol-number="12" token-number="267" name="QUIT" type="" usefulness="useful"/>
-      <terminal symbol-number="13" token-number="268" name="ASSIGN" type="" usefulness="useful" prec="1" assoc="nonassoc"/>
+      <terminal symbol-number="13" token-number="268" name="ASSIGN" type="" usefulness="useful" prec="1" assoc="right"/>
       <terminal symbol-number="14" token-number="269" name="TOK-14" type="" usefulness="useful" prec="2" assoc="left"/>
       <terminal symbol-number="15" token-number="270" name="TOK-15" type="" usefulness="useful" prec="2" assoc="left"/>
       <terminal symbol-number="16" token-number="271" name="TOK-16" type="" usefulness="useful" prec="3" assoc="left"/>

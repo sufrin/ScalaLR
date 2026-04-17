@@ -19,24 +19,31 @@ object runtinyfun  {
 
     print("Welcome to TinyFun\n> ")
 
-    if (pull) {
+    while (pull) {
       val scanner = Scanner(SourceTextCursor(Paths.get(file)))
       def next(): Token = if (scanner.hasNext) scanner.next() else $end
       val parser = new LRParser.Pull[Token](ACTIONTABLE, GOTOTABLE, reduction, symbolName, scanner.sourceLocation)
       parser.logState = log
-      parser.run(next)
+      try parser.run(next) catch {
+        case err: java.lang.Error => println(err)
+      }
     }
 
-    if (!pull) {
+    while (!pull) {
       val scanner = Scanner(SourceTextCursor(Paths.get(file)))
       val parser = new LRParser.Push[Token](ACTIONTABLE, GOTOTABLE, reduction, symbolName, scanner.sourceLocation)
       var state = parser.start()
       parser.logState = log
-      while (state == LRParser.NEXTSTEP) {
-        val input = if (scanner.hasNext) scanner.next() else $end
-        state = parser.step(input, scanner.sourceLocation())
-        if (log) System.out.println(parser.mkString)
-        System.out.flush()
+      try {
+        while (state == LRParser.NEXTSTEP) {
+          val input = if (scanner.hasNext) scanner.next() else $end
+          state = parser.step(input, scanner.sourceLocation())
+          if (log) System.out.println(parser.mkString)
+          System.out.flush()
+        }
+      }
+      catch {
+        case err: java.lang.Error => println(err)
       }
     }
   }

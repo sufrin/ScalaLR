@@ -2,16 +2,7 @@
 //> using jar "scalalr.jar"
 
 /*
-        First construct the lr.jar in the ScalaLalr/testbed/ directory
-        I use IntelliJ to build it as an artefact in ScalaLalr/out/artifacts [sic]
-        then symbolically link that to ScalaLalr/testbed/. You can also do this
-        with scala "package" from ScalaLalr/, but then you'll have rename the
-        resulting jar appropriately.
-
-        CODE GENERATION:
-                scala -cp ScalaLalr.jar org.sufrin.scalalr.ScalaLalr fun.l
-        COMPILATION AND RUNNING
-                 scala-cli run fun.scala funsem.scala fun --
+        The is the driver for the post-bootstrap generator
 */
 
 
@@ -28,7 +19,7 @@ object generator  {
 
   def main(args: Array[String]): Unit = {
     val log  = args.contains("-l")
-    val pull = args.contains("-p")
+    val pull = !args.contains("-push")
     val file = (args.toList.filterNot(_.startsWith("-")) ++ List("/dev/tty")).head
 
     if (pull) {
@@ -55,7 +46,7 @@ object generator  {
 }
 
 object generateTinyFun extends App {
-  generator.main(Array("-p", "scalalr/src/test/tinyfun.scalalr"))
+  generator.main(Array("scalalr/src/test/tinyfun.scalalr"))
 }
 
 

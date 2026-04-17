@@ -5,7 +5,7 @@
 %token ASSIGN
 %token TOK-14 TOK-15
 %token TOK-16 TOK-17
-%nonassoc ASSIGN
+%right ASSIGN
 %left TOK-14 TOK-15
 %left TOK-16 TOK-17
 // Special symbols

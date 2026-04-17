@@ -42,9 +42,14 @@
             case '+' => afterNextChar(`+`)
             case '*' => afterNextChar(`*`)
             case ',' => afterNextChar(`,`)
+            case '=' => afterNextChar(ASSIGN)
+
             case c if c.isLetter =>
-              val prefix = chars.takeWhile(_.isLetterOrDigit)
-              ID((prefix).mkString(""))
+                  val prefix = chars.takeWhile(_.isLetterOrDigit)
+                  prefix.mkString("") match {
+                    case "quit" => QUIT
+                    case other  => ID(other)
+                  }
             case c if c.isDigit =>
               val prefix = chars.takeWhile(c=>c.isDigit||c=='.')
               NUM((prefix).mkString(""))

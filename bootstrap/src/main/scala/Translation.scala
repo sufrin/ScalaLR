@@ -204,7 +204,7 @@ class Translation(val notation: Notation) {
         out("\n%left ")
         out(toks.map(forBison(_)).mkString(" "))
       case Right(toks) =>
-        out("\n%right")
+        out("\n%right ")
         out(toks.map(forBison(_)).mkString(" "))
       case Nonassoc(toks) =>
         out("\n%nonassoc ")

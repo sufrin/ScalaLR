@@ -76,7 +76,7 @@ object generatetinyfun extends App {
       |}
       |
       |%token NUM: String ID: String  `(` `)` `[` `]` `,` LEXICALERROR: (String) NL QUIT
-      |%non ASSIGN
+      |%right ASSIGN
       |%left `+` `-`
       |%left `*` `/`
       |

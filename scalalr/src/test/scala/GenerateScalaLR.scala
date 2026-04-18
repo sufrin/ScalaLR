@@ -48,8 +48,7 @@ object GenerateScalaLR extends App {
         |        //case '\n' if chars.chars>0    =>
         |        //         chars.current = ' '            // the subsequent next() skips this space without accounting
         |        //         NL                             // NL once
-        |        case '\u0004' => $end         // invariantly
-        |        case '.'      => NL           // invariantly
+        |
         |        case '(' => afterNextChar(`(`)
         |        case ')' => afterNextChar(`)`)
         |        case '[' => afterNextChar(`[`)
@@ -128,10 +127,10 @@ object GenerateScalaLR extends App {
         | import org.sufrin.scalalr.SourceLocation
         | import org.sufrin.utility.PrettyPrint._
         |
-        | def makeTupleType(types: Seq[Type]): Type =
+        | def makeTupleType(types: Seq[Type], location: SourceLocation): Type =
         |     types.size match {
         |       case 1 => types(0)
-        |       case n => Type(s"Tuple$n", types)
+        |       case n => Type(s"Tuple$n", types, location)
         |     }
         |}
         |
@@ -150,7 +149,7 @@ object GenerateScalaLR extends App {
         |    `%rules`
         |    rulesInclude:  OptInclude
         |    Rules          OptSemicolon
-        |    { Notation($thePackage, $theName, $thePath, "Tables", "Scanner", Type("Token", Nil), $Tokens, $Rules, $tokensInclude, $rulesInclude) };
+        |    { Notation($thePackage, $theName, $thePath, "Tables", "Scanner", Type("Token", Nil, $START), $Tokens, $Rules, $tokensInclude, $rulesInclude) };
         |
         |OptInclude: String = `%empty` { "" } | `%include` CODE { $CODE };
         |
@@ -170,25 +169,25 @@ object GenerateScalaLR extends App {
         |      |  TypedTerminal TypedTerminals  { $TypedTerminal :: $TypedTerminals }
         |      ;
         |
-        |TypedTerminal:(TypedTerminal) = ID ':' Type {  TypedTerminal($ID, $Type) }  | ID {  TypedTerminal($ID, Untyped) } ;
+        |TypedTerminal:(TypedTerminal) = ID ':' Type {  TypedTerminal($ID, $Type, $START) }  | ID {  TypedTerminal($ID, Untyped, $START) } ;
         |
         |
         |Rules:(List[Rule]) = Rule           { List($Rule) }
         |                   | Rules ';' Rule { $Rule :: $Rules };
         |
-        |Rule: Rule = LHS '=' RHS { Rule($LHS, $RHS) };
+        |Rule: Rule = LHS '=' RHS { Rule($LHS, $RHS, $START) };
         |
         |OptSemicolon: Unit = {()} | `;` {()};
         |
-        |LHS: TypedNonterminal  = ID ':' Type {  TypedNonterminal($ID, $Type) }
-        |                       | ID          {  TypedNonterminal($ID, Untyped) }
+        |LHS: TypedNonterminal  = ID ':' Type {  TypedNonterminal($ID, $Type, $START) }
+        |                       | ID          {  TypedNonterminal($ID, Untyped, $START) }
         |                       ;
         |
         |RHS:(List[Production]) =
         |    | Production         { List($Production)   }
         |    | Production '|' RHS { $Production :: $RHS } ;
         |
-        |Production: Production = NamedFields Action Precedence { Production($NamedFields, $Action, $Precedence) };
+        |Production: Production = NamedFields Action Precedence { Production($NamedFields, $Action, $Precedence, $START) };
         |
         |NamedFields:(List[NamedField]) =
         |    | `%empty`               { Nil }
@@ -196,18 +195,18 @@ object GenerateScalaLR extends App {
         |    | NamedField NamedFields { $NamedField :: $NamedFields }
         |    ;
         |
-        |NamedField: NamedField = ID                              { NamedField(theName = None, fieldSymbol = $ID) }
-        |                       | theName: ID ':' fieldSymbol: ID { NamedField(Some($theName), $fieldSymbol) }
+        |NamedField: NamedField = ID                              { NamedField(theName = None, fieldSymbol = $ID, $START) }
+        |                       | theName: ID ':' fieldSymbol: ID { NamedField(Some($theName), $fieldSymbol, $START) }
         |                       ;
         |
         |Action:(Option[Expression])    = %empty { None } | CODE { Some($CODE) };
         |
         |Precedence: (Option[Terminal]) =  %empty { None } | `%prec` ID { Some(new Terminal($ID)) };
         |
-        |Type:(Type) = ID               { Type($ID, Nil) }
-        |            | ID '[' Types ']' { Type($ID, $Types) }
-        |            | '('    Types ')' { makeTupleType($Types) }
-        |            | '(' ')'          { Type("Unit", Nil) }
+        |Type:(Type) = ID               { Type($ID, Nil, $START) }
+        |            | ID '[' Types ']' { Type($ID, $Types, $START) }
+        |            | '('    Types ')' { makeTupleType($Types, $START) }
+        |            | '(' ')'          { Type("Unit", Nil, $START) }
         |            ;
         |
         |Types:(List[Type]) = Type            { List($Type) }

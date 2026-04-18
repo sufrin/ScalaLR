@@ -43,8 +43,7 @@ object Scanner {
         //case '\n' if chars.chars>0    =>
         //         chars.current = ' '            // the subsequent next() skips this space without accounting
         //         NL                             // NL once
-        case '' => $end         // invariantly
-        case '.'      => NL           // invariantly
+
         case '(' => afterNextChar(`(`)
         case ')' => afterNextChar(`)`)
         case '[' => afterNextChar(`[`)

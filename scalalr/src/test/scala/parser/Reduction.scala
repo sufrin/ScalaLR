@@ -3,15 +3,15 @@ package scalalr.parser.ScalaLR
 object Reduction {
 
  import org.sufrin.scalalr.AST._
- import org.sufrin.scalalr.TranslateScalaLR._
- import org.sufrin.utility.SourceTextCursor
  import org.sufrin.scalalr.SourceLocation
+ import org.sufrin.scalalr.TranslateScalaLR._
  import org.sufrin.utility.PrettyPrint._
+ import org.sufrin.utility.SourceTextCursor
 
- def makeTupleType(types: Seq[Type]): Type =
+ def makeTupleType(types: Seq[Type], location: SourceLocation): Type =
      types.size match {
        case 1 => types(0)
-       case n => Type(s"Tuple$n", types)
+       case n => Type(s"Tuple$n", types, location)
      }
 
 def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufrin.scalalr.SourceLocation, n: Int): PartialFunction[List[Any], Any] = n match {
@@ -20,10 +20,10 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
   { case List(dol$Notation: Notation) => 
          translate(dol$Notation) 
   }
- // Notation: Notation = "%notation" theName: ID "%package" thePackage: ID "%path" thePath: ID tokensInclude: OptInclude Tokens "%rules" rulesInclude: OptInclude Rules OptSemicolon { Notation($thePackage, $theName, $thePath, "Tables", "Scanner", Type("Token", Nil), $Tokens, $Rules, $tokensInclude, $rulesInclude) }
+ // Notation: Notation = "%notation" theName: ID "%package" thePackage: ID "%path" thePath: ID tokensInclude: OptInclude Tokens "%rules" rulesInclude: OptInclude Rules OptSemicolon { Notation($thePackage, $theName, $thePath, "Tables", "Scanner", Type("Token", Nil, $START), $Tokens, $Rules, $tokensInclude, $rulesInclude) }
  case 2 => 
   { case List(_, dol$theName: String, _, dol$thePackage: String, _, dol$thePath: String, dol$tokensInclude: String, dol$Tokens: List[TokenSpec @unchecked], _, dol$rulesInclude: String, dol$Rules: List[Rule @unchecked], dol$OptSemicolon: Unit) => 
-         Notation(dol$thePackage, dol$theName, dol$thePath, "Tables", "Scanner", Type("Token", Nil), dol$Tokens, dol$Rules, dol$tokensInclude, dol$rulesInclude) 
+         Notation(dol$thePackage, dol$theName, dol$thePath, "Tables", "Scanner", Type("Token", Nil, dol$START), dol$Tokens, dol$Rules, dol$tokensInclude, dol$rulesInclude) 
   }
  // OptInclude: String = "%empty" { "" }
  case 3 => 
@@ -69,15 +69,15 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
   { case List(dol$TypedTerminal: TypedTerminal, dol$TypedTerminals: List[TypedTerminal @unchecked]) => 
          dol$TypedTerminal :: dol$TypedTerminals 
   }
- // TypedTerminal: TypedTerminal = ID ":" Type {  TypedTerminal($ID, $Type) }
+ // TypedTerminal: TypedTerminal = ID ":" Type {  TypedTerminal($ID, $Type, $START) }
  case 13 => 
   { case List(dol$ID: String, _, dol$Type: Type) => 
-          TypedTerminal(dol$ID, dol$Type) 
+          TypedTerminal(dol$ID, dol$Type, dol$START) 
   }
- // TypedTerminal: TypedTerminal = ID {  TypedTerminal($ID, Untyped) }
+ // TypedTerminal: TypedTerminal = ID {  TypedTerminal($ID, Untyped, $START) }
  case 14 => 
   { case List(dol$ID: String) => 
-          TypedTerminal(dol$ID, Untyped) 
+          TypedTerminal(dol$ID, Untyped, dol$START) 
   }
  // Rules: List[Rule] = Rule { List($Rule) }
  case 15 => 
@@ -87,10 +87,10 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
   { case List(dol$Rules: List[Rule @unchecked], _, dol$Rule: Rule) => 
          dol$Rule :: dol$Rules 
   }
- // Rule: Rule = LHS "=" RHS { Rule($LHS, $RHS) }
+ // Rule: Rule = LHS "=" RHS { Rule($LHS, $RHS, $START) }
  case 17 => 
   { case List(dol$LHS: TypedNonterminal, _, dol$RHS: List[Production @unchecked]) => 
-         Rule(dol$LHS, dol$RHS) 
+         Rule(dol$LHS, dol$RHS, dol$START) 
   }
  // OptSemicolon: Unit =  {()}
  case 18 => 
@@ -98,15 +98,15 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
  // OptSemicolon: Unit = ";" {()}
  case 19 => 
   { case List(_) =>  () } 
- // LHS: TypedNonterminal = ID ":" Type {  TypedNonterminal($ID, $Type) }
+ // LHS: TypedNonterminal = ID ":" Type {  TypedNonterminal($ID, $Type, $START) }
  case 20 => 
   { case List(dol$ID: String, _, dol$Type: Type) => 
-          TypedNonterminal(dol$ID, dol$Type) 
+          TypedNonterminal(dol$ID, dol$Type, dol$START) 
   }
- // LHS: TypedNonterminal = ID {  TypedNonterminal($ID, Untyped) }
+ // LHS: TypedNonterminal = ID {  TypedNonterminal($ID, Untyped, $START) }
  case 21 => 
   { case List(dol$ID: String) => 
-          TypedNonterminal(dol$ID, Untyped) 
+          TypedNonterminal(dol$ID, Untyped, dol$START) 
   }
  // RHS: List[Production] = Production { List($Production)   }
  case 22 => 
@@ -118,10 +118,10 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
   { case List(dol$Production: Production, _, dol$RHS: List[Production @unchecked]) => 
          dol$Production :: dol$RHS 
   }
- // Production: Production = NamedFields Action Precedence { Production($NamedFields, $Action, $Precedence) }
+ // Production: Production = NamedFields Action Precedence { Production($NamedFields, $Action, $Precedence, $START) }
  case 24 => 
   { case List(dol$NamedFields: List[NamedField @unchecked], dol$Action: Option[Expression @unchecked], dol$Precedence: Option[Terminal @unchecked]) => 
-         Production(dol$NamedFields, dol$Action, dol$Precedence) 
+         Production(dol$NamedFields, dol$Action, dol$Precedence, dol$START) 
   }
  // NamedFields: List[NamedField] = "%empty" { Nil }
  case 25 => 
@@ -136,15 +136,15 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
   { case List(dol$NamedField: NamedField, dol$NamedFields: List[NamedField @unchecked]) => 
          dol$NamedField :: dol$NamedFields 
   }
- // NamedField: NamedField = ID { NamedField(theName = None, fieldSymbol = $ID) }
+ // NamedField: NamedField = ID { NamedField(theName = None, fieldSymbol = $ID, $START) }
  case 28 => 
   { case List(dol$ID: String) => 
-         NamedField(theName = None, fieldSymbol = dol$ID) 
+         NamedField(theName = None, fieldSymbol = dol$ID, dol$START) 
   }
- // NamedField: NamedField = theName: ID ":" fieldSymbol: ID { NamedField(Some($theName), $fieldSymbol) }
+ // NamedField: NamedField = theName: ID ":" fieldSymbol: ID { NamedField(Some($theName), $fieldSymbol, $START) }
  case 29 => 
   { case List(dol$theName: String, _, dol$fieldSymbol: String) => 
-         NamedField(Some(dol$theName), dol$fieldSymbol) 
+         NamedField(Some(dol$theName), dol$fieldSymbol, dol$START) 
   }
  // Action: Option[Expression] =  { None }
  case 30 => 
@@ -160,22 +160,26 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
   { case List(_, dol$ID: String) => 
          Some(new Terminal(dol$ID)) 
   }
- // Type: Type = ID { Type($ID, Nil) }
+ // Type: Type = ID { Type($ID, Nil, $START) }
  case 34 => 
-  { case List(dol$ID: String) =>   Type(dol$ID, Nil)  } 
- // Type: Type = ID "[" Types "]" { Type($ID, $Types) }
+  { case List(dol$ID: String) => 
+         Type(dol$ID, Nil, dol$START) 
+  }
+ // Type: Type = ID "[" Types "]" { Type($ID, $Types, $START) }
  case 35 => 
   { case List(dol$ID: String, _, dol$Types: List[Type @unchecked], _) => 
-         Type(dol$ID, dol$Types) 
+         Type(dol$ID, dol$Types, dol$START) 
   }
- // Type: Type = "(" Types ")" { makeTupleType($Types) }
+ // Type: Type = "(" Types ")" { makeTupleType($Types), $START }
  case 36 => 
   { case List(_, dol$Types: List[Type @unchecked], _) => 
-         makeTupleType(dol$Types) 
+         makeTupleType(dol$Types, dol$START )
   }
- // Type: Type = "(" ")" { Type("Unit", Nil) }
+ // Type: Type = "(" ")" { Type("Unit", Nil, $START) }
  case 37 => 
-  { case List(_, _) =>   Type("Unit", Nil)  } 
+  { case List(_, _) => 
+         Type("Unit", Nil, dol$START) 
+  }
  // Types: List[Type] = Type { List($Type) }
  case 38 => 
   { case List(dol$Type: Type) =>   List(dol$Type)  } 
@@ -191,7 +195,7 @@ def parsetreereduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  
  case 1 => 
   { case trees$trees => PARSETREE("""command: Unit = Notation { translate($Notation) }""", 1, trees$trees ) }
  case 2 => 
-  { case trees$trees => PARSETREE("""Notation: Notation = "%notation" theName: ID "%package" thePackage: ID "%path" thePath: ID tokensInclude: OptInclude Tokens "%rules" rulesInclude: OptInclude Rules OptSemicolon { Notation($thePackage, $theName, $thePath, "Tables", "Scanner", Type("Token", Nil), $Tokens, $Rules, $tokensInclude, $rulesInclude) }""", 2, trees$trees ) }
+  { case trees$trees => PARSETREE("""Notation: Notation = "%notation" theName: ID "%package" thePackage: ID "%path" thePath: ID tokensInclude: OptInclude Tokens "%rules" rulesInclude: OptInclude Rules OptSemicolon { Notation($thePackage, $theName, $thePath, "Tables", "Scanner", Type("Token", Nil, $START), $Tokens, $Rules, $tokensInclude, $rulesInclude) }""", 2, trees$trees ) }
  case 3 => 
   { case trees$trees => PARSETREE("""OptInclude: String = "%empty" { "" }""", 3, trees$trees ) }
  case 4 => 
@@ -213,29 +217,29 @@ def parsetreereduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  
  case 12 => 
   { case trees$trees => PARSETREE("""TypedTerminals: List[TypedTerminal] = TypedTerminal TypedTerminals { $TypedTerminal :: $TypedTerminals }""", 12, trees$trees ) }
  case 13 => 
-  { case trees$trees => PARSETREE("""TypedTerminal: TypedTerminal = ID ":" Type {  TypedTerminal($ID, $Type) }""", 13, trees$trees ) }
+  { case trees$trees => PARSETREE("""TypedTerminal: TypedTerminal = ID ":" Type {  TypedTerminal($ID, $Type, $START) }""", 13, trees$trees ) }
  case 14 => 
-  { case trees$trees => PARSETREE("""TypedTerminal: TypedTerminal = ID {  TypedTerminal($ID, Untyped) }""", 14, trees$trees ) }
+  { case trees$trees => PARSETREE("""TypedTerminal: TypedTerminal = ID {  TypedTerminal($ID, Untyped, $START) }""", 14, trees$trees ) }
  case 15 => 
   { case trees$trees => PARSETREE("""Rules: List[Rule] = Rule { List($Rule) }""", 15, trees$trees ) }
  case 16 => 
   { case trees$trees => PARSETREE("""Rules: List[Rule] = Rules ";" Rule { $Rule :: $Rules }""", 16, trees$trees ) }
  case 17 => 
-  { case trees$trees => PARSETREE("""Rule: Rule = LHS "=" RHS { Rule($LHS, $RHS) }""", 17, trees$trees ) }
+  { case trees$trees => PARSETREE("""Rule: Rule = LHS "=" RHS { Rule($LHS, $RHS, $START) }""", 17, trees$trees ) }
  case 18 => 
   { case trees$trees => PARSETREE("""OptSemicolon: Unit =  {()}""", 18, trees$trees ) }
  case 19 => 
   { case trees$trees => PARSETREE("""OptSemicolon: Unit = ";" {()}""", 19, trees$trees ) }
  case 20 => 
-  { case trees$trees => PARSETREE("""LHS: TypedNonterminal = ID ":" Type {  TypedNonterminal($ID, $Type) }""", 20, trees$trees ) }
+  { case trees$trees => PARSETREE("""LHS: TypedNonterminal = ID ":" Type {  TypedNonterminal($ID, $Type, $START) }""", 20, trees$trees ) }
  case 21 => 
-  { case trees$trees => PARSETREE("""LHS: TypedNonterminal = ID {  TypedNonterminal($ID, Untyped) }""", 21, trees$trees ) }
+  { case trees$trees => PARSETREE("""LHS: TypedNonterminal = ID {  TypedNonterminal($ID, Untyped, $START) }""", 21, trees$trees ) }
  case 22 => 
   { case trees$trees => PARSETREE("""RHS: List[Production] = Production { List($Production)   }""", 22, trees$trees ) }
  case 23 => 
   { case trees$trees => PARSETREE("""RHS: List[Production] = Production "|" RHS { $Production :: $RHS }""", 23, trees$trees ) }
  case 24 => 
-  { case trees$trees => PARSETREE("""Production: Production = NamedFields Action Precedence { Production($NamedFields, $Action, $Precedence) }""", 24, trees$trees ) }
+  { case trees$trees => PARSETREE("""Production: Production = NamedFields Action Precedence { Production($NamedFields, $Action, $Precedence, $START) }""", 24, trees$trees ) }
  case 25 => 
   { case trees$trees => PARSETREE("""NamedFields: List[NamedField] = "%empty" { Nil }""", 25, trees$trees ) }
  case 26 => 
@@ -243,9 +247,9 @@ def parsetreereduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  
  case 27 => 
   { case trees$trees => PARSETREE("""NamedFields: List[NamedField] = NamedField NamedFields { $NamedField :: $NamedFields }""", 27, trees$trees ) }
  case 28 => 
-  { case trees$trees => PARSETREE("""NamedField: NamedField = ID { NamedField(theName = None, fieldSymbol = $ID) }""", 28, trees$trees ) }
+  { case trees$trees => PARSETREE("""NamedField: NamedField = ID { NamedField(theName = None, fieldSymbol = $ID, $START) }""", 28, trees$trees ) }
  case 29 => 
-  { case trees$trees => PARSETREE("""NamedField: NamedField = theName: ID ":" fieldSymbol: ID { NamedField(Some($theName), $fieldSymbol) }""", 29, trees$trees ) }
+  { case trees$trees => PARSETREE("""NamedField: NamedField = theName: ID ":" fieldSymbol: ID { NamedField(Some($theName), $fieldSymbol, $START) }""", 29, trees$trees ) }
  case 30 => 
   { case trees$trees => PARSETREE("""Action: Option[Expression] =  { None }""", 30, trees$trees ) }
  case 31 => 
@@ -255,13 +259,13 @@ def parsetreereduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  
  case 33 => 
   { case trees$trees => PARSETREE("""Precedence: Option[Terminal] = "%prec" ID { Some(new Terminal($ID)) }""", 33, trees$trees ) }
  case 34 => 
-  { case trees$trees => PARSETREE("""Type: Type = ID { Type($ID, Nil) }""", 34, trees$trees ) }
+  { case trees$trees => PARSETREE("""Type: Type = ID { Type($ID, Nil, $START) }""", 34, trees$trees ) }
  case 35 => 
-  { case trees$trees => PARSETREE("""Type: Type = ID "[" Types "]" { Type($ID, $Types) }""", 35, trees$trees ) }
+  { case trees$trees => PARSETREE("""Type: Type = ID "[" Types "]" { Type($ID, $Types, $START) }""", 35, trees$trees ) }
  case 36 => 
-  { case trees$trees => PARSETREE("""Type: Type = "(" Types ")" { makeTupleType($Types) }""", 36, trees$trees ) }
+  { case trees$trees => PARSETREE("""Type: Type = "(" Types ")" { makeTupleType($Types), $START }""", 36, trees$trees ) }
  case 37 => 
-  { case trees$trees => PARSETREE("""Type: Type = "(" ")" { Type("Unit", Nil) }""", 37, trees$trees ) }
+  { case trees$trees => PARSETREE("""Type: Type = "(" ")" { Type("Unit", Nil, $START) }""", 37, trees$trees ) }
  case 38 => 
   { case trees$trees => PARSETREE("""Types: List[Type] = Type { List($Type) }""", 38, trees$trees ) }
  case 39 => 

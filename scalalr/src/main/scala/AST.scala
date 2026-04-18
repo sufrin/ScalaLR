@@ -1,9 +1,9 @@
-package org.sufrin.scalalr
+package org.sufrin.scalalr  
 
 object AST {
 
   val mangleDollar = "dol$"
-  class Expression(val text: String) extends AnyVal {
+  class Expression(val text: String)  {
     override def toString: String = text
     def mangle: String = text.replace("$", mangleDollar)
   }
@@ -13,16 +13,16 @@ object AST {
   }
 
   trait SymbolType
-  case class Type(name: String, parameters: Seq[Type]) extends SymbolType {
+  case class Type(name: String, parameters: Seq[Type], location: SourceLocation) extends SymbolType {
     override val toString: String = if (parameters.isEmpty) s"$name" else parameters.map(_.toString).mkString(s"$name[", ",", "]")
 
   }
 
   case object Untyped extends SymbolType
 
-  case class Rule(lhs: TypedNonterminal, rhs: Seq[Production])
+  case class Rule(lhs: TypedNonterminal, rhs: Seq[Production], location: SourceLocation)
 
-  case class Production(symbols: Seq[NamedField], reduction: Option[Expression], precedence: Option[Terminal]) {
+  case class Production(symbols: Seq[NamedField], reduction: Option[Expression], precedence: Option[Terminal], location: SourceLocation) {
     val code = if (reduction.isDefined) s" {${reduction.get}}" else ""
     val prec = if (precedence.isDefined) s" %prec ${precedence.get}" else ""
 
@@ -46,17 +46,17 @@ object AST {
 
   trait Symbol { def theName: String }
 
-  case class TypedTerminal(theName: String, theType: SymbolType=Untyped) extends Symbol {
+  case class TypedTerminal(theName: String, theType: SymbolType=Untyped, location: SourceLocation) extends Symbol {
     def isTyped: Boolean = theType!=Untyped
     def theTypeName: String = theType.toString
   }
 
-  case class TypedNonterminal(theName: String, theType: SymbolType=Untyped) extends Symbol {
+  case class TypedNonterminal(theName: String, theType: SymbolType=Untyped, location: SourceLocation) extends Symbol {
     override def toString: String =
       if (theType==Untyped) theName else s"$theName: ${theType.toString}"
   }
 
-  case class NamedField(theName: Option[String], fieldSymbol: String) {
+  case class NamedField(theName: Option[String], fieldSymbol: String, location: SourceLocation) {
     override def toString: String = if (theName.isDefined) s"${theName.get}: $fieldSymbol" else fieldSymbol
   }
 

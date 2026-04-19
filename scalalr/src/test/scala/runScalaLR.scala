@@ -21,6 +21,7 @@ object runScalaLR  {
     val log  = args.contains("-l")
     val pull = !args.contains("-push")
     val file = (args.toList.filterNot(_.startsWith("-")) ++ List("/dev/tty")).head
+    println(s"runScalaLR generating code for $file")
 
     if (pull) {
       val scanner = Scanner(SourceTextCursor(Paths.get(file)))

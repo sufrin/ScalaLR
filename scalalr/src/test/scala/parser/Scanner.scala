@@ -68,7 +68,7 @@ object Scanner {
                   case "rules"        => `%rules`
                   case "include"      => `%include`
                   case "path"         => `%path`
-                  case _ => LEXICALERROR(s"Unknown directive %$directive (at $sourceLocation)")
+                  case _ => LEXICALERROR(s"Unknown directive %$directive (at ${sourceLocation()}")
            }
         case '/' =>
           nextChar()

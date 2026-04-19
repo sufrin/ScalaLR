@@ -464,7 +464,10 @@ object Notation {
 
     case class Rule(lhs: TypedNonterminal, rhs: Seq[Production])
 
-    case class Production(symbols: Seq[NamedField], reduction: Option[Expression], precedence: Option[Terminal]) {
+    case class Production(
+                           symbols: Seq[NamedField],
+                           reduction: Option[Expression],
+                           precedence: Option[Terminal]) {
       val code = if (reduction.isDefined) s" {${reduction.get}}" else ""
       val prec = if (precedence.isDefined) s" %prec ${precedence.get}" else ""
 

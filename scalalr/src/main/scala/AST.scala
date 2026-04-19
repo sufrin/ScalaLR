@@ -1,32 +1,56 @@
-package org.sufrin.scalalr  
+package org.sufrin.scalalr
 
 object AST {
 
+  import org.sufrin.scalalr.Notation.{Syntax => Boot}
+  import org.sufrin.scalalr.{Notation => BootNotation}
+
   val mangleDollar = "dol$"
+
   class Expression(val text: String)  {
     override def toString: String = text
     def mangle: String = text.replace("$", mangleDollar)
+    def toBootstrapNotation: BootNotation.Expression = new BootNotation.Expression(text)
   }
+
 
   class Terminal(val name: String) extends AnyVal {
     override def toString: String = name
+    def toBootstrapNotation: BootNotation.Terminal = new BootNotation.Terminal(name) // TODO: used only in %prec directives?
+
   }
 
-  trait SymbolType
+  trait SymbolType { def toBootstrapNotation: BootNotation.Type }
+
   case class Type(name: String, parameters: Seq[Type], location: SourceLocation) extends SymbolType {
     override val toString: String = if (parameters.isEmpty) s"$name" else parameters.map(_.toString).mkString(s"$name[", ",", "]")
+    def toBootstrapNotation: BootNotation.Type = new BootNotation.Type(toString)
 
   }
 
-  case object Untyped extends SymbolType
+  case object Untyped extends SymbolType {
+    def toBootstrapNotation: BootNotation.Type = Boot.noType
+  }
 
-  case class Rule(lhs: TypedNonterminal, rhs: Seq[Production], location: SourceLocation)
 
-  case class Production(symbols: Seq[NamedField], reduction: Option[Expression], precedence: Option[Terminal], location: SourceLocation) {
+  case class Rule(lhs: TypedNonterminal, rhs: Seq[Production], location: SourceLocation) {
+    def toBootstrapNotation: Boot.Rule = Boot.Rule(lhs.toBootstrapNotation, rhs.map(_.toBootstrapNotation))
+  }
+
+  case class Production(symbols:    Seq[NamedField],
+                        reduction:  Option[Expression],
+                        precedence: Option[Terminal],
+                        location:   SourceLocation) {
     val code = if (reduction.isDefined) s" {${reduction.get}}" else ""
     val prec = if (precedence.isDefined) s" %prec ${precedence.get}" else ""
 
     override def toString: String = s"${symbols.map(_.toString).mkString(" ")}$code$prec"
+
+    def toBootstrapNotation: Boot.Production =
+      Boot.Production(
+        symbols.map(_.toBootstrapNotation),
+        Some(new BootNotation.Expression(code)),// reduction.map(_.toBootstrapNotation), // TODO: WHAT HAPPENNS WHEN CODE IS EMPTY
+        precedence.map(_.toBootstrapNotation))
   }
 
   case class Error(message: String)
@@ -49,26 +73,48 @@ object AST {
   case class TypedTerminal(theName: String, theType: SymbolType=Untyped, location: SourceLocation) extends Symbol {
     def isTyped: Boolean = theType!=Untyped
     def theTypeName: String = theType.toString
+    def toBootstrapNotation: Boot.TypedTerminal =
+      Boot.TypedTerminal(theName)
   }
 
   case class TypedNonterminal(theName: String, theType: SymbolType=Untyped, location: SourceLocation) extends Symbol {
     override def toString: String =
       if (theType==Untyped) theName else s"$theName: ${theType.toString}"
+
+    def toBootstrapNotation: Boot.TypedNonterminal =
+      Boot.TypedNonterminal(theName, theType.toBootstrapNotation)
   }
 
   case class NamedField(theName: Option[String], fieldSymbol: String, location: SourceLocation) {
     override def toString: String = if (theName.isDefined) s"${theName.get}: $fieldSymbol" else fieldSymbol
+    def toBootstrapNotation: Boot.NamedField =
+      Boot.NamedField(theName, fieldSymbol)
   }
 
   implicit class StringExtras(s: String) {
     def isQuoted: Boolean = s.matches("\".+\"")
   }
 
-  trait TokenSpec { val terminals: Seq[TypedTerminal] }
-  case class Left(terminals:     Seq[TypedTerminal]) extends TokenSpec
-  case class Right(terminals:    Seq[TypedTerminal]) extends TokenSpec
-  case class Nonassoc(terminals: Seq[TypedTerminal]) extends TokenSpec
-  case class Tokens(terminals:   Seq[TypedTerminal]) extends TokenSpec
+  trait TokenSpec {
+    val terminals: Seq[TypedTerminal]
+    def toBootstrapNotation: Boot.TokenSpec
+  }
+  
+  case class Left(terminals:     Seq[TypedTerminal]) extends TokenSpec {
+    def toBootstrapNotation = Boot.Left(terminals.map(_.toBootstrapNotation))
+  }
+  
+  case class Right(terminals:    Seq[TypedTerminal]) extends TokenSpec  {
+    def toBootstrapNotation = Boot.Right(terminals.map(_.toBootstrapNotation))
+  }
+  
+  case class Nonassoc(terminals: Seq[TypedTerminal]) extends TokenSpec {
+    def toBootstrapNotation = Boot.Nonassoc(terminals.map(_.toBootstrapNotation))
+  }
+  
+  case class Tokens(terminals:   Seq[TypedTerminal]) extends TokenSpec {
+    def toBootstrapNotation = Boot.Tokens(terminals.map(_.toBootstrapNotation))
+  }
 
 
 }

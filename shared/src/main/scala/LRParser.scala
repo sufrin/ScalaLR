@@ -11,6 +11,13 @@ case class SourceLocation(line: Int, col: Int) { override def toString: String =
  * error is found. The `Push` algorithm is invoked step-by-step, with a lexeme at a time, until
  * a step yields acceptance or an error.
  *
+ * The algorithms extend a common core definition, `LRParser`, that keeps track of symbols, values, states, and
+ * source locations. When symbols are pushed by a SHIFT action, so are their values, the current source location and
+ * the current state. A REDUCE  (trivially) calculates the starting and ending source locations, and
+ * passes them to the (compiled) reduction function derived from the scalalr action expression. The ending location is
+ * the source location just before the REDUCE; the starting location is the one placed on the location stack by the
+ * leftmost symbol of the material being reduced.
+ *
  */
 
 object LRParser {

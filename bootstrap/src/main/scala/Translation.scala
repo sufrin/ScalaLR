@@ -13,14 +13,14 @@ object Translation extends org.sufrin.logging.SourceLoggable
 { import org.sufrin.logging._
   level = WARN
 
-  def apply(notation: Notation): Translation = new Translation(notation)
+  def apply(notation: Notation, prefix: String = ""): Translation = new Translation(notation, prefix)
 
   object Auto extends org.sufrin.logging.SourceLoggable {
     level = WARN
   }
 }
 
-class Translation(val notation: Notation) {
+class Translation(val notation: Notation, prefix: String="") {
   import Translation._
   import notation._
   import java.nio.file.Path
@@ -28,9 +28,9 @@ class Translation(val notation: Notation) {
   val thePackage = if (thePackageName.isEmpty) theName else thePackageName
   val thePath =
     if (explicitPath.isEmpty)
-         Path.of(thePackage.replace('/', '.').replace('.', '/')).getParent().toString // Normalize
-    else Path.of(explicitPath)
-  val theNotationName = Path.of(theName.replace('/', '.').replace('.', '/')).getFileName.toString // Normalize
+         Path.of(prefix, thePackage.replace('/', '.').replace('.', '/')).getParent().toString // Normalize
+    else Path.of(prefix, explicitPath)
+  val theNotationName = Path.of(prefix,theName.replace('/', '.').replace('.', '/')).getFileName.toString // Normalize
 
   def makeFiles(): Unit = {
     val translation = this

@@ -1,0 +1,18 @@
+## The Lifeboat Project
+
+The material here depends only on the stand-alone
+`org.sufrin.scalalr.generate` program and the project
+artefact `scalalr.jar` containing the scalalr runtime
+and bootstrap generator. 
+
+
+### Testing the Lifeboat
+
+This command generates ./generated/tinyfun
+
+        scala -cp ../scalalr.jar org.sufrin.scalalr.generate tinyfun.scalalr
+
+This command runs the runtinyfun top-level
+
+        scala-cli runtinyfun.scala TinyFun.scala generated/tinyfun
+        

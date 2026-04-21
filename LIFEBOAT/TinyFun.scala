@@ -1,6 +1,6 @@
 
 //> using scala "2.13"
-//> using jar "../scalalr.jar"
+//> using jar "scalalr.jar"
 
 package tinyfun
 

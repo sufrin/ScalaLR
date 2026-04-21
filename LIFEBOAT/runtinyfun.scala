@@ -1,5 +1,5 @@
 //> using scala "2.13"
-//> using jar "../scalalr.jar"
+//> using jar "scalalr.jar"
 
 import org.sufrin.utility.SourceTextCursor
 

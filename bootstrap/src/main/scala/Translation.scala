@@ -23,10 +23,9 @@ object Translation extends org.sufrin.logging.SourceLoggable
 class Translation(val notation: Notation) {
   import Translation._
   import notation._
-
-
   import java.nio.file.Path
 
+  val thePackage = if (thePackageName.isEmpty) theName else thePackageName
   val thePath =
     if (explicitPath.isEmpty)
          Path.of(thePackage.replace('/', '.').replace('.', '/')).getParent().toString // Normalize
@@ -38,7 +37,7 @@ class Translation(val notation: Notation) {
     println(s"Path:     ${thePath}\nPackage:  ${thePackage}\nNotation: $theNotationName")
     if (translation.makeBisonTables(s"${translation.thePath}/$theNotationName")) {
       translation.writeSource(translation.scannerSource, s"${translation.thePath}/${translation.notation.theScannerName}.scala")
-      translation.writeSource(translation.reduction, s"${translation.thePath}/Reduction.scala")
+      translation.writeSource(translation.reduction,     s"${translation.thePath}/Reduction.scala")
       translation.writeSource(translation.makeScalaTables(s"${translation.thePath}/$theNotationName"), s"${translation.thePath}/Tables.scala")
     }
     else error("No files generated")
@@ -251,7 +250,7 @@ class Translation(val notation: Notation) {
     )
   }
 
-  case class StateEntry(number: Int, transitions: Seq[(Int,Action)], reductions: Seq[(Int, Action)], gotos: Seq[(Int, Action)])
+  case class StateEntry(number: Int, transitions: Seq[(Int,Action)], reductions: Seq[(Int, Action)], gotos: Seq[(Int, Action)], conflicts: Int)
 
 
   def makeBisonTables(name: String): Boolean = {
@@ -260,16 +259,24 @@ class Translation(val notation: Notation) {
     val output = new StringBuilder
     val logger = ProcessLogger(line => output.append(line + "\n"))
 
-    val exit = Process(Seq("bison", "-v", s"--html=$name.html", s"--xml=$name.xml", s"--output=$name.tab.c", s"$name.y")).!(logger)
+    val exit = Process(Seq("bison", "-v", s"--html=$name.html", s"--xml=$name.xml", s"--output=$name.tab.c", s"-Wcounterexamples", s"$name.y")).!(logger)
     val rmExit = Process(Seq("rm", s"$name.tab.c")).!(logger)
 
 
     fine(s"Bison tables in ${name}.xml")
-    if (output.nonEmpty) warn(s"Bison: ${output.toString}")
+    if (output.nonEmpty) {
+      var report = output.toString()
+      for {(name, num) <- tokenMap if name.isQuoted} {
+        report = report.replace(s"TOK-$num", name)
+      }
+      report = report.replace("[-Wcounterexamples]","").replace("[--Wconflicts-sr]","").replace("[--Wconflicts-rr]","")
+      warn(s"Bison Warnings:\n${report}")
+    }
+
     if (exit!=0) warn(s"Bison exit: $exit")
     if (rmExit!=0) warn(s"Removing .c: $rmExit")
 
-    if (exit==0) try {
+    try {
       println(s"Rewriting $name.output using symbolic tokens from source")
       var report = Files.readString(Path.of(s"$name.output"))
       for {(name, num) <- tokenMap if name.isQuoted} {
@@ -280,6 +287,23 @@ class Translation(val notation: Notation) {
       case exn: Exception =>
         println(s"$exn\nRewriting $name.output (for diagnostics, etc)")
     }
+
+    try {
+      def escapeHtml(s: String): String =
+        s.replace("&", "&amp;")
+          .replace("<", "&lt;")
+          .replace(">", "&gt;")
+      println(s"Rewriting $name.html using symbolic tokens from source")
+      var report = Files.readString(Path.of(s"$name.html"))
+      for {(name, num) <- tokenMap if name.isQuoted} {
+        report = report.replace(s"TOK-$num", escapeHtml(name))
+      }
+      Files.write(Path.of(s"$name.html"), report.getBytes(StandardCharsets.UTF_8))
+    } catch {
+      case exn: Exception =>
+        println(s"$exn\nRewriting $name.output (for diagnostics, etc)")
+    }
+
     exit==0
   }
 
@@ -349,7 +373,7 @@ class Translation(val notation: Notation) {
             for { (sy, tr) <- allActions if tr.isInstanceOf[GOTO] } yield (sy, tr)
 
           lazy val theReductions: Seq[(String, Action)] =
-            for {node <- (reductions)} yield {
+            for {node <- (reductions) if (node \ "@enabled").text=="true" } yield {
               val symbol = (node \ "@symbol").text
               (node \ "@rule").text match {
                 case "accept" => ((symbol), ACCEPT )
@@ -358,11 +382,14 @@ class Translation(val notation: Notation) {
               }
             }
 
+          val conflicts = (for { node <- reductions if (node \ "@enabled").text=="false" } yield 1).sum // s"${(node \ "@symbol").text}, ${(node \ "@rule").text}"
+
+
       fine(s"State $number $theActions / $theReductions / $theGotos")
 
       def encodeSymbolic(table: Seq[(String, Action)]): Seq[(Int, Action) ] = table.map{ case (name, tr) => (symbolNumber(name), tr) }
 
-      val result = StateEntry(number, encodeSymbolic(theActions), encodeSymbolic(theReductions), encodeSymbolic(theGotos))
+      val result = StateEntry(number, encodeSymbolic(theActions), encodeSymbolic(theReductions), encodeSymbolic(theGotos), conflicts)
       //fine(result.toString)
       result
     }
@@ -372,57 +399,68 @@ class Translation(val notation: Notation) {
   }
 
 
-  def makeScalaTables(name: String) = {
-    val output = new StringBuilder
-    @inline def out(s: String) : Unit = output.append(s)
-    fine(s"Making tables for: $name")
+  def makeScalaTables(name: String): String = {
     val entries = readBisonStateEntries(name)
-    if (level==FINEST) out(entries.mkString("/*\n  ", "\n  ", "\n*/\n"))
-    out(s"\npackage $thePackage\nobject Tables {")
 
-    // GOTO TABLES
-    out(s"\nval GOTOTABLE: Int => Int => Int = {")
-    for { entry <- entries if entry.gotos.nonEmpty } {
-      fine(entry.toString)
-      out (
-        s"\n  case ${entry.number} => { ")
-      for { (sy, GOTO(from, to)) <- entry.gotos } out(s"case $sy => $to;  ")
-      out("}")
+    val conflicts = entries.map(_.conflicts).sum
+    if (conflicts>0) {
+      warn(s"There were $conflicts conflicts: some have been resolved in favour of shift")
     }
-    out("\n  case _ => { case _ => throw new Throwable(\"BAD GOTO\")}")
-    out("\n  }\n")
 
-    // Action TABLES
-    out(s"\nimport org.sufrin.scalalr.Action._")
-    out(s"\nval ACTIONTABLE: Int => Int => Action = {")
-    for { entry <- entries } {
-      fine(entry.toString)
-      out (
-        s"\n  case ${entry.number} => { ")
-      // for { (sy, GOTO(from, to)) <- entry.gotos } out(s"case $sy => $to;  ")
-      for { (sy, act ) <- entry.transitions }{
-        out(s"case $sy => $act;  ")
+    {
+      val output = new StringBuilder
+
+      @inline def out(s: String): Unit = output.append(s)
+
+      fine(s"Making tables for: $name")
+
+      if (level == FINEST) out(entries.mkString("/*\n  ", "\n  ", "\n*/\n"))
+      out(s"\npackage $thePackage\nobject Tables {")
+
+      // GOTO TABLES
+      out(s"\nval GOTOTABLE: Int => Int => Int = {")
+      for {entry <- entries if entry.gotos.nonEmpty} {
+        fine(entry.toString)
+        out(
+          s"\n  case ${entry.number} => { ")
+        for {(sy, GOTO(from, to)) <- entry.gotos} out(s"case $sy => $to;  ")
+        out("}")
       }
+      out("\n  case _ => { case _ => throw new Throwable(\"BAD GOTO\")}")
+      out("\n  }\n")
 
-      for { (sy, act) <- entry.reductions if (sy>=0)}{
-        out(s"case $sy => $act;  ")
+      // Action TABLES
+      out(s"\nimport org.sufrin.scalalr.Action._")
+      out(s"\nval ACTIONTABLE: Int => Int => Action = {")
+      for {entry <- entries} {
+        fine(entry.toString)
+        out(
+          s"\n  case ${entry.number} => { ")
+        // for { (sy, GOTO(from, to)) <- entry.gotos } out(s"case $sy => $to;  ")
+        for {(sy, act) <- entry.transitions} {
+          out(s"case $sy => $act;  ")
+        }
+
+        for {(sy, act) <- entry.reductions if (sy >= 0)} {
+          out(s"case $sy => $act;  ")
+        }
+        var needsDefault = true
+        for {(sy, act) <- entry.reductions if (sy < 0)} {
+          out(s"case _ => $act;  ")
+          needsDefault = false
+        }
+
+        if (needsDefault) out(s"case _ => ERROR;  ")
+
+        out("}")
       }
-      var needsDefault = true
-      for { (sy, act) <- entry.reductions if (sy<0)}{
-        out(s"case _ => $act;  ")
-        needsDefault = false
-      }
+      out("\n  case _ => { case _ => ERROR }")
+      out("\n  }\n")
 
-      if (needsDefault) out(s"case _ => ERROR;  ")
-
-      out("}")
+      entries.foreach(e => fine(e.toString))
+      out("}\n")
+      output.toString()
     }
-    out("\n  case _ => { case _ => ERROR }")
-    out("\n  }\n")
-
-    entries.foreach( e => fine(e.toString ) )
-    out("}\n")
-    output.toString()
   }
 
 

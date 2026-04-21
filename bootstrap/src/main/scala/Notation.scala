@@ -477,7 +477,7 @@ object Notation {
     case class Error(message: String)
 
     case class Notation
-    (thePackage: String,
+    (thePackageName: String,
      theName: String,
      explicitPath: String, // the destination for all generated files
      tablesType: String,

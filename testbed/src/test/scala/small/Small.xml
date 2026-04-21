@@ -30,7 +30,7 @@
         <rhs>
           <symbol>idList</symbol>
           <symbol>TOK-4</symbol>
-          <symbol>ID</symbol>
+          <symbol>idList</symbol>
         </rhs>
       </rule>
     </rules>
@@ -140,11 +140,14 @@
 
     <state number="5">
       <itemset>
+        <item rule-number="2" dot="0"/>
+        <item rule-number="3" dot="0"/>
         <item rule-number="3" dot="2"/>
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="6"/>
+          <transition type="shift" symbol="ID" state="1"/>
+          <transition type="goto" symbol="idList" state="6"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -154,6 +157,7 @@
 
     <state number="6">
       <itemset>
+        <item rule-number="3" dot="1"/>
         <item rule-number="3" dot="3">
           <lookaheads>
             <symbol>$end</symbol>
@@ -162,11 +166,13 @@
         </item>
       </itemset>
       <actions>
-        <transitions/>
+        <transitions>
+          <transition type="shift" symbol="TOK-4" state="5"/>
+        </transitions>
         <errors/>
         <reductions>
           <reduction symbol="$end" rule="3" enabled="true"/>
-          <reduction symbol="TOK-4" rule="3" enabled="true"/>
+          <reduction symbol="TOK-4" rule="3" enabled="false"/>
         </reductions>
       </actions>
       <solved-conflicts/>

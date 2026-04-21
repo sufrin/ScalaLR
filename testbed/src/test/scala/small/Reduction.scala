@@ -13,9 +13,9 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
  // idList: List[String] = ID { List($ID) }
  case 2 => 
   { case List(dol$ID: String) =>   List(dol$ID)  } 
- // idList: List[String] = idList ";" ID { $ID :: $idList }
+ // idList: List[String] = idList ";" idList { $ID :: $idList }
  case 3 => 
-  { case List(dol$idList: List[String @unchecked], _, dol$ID: String) => 
+  { case List(dol$idList: List[String @unchecked], _, dol$idList: List[String @unchecked]) => 
          dol$ID :: dol$idList 
   }
  }
@@ -27,7 +27,7 @@ def parsetreereduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  
  case 2 => 
   { case trees$trees => PARSETREE("""idList: List[String] = ID { List($ID) }""", 2, trees$trees ) }
  case 3 => 
-  { case trees$trees => PARSETREE("""idList: List[String] = idList ";" ID { $ID :: $idList }""", 3, trees$trees ) }
+  { case trees$trees => PARSETREE("""idList: List[String] = idList ";" idList { $ID :: $idList }""", 3, trees$trees ) }
  }
 
 }

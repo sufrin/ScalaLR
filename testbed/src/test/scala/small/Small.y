@@ -7,4 +7,4 @@
 %%
 ids:  idList;
 idList:  ID;
-idList:  idList TOK-4 ID;
+idList:  idList TOK-4 idList;

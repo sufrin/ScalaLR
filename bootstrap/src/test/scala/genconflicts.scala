@@ -1,5 +1,3 @@
-import java.io.PrintStream
-import java.nio.file.Path
 import scala.collection.immutable.ListMap
 
 /**
@@ -42,8 +40,7 @@ object genconflicts extends App {
   import Syntax.Parser
   import org.sufrin.utility._
   for { (report, source) <- sources } {
-    val file = new PrintStream(Path.of(s"testbed/src/test/conflicts/$report/$report.log").toFile)
-    Console.withOut(file) {
+    {
       val scanner = Lexical.Scanner(SourceTextCursor(source.stripMargin))
       val notation = Parser(scanner).parseNotation()
       val translation = Translation(notation)

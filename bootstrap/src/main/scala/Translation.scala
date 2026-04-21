@@ -1,8 +1,8 @@
 package org.sufrin.scalalr
-import Action._
-import Notation.mangleDollar
-import Notation.Syntax._
 import org.sufrin.logging.FINEST
+import org.sufrin.scalalr.Action._
+import org.sufrin.scalalr.Notation.Syntax._
+import org.sufrin.scalalr.Notation.mangleDollar
 
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -23,6 +23,7 @@ object Translation extends org.sufrin.logging.SourceLoggable
 class Translation(val notation: Notation, prefix: String="") {
   import Translation._
   import notation._
+
   import java.nio.file.Path
 
   val thePackage = if (thePackageName.isEmpty) theName else thePackageName
@@ -270,7 +271,8 @@ class Translation(val notation: Notation, prefix: String="") {
         report = report.replace(s"TOK-$num", name)
       }
       report = report.replace("[-Wcounterexamples]","").replace("[--Wconflicts-sr]","").replace("[--Wconflicts-rr]","")
-      warn(s"Bison Warnings:\n${report}")
+      warn(s"Bison Diagnostics (also placed in $name.log):\n${report}")
+      Files.write(Path.of(s"$name.log"), report.getBytes(StandardCharsets.UTF_8))
     }
 
     if (exit!=0) warn(s"Bison exit: $exit")
@@ -403,8 +405,10 @@ class Translation(val notation: Notation, prefix: String="") {
     val entries = readBisonStateEntries(name)
 
     val conflicts = entries.map(_.conflicts).sum
-    if (conflicts>0) {
-      warn(s"There were $conflicts conflicts: some have been resolved in favour of shift")
+    if (conflicts>1) {
+      warn(s"There were $conflicts conflicts")
+    } else if (conflicts==1) {
+      warn(s"There was a conflict")
     }
 
     {

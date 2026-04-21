@@ -115,19 +115,28 @@ file shows the grammar symbols as given in grammar notation.
 Some test grammars (for the bootstrap generator) appear in `bootstrap/src/test/scala` as embedded strings: for example 
 `generatexpr.scala` and `generatesmall.scala` and `generatetinyfun.scala` -- they can be used 
 generate scala code  by running them as from IntelliJ (or elsewhere). Those mentioned above generate code 
-under `testbed/scala/src/main/scala` in the directories  `{expr,small,tinyfun}` that can be 
+under `testbed/scala/src/test/scala` in the directories  `{expr,small,tinyfun}` that can be 
 tested by running one of `{runsmall,runexpr,runtinyfun}` from IntelliJ 
-or using `scala-cli` in `testbed/scala/src/main/scala` with one of the
+or using `scala-cli` in `testbed/scala/src/test/scala` with one of the
 commands:
 
-scala-cli run runsmall.scala small --jar ../../../../scalalr.jar
-scala-cli run runexpr.scala expr --jar ../../../../scalalr.jar
-scala-cli run runtinyfun.scala TinyFun.scala tinyfun --jar ../../../../scalalr.jar
+    scala-cli run runsmall.scala small --jar ../../../../scalalr.jar
+    scala-cli run runexpr.scala expr --jar ../../../../scalalr.jar
+    scala-cli run runtinyfun.scala TinyFun.scala tinyfun --jar ../../../../scalalr.jar
 
+#### Library jar file
 
 The ScalaLR jar file in the root is an artefact that I get
-IntelliJ to build. Most of the jar is destined for use at scala 
+IntelliJ to build. Most of the jar is destined for use at scala
 code-generation time; but the LRParser automata live there too at the moment.
+
+#### Behaviour on Conflicts
+A few notation definitions that result in shift-reduce or reduce-reduce 
+conflicts are gathered (as embedded strings) in the `App` defined n
+`bootstrap/src/test/scala/genconflicts.scala`.
+This can be run to test the reporting of such conflicts. Each example
+generates a log (as well as the expected generated files) in 
+`testbed/src/test/conflicts.`
 
 ### Gotchas
 1. **Error recovery** is not yet properly implemented. 
@@ -145,7 +154,8 @@ need a little care. The normal form of a code quotation is a passage that opens 
 properly-nested occurences of `{` and `}` within it and ends with a closing `}` that matches 
 the opening. **But** if an unmatched brace appears (for example in a character or string 
 quote or in a comment)
-it can upset balance. One solution is to use the alternative braces 
+it can upset balance. **NB:** *Bison itself has the same requirement for its code inserts
+and quotations.* One solution is to use the alternative braces 
 «» to quote code. Another solution, "forcibly" balancing the quotation, is exemplified by the following
 extract from a code quotation defining the scanner for the Scalalr notation itself.
 ````

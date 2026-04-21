@@ -12,7 +12,7 @@ object generatexpr extends App {
     val source =
       """%notation  Expr
         |%package   expr.Expr
-        |%path      "testbed/src/main/scala/expr"
+        |%path      "testbed/src/test/scala/expr"
         |
         |%include {
         |   import org.sufrin.utility.SourceTextCursor

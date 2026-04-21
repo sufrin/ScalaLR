@@ -9,7 +9,7 @@ object generatesmall extends App {
   val source =
     """%notation  Small
       |%package   small.Small
-      |%path      "testbed/src/main/scala/small"
+      |%path      "testbed/src/test/scala/small"
       |%type      lr
       |
       |%include {

@@ -16,7 +16,7 @@ object generatetinyfun extends App {
       |
       |%notation TinyFun
       |%package  tinyfun
-      |%path     "testbed/src/main/scala/tinyfun"
+      |%path     "testbed/src/test/scala/tinyfun"
       |
       |%include {
       |   import org.sufrin.scalalr.SourceLocation

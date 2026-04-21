@@ -1,0 +1,566 @@
+State 9 conflicts: 1 shift/reduce
+State 11 conflicts: 1 shift/reduce
+State 26 conflicts: 1 shift/reduce
+State 27 conflicts: 2 shift/reduce
+State 33 conflicts: 1 shift/reduce
+State 35 conflicts: 1 shift/reduce
+State 36 conflicts: 2 shift/reduce
+State 38 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: expr $end
+
+    1 expr: ID
+    2     | expr "+" ID
+    3     | IF expr THEN expr
+    4     | IF expr THEN expr ELSE expr
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    IF (258) 3 4
+    THEN (259) 3 4
+    ELSE (260) 4
+    ID (261) 1 2
+    "+" (262) 2
+
+
+Nonterminals, with rules where they appear
+
+    $accept (8)
+        on left: 0
+    expr (9)
+        on left: 1 2 3 4
+        on right: 0 2 3 4
+
+
+State 0
+
+    0 $accept: • expr $end
+
+    IF  shift, and go to state 1
+    ID  shift, and go to state 2
+
+    expr  go to state 3
+
+
+State 1
+
+    3 expr: IF • expr THEN expr
+    4     | IF • expr THEN expr ELSE expr
+
+    IF  shift, and go to state 12
+    ID  shift, and go to state 13
+
+    expr  go to state 4
+
+
+State 2
+
+    1 expr: ID •
+
+    $end   reduce using rule 1 (expr)
+    "+"  reduce using rule 1 (expr)
+
+
+State 3
+
+    0 $accept: expr • $end
+    2 expr: expr • "+" ID
+
+    $end   shift, and go to state 5
+    "+"  shift, and go to state 6
+
+
+State 4
+
+    2 expr: expr • "+" ID
+    3     | IF expr • THEN expr
+    4     | IF expr • THEN expr ELSE expr
+
+    THEN   shift, and go to state 7
+    "+"  shift, and go to state 14
+
+
+State 5
+
+    0 $accept: expr $end •
+
+    $default  accept
+
+
+State 6
+
+    2 expr: expr "+" • ID
+
+    ID  shift, and go to state 8
+
+
+State 7
+
+    3 expr: IF expr THEN • expr
+    4     | IF expr THEN • expr ELSE expr
+
+    IF  shift, and go to state 15
+    ID  shift, and go to state 16
+
+    expr  go to state 9
+
+
+State 8
+
+    2 expr: expr "+" ID •
+
+    $end   reduce using rule 2 (expr)
+    "+"  reduce using rule 2 (expr)
+
+
+State 9
+
+    2 expr: expr • "+" ID
+    3     | IF expr THEN expr •
+    4     | IF expr THEN expr • ELSE expr
+
+    ELSE   shift, and go to state 10
+    "+"  shift, and go to state 17
+
+    $end   reduce using rule 3 (expr)
+    "+"  [reduce using rule 3 (expr)]
+
+    shift/reduce conflict on token "+":
+        3 expr: IF expr THEN expr •
+        2 expr: expr • "+" ID
+      Example: IF expr THEN expr • "+" ID
+      Shift derivation
+        expr
+        ↳ 3: IF expr THEN expr
+                          ↳ 2: expr • "+" ID
+      Reduce derivation
+        expr
+        ↳ 2: expr                     "+" ID
+             ↳ 3: IF expr THEN expr •
+
+
+
+State 10
+
+    4 expr: IF expr THEN expr ELSE • expr
+
+    IF  shift, and go to state 1
+    ID  shift, and go to state 2
+
+    expr  go to state 11
+
+
+State 11
+
+    2 expr: expr • "+" ID
+    4     | IF expr THEN expr ELSE expr •
+
+    "+"  shift, and go to state 6
+
+    $end   reduce using rule 4 (expr)
+    "+"  [reduce using rule 4 (expr)]
+
+    shift/reduce conflict on token "+":
+        4 expr: IF expr THEN expr ELSE expr •
+        2 expr: expr • "+" ID
+      Example: IF expr THEN expr ELSE expr • "+" ID
+      Shift derivation
+        expr
+        ↳ 4: IF expr THEN expr ELSE expr
+                                    ↳ 2: expr • "+" ID
+      Reduce derivation
+        expr
+        ↳ 2: expr                               "+" ID
+             ↳ 4: IF expr THEN expr ELSE expr •
+
+
+
+State 12
+
+    3 expr: IF • expr THEN expr
+    4     | IF • expr THEN expr ELSE expr
+
+    IF  shift, and go to state 12
+    ID  shift, and go to state 13
+
+    expr  go to state 18
+
+
+State 13
+
+    1 expr: ID •
+
+    THEN   reduce using rule 1 (expr)
+    "+"  reduce using rule 1 (expr)
+
+
+State 14
+
+    2 expr: expr "+" • ID
+
+    ID  shift, and go to state 19
+
+
+State 15
+
+    3 expr: IF • expr THEN expr
+    4     | IF • expr THEN expr ELSE expr
+
+    IF  shift, and go to state 12
+    ID  shift, and go to state 13
+
+    expr  go to state 20
+
+
+State 16
+
+    1 expr: ID •
+
+    $end   reduce using rule 1 (expr)
+    ELSE   reduce using rule 1 (expr)
+    "+"  reduce using rule 1 (expr)
+
+
+State 17
+
+    2 expr: expr "+" • ID
+
+    ID  shift, and go to state 21
+
+
+State 18
+
+    2 expr: expr • "+" ID
+    3     | IF expr • THEN expr
+    4     | IF expr • THEN expr ELSE expr
+
+    THEN   shift, and go to state 22
+    "+"  shift, and go to state 14
+
+
+State 19
+
+    2 expr: expr "+" ID •
+
+    THEN   reduce using rule 2 (expr)
+    "+"  reduce using rule 2 (expr)
+
+
+State 20
+
+    2 expr: expr • "+" ID
+    3     | IF expr • THEN expr
+    4     | IF expr • THEN expr ELSE expr
+
+    THEN   shift, and go to state 23
+    "+"  shift, and go to state 14
+
+
+State 21
+
+    2 expr: expr "+" ID •
+
+    $end   reduce using rule 2 (expr)
+    ELSE   reduce using rule 2 (expr)
+    "+"  reduce using rule 2 (expr)
+
+
+State 22
+
+    3 expr: IF expr THEN • expr
+    4     | IF expr THEN • expr ELSE expr
+
+    IF  shift, and go to state 24
+    ID  shift, and go to state 25
+
+    expr  go to state 26
+
+
+State 23
+
+    3 expr: IF expr THEN • expr
+    4     | IF expr THEN • expr ELSE expr
+
+    IF  shift, and go to state 15
+    ID  shift, and go to state 16
+
+    expr  go to state 27
+
+
+State 24
+
+    3 expr: IF • expr THEN expr
+    4     | IF • expr THEN expr ELSE expr
+
+    IF  shift, and go to state 12
+    ID  shift, and go to state 13
+
+    expr  go to state 28
+
+
+State 25
+
+    1 expr: ID •
+
+    THEN   reduce using rule 1 (expr)
+    ELSE   reduce using rule 1 (expr)
+    "+"  reduce using rule 1 (expr)
+
+
+State 26
+
+    2 expr: expr • "+" ID
+    3     | IF expr THEN expr •
+    4     | IF expr THEN expr • ELSE expr
+
+    ELSE   shift, and go to state 29
+    "+"  shift, and go to state 30
+
+    THEN   reduce using rule 3 (expr)
+    "+"  [reduce using rule 3 (expr)]
+
+    shift/reduce conflict on token "+":
+        3 expr: IF expr THEN expr •
+        2 expr: expr • "+" ID
+      Example: IF expr THEN expr • "+" ID
+      Shift derivation
+        expr
+        ↳ 3: IF expr THEN expr
+                          ↳ 2: expr • "+" ID
+      Reduce derivation
+        expr
+        ↳ 2: expr                     "+" ID
+             ↳ 3: IF expr THEN expr •
+
+
+
+State 27
+
+    2 expr: expr • "+" ID
+    3     | IF expr THEN expr •
+    4     | IF expr THEN expr • ELSE expr
+
+    ELSE   shift, and go to state 31
+    "+"  shift, and go to state 17
+
+    $end   reduce using rule 3 (expr)
+    ELSE   [reduce using rule 3 (expr)]
+    "+"  [reduce using rule 3 (expr)]
+
+    shift/reduce conflict on token "+":
+        3 expr: IF expr THEN expr •
+        2 expr: expr • "+" ID
+      Example: IF expr THEN expr • "+" ID
+      Shift derivation
+        expr
+        ↳ 3: IF expr THEN expr
+                          ↳ 2: expr • "+" ID
+      Reduce derivation
+        expr
+        ↳ 2: expr                     "+" ID
+             ↳ 3: IF expr THEN expr •
+
+    shift/reduce conflict on token ELSE:
+        3 expr: IF expr THEN expr •
+        4 expr: IF expr THEN expr • ELSE expr
+      Example: IF expr THEN IF expr THEN expr • ELSE expr
+      Shift derivation
+        expr
+        ↳ 3: IF expr THEN expr
+                          ↳ 4: IF expr THEN expr • ELSE expr
+      Reduce derivation
+        expr
+        ↳ 4: IF expr THEN expr                     ELSE expr
+                          ↳ 3: IF expr THEN expr •
+
+
+
+State 28
+
+    2 expr: expr • "+" ID
+    3     | IF expr • THEN expr
+    4     | IF expr • THEN expr ELSE expr
+
+    THEN   shift, and go to state 32
+    "+"  shift, and go to state 14
+
+
+State 29
+
+    4 expr: IF expr THEN expr ELSE • expr
+
+    IF  shift, and go to state 12
+    ID  shift, and go to state 13
+
+    expr  go to state 33
+
+
+State 30
+
+    2 expr: expr "+" • ID
+
+    ID  shift, and go to state 34
+
+
+State 31
+
+    4 expr: IF expr THEN expr ELSE • expr
+
+    IF  shift, and go to state 15
+    ID  shift, and go to state 16
+
+    expr  go to state 35
+
+
+State 32
+
+    3 expr: IF expr THEN • expr
+    4     | IF expr THEN • expr ELSE expr
+
+    IF  shift, and go to state 24
+    ID  shift, and go to state 25
+
+    expr  go to state 36
+
+
+State 33
+
+    2 expr: expr • "+" ID
+    4     | IF expr THEN expr ELSE expr •
+
+    "+"  shift, and go to state 14
+
+    THEN   reduce using rule 4 (expr)
+    "+"  [reduce using rule 4 (expr)]
+
+    shift/reduce conflict on token "+":
+        4 expr: IF expr THEN expr ELSE expr •
+        2 expr: expr • "+" ID
+      Example: IF expr THEN expr ELSE expr • "+" ID
+      Shift derivation
+        expr
+        ↳ 4: IF expr THEN expr ELSE expr
+                                    ↳ 2: expr • "+" ID
+      Reduce derivation
+        expr
+        ↳ 2: expr                               "+" ID
+             ↳ 4: IF expr THEN expr ELSE expr •
+
+
+
+State 34
+
+    2 expr: expr "+" ID •
+
+    THEN   reduce using rule 2 (expr)
+    ELSE   reduce using rule 2 (expr)
+    "+"  reduce using rule 2 (expr)
+
+
+State 35
+
+    2 expr: expr • "+" ID
+    4     | IF expr THEN expr ELSE expr •
+
+    "+"  shift, and go to state 17
+
+    $end   reduce using rule 4 (expr)
+    ELSE   reduce using rule 4 (expr)
+    "+"  [reduce using rule 4 (expr)]
+
+    shift/reduce conflict on token "+":
+        4 expr: IF expr THEN expr ELSE expr •
+        2 expr: expr • "+" ID
+      Example: IF expr THEN expr ELSE expr • "+" ID
+      Shift derivation
+        expr
+        ↳ 4: IF expr THEN expr ELSE expr
+                                    ↳ 2: expr • "+" ID
+      Reduce derivation
+        expr
+        ↳ 2: expr                               "+" ID
+             ↳ 4: IF expr THEN expr ELSE expr •
+
+
+
+State 36
+
+    2 expr: expr • "+" ID
+    3     | IF expr THEN expr •
+    4     | IF expr THEN expr • ELSE expr
+
+    ELSE   shift, and go to state 37
+    "+"  shift, and go to state 30
+
+    THEN   reduce using rule 3 (expr)
+    ELSE   [reduce using rule 3 (expr)]
+    "+"  [reduce using rule 3 (expr)]
+
+    shift/reduce conflict on token "+":
+        3 expr: IF expr THEN expr •
+        2 expr: expr • "+" ID
+      Example: IF expr THEN expr • "+" ID
+      Shift derivation
+        expr
+        ↳ 3: IF expr THEN expr
+                          ↳ 2: expr • "+" ID
+      Reduce derivation
+        expr
+        ↳ 2: expr                     "+" ID
+             ↳ 3: IF expr THEN expr •
+
+    shift/reduce conflict on token ELSE:
+        3 expr: IF expr THEN expr •
+        4 expr: IF expr THEN expr • ELSE expr
+      Example: IF expr THEN IF expr THEN expr • ELSE expr
+      Shift derivation
+        expr
+        ↳ 3: IF expr THEN expr
+                          ↳ 4: IF expr THEN expr • ELSE expr
+      Reduce derivation
+        expr
+        ↳ 4: IF expr THEN expr                     ELSE expr
+                          ↳ 3: IF expr THEN expr •
+
+
+
+State 37
+
+    4 expr: IF expr THEN expr ELSE • expr
+
+    IF  shift, and go to state 24
+    ID  shift, and go to state 25
+
+    expr  go to state 38
+
+
+State 38
+
+    2 expr: expr • "+" ID
+    4     | IF expr THEN expr ELSE expr •
+
+    "+"  shift, and go to state 30
+
+    THEN   reduce using rule 4 (expr)
+    ELSE   reduce using rule 4 (expr)
+    "+"  [reduce using rule 4 (expr)]
+
+    shift/reduce conflict on token "+":
+        4 expr: IF expr THEN expr ELSE expr •
+        2 expr: expr • "+" ID
+      Example: IF expr THEN expr ELSE expr • "+" ID
+      Shift derivation
+        expr
+        ↳ 4: IF expr THEN expr ELSE expr
+                                    ↳ 2: expr • "+" ID
+      Reduce derivation
+        expr
+        ↳ 2: expr                               "+" ID
+             ↳ 4: IF expr THEN expr ELSE expr •
+

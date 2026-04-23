@@ -36,20 +36,25 @@ object Scanner {
             case '-' => afterNextChar(`-`)
             case '+' => afterNextChar(`+`)
             case '*' => afterNextChar(`*`)
+            case '^' => afterNextChar(`^`)
             case ',' => afterNextChar(`,`)
             case '=' => afterNextChar(`=`)
+
             case c if c.isLetter =>
               val prefix = chars.takeWhile(_.isLetterOrDigit)
               prefix.mkString("") match {
                 case "quit" => QUIT
                 case other  => ID(other)
               }
+
             case c if c.isDigit =>
               val prefix = chars.takeWhile(c=>c.isDigit||c=='.')
               NUM((prefix).mkString(""))
+
              case c if c.isWhitespace =>
                while (hasChar && theChar.isWhitespace) nextChar()
                if (hasChar) next() else $end
+
              case other =>
                LEXICALERROR(s"Unrecognised $other (at ${sourceLocation()}")
 
@@ -73,6 +78,7 @@ case object `+` extends Token { val value = (); val symbol = 14 }
 case object `-` extends Token { val value = (); val symbol = 15 }
 case object `*` extends Token { val value = (); val symbol = 16 }
 case object `/` extends Token { val value = (); val symbol = 17 }
+case object `^` extends Token { val value = (); val symbol = 18 }
 case object $end extends Token { val value = (); val symbol = 0 }
 case object error extends Token { val value = (); val symbol = 1 }
 case object UNDEF extends Token { val value = (); val symbol = 2 }
@@ -96,12 +102,13 @@ val symbolName: Map[Int, String] = collection.immutable.ListMap[Int, String](
 , 15 -> "-"
 , 16 -> "*"
 , 17 -> "/"
+, 18 -> "^"
 // GLOSSARY OF NONTERMINAL SYMBOL NAMES
-, 18 -> "$accept" 
-, 19 -> "loop" 
-, 20 -> "command" 
-, 21 -> "expr" 
-, 22 -> "exprs" 
+, 19 -> "$accept" 
+, 20 -> "loop" 
+, 21 -> "command" 
+, 22 -> "expr" 
+, 23 -> "exprs" 
 )
 
 }

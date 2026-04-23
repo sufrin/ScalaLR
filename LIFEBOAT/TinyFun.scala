@@ -37,6 +37,7 @@ object TinyFun {
         case "-" => lv - rv
         case "*" => lv * rv
         case "/" => lv / rv
+        case "^" => Math.pow(lv, rv)
         case _ => 0.0
       }
     }

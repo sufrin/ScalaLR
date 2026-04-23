@@ -3,9 +3,6 @@ Terminals unused in grammar
     LEXICALERROR
 
 
-State 6 conflicts: 1 shift/reduce
-
-
 Grammar
 
     0 $accept: ids $end
@@ -13,14 +10,14 @@ Grammar
     1 ids: idList
 
     2 idList: ID
-    3       | idList ";" idList
+    3       | idList ";" ID
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
     error (256)
-    ID (258) 2
+    ID (258) 2 3
     ";" (259) 3
     LEXICALERROR (260)
 
@@ -65,7 +62,7 @@ State 2
 State 3
 
     1 ids: idList •
-    3 idList: idList • ";" idList
+    3 idList: idList • ";" ID
 
     ";"  shift, and go to state 5
 
@@ -81,33 +78,14 @@ State 4
 
 State 5
 
-    3 idList: idList ";" • idList
+    3 idList: idList ";" • ID
 
-    ID  shift, and go to state 1
-
-    idList  go to state 6
+    ID  shift, and go to state 6
 
 
 State 6
 
-    3 idList: idList • ";" idList
-    3       | idList ";" idList •
-
-    ";"  shift, and go to state 5
+    3 idList: idList ";" ID •
 
     $end   reduce using rule 3 (idList)
-    ";"  [reduce using rule 3 (idList)]
-
-    shift/reduce conflict on token ";":
-        3 idList: idList ";" idList •
-        3 idList: idList • ";" idList
-      Example: idList ";" idList • ";" idList
-      Shift derivation
-        idList
-        ↳ 3: idList ";" idList
-                          ↳ 3: idList • ";" idList
-      Reduce derivation
-        idList
-        ↳ 3: idList                     ";" idList
-             ↳ 3: idList ";" idList •
-
+    ";"  reduce using rule 3 (idList)

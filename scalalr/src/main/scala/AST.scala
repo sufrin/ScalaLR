@@ -74,7 +74,7 @@ object AST {
     def isTyped: Boolean = theType!=Untyped
     def theTypeName: String = theType.toString
     def toBootstrapNotation: Boot.TypedTerminal =
-      Boot.TypedTerminal(theName)
+      if (isTyped) Boot.TypedTerminal(theName, new BootNotation.Type(theTypeName)) else Boot.TypedTerminal(theName)
   }
 
   case class TypedNonterminal(theName: String, theType: SymbolType=Untyped, location: SourceLocation) extends Symbol {

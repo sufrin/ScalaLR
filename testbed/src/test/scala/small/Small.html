@@ -58,17 +58,14 @@
 </p><h3><a name="rules_useless_in_grammar" id="rules_useless_in_grammar"></a> Rules useless in grammar</h3>
 <h2><a name="conflicts" id="conflicts"></a> Conflicts</h2>
 
-<p class="pre"><a href="#state_6">State 6</a> conflicts: 1 shift/reduce
-
-
-</p><h2><a name="grammar" id="grammar"></a> Grammar</h2>
+<h2><a name="grammar" id="grammar"></a> Grammar</h2>
 <p class="pre">
   <a name="rule_0" id="rule_0">  0</a> <span class="i">$accept</span> → <span class="i">ids</span> <b>$end</b>
 
   <a name="rule_1" id="rule_1">  1</a> <span class="i">ids</span> → <span class="i">idList</span>
 
   <a name="rule_2" id="rule_2">  2</a> <span class="i">idList</span> → <b>ID</b>
-  <a name="rule_3" id="rule_3">  3</a>        | <span class="i">idList</span> <b>";"</b> <span class="i">idList</span>
+  <a name="rule_3" id="rule_3">  3</a>        | <span class="i">idList</span> <b>";"</b> <b>ID</b>
 </p>
 
 <h3><a name="terminals" id="terminals"></a> Terminals, with rules where they appear</h3>
@@ -76,7 +73,7 @@
 <ul>
   <li><b>$end</b> (0) <a href="#rule_0">0</a></li>
   <li><b>error</b> (256)</li>
-  <li><b>ID</b> (258) <a href="#rule_2">2</a></li>
+  <li><b>ID</b> (258) <a href="#rule_2">2</a> <a href="#rule_3">3</a></li>
   <li><b>";"</b> (259) <a href="#rule_3">3</a></li>
   <li><b>LEXICALERROR</b> (260)</li>
 </ul>
@@ -108,7 +105,7 @@
 <p class="pre">  <a href="#rule_0">  0</a> <span class="i">$accept</span> → <span class="dot">•</span> <span class="i">ids</span> <b>$end</b>
   <a href="#rule_1">  1</a> <span class="i">ids</span> → <span class="dot">•</span> <span class="i">idList</span>
   <a href="#rule_2">  2</a> <span class="i">idList</span> → <span class="dot">•</span> <b>ID</b>
-  <a href="#rule_3">  3</a>        | <span class="dot">•</span> <span class="i">idList</span> <b>";"</b> <span class="i">idList</span>
+  <a href="#rule_3">  3</a>        | <span class="dot">•</span> <span class="i">idList</span> <b>";"</b> <b>ID</b>
 
     ID  <a href="#state_1">shift, and go to state 1</a>
 
@@ -134,7 +131,7 @@
 <h3><a name="state_3" id="state_3"></a>State 3</h3>
 
 <p class="pre">  <a href="#rule_1">  1</a> <span class="i">ids</span> → <span class="i">idList</span> <span class="dot">•</span>  [$end]
-  <a href="#rule_3">  3</a> <span class="i">idList</span> → <span class="i">idList</span> <span class="dot">•</span> <b>";"</b> <span class="i">idList</span>
+  <a href="#rule_3">  3</a> <span class="i">idList</span> → <span class="i">idList</span> <span class="dot">•</span> <b>";"</b> <b>ID</b>
 
     ";"  <a href="#state_5">shift, and go to state 5</a>
 
@@ -150,24 +147,17 @@
 
 <h3><a name="state_5" id="state_5"></a>State 5</h3>
 
-<p class="pre">  <a href="#rule_2">  2</a> <span class="i">idList</span> → <span class="dot">•</span> <b>ID</b>
-  <a href="#rule_3">  3</a>        | <span class="dot">•</span> <span class="i">idList</span> <b>";"</b> <span class="i">idList</span>
-  <a href="#rule_3">  3</a>        | <span class="i">idList</span> <b>";"</b> <span class="dot">•</span> <span class="i">idList</span>
+<p class="pre">  <a href="#rule_3">  3</a> <span class="i">idList</span> → <span class="i">idList</span> <b>";"</b> <span class="dot">•</span> <b>ID</b>
 
-    ID  <a href="#state_1">shift, and go to state 1</a>
-
-    idList  <a href="#state_6">go to state 6</a>
+    ID  <a href="#state_6">shift, and go to state 6</a>
 </p>
 
 <h3><a name="state_6" id="state_6"></a>State 6</h3>
 
-<p class="pre">  <a href="#rule_3">  3</a> <span class="i">idList</span> → <span class="i">idList</span> <span class="dot">•</span> <b>";"</b> <span class="i">idList</span>
-  <a href="#rule_3">  3</a>        | <span class="i">idList</span> <b>";"</b> <span class="i">idList</span> <span class="dot">•</span>  [$end, ";"]
-
-    ";"  <a href="#state_5">shift, and go to state 5</a>
+<p class="pre">  <a href="#rule_3">  3</a> <span class="i">idList</span> → <span class="i">idList</span> <b>";"</b> <b>ID</b> <span class="dot">•</span>  [$end, ";"]
 
     $end   <a href="#rule_3">reduce using rule 3</a> (idList)
-    ";"  [<a href="#rule_3">reduce using rule 3</a> (idList)]
+    ";"  <a href="#rule_3">reduce using rule 3</a> (idList)
 </p>
 
 <div id="footer"><hr />This document was generated using

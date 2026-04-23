@@ -1,0 +1,7 @@
+# make
+ROOT=/Users/sufrin/GitHomes/ScalaLR/
+scala -cp $ROOT/scalalr.jar org.sufrin.scalalr.generate --output=. flab-notation.scalalr
+echo now move to build latest
+echo cp parser/"*" " " $ROOT/scalalr/src/main/scala/scalalr/parser
+
+

@@ -122,7 +122,7 @@ object GenerateScalaLR extends App {
         |
         |%include {
         | import org.sufrin.scalalr.AST._
-        | import org.sufrin.scalalr.TranslateScalaLR._
+        | import org.sufrin.scalalr.TranslateScalaLRBootNotation._
         | import org.sufrin.utility.SourceTextCursor
         | import org.sufrin.scalalr.SourceLocation
         | import org.sufrin.utility.PrettyPrint._

@@ -41,20 +41,25 @@
             case '-' => afterNextChar(`-`)
             case '+' => afterNextChar(`+`)
             case '*' => afterNextChar(`*`)
+            case '^' => afterNextChar(`^`)
             case ',' => afterNextChar(`,`)
             case '=' => afterNextChar(`=`)
+
             case c if c.isLetter =>
               val prefix = chars.takeWhile(_.isLetterOrDigit)
               prefix.mkString("") match {
                 case "quit" => QUIT
                 case other  => ID(other)
               }
+
             case c if c.isDigit =>
               val prefix = chars.takeWhile(c=>c.isDigit||c=='.')
               NUM((prefix).mkString(""))
+
              case c if c.isWhitespace =>
                while (hasChar && theChar.isWhitespace) nextChar()
                if (hasChar) next() else $end
+
              case other =>
                LEXICALERROR(s"Unrecognised $other (at ${sourceLocation()}")
 
@@ -67,6 +72,7 @@
 %right `=`
 %left `+` `-`
 %left `*` `/`
+%right `^`
 
 
 
@@ -75,6 +81,7 @@
 %include {
  import org.sufrin.scalalr.SourceLocation
  import tinyfun.TinyFun._
+ import org.sufrin.utility.RevSeq
 }
 
 /*
@@ -89,24 +96,26 @@
 loop: Unit =
           %empty          { () }
         | loop command NL { () }
+        | loop error NL { () }
         ;
 
-command: Unit = expr { run(List($expr)) } | QUIT { System.exit(0) };
+command: Unit = exprs { run($exprs.toList) } | QUIT { System.exit(0) } | %empty { System.exit(0) };
 
 
 expr: Expr =
           ID                  { Id($ID, $START) }
         | NUM                 { Num($NUM.toDouble, $START) }
         | ID `=` expr         { Assign($ID, $expr, $START) }
+        | l:expr `^` r:expr   { Binop("^", $l, $r, $START) }
         | l:expr `*` r:expr   { Binop("*", $l, $r, $START) }
         | l:expr `+` r:expr   { Binop("+", $l, $r, $START) }
         | l:expr `/` r:expr   { Binop("/", $l, $r, $START) }
         | l:expr `-` r:expr   { Binop("-", $l, $r, $START) }
         | "(" expr ")"        { $expr }
-        | ID `(` exprs `)`    { Apply($ID, $exprs, $START) }
+        | ID `(` exprs `)`    { Apply($ID, $exprs.toList, $START) }
         ;
 
-exprs: (List[Expr]) =
-            expr            { List($expr) }
-        |   exprs `,` expr  { $expr::$exprs }
+exprs: (RevSeq[Expr]) =
+            expr            { RevSeq($expr) }
+        |   exprs `,` expr  { $exprs :+ $expr }
 ;

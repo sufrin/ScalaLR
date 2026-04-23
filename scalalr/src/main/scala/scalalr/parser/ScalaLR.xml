@@ -1,0 +1,1740 @@
+<?xml version="1.0"?>
+
+<bison-xml-report version="3.8.2" bug-report="bug-bison@gnu.org" url="https://www.gnu.org/software/bison/">
+
+  <filename>./parser/ScalaLR.y</filename>
+
+  <grammar>
+    <rules>
+      <rule number="0" usefulness="useful">
+        <lhs>$accept</lhs>
+        <rhs>
+          <symbol>command</symbol>
+          <symbol>$end</symbol>
+        </rhs>
+      </rule>
+      <rule number="1" usefulness="useful">
+        <lhs>command</lhs>
+        <rhs>
+          <symbol>Notation</symbol>
+        </rhs>
+      </rule>
+      <rule number="2" usefulness="useful">
+        <lhs>Notation</lhs>
+        <rhs>
+          <symbol>TOK-23</symbol>
+          <symbol>ID</symbol>
+          <symbol>TOK-24</symbol>
+          <symbol>ID</symbol>
+          <symbol>TOK-20</symbol>
+          <symbol>ID</symbol>
+          <symbol>Tables</symbol>
+          <symbol>OptInclude</symbol>
+          <symbol>Tokens</symbol>
+          <symbol>TOK-29</symbol>
+          <symbol>OptInclude</symbol>
+          <symbol>Rules</symbol>
+          <symbol>OptSemicolon</symbol>
+        </rhs>
+      </rule>
+      <rule number="3" usefulness="useful">
+        <lhs>OptInclude</lhs>
+        <rhs>
+          <symbol>TOK-22</symbol>
+        </rhs>
+      </rule>
+      <rule number="4" usefulness="useful">
+        <lhs>OptInclude</lhs>
+        <rhs>
+          <symbol>TOK-30</symbol>
+          <symbol>CODE</symbol>
+        </rhs>
+      </rule>
+      <rule number="5" usefulness="useful">
+        <lhs>Tokens</lhs>
+        <rhs>
+          <empty/>
+        </rhs>
+      </rule>
+      <rule number="6" usefulness="useful">
+        <lhs>Tokens</lhs>
+        <rhs>
+          <symbol>TokenSpec</symbol>
+          <symbol>Tokens</symbol>
+        </rhs>
+      </rule>
+      <rule number="7" usefulness="useful">
+        <lhs>TokenSpec</lhs>
+        <rhs>
+          <symbol>TOK-26</symbol>
+          <symbol>TypedTerminals</symbol>
+        </rhs>
+      </rule>
+      <rule number="8" usefulness="useful">
+        <lhs>TokenSpec</lhs>
+        <rhs>
+          <symbol>TOK-27</symbol>
+          <symbol>TypedTerminals</symbol>
+        </rhs>
+      </rule>
+      <rule number="9" usefulness="useful">
+        <lhs>TokenSpec</lhs>
+        <rhs>
+          <symbol>TOK-28</symbol>
+          <symbol>TypedTerminals</symbol>
+        </rhs>
+      </rule>
+      <rule number="10" usefulness="useful">
+        <lhs>TokenSpec</lhs>
+        <rhs>
+          <symbol>TOK-25</symbol>
+          <symbol>TypedTerminals</symbol>
+        </rhs>
+      </rule>
+      <rule number="11" usefulness="useful">
+        <lhs>TypedTerminals</lhs>
+        <rhs>
+          <symbol>TypedTerminal</symbol>
+        </rhs>
+      </rule>
+      <rule number="12" usefulness="useful">
+        <lhs>TypedTerminals</lhs>
+        <rhs>
+          <symbol>TypedTerminal</symbol>
+          <symbol>TypedTerminals</symbol>
+        </rhs>
+      </rule>
+      <rule number="13" usefulness="useful">
+        <lhs>TypedTerminal</lhs>
+        <rhs>
+          <symbol>ID</symbol>
+          <symbol>TOK-13</symbol>
+          <symbol>Type</symbol>
+        </rhs>
+      </rule>
+      <rule number="14" usefulness="useful">
+        <lhs>TypedTerminal</lhs>
+        <rhs>
+          <symbol>ID</symbol>
+          <symbol>TOK-16</symbol>
+          <symbol>Type</symbol>
+          <symbol>TOK-17</symbol>
+        </rhs>
+      </rule>
+      <rule number="15" usefulness="useful">
+        <lhs>TypedTerminal</lhs>
+        <rhs>
+          <symbol>ID</symbol>
+        </rhs>
+      </rule>
+      <rule number="16" usefulness="useful">
+        <lhs>Tables</lhs>
+        <rhs>
+          <empty/>
+        </rhs>
+      </rule>
+      <rule number="17" usefulness="useful">
+        <lhs>Tables</lhs>
+        <rhs>
+          <symbol>TOK-32</symbol>
+          <symbol>ID</symbol>
+        </rhs>
+      </rule>
+      <rule number="18" usefulness="useful">
+        <lhs>Rules</lhs>
+        <rhs>
+          <symbol>Rule</symbol>
+        </rhs>
+      </rule>
+      <rule number="19" usefulness="useful">
+        <lhs>Rules</lhs>
+        <rhs>
+          <symbol>Rules</symbol>
+          <symbol>TOK-10</symbol>
+          <symbol>Rule</symbol>
+        </rhs>
+      </rule>
+      <rule number="20" usefulness="useful">
+        <lhs>Rule</lhs>
+        <rhs>
+          <symbol>LHS</symbol>
+          <symbol>TOK-11</symbol>
+          <symbol>RHS</symbol>
+        </rhs>
+      </rule>
+      <rule number="21" usefulness="useful">
+        <lhs>OptSemicolon</lhs>
+        <rhs>
+          <empty/>
+        </rhs>
+      </rule>
+      <rule number="22" usefulness="useful">
+        <lhs>OptSemicolon</lhs>
+        <rhs>
+          <symbol>TOK-10</symbol>
+        </rhs>
+      </rule>
+      <rule number="23" usefulness="useful">
+        <lhs>LHS</lhs>
+        <rhs>
+          <symbol>ID</symbol>
+          <symbol>TOK-13</symbol>
+          <symbol>Type</symbol>
+        </rhs>
+      </rule>
+      <rule number="24" usefulness="useful">
+        <lhs>LHS</lhs>
+        <rhs>
+          <symbol>ID</symbol>
+        </rhs>
+      </rule>
+      <rule number="25" usefulness="useful">
+        <lhs>RHS</lhs>
+        <rhs>
+          <symbol>Production</symbol>
+        </rhs>
+      </rule>
+      <rule number="26" usefulness="useful">
+        <lhs>RHS</lhs>
+        <rhs>
+          <symbol>Production</symbol>
+          <symbol>TOK-12</symbol>
+          <symbol>RHS</symbol>
+        </rhs>
+      </rule>
+      <rule number="27" usefulness="useful">
+        <lhs>Production</lhs>
+        <rhs>
+          <symbol>NamedFields</symbol>
+          <symbol>Action</symbol>
+          <symbol>Precedence</symbol>
+        </rhs>
+      </rule>
+      <rule number="28" usefulness="useful">
+        <lhs>NamedFields</lhs>
+        <rhs>
+          <symbol>TOK-22</symbol>
+        </rhs>
+      </rule>
+      <rule number="29" usefulness="useful">
+        <lhs>NamedFields</lhs>
+        <rhs>
+          <symbol>NamedField</symbol>
+        </rhs>
+      </rule>
+      <rule number="30" usefulness="useful">
+        <lhs>NamedFields</lhs>
+        <rhs>
+          <symbol>NamedField</symbol>
+          <symbol>NamedFields</symbol>
+        </rhs>
+      </rule>
+      <rule number="31" usefulness="useful">
+        <lhs>NamedField</lhs>
+        <rhs>
+          <symbol>ID</symbol>
+        </rhs>
+      </rule>
+      <rule number="32" usefulness="useful">
+        <lhs>NamedField</lhs>
+        <rhs>
+          <symbol>ID</symbol>
+          <symbol>TOK-13</symbol>
+          <symbol>ID</symbol>
+        </rhs>
+      </rule>
+      <rule number="33" usefulness="useful">
+        <lhs>Action</lhs>
+        <rhs>
+          <empty/>
+        </rhs>
+      </rule>
+      <rule number="34" usefulness="useful">
+        <lhs>Action</lhs>
+        <rhs>
+          <symbol>CODE</symbol>
+        </rhs>
+      </rule>
+      <rule number="35" usefulness="useful">
+        <lhs>Precedence</lhs>
+        <rhs>
+          <empty/>
+        </rhs>
+      </rule>
+      <rule number="36" usefulness="useful">
+        <lhs>Precedence</lhs>
+        <rhs>
+          <symbol>TOK-31</symbol>
+          <symbol>ID</symbol>
+        </rhs>
+      </rule>
+      <rule number="37" usefulness="useful">
+        <lhs>Type</lhs>
+        <rhs>
+          <symbol>ID</symbol>
+        </rhs>
+      </rule>
+      <rule number="38" usefulness="useful">
+        <lhs>Type</lhs>
+        <rhs>
+          <symbol>ID</symbol>
+          <symbol>TOK-8</symbol>
+          <symbol>Types</symbol>
+          <symbol>TOK-9</symbol>
+        </rhs>
+      </rule>
+      <rule number="39" usefulness="useful">
+        <lhs>Type</lhs>
+        <rhs>
+          <symbol>TOK-16</symbol>
+          <symbol>Types</symbol>
+          <symbol>TOK-17</symbol>
+        </rhs>
+      </rule>
+      <rule number="40" usefulness="useful">
+        <lhs>Type</lhs>
+        <rhs>
+          <symbol>TOK-16</symbol>
+          <symbol>TOK-17</symbol>
+        </rhs>
+      </rule>
+      <rule number="41" usefulness="useful">
+        <lhs>Types</lhs>
+        <rhs>
+          <symbol>Type</symbol>
+        </rhs>
+      </rule>
+      <rule number="42" usefulness="useful">
+        <lhs>Types</lhs>
+        <rhs>
+          <symbol>Type</symbol>
+          <symbol>TOK-18</symbol>
+          <symbol>Types</symbol>
+        </rhs>
+      </rule>
+    </rules>
+    <terminals>
+      <terminal symbol-number="0" token-number="0" name="$end" type="" usefulness="useful"/>
+      <terminal symbol-number="1" token-number="256" name="error" type="" usefulness="useful"/>
+      <terminal symbol-number="3" token-number="258" name="ID" type="" usefulness="useful"/>
+      <terminal symbol-number="4" token-number="259" name="NUM" type="" usefulness="unused-in-grammar"/>
+      <terminal symbol-number="5" token-number="260" name="CODE" type="" usefulness="useful"/>
+      <terminal symbol-number="6" token-number="261" name="COMMENT" type="" usefulness="unused-in-grammar"/>
+      <terminal symbol-number="7" token-number="262" name="LEXICALERROR" type="" usefulness="unused-in-grammar"/>
+      <terminal symbol-number="8" token-number="263" name="TOK-8" type="" usefulness="useful"/>
+      <terminal symbol-number="9" token-number="264" name="TOK-9" type="" usefulness="useful"/>
+      <terminal symbol-number="10" token-number="265" name="TOK-10" type="" usefulness="useful"/>
+      <terminal symbol-number="11" token-number="266" name="TOK-11" type="" usefulness="useful"/>
+      <terminal symbol-number="12" token-number="267" name="TOK-12" type="" usefulness="useful"/>
+      <terminal symbol-number="13" token-number="268" name="TOK-13" type="" usefulness="useful"/>
+      <terminal symbol-number="14" token-number="269" name="TOK-14" type="" usefulness="unused-in-grammar"/>
+      <terminal symbol-number="15" token-number="270" name="TOK-15" type="" usefulness="unused-in-grammar"/>
+      <terminal symbol-number="16" token-number="271" name="TOK-16" type="" usefulness="useful"/>
+      <terminal symbol-number="17" token-number="272" name="TOK-17" type="" usefulness="useful"/>
+      <terminal symbol-number="18" token-number="273" name="TOK-18" type="" usefulness="useful"/>
+      <terminal symbol-number="19" token-number="274" name="NL" type="" usefulness="unused-in-grammar"/>
+      <terminal symbol-number="20" token-number="275" name="TOK-20" type="" usefulness="useful"/>
+      <terminal symbol-number="21" token-number="276" name="TOK-21" type="" usefulness="unused-in-grammar"/>
+      <terminal symbol-number="22" token-number="277" name="TOK-22" type="" usefulness="useful"/>
+      <terminal symbol-number="23" token-number="278" name="TOK-23" type="" usefulness="useful"/>
+      <terminal symbol-number="24" token-number="279" name="TOK-24" type="" usefulness="useful"/>
+      <terminal symbol-number="25" token-number="280" name="TOK-25" type="" usefulness="useful"/>
+      <terminal symbol-number="26" token-number="281" name="TOK-26" type="" usefulness="useful"/>
+      <terminal symbol-number="27" token-number="282" name="TOK-27" type="" usefulness="useful"/>
+      <terminal symbol-number="28" token-number="283" name="TOK-28" type="" usefulness="useful"/>
+      <terminal symbol-number="29" token-number="284" name="TOK-29" type="" usefulness="useful"/>
+      <terminal symbol-number="30" token-number="285" name="TOK-30" type="" usefulness="useful"/>
+      <terminal symbol-number="31" token-number="286" name="TOK-31" type="" usefulness="useful"/>
+      <terminal symbol-number="32" token-number="287" name="TOK-32" type="" usefulness="useful"/>
+    </terminals>
+    <nonterminals>
+      <nonterminal symbol-number="33" name="$accept" type="" usefulness="useful"/>
+      <nonterminal symbol-number="34" name="command" type="" usefulness="useful"/>
+      <nonterminal symbol-number="35" name="Notation" type="" usefulness="useful"/>
+      <nonterminal symbol-number="36" name="OptInclude" type="" usefulness="useful"/>
+      <nonterminal symbol-number="37" name="Tokens" type="" usefulness="useful"/>
+      <nonterminal symbol-number="38" name="TokenSpec" type="" usefulness="useful"/>
+      <nonterminal symbol-number="39" name="TypedTerminals" type="" usefulness="useful"/>
+      <nonterminal symbol-number="40" name="TypedTerminal" type="" usefulness="useful"/>
+      <nonterminal symbol-number="41" name="Tables" type="" usefulness="useful"/>
+      <nonterminal symbol-number="42" name="Rules" type="" usefulness="useful"/>
+      <nonterminal symbol-number="43" name="Rule" type="" usefulness="useful"/>
+      <nonterminal symbol-number="44" name="OptSemicolon" type="" usefulness="useful"/>
+      <nonterminal symbol-number="45" name="LHS" type="" usefulness="useful"/>
+      <nonterminal symbol-number="46" name="RHS" type="" usefulness="useful"/>
+      <nonterminal symbol-number="47" name="Production" type="" usefulness="useful"/>
+      <nonterminal symbol-number="48" name="NamedFields" type="" usefulness="useful"/>
+      <nonterminal symbol-number="49" name="NamedField" type="" usefulness="useful"/>
+      <nonterminal symbol-number="50" name="Action" type="" usefulness="useful"/>
+      <nonterminal symbol-number="51" name="Precedence" type="" usefulness="useful"/>
+      <nonterminal symbol-number="52" name="Type" type="" usefulness="useful"/>
+      <nonterminal symbol-number="53" name="Types" type="" usefulness="useful"/>
+    </nonterminals>
+  </grammar>
+
+  <automaton>
+
+    <state number="0">
+      <itemset>
+        <item rule-number="0" dot="0"/>
+        <item rule-number="1" dot="0"/>
+        <item rule-number="2" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="TOK-23" state="1"/>
+          <transition type="goto" symbol="command" state="2"/>
+          <transition type="goto" symbol="Notation" state="3"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="1">
+      <itemset>
+        <item rule-number="2" dot="1"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="4"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="2">
+      <itemset>
+        <item rule-number="0" dot="1"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="$end" state="5"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="3">
+      <itemset>
+        <item rule-number="1" dot="1"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="1" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="4">
+      <itemset>
+        <item rule-number="2" dot="2"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="TOK-24" state="6"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="5">
+      <itemset>
+        <item rule-number="0" dot="2"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="accept" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="6">
+      <itemset>
+        <item rule-number="2" dot="3"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="7"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="7">
+      <itemset>
+        <item rule-number="2" dot="4"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="TOK-20" state="8"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="8">
+      <itemset>
+        <item rule-number="2" dot="5"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="9"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="9">
+      <itemset>
+        <item rule-number="2" dot="6"/>
+        <item rule-number="16" dot="0">
+          <lookaheads>
+            <symbol>TOK-22</symbol>
+            <symbol>TOK-30</symbol>
+          </lookaheads>
+        </item>
+        <item rule-number="17" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="TOK-32" state="10"/>
+          <transition type="goto" symbol="Tables" state="11"/>
+        </transitions>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="16" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="10">
+      <itemset>
+        <item rule-number="17" dot="1"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="12"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="11">
+      <itemset>
+        <item rule-number="2" dot="7"/>
+        <item rule-number="3" dot="0"/>
+        <item rule-number="4" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="TOK-22" state="13"/>
+          <transition type="shift" symbol="TOK-30" state="14"/>
+          <transition type="goto" symbol="OptInclude" state="15"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="12">
+      <itemset>
+        <item rule-number="17" dot="2"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="17" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="13">
+      <itemset>
+        <item rule-number="3" dot="1"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="3" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="14">
+      <itemset>
+        <item rule-number="4" dot="1"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="CODE" state="16"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="15">
+      <itemset>
+        <item rule-number="2" dot="8"/>
+        <item rule-number="5" dot="0">
+          <lookaheads>
+            <symbol>TOK-29</symbol>
+          </lookaheads>
+        </item>
+        <item rule-number="6" dot="0"/>
+        <item rule-number="7" dot="0"/>
+        <item rule-number="8" dot="0"/>
+        <item rule-number="9" dot="0"/>
+        <item rule-number="10" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="TOK-25" state="17"/>
+          <transition type="shift" symbol="TOK-26" state="18"/>
+          <transition type="shift" symbol="TOK-27" state="19"/>
+          <transition type="shift" symbol="TOK-28" state="20"/>
+          <transition type="goto" symbol="Tokens" state="21"/>
+          <transition type="goto" symbol="TokenSpec" state="22"/>
+        </transitions>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="5" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="16">
+      <itemset>
+        <item rule-number="4" dot="2"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="4" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="17">
+      <itemset>
+        <item rule-number="10" dot="1"/>
+        <item rule-number="11" dot="0"/>
+        <item rule-number="12" dot="0"/>
+        <item rule-number="13" dot="0"/>
+        <item rule-number="14" dot="0"/>
+        <item rule-number="15" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="23"/>
+          <transition type="goto" symbol="TypedTerminals" state="24"/>
+          <transition type="goto" symbol="TypedTerminal" state="25"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="18">
+      <itemset>
+        <item rule-number="7" dot="1"/>
+        <item rule-number="11" dot="0"/>
+        <item rule-number="12" dot="0"/>
+        <item rule-number="13" dot="0"/>
+        <item rule-number="14" dot="0"/>
+        <item rule-number="15" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="23"/>
+          <transition type="goto" symbol="TypedTerminals" state="26"/>
+          <transition type="goto" symbol="TypedTerminal" state="25"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="19">
+      <itemset>
+        <item rule-number="8" dot="1"/>
+        <item rule-number="11" dot="0"/>
+        <item rule-number="12" dot="0"/>
+        <item rule-number="13" dot="0"/>
+        <item rule-number="14" dot="0"/>
+        <item rule-number="15" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="23"/>
+          <transition type="goto" symbol="TypedTerminals" state="27"/>
+          <transition type="goto" symbol="TypedTerminal" state="25"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="20">
+      <itemset>
+        <item rule-number="9" dot="1"/>
+        <item rule-number="11" dot="0"/>
+        <item rule-number="12" dot="0"/>
+        <item rule-number="13" dot="0"/>
+        <item rule-number="14" dot="0"/>
+        <item rule-number="15" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="23"/>
+          <transition type="goto" symbol="TypedTerminals" state="28"/>
+          <transition type="goto" symbol="TypedTerminal" state="25"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="21">
+      <itemset>
+        <item rule-number="2" dot="9"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="TOK-29" state="29"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="22">
+      <itemset>
+        <item rule-number="5" dot="0">
+          <lookaheads>
+            <symbol>TOK-29</symbol>
+          </lookaheads>
+        </item>
+        <item rule-number="6" dot="0"/>
+        <item rule-number="6" dot="1"/>
+        <item rule-number="7" dot="0"/>
+        <item rule-number="8" dot="0"/>
+        <item rule-number="9" dot="0"/>
+        <item rule-number="10" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="TOK-25" state="17"/>
+          <transition type="shift" symbol="TOK-26" state="18"/>
+          <transition type="shift" symbol="TOK-27" state="19"/>
+          <transition type="shift" symbol="TOK-28" state="20"/>
+          <transition type="goto" symbol="Tokens" state="30"/>
+          <transition type="goto" symbol="TokenSpec" state="22"/>
+        </transitions>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="5" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="23">
+      <itemset>
+        <item rule-number="13" dot="1"/>
+        <item rule-number="14" dot="1"/>
+        <item rule-number="15" dot="1">
+          <lookaheads>
+            <symbol>ID</symbol>
+            <symbol>TOK-25</symbol>
+            <symbol>TOK-26</symbol>
+            <symbol>TOK-27</symbol>
+            <symbol>TOK-28</symbol>
+            <symbol>TOK-29</symbol>
+          </lookaheads>
+        </item>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="TOK-13" state="31"/>
+          <transition type="shift" symbol="TOK-16" state="32"/>
+        </transitions>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="15" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="24">
+      <itemset>
+        <item rule-number="10" dot="2"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="10" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="25">
+      <itemset>
+        <item rule-number="11" dot="0"/>
+        <item rule-number="11" dot="1">
+          <lookaheads>
+            <symbol>TOK-25</symbol>
+            <symbol>TOK-26</symbol>
+            <symbol>TOK-27</symbol>
+            <symbol>TOK-28</symbol>
+            <symbol>TOK-29</symbol>
+          </lookaheads>
+        </item>
+        <item rule-number="12" dot="0"/>
+        <item rule-number="12" dot="1"/>
+        <item rule-number="13" dot="0"/>
+        <item rule-number="14" dot="0"/>
+        <item rule-number="15" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="23"/>
+          <transition type="goto" symbol="TypedTerminals" state="33"/>
+          <transition type="goto" symbol="TypedTerminal" state="25"/>
+        </transitions>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="11" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="26">
+      <itemset>
+        <item rule-number="7" dot="2"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="7" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="27">
+      <itemset>
+        <item rule-number="8" dot="2"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="8" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="28">
+      <itemset>
+        <item rule-number="9" dot="2"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="9" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="29">
+      <itemset>
+        <item rule-number="2" dot="10"/>
+        <item rule-number="3" dot="0"/>
+        <item rule-number="4" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="TOK-22" state="13"/>
+          <transition type="shift" symbol="TOK-30" state="14"/>
+          <transition type="goto" symbol="OptInclude" state="34"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="30">
+      <itemset>
+        <item rule-number="6" dot="2"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="6" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="31">
+      <itemset>
+        <item rule-number="13" dot="2"/>
+        <item rule-number="37" dot="0"/>
+        <item rule-number="38" dot="0"/>
+        <item rule-number="39" dot="0"/>
+        <item rule-number="40" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="35"/>
+          <transition type="shift" symbol="TOK-16" state="36"/>
+          <transition type="goto" symbol="Type" state="37"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="32">
+      <itemset>
+        <item rule-number="14" dot="2"/>
+        <item rule-number="37" dot="0"/>
+        <item rule-number="38" dot="0"/>
+        <item rule-number="39" dot="0"/>
+        <item rule-number="40" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="35"/>
+          <transition type="shift" symbol="TOK-16" state="36"/>
+          <transition type="goto" symbol="Type" state="38"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="33">
+      <itemset>
+        <item rule-number="12" dot="2"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="12" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="34">
+      <itemset>
+        <item rule-number="2" dot="11"/>
+        <item rule-number="18" dot="0"/>
+        <item rule-number="19" dot="0"/>
+        <item rule-number="20" dot="0"/>
+        <item rule-number="23" dot="0"/>
+        <item rule-number="24" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="39"/>
+          <transition type="goto" symbol="Rules" state="40"/>
+          <transition type="goto" symbol="Rule" state="41"/>
+          <transition type="goto" symbol="LHS" state="42"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="35">
+      <itemset>
+        <item rule-number="37" dot="1">
+          <lookaheads>
+            <symbol>ID</symbol>
+            <symbol>TOK-9</symbol>
+            <symbol>TOK-11</symbol>
+            <symbol>TOK-17</symbol>
+            <symbol>TOK-18</symbol>
+            <symbol>TOK-25</symbol>
+            <symbol>TOK-26</symbol>
+            <symbol>TOK-27</symbol>
+            <symbol>TOK-28</symbol>
+            <symbol>TOK-29</symbol>
+          </lookaheads>
+        </item>
+        <item rule-number="38" dot="1"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="TOK-8" state="43"/>
+        </transitions>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="37" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="36">
+      <itemset>
+        <item rule-number="37" dot="0"/>
+        <item rule-number="38" dot="0"/>
+        <item rule-number="39" dot="0"/>
+        <item rule-number="39" dot="1"/>
+        <item rule-number="40" dot="0"/>
+        <item rule-number="40" dot="1"/>
+        <item rule-number="41" dot="0"/>
+        <item rule-number="42" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="35"/>
+          <transition type="shift" symbol="TOK-16" state="36"/>
+          <transition type="shift" symbol="TOK-17" state="44"/>
+          <transition type="goto" symbol="Type" state="45"/>
+          <transition type="goto" symbol="Types" state="46"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="37">
+      <itemset>
+        <item rule-number="13" dot="3"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="13" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="38">
+      <itemset>
+        <item rule-number="14" dot="3"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="TOK-17" state="47"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="39">
+      <itemset>
+        <item rule-number="23" dot="1"/>
+        <item rule-number="24" dot="1">
+          <lookaheads>
+            <symbol>TOK-11</symbol>
+          </lookaheads>
+        </item>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="TOK-13" state="48"/>
+        </transitions>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="24" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="40">
+      <itemset>
+        <item rule-number="2" dot="12"/>
+        <item rule-number="19" dot="1"/>
+        <item rule-number="21" dot="0">
+          <lookaheads>
+            <symbol>$end</symbol>
+          </lookaheads>
+        </item>
+        <item rule-number="22" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="TOK-10" state="49"/>
+          <transition type="goto" symbol="OptSemicolon" state="50"/>
+        </transitions>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="21" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="41">
+      <itemset>
+        <item rule-number="18" dot="1"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="18" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="42">
+      <itemset>
+        <item rule-number="20" dot="1"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="TOK-11" state="51"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="43">
+      <itemset>
+        <item rule-number="37" dot="0"/>
+        <item rule-number="38" dot="0"/>
+        <item rule-number="38" dot="2"/>
+        <item rule-number="39" dot="0"/>
+        <item rule-number="40" dot="0"/>
+        <item rule-number="41" dot="0"/>
+        <item rule-number="42" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="35"/>
+          <transition type="shift" symbol="TOK-16" state="36"/>
+          <transition type="goto" symbol="Type" state="45"/>
+          <transition type="goto" symbol="Types" state="52"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="44">
+      <itemset>
+        <item rule-number="40" dot="2"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="40" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="45">
+      <itemset>
+        <item rule-number="41" dot="1">
+          <lookaheads>
+            <symbol>TOK-9</symbol>
+            <symbol>TOK-17</symbol>
+          </lookaheads>
+        </item>
+        <item rule-number="42" dot="1"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="TOK-18" state="53"/>
+        </transitions>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="41" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="46">
+      <itemset>
+        <item rule-number="39" dot="2"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="TOK-17" state="54"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="47">
+      <itemset>
+        <item rule-number="14" dot="4"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="14" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="48">
+      <itemset>
+        <item rule-number="23" dot="2"/>
+        <item rule-number="37" dot="0"/>
+        <item rule-number="38" dot="0"/>
+        <item rule-number="39" dot="0"/>
+        <item rule-number="40" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="35"/>
+          <transition type="shift" symbol="TOK-16" state="36"/>
+          <transition type="goto" symbol="Type" state="55"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="49">
+      <itemset>
+        <item rule-number="19" dot="2"/>
+        <item rule-number="20" dot="0"/>
+        <item rule-number="22" dot="1">
+          <lookaheads>
+            <symbol>$end</symbol>
+          </lookaheads>
+        </item>
+        <item rule-number="23" dot="0"/>
+        <item rule-number="24" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="39"/>
+          <transition type="goto" symbol="Rule" state="56"/>
+          <transition type="goto" symbol="LHS" state="42"/>
+        </transitions>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="22" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="50">
+      <itemset>
+        <item rule-number="2" dot="13"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="2" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="51">
+      <itemset>
+        <item rule-number="20" dot="2"/>
+        <item rule-number="25" dot="0"/>
+        <item rule-number="26" dot="0"/>
+        <item rule-number="27" dot="0"/>
+        <item rule-number="28" dot="0"/>
+        <item rule-number="29" dot="0"/>
+        <item rule-number="30" dot="0"/>
+        <item rule-number="31" dot="0"/>
+        <item rule-number="32" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="57"/>
+          <transition type="shift" symbol="TOK-22" state="58"/>
+          <transition type="goto" symbol="RHS" state="59"/>
+          <transition type="goto" symbol="Production" state="60"/>
+          <transition type="goto" symbol="NamedFields" state="61"/>
+          <transition type="goto" symbol="NamedField" state="62"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="52">
+      <itemset>
+        <item rule-number="38" dot="3"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="TOK-9" state="63"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="53">
+      <itemset>
+        <item rule-number="37" dot="0"/>
+        <item rule-number="38" dot="0"/>
+        <item rule-number="39" dot="0"/>
+        <item rule-number="40" dot="0"/>
+        <item rule-number="41" dot="0"/>
+        <item rule-number="42" dot="0"/>
+        <item rule-number="42" dot="2"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="35"/>
+          <transition type="shift" symbol="TOK-16" state="36"/>
+          <transition type="goto" symbol="Type" state="45"/>
+          <transition type="goto" symbol="Types" state="64"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="54">
+      <itemset>
+        <item rule-number="39" dot="3"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="39" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="55">
+      <itemset>
+        <item rule-number="23" dot="3"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="23" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="56">
+      <itemset>
+        <item rule-number="19" dot="3"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="19" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="57">
+      <itemset>
+        <item rule-number="31" dot="1">
+          <lookaheads>
+            <symbol>$end</symbol>
+            <symbol>ID</symbol>
+            <symbol>CODE</symbol>
+            <symbol>TOK-10</symbol>
+            <symbol>TOK-12</symbol>
+            <symbol>TOK-22</symbol>
+            <symbol>TOK-31</symbol>
+          </lookaheads>
+        </item>
+        <item rule-number="32" dot="1"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="TOK-13" state="65"/>
+        </transitions>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="31" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="58">
+      <itemset>
+        <item rule-number="28" dot="1"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="28" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="59">
+      <itemset>
+        <item rule-number="20" dot="3"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="20" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="60">
+      <itemset>
+        <item rule-number="25" dot="1">
+          <lookaheads>
+            <symbol>$end</symbol>
+            <symbol>TOK-10</symbol>
+          </lookaheads>
+        </item>
+        <item rule-number="26" dot="1"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="TOK-12" state="66"/>
+        </transitions>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="25" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="61">
+      <itemset>
+        <item rule-number="27" dot="1"/>
+        <item rule-number="33" dot="0">
+          <lookaheads>
+            <symbol>$end</symbol>
+            <symbol>TOK-10</symbol>
+            <symbol>TOK-12</symbol>
+            <symbol>TOK-31</symbol>
+          </lookaheads>
+        </item>
+        <item rule-number="34" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="CODE" state="67"/>
+          <transition type="goto" symbol="Action" state="68"/>
+        </transitions>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="33" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="62">
+      <itemset>
+        <item rule-number="28" dot="0"/>
+        <item rule-number="29" dot="0"/>
+        <item rule-number="29" dot="1">
+          <lookaheads>
+            <symbol>$end</symbol>
+            <symbol>CODE</symbol>
+            <symbol>TOK-10</symbol>
+            <symbol>TOK-12</symbol>
+            <symbol>TOK-31</symbol>
+          </lookaheads>
+        </item>
+        <item rule-number="30" dot="0"/>
+        <item rule-number="30" dot="1"/>
+        <item rule-number="31" dot="0"/>
+        <item rule-number="32" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="57"/>
+          <transition type="shift" symbol="TOK-22" state="58"/>
+          <transition type="goto" symbol="NamedFields" state="69"/>
+          <transition type="goto" symbol="NamedField" state="62"/>
+        </transitions>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="29" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="63">
+      <itemset>
+        <item rule-number="38" dot="4"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="38" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="64">
+      <itemset>
+        <item rule-number="42" dot="3"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="42" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="65">
+      <itemset>
+        <item rule-number="32" dot="2"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="70"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="66">
+      <itemset>
+        <item rule-number="25" dot="0"/>
+        <item rule-number="26" dot="0"/>
+        <item rule-number="26" dot="2"/>
+        <item rule-number="27" dot="0"/>
+        <item rule-number="28" dot="0"/>
+        <item rule-number="29" dot="0"/>
+        <item rule-number="30" dot="0"/>
+        <item rule-number="31" dot="0"/>
+        <item rule-number="32" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="57"/>
+          <transition type="shift" symbol="TOK-22" state="58"/>
+          <transition type="goto" symbol="RHS" state="71"/>
+          <transition type="goto" symbol="Production" state="60"/>
+          <transition type="goto" symbol="NamedFields" state="61"/>
+          <transition type="goto" symbol="NamedField" state="62"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="67">
+      <itemset>
+        <item rule-number="34" dot="1"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="34" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="68">
+      <itemset>
+        <item rule-number="27" dot="2"/>
+        <item rule-number="35" dot="0">
+          <lookaheads>
+            <symbol>$end</symbol>
+            <symbol>TOK-10</symbol>
+            <symbol>TOK-12</symbol>
+          </lookaheads>
+        </item>
+        <item rule-number="36" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="TOK-31" state="72"/>
+          <transition type="goto" symbol="Precedence" state="73"/>
+        </transitions>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="35" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="69">
+      <itemset>
+        <item rule-number="30" dot="2"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="30" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="70">
+      <itemset>
+        <item rule-number="32" dot="3"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="32" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="71">
+      <itemset>
+        <item rule-number="26" dot="3"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="26" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="72">
+      <itemset>
+        <item rule-number="36" dot="1"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="74"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="73">
+      <itemset>
+        <item rule-number="27" dot="3"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="27" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="74">
+      <itemset>
+        <item rule-number="36" dot="2"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="36" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+  </automaton>
+</bison-xml-report>

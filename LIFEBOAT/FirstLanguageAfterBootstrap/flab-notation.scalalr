@@ -1,0 +1,233 @@
+/**
+    This is the scalalr source describing the language accepted by the bootstrap module's handwritten
+    notation parser.
+*/
+
+%notation  ScalaLR
+%package   scalalr.parser.ScalaLR
+%path      parser
+
+%include {
+  import org.sufrin.utility.SourceTextCursor
+  import org.sufrin.scalalr.SourceLocation
+
+
+  def apply(chars: SourceTextCursor): Scanner = new Scanner(chars)
+
+
+  class Scanner(chars: SourceTextCursor) extends Iterator[Token] {
+    def sourceLocation(): SourceLocation = SourceLocation(chars.lines,  chars.chars)
+    @inline def hasChar: Boolean = chars.hasCurrent
+    @inline def theChar: Char = chars.current
+    @inline def nextChar(): Unit = chars.next()
+    @inline def afterNextChar(t: Token): Token = { nextChar(); t }
+
+    def eatComment(): Unit = {
+      var level = 0
+      var go = true
+      //println(s"start comment $theChar")
+      nextChar() // skip the *
+      while (go && hasChar) {
+        //print(theChar)
+        chars.dropWhile( c=>c!='*')
+        // theChar=='*' or !hasChar
+        //print(theChar)
+        nextChar()
+        //println(theChar)
+        if (theChar=='/') go=false
+      }
+      //println("end comment")
+      nextChar()
+    }
+
+    def isBisonic(c: Char): Boolean = c.isLetterOrDigit || c=='.' || c=='_'
+
+    def hasNext: Boolean = chars.hasCurrent
+    def next(): Token = {
+      chars.current match {
+        // NL at the start of a line is just a space
+        //case '\n' if chars.chars>0    =>
+        //         chars.current = ' '            // the subsequent next() skips this space without accounting
+        //         NL                             // NL once
+
+        case '(' => afterNextChar(`(`)
+        case ')' => afterNextChar(`)`)
+        case '[' => afterNextChar(`[`)
+        case ']' => afterNextChar(`]`)
+        case '|' => afterNextChar(`|`)
+        case '=' => afterNextChar(`=`)
+        case ',' => afterNextChar(`,`)
+        case ':' => afterNextChar(`:`)
+        case ';' => afterNextChar(`;`)
+        case '%' =>
+          nextChar()
+          val directive = chars.takeWhile(_.isLetterOrDigit).mkString("")
+          directive.toLowerCase match {
+                  case "type"         => `%type`
+                  case "empty"        => `%empty`
+                  case "notation"     => `%notation`
+                  case "package"      => `%package`
+                  case "token"        => `%token`
+                  case "left"         => `%left`
+                  case "right"        => `%right`
+                  case "non"          => `%non`
+                  case "rules"        => `%rules`
+                  case "include"      => `%include`
+                  case "path"         => `%path`
+                  case _ => LEXICALERROR(s"Unknown directive %$directive (at ${sourceLocation()})")
+           }
+        case '/' =>
+          nextChar()
+          theChar match {
+            case '*' =>
+              eatComment()
+            case '/' =>
+              chars.dropWhile( c=>c!='\n')
+            case other =>
+              //Syntax.Parser.warn(s"Malformed comment sentinel: \"/$other\" at $sourceLocation")
+              chars.dropWhile( c=>c!='\n')
+          }
+          next()
+        case '{' => // } to balance the %include
+          nextChar(); afterNextChar(CODE(chars.takeNested('{', '}')  .mkString("")))
+        case '«' => // » to balance the %include
+          nextChar(); afterNextChar(CODE(chars.takeNested('«', '»')  .mkString("")))
+        case '"'  => nextChar(); afterNextChar(ID(chars.takeWhile( c => c!='"')  .mkString("\"", "", "\"")))
+        case '\'' => nextChar(); afterNextChar(ID(chars.takeWhile( c => c!='\'') .mkString("\"", "", "\"")))
+        case '`' => nextChar(); afterNextChar(ID(chars.takeWhile( c => c!='`') .mkString("\"", "", "\"")))
+        case c if c.isLetter =>
+          val prefix = chars.takeWhile(isBisonic)
+          ID((prefix).mkString(""))
+        case c if c.isWhitespace =>
+          while (hasChar && theChar.isWhitespace) nextChar()
+          if (hasChar) next() else $end
+        case other =>
+          LEXICALERROR(s"Unrecognised $other (at ${sourceLocation()}")
+      }
+    }
+  }
+
+}
+
+%token
+  ID:(String)
+  NUM:(String)
+  CODE:(String)
+  COMMENT:(String)
+  LEXICALERROR:(String)
+  `[` `]` `;` `=` `|`  `:`  // Left here as a test of diagnostics
+  `{` `}` `(` `)` ',' NL
+  `%path` `%type` `%empty` `%notation` `%package` `%token` `%left` `%right` `%non` `%rules` `%include` `%prec` `%tables`
+
+%rules
+
+%include {
+ import org.sufrin.scalalr.AST._
+ import org.sufrin.scalalr.translateFLAB._
+ import org.sufrin.utility.SourceTextCursor
+ import org.sufrin.scalalr.SourceLocation
+ import org.sufrin.utility.PrettyPrint._
+
+ def makeTupleType(types: Seq[Type], location: SourceLocation): Type =
+     types.size match {
+       case 1 => types(0)
+       case n => Type(s"Tuple$n", types, location)
+     }
+
+ def mkTableType(tableTypeName: String): String =
+     tableTypeName match {
+        case "lr"          => "canonical-lr"
+        case "canonical"   => "canonical-lr"
+        case "ielr"        => "ielr"
+        case "lalr"        => "lalr"
+        case _      => println(s"Warning: wrong %tables type $tableTypeName; canonical assumed");  "canonical-lr"
+     }
+
+}
+
+
+
+
+command: Unit = Notation { translate($Notation) };
+
+
+Notation: Notation =
+   `%notation`     theName:ID
+   `%package`      thePackage:ID
+   `%path`         thePath:ID
+   Tables
+    tokensInclude: OptInclude
+    Tokens
+    `%rules`
+    rulesInclude:  OptInclude
+    Rules          OptSemicolon
+    { Notation($thePackage, $theName, $thePath, $Tables, "Scanner", Type("Token", Nil, $START), $Tokens, $Rules, $tokensInclude, $rulesInclude) };
+
+OptInclude: String = `%empty` { "" } | `%include` CODE { $CODE };
+
+Tokens:(List[TokenSpec]) = %empty           { Nil }
+                         | TokenSpec Tokens { $TokenSpec :: $Tokens }
+                         ;
+
+TokenSpec: TokenSpec =
+        `%left`  TypedTerminals { Left($TypedTerminals) }
+      | `%right` TypedTerminals { Right($TypedTerminals) }
+      | `%non`   TypedTerminals { Nonassoc($TypedTerminals) }
+      | `%token` TypedTerminals { Tokens($TypedTerminals) }
+      ;
+
+TypedTerminals:(List[TypedTerminal]) =
+         TypedTerminal { List($TypedTerminal) }
+      |  TypedTerminal TypedTerminals  { $TypedTerminal :: $TypedTerminals }
+      ;
+
+TypedTerminal:(TypedTerminal) = ID ':' Type      {  TypedTerminal($ID, $Type, $START)   }
+                              | ID '(' Type ')'  {  TypedTerminal($ID, $Type, $START) }   // for compatibility with boot notation
+                              | ID               {  TypedTerminal($ID, Untyped, $START) }
+                              ;
+
+Tables:(String) = %empty       { "lalr" }
+                | `%tables` ID { mkTableType($ID) }
+                ;
+
+Rules:(List[Rule]) = Rule           { List($Rule) }
+                   | Rules ';' Rule { $Rule :: $Rules };
+
+Rule: Rule = LHS '=' RHS { Rule($LHS, $RHS, $START) };
+
+OptSemicolon: Unit = %empty {()} | `;` {()};
+
+LHS: TypedNonterminal  = ID ':' Type {  TypedNonterminal($ID, $Type, $START) }
+                       | ID          {  TypedNonterminal($ID, Untyped, $START) }
+                       ;
+
+RHS:(List[Production]) =
+      Production         { List($Production)   }
+    | Production '|' RHS { $Production :: $RHS } ;
+
+Production: Production = NamedFields Action Precedence { Production($NamedFields, $Action, $Precedence, $START) };
+
+NamedFields:(List[NamedField]) =
+      `%empty`               { Nil }
+    | NamedField             { List($NamedField) }
+    | NamedField NamedFields { $NamedField :: $NamedFields }
+    ;
+
+NamedField: NamedField = ID                              { NamedField(theName = None, fieldSymbol = $ID, $START) }
+                       | theName: ID ':' fieldSymbol: ID { NamedField(Some($theName), $fieldSymbol, $START) }
+                       ;
+
+Action:(Option[Expression])    = %empty { None } | CODE { Some($CODE) };
+
+Precedence: (Option[Terminal]) =  %empty { None } | `%prec` ID { Some(new Terminal($ID)) };
+
+Type:(Type) = ID               { Type($ID, Nil, $START) }
+            | ID '[' Types ']' { Type($ID, $Types, $START) }
+            | '('    Types ')' { makeTupleType($Types, $START) }
+            | '(' ')'          { Type("Unit", Nil, $START) }
+            ;
+
+Types:(List[Type]) = Type            { List($Type) }
+                   | Type  ',' Types { $Type :: $Types }
+                   ;
+        

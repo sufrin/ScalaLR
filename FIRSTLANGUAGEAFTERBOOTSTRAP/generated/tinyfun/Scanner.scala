@@ -1,12 +1,7 @@
 
-//> using scala "2.13"
-//> using jar "scalalr.jar"
+package tinyfun
+object Scanner {
 
-%notation TinyFun
-%package  tinyfun
-%path     tinyfun
-
-%include {
    import org.sufrin.scalalr.SourceLocation
    import org.sufrin.utility.SourceTextCursor
 
@@ -66,56 +61,54 @@
           }
       }
     }
+
+trait Token extends org.sufrin.scalalr.Lexeme { val value: Any ; val symbol: Int } 
+case class NUM(value: String) extends Token { val symbol = 3 }
+case class ID(value: String) extends Token { val symbol = 4 }
+case object `(` extends Token { val value = (); val symbol = 5 }
+case object `)` extends Token { val value = (); val symbol = 6 }
+case object `[` extends Token { val value = (); val symbol = 7 }
+case object `]` extends Token { val value = (); val symbol = 8 }
+case object `,` extends Token { val value = (); val symbol = 9 }
+case class LEXICALERROR(value: String) extends Token { val symbol = 10 }
+case object NL extends Token { val value = (); val symbol = 11 }
+case object QUIT extends Token { val value = (); val symbol = 12 }
+case object `=` extends Token { val value = (); val symbol = 13 }
+case object `+` extends Token { val value = (); val symbol = 14 }
+case object `-` extends Token { val value = (); val symbol = 15 }
+case object `*` extends Token { val value = (); val symbol = 16 }
+case object `/` extends Token { val value = (); val symbol = 17 }
+case object `^` extends Token { val value = (); val symbol = 18 }
+case object $end extends Token { val value = (); val symbol = 0 }
+case object error extends Token { val value = (); val symbol = 1 }
+case object UNDEF extends Token { val value = (); val symbol = 2 }
+// GLOSSARY OF SYMBOL NAMES
+val symbolName: Map[Int, String] = collection.immutable.ListMap[Int, String](
+0->"$end", 1->"error", 2->"UNDEF"
+, 0 -> "$end"
+, 1 -> "error"
+, 3 -> "NUM"
+, 4 -> "ID"
+, 5 -> "("
+, 6 -> ")"
+, 7 -> "["
+, 8 -> "]"
+, 9 -> ","
+, 10 -> "LEXICALERROR"
+, 11 -> "NL"
+, 12 -> "QUIT"
+, 13 -> "="
+, 14 -> "+"
+, 15 -> "-"
+, 16 -> "*"
+, 17 -> "/"
+, 18 -> "^"
+// GLOSSARY OF NONTERMINAL SYMBOL NAMES
+, 19 -> "$accept" 
+, 20 -> "loop" 
+, 21 -> "command" 
+, 22 -> "expr" 
+, 23 -> "exprs" 
+)
+
 }
-
-%token NUM(String) ID(String)  `(` `)` `[` `]` `,` LEXICALERROR(String) NL QUIT
-%right `=`
-%left `+` `-`
-%left `*` `/`
-%right `^`
-
-
-
-%rules
-
-%include {
- import org.sufrin.scalalr.SourceLocation
- import tinyfun.TinyFun._
- import org.sufrin.utility.RevSeq
-}
-
-/*
-        This is typical of a grammar needed to run as a read-expr/run loop as it is parsed.
-
-        The `command` production is a "hook" that is parsed by parsing an expr, then
-        reduced when the NL appears to its right (as the lookahead symbol).
-        It is at the reduction that the parsed $expr is run.
-
-*/
-
-loop: Unit =
-          %empty          { () }
-        | loop command NL { () }
-        | loop error NL { () }
-        ;
-
-command: Unit = exprs { run($exprs.toList) } | QUIT { System.exit(0) } | %empty { System.exit(0) };
-
-
-expr: Expr =
-          ID                  { Id($ID, $START) }
-        | NUM                 { Num($NUM.toDouble, $START) }
-        | ID `=` expr         { Assign($ID, $expr, $START) }
-        | l:expr `^` r:expr   { Binop("^", $l, $r, $START) }
-        | l:expr `*` r:expr   { Binop("*", $l, $r, $START) }
-        | l:expr `+` r:expr   { Binop("+", $l, $r, $START) }
-        | l:expr `/` r:expr   { Binop("/", $l, $r, $START) }
-        | l:expr `-` r:expr   { Binop("-", $l, $r, $START) }
-        | "(" expr ")"        { $expr }
-        | ID `(` exprs `)`    { Apply($ID, $exprs.toList, $START) }
-        ;
-
-exprs: (RevSeq[Expr]) =
-            expr            { RevSeq($expr) }
-        |   exprs `,` expr  { $exprs :+ $expr }
-;

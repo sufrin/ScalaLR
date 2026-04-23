@@ -22,19 +22,16 @@ one of the answers will be something like:
 
 ### Testing the Lifeboat
 
-This command generates the three parser-support files in ./generated/tinyfun 
+This command generates the three parser-support files in ./generated/tinyfun
 
-        scala -cp ../scalalr.jar org.sufrin.scalalr.generate tinyfun.scalalr
-
-so does this:
-
-        ./transboot.sh tinyfun.scalalr
+        ./translifeboat.sh tinyfun.scalalr
 
 This command runs the runtinyfun top-level
 
-        scala-cli runtinyfun.scala TinyFun.scala generated/tinyfun
+        scala-cli runtinyfun.scala TinyFun.scala generated
 
 This command packages the  runtinyfun top-level as an executable
 
         scala-cli --power package -o runtinyfun runtinyfun.scala TinyFun.scala generated
         
+

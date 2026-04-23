@@ -1,6 +1,6 @@
 /**
-    This is the scalalr source describing the language accepted by the bootstrap module's handwritten
-    notation parser.
+    This is the language of the bootstrap translator described in the scalalr notation
+    
 */
 
 %notation  ScalaLR
@@ -159,9 +159,11 @@ Notation: Notation =
     tokensInclude: OptInclude
     Tokens
     `%rules`
-    rulesInclude:  OptInclude
-    Rules          OptSemicolon
-    { Notation($thePackage, $theName, $thePath, $Tables, "Scanner", Type("Token", Nil, $START), $Tokens, $Rules, $tokensInclude, $rulesInclude) };
+    rulesInclude:
+    OptInclude
+    Rules
+    OptSemicolon
+    { Notation($thePackage, $theName, $thePath, $Tables, "Scanner", Type("Token", Nil, $START), $Tokens, $Rules.reverse, $tokensInclude, $rulesInclude) };
 
 OptInclude: String = `%empty` { "" } | `%include` CODE { $CODE };
 
@@ -189,6 +191,7 @@ TypedTerminal:(TypedTerminal) = ID ':' Type      {  TypedTerminal($ID, $Type, $S
 Tables:(String) = %empty       { "lalr" }
                 | `%tables` ID { mkTableType($ID) }
                 ;
+
 
 Rules:(List[Rule]) = Rule           { List($Rule) }
                    | Rules ';' Rule { $Rule :: $Rules };

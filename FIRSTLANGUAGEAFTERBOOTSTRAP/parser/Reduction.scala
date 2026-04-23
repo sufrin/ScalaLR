@@ -30,10 +30,10 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
   { case List(dol$Notation: Notation) => 
          translate(dol$Notation) 
   }
- // Notation: Notation = "%notation" theName: ID "%package" thePackage: ID "%path" thePath: ID Tables tokensInclude: OptInclude Tokens "%rules" rulesInclude: OptInclude Rules OptSemicolon { Notation($thePackage, $theName, $thePath, $Tables, "Scanner", Type("Token", Nil, $START), $Tokens, $Rules, $tokensInclude, $rulesInclude) }
+ // Notation: Notation = "%notation" theName: ID "%package" thePackage: ID "%path" thePath: ID Tables tokensInclude: OptInclude Tokens "%rules" rulesInclude: OptInclude Rules OptSemicolon { Notation($thePackage, $theName, $thePath, $Tables, "Scanner", Type("Token", Nil, $START), $Tokens, $Rules.reverse, $tokensInclude, $rulesInclude) }
  case 2 => 
   { case List(_, dol$theName: String, _, dol$thePackage: String, _, dol$thePath: String, dol$Tables: String, dol$tokensInclude: String, dol$Tokens: List[TokenSpec @unchecked], _, dol$rulesInclude: String, dol$Rules: List[Rule @unchecked], dol$OptSemicolon: Unit) => 
-         Notation(dol$thePackage, dol$theName, dol$thePath, dol$Tables, "Scanner", Type("Token", Nil, dol$START), dol$Tokens, dol$Rules, dol$tokensInclude, dol$rulesInclude) 
+         Notation(dol$thePackage, dol$theName, dol$thePath, dol$Tables, "Scanner", Type("Token", Nil, dol$START), dol$Tokens, dol$Rules.reverse, dol$tokensInclude, dol$rulesInclude) 
   }
  // OptInclude: String = "%empty" { "" }
  case 3 => 
@@ -218,7 +218,7 @@ def parsetreereduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  
  case 1 => 
   { case trees$trees => PARSETREE("""command: Unit = Notation { translate($Notation) }""", 1, trees$trees ) }
  case 2 => 
-  { case trees$trees => PARSETREE("""Notation: Notation = "%notation" theName: ID "%package" thePackage: ID "%path" thePath: ID Tables tokensInclude: OptInclude Tokens "%rules" rulesInclude: OptInclude Rules OptSemicolon { Notation($thePackage, $theName, $thePath, $Tables, "Scanner", Type("Token", Nil, $START), $Tokens, $Rules, $tokensInclude, $rulesInclude) }""", 2, trees$trees ) }
+  { case trees$trees => PARSETREE("""Notation: Notation = "%notation" theName: ID "%package" thePackage: ID "%path" thePath: ID Tables tokensInclude: OptInclude Tokens "%rules" rulesInclude: OptInclude Rules OptSemicolon { Notation($thePackage, $theName, $thePath, $Tables, "Scanner", Type("Token", Nil, $START), $Tokens, $Rules.reverse, $tokensInclude, $rulesInclude) }""", 2, trees$trees ) }
  case 3 => 
   { case trees$trees => PARSETREE("""OptInclude: String = "%empty" { "" }""", 3, trees$trees ) }
  case 4 => 

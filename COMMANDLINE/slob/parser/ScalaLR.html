@@ -1,0 +1,1074 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:bison="https://www.gnu.org/software/bison/">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <title>slob/parser/ScalaLR.y - GNU Bison XML Automaton Report</title>
+    <style type="text/css">
+      body {
+        font-family: "Nimbus Sans L", Arial, sans-serif;
+        font-size: 9pt;
+      }
+      a:link {
+        color: #1f00ff;
+        text-decoration: none;
+      }
+      a:visited {
+        color: #1f00ff;
+        text-decoration: none;
+      }
+      a:hover {
+        color: red;
+      }
+      #menu a {
+        text-decoration: underline;
+      }
+      .i {
+        font-style: italic;
+      }
+      .pre {
+        font-family: monospace;
+        white-space: pre;
+      }
+      ol.decimal {
+        list-style-type: decimal;
+      }
+      ol.lower-alpha {
+        list-style-type: lower-alpha;
+      }
+      .dot {
+        color: #cc0000;
+      }
+      #footer {
+        margin-top: 3.5em;
+        font-size: 7pt;
+      }
+      </style>
+  </head>
+  <body><h1>GNU Bison XML Automaton Report</h1><p>
+    input grammar: <span class="i">slob/parser/ScalaLR.y</span></p>
+
+<h3>Table of Contents</h3><ul id="menu"><li><a href="#reductions">Reductions</a><ul class="lower-alpha"><li><a href="#nonterminals_useless_in_grammar">Nonterminals useless in grammar</a></li><li><a href="#terminals_unused_in_grammar">Terminals unused in grammar</a></li><li><a href="#rules_useless_in_grammar">Rules useless in grammar</a></li></ul></li><li><a href="#conflicts">Conflicts</a></li><li><a href="#grammar">Grammar</a><ul class="lower-alpha"><li><a href="#grammar">Itemset</a></li><li><a href="#terminals">Terminal symbols</a></li><li><a href="#nonterminals">Nonterminal symbols</a></li></ul></li><li><a href="#automaton">Automaton</a></li></ul><h2><a name="reductions" id="reductions"></a> Reductions</h2><h3><a name="nonterminals_useless_in_grammar" id="nonterminals_useless_in_grammar"></a> Nonterminals useless in grammar</h3>
+
+<h3><a name="terminals_unused_in_grammar" id="terminals_unused_in_grammar"></a> Terminals unused in grammar</h3>
+
+<p class="pre">   NUM
+   COMMENT
+   LEXICALERROR
+   "{"
+   "}"
+   NL
+   "%type"
+
+
+</p><h3><a name="rules_useless_in_grammar" id="rules_useless_in_grammar"></a> Rules useless in grammar</h3>
+<h2><a name="conflicts" id="conflicts"></a> Conflicts</h2>
+
+<h2><a name="grammar" id="grammar"></a> Grammar</h2>
+<p class="pre">
+  <a name="rule_0" id="rule_0">  0</a> <span class="i">$accept</span> → <span class="i">command</span> <b>$end</b>
+
+  <a name="rule_1" id="rule_1">  1</a> <span class="i">command</span> → <span class="i">Notation</span>
+
+  <a name="rule_2" id="rule_2">  2</a> <span class="i">Notation</span> → <b>"%notation"</b> <b>ID</b> <b>"%package"</b> <b>ID</b> <b>"%path"</b> <b>ID</b> <span class="i">Tables</span> <span class="i">OptInclude</span> <span class="i">Tokens</span> <b>"%rules"</b> <span class="i">OptInclude</span> <span class="i">Rules</span> <span class="i">OptSemicolon</span>
+
+  <a name="rule_3" id="rule_3">  3</a> <span class="i">OptInclude</span> → <b>"%empty"</b>
+  <a name="rule_4" id="rule_4">  4</a>            | <b>"%include"</b> <b>CODE</b>
+
+  <a name="rule_5" id="rule_5">  5</a> <span class="i">Tokens</span> → %empty
+  <a name="rule_6" id="rule_6">  6</a>        | <span class="i">TokenSpec</span> <span class="i">Tokens</span>
+
+  <a name="rule_7" id="rule_7">  7</a> <span class="i">TokenSpec</span> → <b>"%left"</b> <span class="i">TypedTerminals</span>
+  <a name="rule_8" id="rule_8">  8</a>           | <b>"%right"</b> <span class="i">TypedTerminals</span>
+  <a name="rule_9" id="rule_9">  9</a>           | <b>"%non"</b> <span class="i">TypedTerminals</span>
+  <a name="rule_10" id="rule_10"> 10</a>           | <b>"%token"</b> <span class="i">TypedTerminals</span>
+
+  <a name="rule_11" id="rule_11"> 11</a> <span class="i">TypedTerminals</span> → <span class="i">TypedTerminal</span>
+  <a name="rule_12" id="rule_12"> 12</a>                | <span class="i">TypedTerminal</span> <span class="i">TypedTerminals</span>
+
+  <a name="rule_13" id="rule_13"> 13</a> <span class="i">TypedTerminal</span> → <b>ID</b> <b>":"</b> <span class="i">Type</span>
+  <a name="rule_14" id="rule_14"> 14</a>               | <b>ID</b> <b>"("</b> <span class="i">Type</span> <b>")"</b>
+  <a name="rule_15" id="rule_15"> 15</a>               | <b>ID</b>
+
+  <a name="rule_16" id="rule_16"> 16</a> <span class="i">Tables</span> → %empty
+  <a name="rule_17" id="rule_17"> 17</a>        | <b>"%tables"</b> <b>ID</b>
+
+  <a name="rule_18" id="rule_18"> 18</a> <span class="i">Rules</span> → <span class="i">Rule</span>
+  <a name="rule_19" id="rule_19"> 19</a>       | <span class="i">Rules</span> <b>";"</b> <span class="i">Rule</span>
+
+  <a name="rule_20" id="rule_20"> 20</a> <span class="i">Rule</span> → <span class="i">LHS</span> <b>"="</b> <span class="i">RHS</span>
+
+  <a name="rule_21" id="rule_21"> 21</a> <span class="i">OptSemicolon</span> → %empty
+  <a name="rule_22" id="rule_22"> 22</a>              | <b>";"</b>
+
+  <a name="rule_23" id="rule_23"> 23</a> <span class="i">LHS</span> → <b>ID</b> <b>":"</b> <span class="i">Type</span>
+  <a name="rule_24" id="rule_24"> 24</a>     | <b>ID</b>
+
+  <a name="rule_25" id="rule_25"> 25</a> <span class="i">RHS</span> → <span class="i">Production</span>
+  <a name="rule_26" id="rule_26"> 26</a>     | <span class="i">Production</span> <b>"|"</b> <span class="i">RHS</span>
+
+  <a name="rule_27" id="rule_27"> 27</a> <span class="i">Production</span> → <span class="i">NamedFields</span> <span class="i">Action</span> <span class="i">Precedence</span>
+
+  <a name="rule_28" id="rule_28"> 28</a> <span class="i">NamedFields</span> → <b>"%empty"</b>
+  <a name="rule_29" id="rule_29"> 29</a>             | <span class="i">NamedField</span>
+  <a name="rule_30" id="rule_30"> 30</a>             | <span class="i">NamedField</span> <span class="i">NamedFields</span>
+
+  <a name="rule_31" id="rule_31"> 31</a> <span class="i">NamedField</span> → <b>ID</b>
+  <a name="rule_32" id="rule_32"> 32</a>            | <b>ID</b> <b>":"</b> <b>ID</b>
+
+  <a name="rule_33" id="rule_33"> 33</a> <span class="i">Action</span> → %empty
+  <a name="rule_34" id="rule_34"> 34</a>        | <b>CODE</b>
+
+  <a name="rule_35" id="rule_35"> 35</a> <span class="i">Precedence</span> → %empty
+  <a name="rule_36" id="rule_36"> 36</a>            | <b>"%prec"</b> <b>ID</b>
+
+  <a name="rule_37" id="rule_37"> 37</a> <span class="i">Type</span> → <b>ID</b>
+  <a name="rule_38" id="rule_38"> 38</a>      | <b>ID</b> <b>"["</b> <span class="i">Types</span> <b>"]"</b>
+  <a name="rule_39" id="rule_39"> 39</a>      | <b>"("</b> <span class="i">Types</span> <b>")"</b>
+  <a name="rule_40" id="rule_40"> 40</a>      | <b>"("</b> <b>")"</b>
+
+  <a name="rule_41" id="rule_41"> 41</a> <span class="i">Types</span> → <span class="i">Type</span>
+  <a name="rule_42" id="rule_42"> 42</a>       | <span class="i">Type</span> <b>","</b> <span class="i">Types</span>
+</p>
+
+<h3><a name="terminals" id="terminals"></a> Terminals, with rules where they appear</h3>
+
+<ul>
+  <li><b>$end</b> (0) <a href="#rule_0">0</a></li>
+  <li><b>error</b> (256)</li>
+  <li><b>ID</b> (258) <a href="#rule_2">2</a> <a href="#rule_13">13</a> <a href="#rule_14">14</a> <a href="#rule_15">15</a> <a href="#rule_17">17</a> <a href="#rule_23">23</a> <a href="#rule_24">24</a> <a href="#rule_31">31</a> <a href="#rule_32">32</a> <a href="#rule_36">36</a> <a href="#rule_37">37</a> <a href="#rule_38">38</a></li>
+  <li><b>NUM</b> (259)</li>
+  <li><b>CODE</b> (260) <a href="#rule_4">4</a> <a href="#rule_34">34</a></li>
+  <li><b>COMMENT</b> (261)</li>
+  <li><b>LEXICALERROR</b> (262)</li>
+  <li><b>"["</b> (263) <a href="#rule_38">38</a></li>
+  <li><b>"]"</b> (264) <a href="#rule_38">38</a></li>
+  <li><b>";"</b> (265) <a href="#rule_19">19</a> <a href="#rule_22">22</a></li>
+  <li><b>"="</b> (266) <a href="#rule_20">20</a></li>
+  <li><b>"|"</b> (267) <a href="#rule_26">26</a></li>
+  <li><b>":"</b> (268) <a href="#rule_13">13</a> <a href="#rule_23">23</a> <a href="#rule_32">32</a></li>
+  <li><b>"{"</b> (269)</li>
+  <li><b>"}"</b> (270)</li>
+  <li><b>"("</b> (271) <a href="#rule_14">14</a> <a href="#rule_39">39</a> <a href="#rule_40">40</a></li>
+  <li><b>")"</b> (272) <a href="#rule_14">14</a> <a href="#rule_39">39</a> <a href="#rule_40">40</a></li>
+  <li><b>","</b> (273) <a href="#rule_42">42</a></li>
+  <li><b>NL</b> (274)</li>
+  <li><b>"%path"</b> (275) <a href="#rule_2">2</a></li>
+  <li><b>"%type"</b> (276)</li>
+  <li><b>"%empty"</b> (277) <a href="#rule_3">3</a> <a href="#rule_28">28</a></li>
+  <li><b>"%notation"</b> (278) <a href="#rule_2">2</a></li>
+  <li><b>"%package"</b> (279) <a href="#rule_2">2</a></li>
+  <li><b>"%token"</b> (280) <a href="#rule_10">10</a></li>
+  <li><b>"%left"</b> (281) <a href="#rule_7">7</a></li>
+  <li><b>"%right"</b> (282) <a href="#rule_8">8</a></li>
+  <li><b>"%non"</b> (283) <a href="#rule_9">9</a></li>
+  <li><b>"%rules"</b> (284) <a href="#rule_2">2</a></li>
+  <li><b>"%include"</b> (285) <a href="#rule_4">4</a></li>
+  <li><b>"%prec"</b> (286) <a href="#rule_36">36</a></li>
+  <li><b>"%tables"</b> (287) <a href="#rule_17">17</a></li>
+</ul>
+
+<h3><a name="nonterminals" id="nonterminals"></a> Nonterminals, with rules where they appear</h3>
+
+<ul>
+  <li><b>$accept</b> (33)
+    <ul>
+      <li>on left: <a href="#rule_0">0</a></li>
+    </ul>
+  </li>
+  <li><b>command</b> (34)
+    <ul>
+      <li>on left: <a href="#rule_1">1</a></li>
+      <li>on right: <a href="#rule_0">0</a></li>
+    </ul>
+  </li>
+  <li><b>Notation</b> (35)
+    <ul>
+      <li>on left: <a href="#rule_2">2</a></li>
+      <li>on right: <a href="#rule_1">1</a></li>
+    </ul>
+  </li>
+  <li><b>OptInclude</b> (36)
+    <ul>
+      <li>on left: <a href="#rule_3">3</a> <a href="#rule_4">4</a></li>
+      <li>on right: <a href="#rule_2">2</a></li>
+    </ul>
+  </li>
+  <li><b>Tokens</b> (37)
+    <ul>
+      <li>on left: <a href="#rule_5">5</a> <a href="#rule_6">6</a></li>
+      <li>on right: <a href="#rule_2">2</a> <a href="#rule_6">6</a></li>
+    </ul>
+  </li>
+  <li><b>TokenSpec</b> (38)
+    <ul>
+      <li>on left: <a href="#rule_7">7</a> <a href="#rule_8">8</a> <a href="#rule_9">9</a> <a href="#rule_10">10</a></li>
+      <li>on right: <a href="#rule_6">6</a></li>
+    </ul>
+  </li>
+  <li><b>TypedTerminals</b> (39)
+    <ul>
+      <li>on left: <a href="#rule_11">11</a> <a href="#rule_12">12</a></li>
+      <li>on right: <a href="#rule_7">7</a> <a href="#rule_8">8</a> <a href="#rule_9">9</a> <a href="#rule_10">10</a> <a href="#rule_12">12</a></li>
+    </ul>
+  </li>
+  <li><b>TypedTerminal</b> (40)
+    <ul>
+      <li>on left: <a href="#rule_13">13</a> <a href="#rule_14">14</a> <a href="#rule_15">15</a></li>
+      <li>on right: <a href="#rule_11">11</a> <a href="#rule_12">12</a></li>
+    </ul>
+  </li>
+  <li><b>Tables</b> (41)
+    <ul>
+      <li>on left: <a href="#rule_16">16</a> <a href="#rule_17">17</a></li>
+      <li>on right: <a href="#rule_2">2</a></li>
+    </ul>
+  </li>
+  <li><b>Rules</b> (42)
+    <ul>
+      <li>on left: <a href="#rule_18">18</a> <a href="#rule_19">19</a></li>
+      <li>on right: <a href="#rule_2">2</a> <a href="#rule_19">19</a></li>
+    </ul>
+  </li>
+  <li><b>Rule</b> (43)
+    <ul>
+      <li>on left: <a href="#rule_20">20</a></li>
+      <li>on right: <a href="#rule_18">18</a> <a href="#rule_19">19</a></li>
+    </ul>
+  </li>
+  <li><b>OptSemicolon</b> (44)
+    <ul>
+      <li>on left: <a href="#rule_21">21</a> <a href="#rule_22">22</a></li>
+      <li>on right: <a href="#rule_2">2</a></li>
+    </ul>
+  </li>
+  <li><b>LHS</b> (45)
+    <ul>
+      <li>on left: <a href="#rule_23">23</a> <a href="#rule_24">24</a></li>
+      <li>on right: <a href="#rule_20">20</a></li>
+    </ul>
+  </li>
+  <li><b>RHS</b> (46)
+    <ul>
+      <li>on left: <a href="#rule_25">25</a> <a href="#rule_26">26</a></li>
+      <li>on right: <a href="#rule_20">20</a> <a href="#rule_26">26</a></li>
+    </ul>
+  </li>
+  <li><b>Production</b> (47)
+    <ul>
+      <li>on left: <a href="#rule_27">27</a></li>
+      <li>on right: <a href="#rule_25">25</a> <a href="#rule_26">26</a></li>
+    </ul>
+  </li>
+  <li><b>NamedFields</b> (48)
+    <ul>
+      <li>on left: <a href="#rule_28">28</a> <a href="#rule_29">29</a> <a href="#rule_30">30</a></li>
+      <li>on right: <a href="#rule_27">27</a> <a href="#rule_30">30</a></li>
+    </ul>
+  </li>
+  <li><b>NamedField</b> (49)
+    <ul>
+      <li>on left: <a href="#rule_31">31</a> <a href="#rule_32">32</a></li>
+      <li>on right: <a href="#rule_29">29</a> <a href="#rule_30">30</a></li>
+    </ul>
+  </li>
+  <li><b>Action</b> (50)
+    <ul>
+      <li>on left: <a href="#rule_33">33</a> <a href="#rule_34">34</a></li>
+      <li>on right: <a href="#rule_27">27</a></li>
+    </ul>
+  </li>
+  <li><b>Precedence</b> (51)
+    <ul>
+      <li>on left: <a href="#rule_35">35</a> <a href="#rule_36">36</a></li>
+      <li>on right: <a href="#rule_27">27</a></li>
+    </ul>
+  </li>
+  <li><b>Type</b> (52)
+    <ul>
+      <li>on left: <a href="#rule_37">37</a> <a href="#rule_38">38</a> <a href="#rule_39">39</a> <a href="#rule_40">40</a></li>
+      <li>on right: <a href="#rule_13">13</a> <a href="#rule_14">14</a> <a href="#rule_23">23</a> <a href="#rule_41">41</a> <a href="#rule_42">42</a></li>
+    </ul>
+  </li>
+  <li><b>Types</b> (53)
+    <ul>
+      <li>on left: <a href="#rule_41">41</a> <a href="#rule_42">42</a></li>
+      <li>on right: <a href="#rule_38">38</a> <a href="#rule_39">39</a> <a href="#rule_42">42</a></li>
+    </ul>
+  </li>
+</ul><h2><a name="automaton" id="automaton"></a> Automaton</h2>
+
+<h3><a name="state_0" id="state_0"></a>State 0</h3>
+
+<p class="pre">  <a href="#rule_0">  0</a> <span class="i">$accept</span> → <span class="dot">•</span> <span class="i">command</span> <b>$end</b>
+  <a href="#rule_1">  1</a> <span class="i">command</span> → <span class="dot">•</span> <span class="i">Notation</span>
+  <a href="#rule_2">  2</a> <span class="i">Notation</span> → <span class="dot">•</span> <b>"%notation"</b> <b>ID</b> <b>"%package"</b> <b>ID</b> <b>"%path"</b> <b>ID</b> <span class="i">Tables</span> <span class="i">OptInclude</span> <span class="i">Tokens</span> <b>"%rules"</b> <span class="i">OptInclude</span> <span class="i">Rules</span> <span class="i">OptSemicolon</span>
+
+    "%notation"  <a href="#state_1">shift, and go to state 1</a>
+
+    command   <a href="#state_2">go to state 2</a>
+    Notation  <a href="#state_3">go to state 3</a>
+</p>
+
+<h3><a name="state_1" id="state_1"></a>State 1</h3>
+
+<p class="pre">  <a href="#rule_2">  2</a> <span class="i">Notation</span> → <b>"%notation"</b> <span class="dot">•</span> <b>ID</b> <b>"%package"</b> <b>ID</b> <b>"%path"</b> <b>ID</b> <span class="i">Tables</span> <span class="i">OptInclude</span> <span class="i">Tokens</span> <b>"%rules"</b> <span class="i">OptInclude</span> <span class="i">Rules</span> <span class="i">OptSemicolon</span>
+
+    ID  <a href="#state_4">shift, and go to state 4</a>
+</p>
+
+<h3><a name="state_2" id="state_2"></a>State 2</h3>
+
+<p class="pre">  <a href="#rule_0">  0</a> <span class="i">$accept</span> → <span class="i">command</span> <span class="dot">•</span> <b>$end</b>
+
+    $end  <a href="#state_5">shift, and go to state 5</a>
+</p>
+
+<h3><a name="state_3" id="state_3"></a>State 3</h3>
+
+<p class="pre">  <a href="#rule_1">  1</a> <span class="i">command</span> → <span class="i">Notation</span> <span class="dot">•</span>
+
+    $default  <a href="#rule_1">reduce using rule 1</a> (command)
+</p>
+
+<h3><a name="state_4" id="state_4"></a>State 4</h3>
+
+<p class="pre">  <a href="#rule_2">  2</a> <span class="i">Notation</span> → <b>"%notation"</b> <b>ID</b> <span class="dot">•</span> <b>"%package"</b> <b>ID</b> <b>"%path"</b> <b>ID</b> <span class="i">Tables</span> <span class="i">OptInclude</span> <span class="i">Tokens</span> <b>"%rules"</b> <span class="i">OptInclude</span> <span class="i">Rules</span> <span class="i">OptSemicolon</span>
+
+    "%package"  <a href="#state_6">shift, and go to state 6</a>
+</p>
+
+<h3><a name="state_5" id="state_5"></a>State 5</h3>
+
+<p class="pre">  <a href="#rule_0">  0</a> <span class="i">$accept</span> → <span class="i">command</span> <b>$end</b> <span class="dot">•</span>
+
+    $default  accept
+</p>
+
+<h3><a name="state_6" id="state_6"></a>State 6</h3>
+
+<p class="pre">  <a href="#rule_2">  2</a> <span class="i">Notation</span> → <b>"%notation"</b> <b>ID</b> <b>"%package"</b> <span class="dot">•</span> <b>ID</b> <b>"%path"</b> <b>ID</b> <span class="i">Tables</span> <span class="i">OptInclude</span> <span class="i">Tokens</span> <b>"%rules"</b> <span class="i">OptInclude</span> <span class="i">Rules</span> <span class="i">OptSemicolon</span>
+
+    ID  <a href="#state_7">shift, and go to state 7</a>
+</p>
+
+<h3><a name="state_7" id="state_7"></a>State 7</h3>
+
+<p class="pre">  <a href="#rule_2">  2</a> <span class="i">Notation</span> → <b>"%notation"</b> <b>ID</b> <b>"%package"</b> <b>ID</b> <span class="dot">•</span> <b>"%path"</b> <b>ID</b> <span class="i">Tables</span> <span class="i">OptInclude</span> <span class="i">Tokens</span> <b>"%rules"</b> <span class="i">OptInclude</span> <span class="i">Rules</span> <span class="i">OptSemicolon</span>
+
+    "%path"  <a href="#state_8">shift, and go to state 8</a>
+</p>
+
+<h3><a name="state_8" id="state_8"></a>State 8</h3>
+
+<p class="pre">  <a href="#rule_2">  2</a> <span class="i">Notation</span> → <b>"%notation"</b> <b>ID</b> <b>"%package"</b> <b>ID</b> <b>"%path"</b> <span class="dot">•</span> <b>ID</b> <span class="i">Tables</span> <span class="i">OptInclude</span> <span class="i">Tokens</span> <b>"%rules"</b> <span class="i">OptInclude</span> <span class="i">Rules</span> <span class="i">OptSemicolon</span>
+
+    ID  <a href="#state_9">shift, and go to state 9</a>
+</p>
+
+<h3><a name="state_9" id="state_9"></a>State 9</h3>
+
+<p class="pre">  <a href="#rule_2">  2</a> <span class="i">Notation</span> → <b>"%notation"</b> <b>ID</b> <b>"%package"</b> <b>ID</b> <b>"%path"</b> <b>ID</b> <span class="dot">•</span> <span class="i">Tables</span> <span class="i">OptInclude</span> <span class="i">Tokens</span> <b>"%rules"</b> <span class="i">OptInclude</span> <span class="i">Rules</span> <span class="i">OptSemicolon</span>
+  <a href="#rule_16"> 16</a> <span class="i">Tables</span> → <span class="dot">•</span> %empty  ["%empty", "%include"]
+  <a href="#rule_17"> 17</a>        | <span class="dot">•</span> <b>"%tables"</b> <b>ID</b>
+
+    "%tables"  <a href="#state_10">shift, and go to state 10</a>
+
+    $default  <a href="#rule_16">reduce using rule 16</a> (Tables)
+
+    Tables  <a href="#state_11">go to state 11</a>
+</p>
+
+<h3><a name="state_10" id="state_10"></a>State 10</h3>
+
+<p class="pre">  <a href="#rule_17"> 17</a> <span class="i">Tables</span> → <b>"%tables"</b> <span class="dot">•</span> <b>ID</b>
+
+    ID  <a href="#state_12">shift, and go to state 12</a>
+</p>
+
+<h3><a name="state_11" id="state_11"></a>State 11</h3>
+
+<p class="pre">  <a href="#rule_2">  2</a> <span class="i">Notation</span> → <b>"%notation"</b> <b>ID</b> <b>"%package"</b> <b>ID</b> <b>"%path"</b> <b>ID</b> <span class="i">Tables</span> <span class="dot">•</span> <span class="i">OptInclude</span> <span class="i">Tokens</span> <b>"%rules"</b> <span class="i">OptInclude</span> <span class="i">Rules</span> <span class="i">OptSemicolon</span>
+  <a href="#rule_3">  3</a> <span class="i">OptInclude</span> → <span class="dot">•</span> <b>"%empty"</b>
+  <a href="#rule_4">  4</a>            | <span class="dot">•</span> <b>"%include"</b> <b>CODE</b>
+
+    "%empty"  <a href="#state_13">shift, and go to state 13</a>
+    "%include"  <a href="#state_14">shift, and go to state 14</a>
+
+    OptInclude  <a href="#state_15">go to state 15</a>
+</p>
+
+<h3><a name="state_12" id="state_12"></a>State 12</h3>
+
+<p class="pre">  <a href="#rule_17"> 17</a> <span class="i">Tables</span> → <b>"%tables"</b> <b>ID</b> <span class="dot">•</span>
+
+    $default  <a href="#rule_17">reduce using rule 17</a> (Tables)
+</p>
+
+<h3><a name="state_13" id="state_13"></a>State 13</h3>
+
+<p class="pre">  <a href="#rule_3">  3</a> <span class="i">OptInclude</span> → <b>"%empty"</b> <span class="dot">•</span>
+
+    $default  <a href="#rule_3">reduce using rule 3</a> (OptInclude)
+</p>
+
+<h3><a name="state_14" id="state_14"></a>State 14</h3>
+
+<p class="pre">  <a href="#rule_4">  4</a> <span class="i">OptInclude</span> → <b>"%include"</b> <span class="dot">•</span> <b>CODE</b>
+
+    CODE  <a href="#state_16">shift, and go to state 16</a>
+</p>
+
+<h3><a name="state_15" id="state_15"></a>State 15</h3>
+
+<p class="pre">  <a href="#rule_2">  2</a> <span class="i">Notation</span> → <b>"%notation"</b> <b>ID</b> <b>"%package"</b> <b>ID</b> <b>"%path"</b> <b>ID</b> <span class="i">Tables</span> <span class="i">OptInclude</span> <span class="dot">•</span> <span class="i">Tokens</span> <b>"%rules"</b> <span class="i">OptInclude</span> <span class="i">Rules</span> <span class="i">OptSemicolon</span>
+  <a href="#rule_5">  5</a> <span class="i">Tokens</span> → <span class="dot">•</span> %empty  ["%rules"]
+  <a href="#rule_6">  6</a>        | <span class="dot">•</span> <span class="i">TokenSpec</span> <span class="i">Tokens</span>
+  <a href="#rule_7">  7</a> <span class="i">TokenSpec</span> → <span class="dot">•</span> <b>"%left"</b> <span class="i">TypedTerminals</span>
+  <a href="#rule_8">  8</a>           | <span class="dot">•</span> <b>"%right"</b> <span class="i">TypedTerminals</span>
+  <a href="#rule_9">  9</a>           | <span class="dot">•</span> <b>"%non"</b> <span class="i">TypedTerminals</span>
+  <a href="#rule_10"> 10</a>           | <span class="dot">•</span> <b>"%token"</b> <span class="i">TypedTerminals</span>
+
+    "%token"  <a href="#state_17">shift, and go to state 17</a>
+    "%left"  <a href="#state_18">shift, and go to state 18</a>
+    "%right"  <a href="#state_19">shift, and go to state 19</a>
+    "%non"  <a href="#state_20">shift, and go to state 20</a>
+
+    $default  <a href="#rule_5">reduce using rule 5</a> (Tokens)
+
+    Tokens     <a href="#state_21">go to state 21</a>
+    TokenSpec  <a href="#state_22">go to state 22</a>
+</p>
+
+<h3><a name="state_16" id="state_16"></a>State 16</h3>
+
+<p class="pre">  <a href="#rule_4">  4</a> <span class="i">OptInclude</span> → <b>"%include"</b> <b>CODE</b> <span class="dot">•</span>
+
+    $default  <a href="#rule_4">reduce using rule 4</a> (OptInclude)
+</p>
+
+<h3><a name="state_17" id="state_17"></a>State 17</h3>
+
+<p class="pre">  <a href="#rule_10"> 10</a> <span class="i">TokenSpec</span> → <b>"%token"</b> <span class="dot">•</span> <span class="i">TypedTerminals</span>
+  <a href="#rule_11"> 11</a> <span class="i">TypedTerminals</span> → <span class="dot">•</span> <span class="i">TypedTerminal</span>
+  <a href="#rule_12"> 12</a>                | <span class="dot">•</span> <span class="i">TypedTerminal</span> <span class="i">TypedTerminals</span>
+  <a href="#rule_13"> 13</a> <span class="i">TypedTerminal</span> → <span class="dot">•</span> <b>ID</b> <b>":"</b> <span class="i">Type</span>
+  <a href="#rule_14"> 14</a>               | <span class="dot">•</span> <b>ID</b> <b>"("</b> <span class="i">Type</span> <b>")"</b>
+  <a href="#rule_15"> 15</a>               | <span class="dot">•</span> <b>ID</b>
+
+    ID  <a href="#state_23">shift, and go to state 23</a>
+
+    TypedTerminals  <a href="#state_24">go to state 24</a>
+    TypedTerminal   <a href="#state_25">go to state 25</a>
+</p>
+
+<h3><a name="state_18" id="state_18"></a>State 18</h3>
+
+<p class="pre">  <a href="#rule_7">  7</a> <span class="i">TokenSpec</span> → <b>"%left"</b> <span class="dot">•</span> <span class="i">TypedTerminals</span>
+  <a href="#rule_11"> 11</a> <span class="i">TypedTerminals</span> → <span class="dot">•</span> <span class="i">TypedTerminal</span>
+  <a href="#rule_12"> 12</a>                | <span class="dot">•</span> <span class="i">TypedTerminal</span> <span class="i">TypedTerminals</span>
+  <a href="#rule_13"> 13</a> <span class="i">TypedTerminal</span> → <span class="dot">•</span> <b>ID</b> <b>":"</b> <span class="i">Type</span>
+  <a href="#rule_14"> 14</a>               | <span class="dot">•</span> <b>ID</b> <b>"("</b> <span class="i">Type</span> <b>")"</b>
+  <a href="#rule_15"> 15</a>               | <span class="dot">•</span> <b>ID</b>
+
+    ID  <a href="#state_23">shift, and go to state 23</a>
+
+    TypedTerminals  <a href="#state_26">go to state 26</a>
+    TypedTerminal   <a href="#state_25">go to state 25</a>
+</p>
+
+<h3><a name="state_19" id="state_19"></a>State 19</h3>
+
+<p class="pre">  <a href="#rule_8">  8</a> <span class="i">TokenSpec</span> → <b>"%right"</b> <span class="dot">•</span> <span class="i">TypedTerminals</span>
+  <a href="#rule_11"> 11</a> <span class="i">TypedTerminals</span> → <span class="dot">•</span> <span class="i">TypedTerminal</span>
+  <a href="#rule_12"> 12</a>                | <span class="dot">•</span> <span class="i">TypedTerminal</span> <span class="i">TypedTerminals</span>
+  <a href="#rule_13"> 13</a> <span class="i">TypedTerminal</span> → <span class="dot">•</span> <b>ID</b> <b>":"</b> <span class="i">Type</span>
+  <a href="#rule_14"> 14</a>               | <span class="dot">•</span> <b>ID</b> <b>"("</b> <span class="i">Type</span> <b>")"</b>
+  <a href="#rule_15"> 15</a>               | <span class="dot">•</span> <b>ID</b>
+
+    ID  <a href="#state_23">shift, and go to state 23</a>
+
+    TypedTerminals  <a href="#state_27">go to state 27</a>
+    TypedTerminal   <a href="#state_25">go to state 25</a>
+</p>
+
+<h3><a name="state_20" id="state_20"></a>State 20</h3>
+
+<p class="pre">  <a href="#rule_9">  9</a> <span class="i">TokenSpec</span> → <b>"%non"</b> <span class="dot">•</span> <span class="i">TypedTerminals</span>
+  <a href="#rule_11"> 11</a> <span class="i">TypedTerminals</span> → <span class="dot">•</span> <span class="i">TypedTerminal</span>
+  <a href="#rule_12"> 12</a>                | <span class="dot">•</span> <span class="i">TypedTerminal</span> <span class="i">TypedTerminals</span>
+  <a href="#rule_13"> 13</a> <span class="i">TypedTerminal</span> → <span class="dot">•</span> <b>ID</b> <b>":"</b> <span class="i">Type</span>
+  <a href="#rule_14"> 14</a>               | <span class="dot">•</span> <b>ID</b> <b>"("</b> <span class="i">Type</span> <b>")"</b>
+  <a href="#rule_15"> 15</a>               | <span class="dot">•</span> <b>ID</b>
+
+    ID  <a href="#state_23">shift, and go to state 23</a>
+
+    TypedTerminals  <a href="#state_28">go to state 28</a>
+    TypedTerminal   <a href="#state_25">go to state 25</a>
+</p>
+
+<h3><a name="state_21" id="state_21"></a>State 21</h3>
+
+<p class="pre">  <a href="#rule_2">  2</a> <span class="i">Notation</span> → <b>"%notation"</b> <b>ID</b> <b>"%package"</b> <b>ID</b> <b>"%path"</b> <b>ID</b> <span class="i">Tables</span> <span class="i">OptInclude</span> <span class="i">Tokens</span> <span class="dot">•</span> <b>"%rules"</b> <span class="i">OptInclude</span> <span class="i">Rules</span> <span class="i">OptSemicolon</span>
+
+    "%rules"  <a href="#state_29">shift, and go to state 29</a>
+</p>
+
+<h3><a name="state_22" id="state_22"></a>State 22</h3>
+
+<p class="pre">  <a href="#rule_5">  5</a> <span class="i">Tokens</span> → <span class="dot">•</span> %empty  ["%rules"]
+  <a href="#rule_6">  6</a>        | <span class="dot">•</span> <span class="i">TokenSpec</span> <span class="i">Tokens</span>
+  <a href="#rule_6">  6</a>        | <span class="i">TokenSpec</span> <span class="dot">•</span> <span class="i">Tokens</span>
+  <a href="#rule_7">  7</a> <span class="i">TokenSpec</span> → <span class="dot">•</span> <b>"%left"</b> <span class="i">TypedTerminals</span>
+  <a href="#rule_8">  8</a>           | <span class="dot">•</span> <b>"%right"</b> <span class="i">TypedTerminals</span>
+  <a href="#rule_9">  9</a>           | <span class="dot">•</span> <b>"%non"</b> <span class="i">TypedTerminals</span>
+  <a href="#rule_10"> 10</a>           | <span class="dot">•</span> <b>"%token"</b> <span class="i">TypedTerminals</span>
+
+    "%token"  <a href="#state_17">shift, and go to state 17</a>
+    "%left"  <a href="#state_18">shift, and go to state 18</a>
+    "%right"  <a href="#state_19">shift, and go to state 19</a>
+    "%non"  <a href="#state_20">shift, and go to state 20</a>
+
+    $default  <a href="#rule_5">reduce using rule 5</a> (Tokens)
+
+    Tokens     <a href="#state_30">go to state 30</a>
+    TokenSpec  <a href="#state_22">go to state 22</a>
+</p>
+
+<h3><a name="state_23" id="state_23"></a>State 23</h3>
+
+<p class="pre">  <a href="#rule_13"> 13</a> <span class="i">TypedTerminal</span> → <b>ID</b> <span class="dot">•</span> <b>":"</b> <span class="i">Type</span>
+  <a href="#rule_14"> 14</a>               | <b>ID</b> <span class="dot">•</span> <b>"("</b> <span class="i">Type</span> <b>")"</b>
+  <a href="#rule_15"> 15</a>               | <b>ID</b> <span class="dot">•</span>  [ID, "%token", "%left", "%right", "%non", "%rules"]
+
+    ":"  <a href="#state_31">shift, and go to state 31</a>
+    "("  <a href="#state_32">shift, and go to state 32</a>
+
+    $default  <a href="#rule_15">reduce using rule 15</a> (TypedTerminal)
+</p>
+
+<h3><a name="state_24" id="state_24"></a>State 24</h3>
+
+<p class="pre">  <a href="#rule_10"> 10</a> <span class="i">TokenSpec</span> → <b>"%token"</b> <span class="i">TypedTerminals</span> <span class="dot">•</span>
+
+    $default  <a href="#rule_10">reduce using rule 10</a> (TokenSpec)
+</p>
+
+<h3><a name="state_25" id="state_25"></a>State 25</h3>
+
+<p class="pre">  <a href="#rule_11"> 11</a> <span class="i">TypedTerminals</span> → <span class="dot">•</span> <span class="i">TypedTerminal</span>
+  <a href="#rule_11"> 11</a>                | <span class="i">TypedTerminal</span> <span class="dot">•</span>  ["%token", "%left", "%right", "%non", "%rules"]
+  <a href="#rule_12"> 12</a>                | <span class="dot">•</span> <span class="i">TypedTerminal</span> <span class="i">TypedTerminals</span>
+  <a href="#rule_12"> 12</a>                | <span class="i">TypedTerminal</span> <span class="dot">•</span> <span class="i">TypedTerminals</span>
+  <a href="#rule_13"> 13</a> <span class="i">TypedTerminal</span> → <span class="dot">•</span> <b>ID</b> <b>":"</b> <span class="i">Type</span>
+  <a href="#rule_14"> 14</a>               | <span class="dot">•</span> <b>ID</b> <b>"("</b> <span class="i">Type</span> <b>")"</b>
+  <a href="#rule_15"> 15</a>               | <span class="dot">•</span> <b>ID</b>
+
+    ID  <a href="#state_23">shift, and go to state 23</a>
+
+    $default  <a href="#rule_11">reduce using rule 11</a> (TypedTerminals)
+
+    TypedTerminals  <a href="#state_33">go to state 33</a>
+    TypedTerminal   <a href="#state_25">go to state 25</a>
+</p>
+
+<h3><a name="state_26" id="state_26"></a>State 26</h3>
+
+<p class="pre">  <a href="#rule_7">  7</a> <span class="i">TokenSpec</span> → <b>"%left"</b> <span class="i">TypedTerminals</span> <span class="dot">•</span>
+
+    $default  <a href="#rule_7">reduce using rule 7</a> (TokenSpec)
+</p>
+
+<h3><a name="state_27" id="state_27"></a>State 27</h3>
+
+<p class="pre">  <a href="#rule_8">  8</a> <span class="i">TokenSpec</span> → <b>"%right"</b> <span class="i">TypedTerminals</span> <span class="dot">•</span>
+
+    $default  <a href="#rule_8">reduce using rule 8</a> (TokenSpec)
+</p>
+
+<h3><a name="state_28" id="state_28"></a>State 28</h3>
+
+<p class="pre">  <a href="#rule_9">  9</a> <span class="i">TokenSpec</span> → <b>"%non"</b> <span class="i">TypedTerminals</span> <span class="dot">•</span>
+
+    $default  <a href="#rule_9">reduce using rule 9</a> (TokenSpec)
+</p>
+
+<h3><a name="state_29" id="state_29"></a>State 29</h3>
+
+<p class="pre">  <a href="#rule_2">  2</a> <span class="i">Notation</span> → <b>"%notation"</b> <b>ID</b> <b>"%package"</b> <b>ID</b> <b>"%path"</b> <b>ID</b> <span class="i">Tables</span> <span class="i">OptInclude</span> <span class="i">Tokens</span> <b>"%rules"</b> <span class="dot">•</span> <span class="i">OptInclude</span> <span class="i">Rules</span> <span class="i">OptSemicolon</span>
+  <a href="#rule_3">  3</a> <span class="i">OptInclude</span> → <span class="dot">•</span> <b>"%empty"</b>
+  <a href="#rule_4">  4</a>            | <span class="dot">•</span> <b>"%include"</b> <b>CODE</b>
+
+    "%empty"  <a href="#state_13">shift, and go to state 13</a>
+    "%include"  <a href="#state_14">shift, and go to state 14</a>
+
+    OptInclude  <a href="#state_34">go to state 34</a>
+</p>
+
+<h3><a name="state_30" id="state_30"></a>State 30</h3>
+
+<p class="pre">  <a href="#rule_6">  6</a> <span class="i">Tokens</span> → <span class="i">TokenSpec</span> <span class="i">Tokens</span> <span class="dot">•</span>
+
+    $default  <a href="#rule_6">reduce using rule 6</a> (Tokens)
+</p>
+
+<h3><a name="state_31" id="state_31"></a>State 31</h3>
+
+<p class="pre">  <a href="#rule_13"> 13</a> <span class="i">TypedTerminal</span> → <b>ID</b> <b>":"</b> <span class="dot">•</span> <span class="i">Type</span>
+  <a href="#rule_37"> 37</a> <span class="i">Type</span> → <span class="dot">•</span> <b>ID</b>
+  <a href="#rule_38"> 38</a>      | <span class="dot">•</span> <b>ID</b> <b>"["</b> <span class="i">Types</span> <b>"]"</b>
+  <a href="#rule_39"> 39</a>      | <span class="dot">•</span> <b>"("</b> <span class="i">Types</span> <b>")"</b>
+  <a href="#rule_40"> 40</a>      | <span class="dot">•</span> <b>"("</b> <b>")"</b>
+
+    ID      <a href="#state_35">shift, and go to state 35</a>
+    "("  <a href="#state_36">shift, and go to state 36</a>
+
+    Type  <a href="#state_37">go to state 37</a>
+</p>
+
+<h3><a name="state_32" id="state_32"></a>State 32</h3>
+
+<p class="pre">  <a href="#rule_14"> 14</a> <span class="i">TypedTerminal</span> → <b>ID</b> <b>"("</b> <span class="dot">•</span> <span class="i">Type</span> <b>")"</b>
+  <a href="#rule_37"> 37</a> <span class="i">Type</span> → <span class="dot">•</span> <b>ID</b>
+  <a href="#rule_38"> 38</a>      | <span class="dot">•</span> <b>ID</b> <b>"["</b> <span class="i">Types</span> <b>"]"</b>
+  <a href="#rule_39"> 39</a>      | <span class="dot">•</span> <b>"("</b> <span class="i">Types</span> <b>")"</b>
+  <a href="#rule_40"> 40</a>      | <span class="dot">•</span> <b>"("</b> <b>")"</b>
+
+    ID      <a href="#state_35">shift, and go to state 35</a>
+    "("  <a href="#state_36">shift, and go to state 36</a>
+
+    Type  <a href="#state_38">go to state 38</a>
+</p>
+
+<h3><a name="state_33" id="state_33"></a>State 33</h3>
+
+<p class="pre">  <a href="#rule_12"> 12</a> <span class="i">TypedTerminals</span> → <span class="i">TypedTerminal</span> <span class="i">TypedTerminals</span> <span class="dot">•</span>
+
+    $default  <a href="#rule_12">reduce using rule 12</a> (TypedTerminals)
+</p>
+
+<h3><a name="state_34" id="state_34"></a>State 34</h3>
+
+<p class="pre">  <a href="#rule_2">  2</a> <span class="i">Notation</span> → <b>"%notation"</b> <b>ID</b> <b>"%package"</b> <b>ID</b> <b>"%path"</b> <b>ID</b> <span class="i">Tables</span> <span class="i">OptInclude</span> <span class="i">Tokens</span> <b>"%rules"</b> <span class="i">OptInclude</span> <span class="dot">•</span> <span class="i">Rules</span> <span class="i">OptSemicolon</span>
+  <a href="#rule_18"> 18</a> <span class="i">Rules</span> → <span class="dot">•</span> <span class="i">Rule</span>
+  <a href="#rule_19"> 19</a>       | <span class="dot">•</span> <span class="i">Rules</span> <b>";"</b> <span class="i">Rule</span>
+  <a href="#rule_20"> 20</a> <span class="i">Rule</span> → <span class="dot">•</span> <span class="i">LHS</span> <b>"="</b> <span class="i">RHS</span>
+  <a href="#rule_23"> 23</a> <span class="i">LHS</span> → <span class="dot">•</span> <b>ID</b> <b>":"</b> <span class="i">Type</span>
+  <a href="#rule_24"> 24</a>     | <span class="dot">•</span> <b>ID</b>
+
+    ID  <a href="#state_39">shift, and go to state 39</a>
+
+    Rules  <a href="#state_40">go to state 40</a>
+    Rule   <a href="#state_41">go to state 41</a>
+    LHS    <a href="#state_42">go to state 42</a>
+</p>
+
+<h3><a name="state_35" id="state_35"></a>State 35</h3>
+
+<p class="pre">  <a href="#rule_37"> 37</a> <span class="i">Type</span> → <b>ID</b> <span class="dot">•</span>  [ID, "]", "=", ")", ",", "%token", "%left", "%right", "%non", "%rules"]
+  <a href="#rule_38"> 38</a>      | <b>ID</b> <span class="dot">•</span> <b>"["</b> <span class="i">Types</span> <b>"]"</b>
+
+    "["  <a href="#state_43">shift, and go to state 43</a>
+
+    $default  <a href="#rule_37">reduce using rule 37</a> (Type)
+</p>
+
+<h3><a name="state_36" id="state_36"></a>State 36</h3>
+
+<p class="pre">  <a href="#rule_37"> 37</a> <span class="i">Type</span> → <span class="dot">•</span> <b>ID</b>
+  <a href="#rule_38"> 38</a>      | <span class="dot">•</span> <b>ID</b> <b>"["</b> <span class="i">Types</span> <b>"]"</b>
+  <a href="#rule_39"> 39</a>      | <span class="dot">•</span> <b>"("</b> <span class="i">Types</span> <b>")"</b>
+  <a href="#rule_39"> 39</a>      | <b>"("</b> <span class="dot">•</span> <span class="i">Types</span> <b>")"</b>
+  <a href="#rule_40"> 40</a>      | <span class="dot">•</span> <b>"("</b> <b>")"</b>
+  <a href="#rule_40"> 40</a>      | <b>"("</b> <span class="dot">•</span> <b>")"</b>
+  <a href="#rule_41"> 41</a> <span class="i">Types</span> → <span class="dot">•</span> <span class="i">Type</span>
+  <a href="#rule_42"> 42</a>       | <span class="dot">•</span> <span class="i">Type</span> <b>","</b> <span class="i">Types</span>
+
+    ID      <a href="#state_35">shift, and go to state 35</a>
+    "("  <a href="#state_36">shift, and go to state 36</a>
+    ")"  <a href="#state_44">shift, and go to state 44</a>
+
+    Type   <a href="#state_45">go to state 45</a>
+    Types  <a href="#state_46">go to state 46</a>
+</p>
+
+<h3><a name="state_37" id="state_37"></a>State 37</h3>
+
+<p class="pre">  <a href="#rule_13"> 13</a> <span class="i">TypedTerminal</span> → <b>ID</b> <b>":"</b> <span class="i">Type</span> <span class="dot">•</span>
+
+    $default  <a href="#rule_13">reduce using rule 13</a> (TypedTerminal)
+</p>
+
+<h3><a name="state_38" id="state_38"></a>State 38</h3>
+
+<p class="pre">  <a href="#rule_14"> 14</a> <span class="i">TypedTerminal</span> → <b>ID</b> <b>"("</b> <span class="i">Type</span> <span class="dot">•</span> <b>")"</b>
+
+    ")"  <a href="#state_47">shift, and go to state 47</a>
+</p>
+
+<h3><a name="state_39" id="state_39"></a>State 39</h3>
+
+<p class="pre">  <a href="#rule_23"> 23</a> <span class="i">LHS</span> → <b>ID</b> <span class="dot">•</span> <b>":"</b> <span class="i">Type</span>
+  <a href="#rule_24"> 24</a>     | <b>ID</b> <span class="dot">•</span>  ["="]
+
+    ":"  <a href="#state_48">shift, and go to state 48</a>
+
+    $default  <a href="#rule_24">reduce using rule 24</a> (LHS)
+</p>
+
+<h3><a name="state_40" id="state_40"></a>State 40</h3>
+
+<p class="pre">  <a href="#rule_2">  2</a> <span class="i">Notation</span> → <b>"%notation"</b> <b>ID</b> <b>"%package"</b> <b>ID</b> <b>"%path"</b> <b>ID</b> <span class="i">Tables</span> <span class="i">OptInclude</span> <span class="i">Tokens</span> <b>"%rules"</b> <span class="i">OptInclude</span> <span class="i">Rules</span> <span class="dot">•</span> <span class="i">OptSemicolon</span>
+  <a href="#rule_19"> 19</a> <span class="i">Rules</span> → <span class="i">Rules</span> <span class="dot">•</span> <b>";"</b> <span class="i">Rule</span>
+  <a href="#rule_21"> 21</a> <span class="i">OptSemicolon</span> → <span class="dot">•</span> %empty  [$end]
+  <a href="#rule_22"> 22</a>              | <span class="dot">•</span> <b>";"</b>
+
+    ";"  <a href="#state_49">shift, and go to state 49</a>
+
+    $default  <a href="#rule_21">reduce using rule 21</a> (OptSemicolon)
+
+    OptSemicolon  <a href="#state_50">go to state 50</a>
+</p>
+
+<h3><a name="state_41" id="state_41"></a>State 41</h3>
+
+<p class="pre">  <a href="#rule_18"> 18</a> <span class="i">Rules</span> → <span class="i">Rule</span> <span class="dot">•</span>
+
+    $default  <a href="#rule_18">reduce using rule 18</a> (Rules)
+</p>
+
+<h3><a name="state_42" id="state_42"></a>State 42</h3>
+
+<p class="pre">  <a href="#rule_20"> 20</a> <span class="i">Rule</span> → <span class="i">LHS</span> <span class="dot">•</span> <b>"="</b> <span class="i">RHS</span>
+
+    "="  <a href="#state_51">shift, and go to state 51</a>
+</p>
+
+<h3><a name="state_43" id="state_43"></a>State 43</h3>
+
+<p class="pre">  <a href="#rule_37"> 37</a> <span class="i">Type</span> → <span class="dot">•</span> <b>ID</b>
+  <a href="#rule_38"> 38</a>      | <span class="dot">•</span> <b>ID</b> <b>"["</b> <span class="i">Types</span> <b>"]"</b>
+  <a href="#rule_38"> 38</a>      | <b>ID</b> <b>"["</b> <span class="dot">•</span> <span class="i">Types</span> <b>"]"</b>
+  <a href="#rule_39"> 39</a>      | <span class="dot">•</span> <b>"("</b> <span class="i">Types</span> <b>")"</b>
+  <a href="#rule_40"> 40</a>      | <span class="dot">•</span> <b>"("</b> <b>")"</b>
+  <a href="#rule_41"> 41</a> <span class="i">Types</span> → <span class="dot">•</span> <span class="i">Type</span>
+  <a href="#rule_42"> 42</a>       | <span class="dot">•</span> <span class="i">Type</span> <b>","</b> <span class="i">Types</span>
+
+    ID      <a href="#state_35">shift, and go to state 35</a>
+    "("  <a href="#state_36">shift, and go to state 36</a>
+
+    Type   <a href="#state_45">go to state 45</a>
+    Types  <a href="#state_52">go to state 52</a>
+</p>
+
+<h3><a name="state_44" id="state_44"></a>State 44</h3>
+
+<p class="pre">  <a href="#rule_40"> 40</a> <span class="i">Type</span> → <b>"("</b> <b>")"</b> <span class="dot">•</span>
+
+    $default  <a href="#rule_40">reduce using rule 40</a> (Type)
+</p>
+
+<h3><a name="state_45" id="state_45"></a>State 45</h3>
+
+<p class="pre">  <a href="#rule_41"> 41</a> <span class="i">Types</span> → <span class="i">Type</span> <span class="dot">•</span>  ["]", ")"]
+  <a href="#rule_42"> 42</a>       | <span class="i">Type</span> <span class="dot">•</span> <b>","</b> <span class="i">Types</span>
+
+    ","  <a href="#state_53">shift, and go to state 53</a>
+
+    $default  <a href="#rule_41">reduce using rule 41</a> (Types)
+</p>
+
+<h3><a name="state_46" id="state_46"></a>State 46</h3>
+
+<p class="pre">  <a href="#rule_39"> 39</a> <span class="i">Type</span> → <b>"("</b> <span class="i">Types</span> <span class="dot">•</span> <b>")"</b>
+
+    ")"  <a href="#state_54">shift, and go to state 54</a>
+</p>
+
+<h3><a name="state_47" id="state_47"></a>State 47</h3>
+
+<p class="pre">  <a href="#rule_14"> 14</a> <span class="i">TypedTerminal</span> → <b>ID</b> <b>"("</b> <span class="i">Type</span> <b>")"</b> <span class="dot">•</span>
+
+    $default  <a href="#rule_14">reduce using rule 14</a> (TypedTerminal)
+</p>
+
+<h3><a name="state_48" id="state_48"></a>State 48</h3>
+
+<p class="pre">  <a href="#rule_23"> 23</a> <span class="i">LHS</span> → <b>ID</b> <b>":"</b> <span class="dot">•</span> <span class="i">Type</span>
+  <a href="#rule_37"> 37</a> <span class="i">Type</span> → <span class="dot">•</span> <b>ID</b>
+  <a href="#rule_38"> 38</a>      | <span class="dot">•</span> <b>ID</b> <b>"["</b> <span class="i">Types</span> <b>"]"</b>
+  <a href="#rule_39"> 39</a>      | <span class="dot">•</span> <b>"("</b> <span class="i">Types</span> <b>")"</b>
+  <a href="#rule_40"> 40</a>      | <span class="dot">•</span> <b>"("</b> <b>")"</b>
+
+    ID      <a href="#state_35">shift, and go to state 35</a>
+    "("  <a href="#state_36">shift, and go to state 36</a>
+
+    Type  <a href="#state_55">go to state 55</a>
+</p>
+
+<h3><a name="state_49" id="state_49"></a>State 49</h3>
+
+<p class="pre">  <a href="#rule_19"> 19</a> <span class="i">Rules</span> → <span class="i">Rules</span> <b>";"</b> <span class="dot">•</span> <span class="i">Rule</span>
+  <a href="#rule_20"> 20</a> <span class="i">Rule</span> → <span class="dot">•</span> <span class="i">LHS</span> <b>"="</b> <span class="i">RHS</span>
+  <a href="#rule_22"> 22</a> <span class="i">OptSemicolon</span> → <b>";"</b> <span class="dot">•</span>  [$end]
+  <a href="#rule_23"> 23</a> <span class="i">LHS</span> → <span class="dot">•</span> <b>ID</b> <b>":"</b> <span class="i">Type</span>
+  <a href="#rule_24"> 24</a>     | <span class="dot">•</span> <b>ID</b>
+
+    ID  <a href="#state_39">shift, and go to state 39</a>
+
+    $default  <a href="#rule_22">reduce using rule 22</a> (OptSemicolon)
+
+    Rule  <a href="#state_56">go to state 56</a>
+    LHS   <a href="#state_42">go to state 42</a>
+</p>
+
+<h3><a name="state_50" id="state_50"></a>State 50</h3>
+
+<p class="pre">  <a href="#rule_2">  2</a> <span class="i">Notation</span> → <b>"%notation"</b> <b>ID</b> <b>"%package"</b> <b>ID</b> <b>"%path"</b> <b>ID</b> <span class="i">Tables</span> <span class="i">OptInclude</span> <span class="i">Tokens</span> <b>"%rules"</b> <span class="i">OptInclude</span> <span class="i">Rules</span> <span class="i">OptSemicolon</span> <span class="dot">•</span>
+
+    $default  <a href="#rule_2">reduce using rule 2</a> (Notation)
+</p>
+
+<h3><a name="state_51" id="state_51"></a>State 51</h3>
+
+<p class="pre">  <a href="#rule_20"> 20</a> <span class="i">Rule</span> → <span class="i">LHS</span> <b>"="</b> <span class="dot">•</span> <span class="i">RHS</span>
+  <a href="#rule_25"> 25</a> <span class="i">RHS</span> → <span class="dot">•</span> <span class="i">Production</span>
+  <a href="#rule_26"> 26</a>     | <span class="dot">•</span> <span class="i">Production</span> <b>"|"</b> <span class="i">RHS</span>
+  <a href="#rule_27"> 27</a> <span class="i">Production</span> → <span class="dot">•</span> <span class="i">NamedFields</span> <span class="i">Action</span> <span class="i">Precedence</span>
+  <a href="#rule_28"> 28</a> <span class="i">NamedFields</span> → <span class="dot">•</span> <b>"%empty"</b>
+  <a href="#rule_29"> 29</a>             | <span class="dot">•</span> <span class="i">NamedField</span>
+  <a href="#rule_30"> 30</a>             | <span class="dot">•</span> <span class="i">NamedField</span> <span class="i">NamedFields</span>
+  <a href="#rule_31"> 31</a> <span class="i">NamedField</span> → <span class="dot">•</span> <b>ID</b>
+  <a href="#rule_32"> 32</a>            | <span class="dot">•</span> <b>ID</b> <b>":"</b> <b>ID</b>
+
+    ID      <a href="#state_57">shift, and go to state 57</a>
+    "%empty"  <a href="#state_58">shift, and go to state 58</a>
+
+    RHS          <a href="#state_59">go to state 59</a>
+    Production   <a href="#state_60">go to state 60</a>
+    NamedFields  <a href="#state_61">go to state 61</a>
+    NamedField   <a href="#state_62">go to state 62</a>
+</p>
+
+<h3><a name="state_52" id="state_52"></a>State 52</h3>
+
+<p class="pre">  <a href="#rule_38"> 38</a> <span class="i">Type</span> → <b>ID</b> <b>"["</b> <span class="i">Types</span> <span class="dot">•</span> <b>"]"</b>
+
+    "]"  <a href="#state_63">shift, and go to state 63</a>
+</p>
+
+<h3><a name="state_53" id="state_53"></a>State 53</h3>
+
+<p class="pre">  <a href="#rule_37"> 37</a> <span class="i">Type</span> → <span class="dot">•</span> <b>ID</b>
+  <a href="#rule_38"> 38</a>      | <span class="dot">•</span> <b>ID</b> <b>"["</b> <span class="i">Types</span> <b>"]"</b>
+  <a href="#rule_39"> 39</a>      | <span class="dot">•</span> <b>"("</b> <span class="i">Types</span> <b>")"</b>
+  <a href="#rule_40"> 40</a>      | <span class="dot">•</span> <b>"("</b> <b>")"</b>
+  <a href="#rule_41"> 41</a> <span class="i">Types</span> → <span class="dot">•</span> <span class="i">Type</span>
+  <a href="#rule_42"> 42</a>       | <span class="dot">•</span> <span class="i">Type</span> <b>","</b> <span class="i">Types</span>
+  <a href="#rule_42"> 42</a>       | <span class="i">Type</span> <b>","</b> <span class="dot">•</span> <span class="i">Types</span>
+
+    ID      <a href="#state_35">shift, and go to state 35</a>
+    "("  <a href="#state_36">shift, and go to state 36</a>
+
+    Type   <a href="#state_45">go to state 45</a>
+    Types  <a href="#state_64">go to state 64</a>
+</p>
+
+<h3><a name="state_54" id="state_54"></a>State 54</h3>
+
+<p class="pre">  <a href="#rule_39"> 39</a> <span class="i">Type</span> → <b>"("</b> <span class="i">Types</span> <b>")"</b> <span class="dot">•</span>
+
+    $default  <a href="#rule_39">reduce using rule 39</a> (Type)
+</p>
+
+<h3><a name="state_55" id="state_55"></a>State 55</h3>
+
+<p class="pre">  <a href="#rule_23"> 23</a> <span class="i">LHS</span> → <b>ID</b> <b>":"</b> <span class="i">Type</span> <span class="dot">•</span>
+
+    $default  <a href="#rule_23">reduce using rule 23</a> (LHS)
+</p>
+
+<h3><a name="state_56" id="state_56"></a>State 56</h3>
+
+<p class="pre">  <a href="#rule_19"> 19</a> <span class="i">Rules</span> → <span class="i">Rules</span> <b>";"</b> <span class="i">Rule</span> <span class="dot">•</span>
+
+    $default  <a href="#rule_19">reduce using rule 19</a> (Rules)
+</p>
+
+<h3><a name="state_57" id="state_57"></a>State 57</h3>
+
+<p class="pre">  <a href="#rule_31"> 31</a> <span class="i">NamedField</span> → <b>ID</b> <span class="dot">•</span>  [$end, ID, CODE, ";", "|", "%empty", "%prec"]
+  <a href="#rule_32"> 32</a>            | <b>ID</b> <span class="dot">•</span> <b>":"</b> <b>ID</b>
+
+    ":"  <a href="#state_65">shift, and go to state 65</a>
+
+    $default  <a href="#rule_31">reduce using rule 31</a> (NamedField)
+</p>
+
+<h3><a name="state_58" id="state_58"></a>State 58</h3>
+
+<p class="pre">  <a href="#rule_28"> 28</a> <span class="i">NamedFields</span> → <b>"%empty"</b> <span class="dot">•</span>
+
+    $default  <a href="#rule_28">reduce using rule 28</a> (NamedFields)
+</p>
+
+<h3><a name="state_59" id="state_59"></a>State 59</h3>
+
+<p class="pre">  <a href="#rule_20"> 20</a> <span class="i">Rule</span> → <span class="i">LHS</span> <b>"="</b> <span class="i">RHS</span> <span class="dot">•</span>
+
+    $default  <a href="#rule_20">reduce using rule 20</a> (Rule)
+</p>
+
+<h3><a name="state_60" id="state_60"></a>State 60</h3>
+
+<p class="pre">  <a href="#rule_25"> 25</a> <span class="i">RHS</span> → <span class="i">Production</span> <span class="dot">•</span>  [$end, ";"]
+  <a href="#rule_26"> 26</a>     | <span class="i">Production</span> <span class="dot">•</span> <b>"|"</b> <span class="i">RHS</span>
+
+    "|"  <a href="#state_66">shift, and go to state 66</a>
+
+    $default  <a href="#rule_25">reduce using rule 25</a> (RHS)
+</p>
+
+<h3><a name="state_61" id="state_61"></a>State 61</h3>
+
+<p class="pre">  <a href="#rule_27"> 27</a> <span class="i">Production</span> → <span class="i">NamedFields</span> <span class="dot">•</span> <span class="i">Action</span> <span class="i">Precedence</span>
+  <a href="#rule_33"> 33</a> <span class="i">Action</span> → <span class="dot">•</span> %empty  [$end, ";", "|", "%prec"]
+  <a href="#rule_34"> 34</a>        | <span class="dot">•</span> <b>CODE</b>
+
+    CODE  <a href="#state_67">shift, and go to state 67</a>
+
+    $default  <a href="#rule_33">reduce using rule 33</a> (Action)
+
+    Action  <a href="#state_68">go to state 68</a>
+</p>
+
+<h3><a name="state_62" id="state_62"></a>State 62</h3>
+
+<p class="pre">  <a href="#rule_28"> 28</a> <span class="i">NamedFields</span> → <span class="dot">•</span> <b>"%empty"</b>
+  <a href="#rule_29"> 29</a>             | <span class="dot">•</span> <span class="i">NamedField</span>
+  <a href="#rule_29"> 29</a>             | <span class="i">NamedField</span> <span class="dot">•</span>  [$end, CODE, ";", "|", "%prec"]
+  <a href="#rule_30"> 30</a>             | <span class="dot">•</span> <span class="i">NamedField</span> <span class="i">NamedFields</span>
+  <a href="#rule_30"> 30</a>             | <span class="i">NamedField</span> <span class="dot">•</span> <span class="i">NamedFields</span>
+  <a href="#rule_31"> 31</a> <span class="i">NamedField</span> → <span class="dot">•</span> <b>ID</b>
+  <a href="#rule_32"> 32</a>            | <span class="dot">•</span> <b>ID</b> <b>":"</b> <b>ID</b>
+
+    ID      <a href="#state_57">shift, and go to state 57</a>
+    "%empty"  <a href="#state_58">shift, and go to state 58</a>
+
+    $default  <a href="#rule_29">reduce using rule 29</a> (NamedFields)
+
+    NamedFields  <a href="#state_69">go to state 69</a>
+    NamedField   <a href="#state_62">go to state 62</a>
+</p>
+
+<h3><a name="state_63" id="state_63"></a>State 63</h3>
+
+<p class="pre">  <a href="#rule_38"> 38</a> <span class="i">Type</span> → <b>ID</b> <b>"["</b> <span class="i">Types</span> <b>"]"</b> <span class="dot">•</span>
+
+    $default  <a href="#rule_38">reduce using rule 38</a> (Type)
+</p>
+
+<h3><a name="state_64" id="state_64"></a>State 64</h3>
+
+<p class="pre">  <a href="#rule_42"> 42</a> <span class="i">Types</span> → <span class="i">Type</span> <b>","</b> <span class="i">Types</span> <span class="dot">•</span>
+
+    $default  <a href="#rule_42">reduce using rule 42</a> (Types)
+</p>
+
+<h3><a name="state_65" id="state_65"></a>State 65</h3>
+
+<p class="pre">  <a href="#rule_32"> 32</a> <span class="i">NamedField</span> → <b>ID</b> <b>":"</b> <span class="dot">•</span> <b>ID</b>
+
+    ID  <a href="#state_70">shift, and go to state 70</a>
+</p>
+
+<h3><a name="state_66" id="state_66"></a>State 66</h3>
+
+<p class="pre">  <a href="#rule_25"> 25</a> <span class="i">RHS</span> → <span class="dot">•</span> <span class="i">Production</span>
+  <a href="#rule_26"> 26</a>     | <span class="dot">•</span> <span class="i">Production</span> <b>"|"</b> <span class="i">RHS</span>
+  <a href="#rule_26"> 26</a>     | <span class="i">Production</span> <b>"|"</b> <span class="dot">•</span> <span class="i">RHS</span>
+  <a href="#rule_27"> 27</a> <span class="i">Production</span> → <span class="dot">•</span> <span class="i">NamedFields</span> <span class="i">Action</span> <span class="i">Precedence</span>
+  <a href="#rule_28"> 28</a> <span class="i">NamedFields</span> → <span class="dot">•</span> <b>"%empty"</b>
+  <a href="#rule_29"> 29</a>             | <span class="dot">•</span> <span class="i">NamedField</span>
+  <a href="#rule_30"> 30</a>             | <span class="dot">•</span> <span class="i">NamedField</span> <span class="i">NamedFields</span>
+  <a href="#rule_31"> 31</a> <span class="i">NamedField</span> → <span class="dot">•</span> <b>ID</b>
+  <a href="#rule_32"> 32</a>            | <span class="dot">•</span> <b>ID</b> <b>":"</b> <b>ID</b>
+
+    ID      <a href="#state_57">shift, and go to state 57</a>
+    "%empty"  <a href="#state_58">shift, and go to state 58</a>
+
+    RHS          <a href="#state_71">go to state 71</a>
+    Production   <a href="#state_60">go to state 60</a>
+    NamedFields  <a href="#state_61">go to state 61</a>
+    NamedField   <a href="#state_62">go to state 62</a>
+</p>
+
+<h3><a name="state_67" id="state_67"></a>State 67</h3>
+
+<p class="pre">  <a href="#rule_34"> 34</a> <span class="i">Action</span> → <b>CODE</b> <span class="dot">•</span>
+
+    $default  <a href="#rule_34">reduce using rule 34</a> (Action)
+</p>
+
+<h3><a name="state_68" id="state_68"></a>State 68</h3>
+
+<p class="pre">  <a href="#rule_27"> 27</a> <span class="i">Production</span> → <span class="i">NamedFields</span> <span class="i">Action</span> <span class="dot">•</span> <span class="i">Precedence</span>
+  <a href="#rule_35"> 35</a> <span class="i">Precedence</span> → <span class="dot">•</span> %empty  [$end, ";", "|"]
+  <a href="#rule_36"> 36</a>            | <span class="dot">•</span> <b>"%prec"</b> <b>ID</b>
+
+    "%prec"  <a href="#state_72">shift, and go to state 72</a>
+
+    $default  <a href="#rule_35">reduce using rule 35</a> (Precedence)
+
+    Precedence  <a href="#state_73">go to state 73</a>
+</p>
+
+<h3><a name="state_69" id="state_69"></a>State 69</h3>
+
+<p class="pre">  <a href="#rule_30"> 30</a> <span class="i">NamedFields</span> → <span class="i">NamedField</span> <span class="i">NamedFields</span> <span class="dot">•</span>
+
+    $default  <a href="#rule_30">reduce using rule 30</a> (NamedFields)
+</p>
+
+<h3><a name="state_70" id="state_70"></a>State 70</h3>
+
+<p class="pre">  <a href="#rule_32"> 32</a> <span class="i">NamedField</span> → <b>ID</b> <b>":"</b> <b>ID</b> <span class="dot">•</span>
+
+    $default  <a href="#rule_32">reduce using rule 32</a> (NamedField)
+</p>
+
+<h3><a name="state_71" id="state_71"></a>State 71</h3>
+
+<p class="pre">  <a href="#rule_26"> 26</a> <span class="i">RHS</span> → <span class="i">Production</span> <b>"|"</b> <span class="i">RHS</span> <span class="dot">•</span>
+
+    $default  <a href="#rule_26">reduce using rule 26</a> (RHS)
+</p>
+
+<h3><a name="state_72" id="state_72"></a>State 72</h3>
+
+<p class="pre">  <a href="#rule_36"> 36</a> <span class="i">Precedence</span> → <b>"%prec"</b> <span class="dot">•</span> <b>ID</b>
+
+    ID  <a href="#state_74">shift, and go to state 74</a>
+</p>
+
+<h3><a name="state_73" id="state_73"></a>State 73</h3>
+
+<p class="pre">  <a href="#rule_27"> 27</a> <span class="i">Production</span> → <span class="i">NamedFields</span> <span class="i">Action</span> <span class="i">Precedence</span> <span class="dot">•</span>
+
+    $default  <a href="#rule_27">reduce using rule 27</a> (Production)
+</p>
+
+<h3><a name="state_74" id="state_74"></a>State 74</h3>
+
+<p class="pre">  <a href="#rule_36"> 36</a> <span class="i">Precedence</span> → <b>"%prec"</b> <b>ID</b> <span class="dot">•</span>
+
+    $default  <a href="#rule_36">reduce using rule 36</a> (Precedence)
+</p>
+
+<div id="footer"><hr />This document was generated using
+      <a href="https://www.gnu.org/software/bison/" title="GNU Bison">
+      GNU Bison 3.8.2</a>
+      XML Automaton Report.<br />
+      Verbatim copying and distribution of this entire page is
+      permitted in any medium, provided this notice is preserved.</div></body>
+</html>

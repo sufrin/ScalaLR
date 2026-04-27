@@ -11,7 +11,7 @@ ThisBuild / scalacOptions ++= Seq(
 )
 
 lazy val root = (project in file("."))
-  .aggregate(bootstrap, shared, flab, utilities, testbed)
+  .aggregate(bootstrap, shared, flab, slab, utilities, testbed)
   .settings(
     publish / skip := true,
     name := "scalalr",
@@ -27,6 +27,9 @@ lazy val bootstrap = (project in file("bootstrap"))
   .dependsOn(shared, utilities)
 
 lazy val flab = (project in file("flab")) // first language atop bootstrap
+  .dependsOn(shared, utilities, bootstrap)
+
+lazy val slab = (project in file("slab")) // first language atop bootstrap
   .dependsOn(shared, utilities, bootstrap)
 
 lazy val utilities = (project in file("utilities"))

@@ -1,0 +1,380 @@
+Terminals unused in grammar
+
+    "["
+    "]"
+    LEXICALERROR
+
+
+Grammar
+
+    0 $accept: loop $end
+
+    1 loop: ε
+    2     | loop command NL
+
+    3 command: expr
+    4        | QUIT
+
+    5 expr: ID
+    6     | NUM
+    7     | ID "=" expr
+    8     | expr "*" expr
+    9     | expr "+" expr
+   10     | expr "/" expr
+   11     | expr "-" expr
+   12     | "(" expr ")"
+   13     | ID "(" exprs ")"
+
+   14 exprs: expr
+   15      | exprs "," expr
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    NUM (258) 6
+    ID (259) 5 7 13
+    "(" (260) 12 13
+    ")" (261) 12 13
+    "[" (262)
+    "]" (263)
+    "," (264) 15
+    LEXICALERROR (265)
+    NL (266) 2
+    QUIT (267) 4
+    "=" (268) 7
+    "+" (269) 9
+    "-" (270) 11
+    "*" (271) 8
+    "/" (272) 10
+
+
+Nonterminals, with rules where they appear
+
+    $accept (18)
+        on left: 0
+    loop (19)
+        on left: 1 2
+        on right: 0 2
+    command (20)
+        on left: 3 4
+        on right: 2
+    expr (21)
+        on left: 5 6 7 8 9 10 11 12 13
+        on right: 3 7 8 9 10 11 12 14 15
+    exprs (22)
+        on left: 14 15
+        on right: 13 15
+
+
+State 0
+
+    0 $accept: • loop $end
+
+    $default  reduce using rule 1 (loop)
+
+    loop  go to state 1
+
+
+State 1
+
+    0 $accept: loop • $end
+    2 loop: loop • command NL
+
+    $end   shift, and go to state 2
+    NUM    shift, and go to state 3
+    ID     shift, and go to state 4
+    "("  shift, and go to state 5
+    QUIT   shift, and go to state 6
+
+    command  go to state 7
+    expr     go to state 8
+
+
+State 2
+
+    0 $accept: loop $end •
+
+    $default  accept
+
+
+State 3
+
+    6 expr: NUM •
+
+    $default  reduce using rule 6 (expr)
+
+
+State 4
+
+    5 expr: ID •
+    7     | ID • "=" expr
+   13     | ID • "(" exprs ")"
+
+    "("   shift, and go to state 9
+    "="  shift, and go to state 10
+
+    $default  reduce using rule 5 (expr)
+
+
+State 5
+
+   12 expr: "(" • expr ")"
+
+    NUM    shift, and go to state 3
+    ID     shift, and go to state 4
+    "("  shift, and go to state 5
+
+    expr  go to state 11
+
+
+State 6
+
+    4 command: QUIT •
+
+    $default  reduce using rule 4 (command)
+
+
+State 7
+
+    2 loop: loop command • NL
+
+    NL  shift, and go to state 12
+
+
+State 8
+
+    3 command: expr •
+    8 expr: expr • "*" expr
+    9     | expr • "+" expr
+   10     | expr • "/" expr
+   11     | expr • "-" expr
+
+    "+"  shift, and go to state 13
+    "-"  shift, and go to state 14
+    "*"  shift, and go to state 15
+    "/"  shift, and go to state 16
+
+    $default  reduce using rule 3 (command)
+
+
+State 9
+
+   13 expr: ID "(" • exprs ")"
+
+    NUM    shift, and go to state 3
+    ID     shift, and go to state 4
+    "("  shift, and go to state 5
+
+    expr   go to state 17
+    exprs  go to state 18
+
+
+State 10
+
+    7 expr: ID "=" • expr
+
+    NUM    shift, and go to state 3
+    ID     shift, and go to state 4
+    "("  shift, and go to state 5
+
+    expr  go to state 19
+
+
+State 11
+
+    8 expr: expr • "*" expr
+    9     | expr • "+" expr
+   10     | expr • "/" expr
+   11     | expr • "-" expr
+   12     | "(" expr • ")"
+
+    ")"   shift, and go to state 20
+    "+"  shift, and go to state 13
+    "-"  shift, and go to state 14
+    "*"  shift, and go to state 15
+    "/"  shift, and go to state 16
+
+
+State 12
+
+    2 loop: loop command NL •
+
+    $default  reduce using rule 2 (loop)
+
+
+State 13
+
+    9 expr: expr "+" • expr
+
+    NUM    shift, and go to state 3
+    ID     shift, and go to state 4
+    "("  shift, and go to state 5
+
+    expr  go to state 21
+
+
+State 14
+
+   11 expr: expr "-" • expr
+
+    NUM    shift, and go to state 3
+    ID     shift, and go to state 4
+    "("  shift, and go to state 5
+
+    expr  go to state 22
+
+
+State 15
+
+    8 expr: expr "*" • expr
+
+    NUM    shift, and go to state 3
+    ID     shift, and go to state 4
+    "("  shift, and go to state 5
+
+    expr  go to state 23
+
+
+State 16
+
+   10 expr: expr "/" • expr
+
+    NUM    shift, and go to state 3
+    ID     shift, and go to state 4
+    "("  shift, and go to state 5
+
+    expr  go to state 24
+
+
+State 17
+
+    8 expr: expr • "*" expr
+    9     | expr • "+" expr
+   10     | expr • "/" expr
+   11     | expr • "-" expr
+   14 exprs: expr •
+
+    "+"  shift, and go to state 13
+    "-"  shift, and go to state 14
+    "*"  shift, and go to state 15
+    "/"  shift, and go to state 16
+
+    $default  reduce using rule 14 (exprs)
+
+
+State 18
+
+   13 expr: ID "(" exprs • ")"
+   15 exprs: exprs • "," expr
+
+    ")"  shift, and go to state 25
+    ","  shift, and go to state 26
+
+
+State 19
+
+    7 expr: ID "=" expr •
+    8     | expr • "*" expr
+    9     | expr • "+" expr
+   10     | expr • "/" expr
+   11     | expr • "-" expr
+
+    "+"  shift, and go to state 13
+    "-"  shift, and go to state 14
+    "*"  shift, and go to state 15
+    "/"  shift, and go to state 16
+
+    $default  reduce using rule 7 (expr)
+
+
+State 20
+
+   12 expr: "(" expr ")" •
+
+    $default  reduce using rule 12 (expr)
+
+
+State 21
+
+    8 expr: expr • "*" expr
+    9     | expr • "+" expr
+    9     | expr "+" expr •
+   10     | expr • "/" expr
+   11     | expr • "-" expr
+
+    "*"  shift, and go to state 15
+    "/"  shift, and go to state 16
+
+    $default  reduce using rule 9 (expr)
+
+
+State 22
+
+    8 expr: expr • "*" expr
+    9     | expr • "+" expr
+   10     | expr • "/" expr
+   11     | expr • "-" expr
+   11     | expr "-" expr •
+
+    "*"  shift, and go to state 15
+    "/"  shift, and go to state 16
+
+    $default  reduce using rule 11 (expr)
+
+
+State 23
+
+    8 expr: expr • "*" expr
+    8     | expr "*" expr •
+    9     | expr • "+" expr
+   10     | expr • "/" expr
+   11     | expr • "-" expr
+
+    $default  reduce using rule 8 (expr)
+
+
+State 24
+
+    8 expr: expr • "*" expr
+    9     | expr • "+" expr
+   10     | expr • "/" expr
+   10     | expr "/" expr •
+   11     | expr • "-" expr
+
+    $default  reduce using rule 10 (expr)
+
+
+State 25
+
+   13 expr: ID "(" exprs ")" •
+
+    $default  reduce using rule 13 (expr)
+
+
+State 26
+
+   15 exprs: exprs "," • expr
+
+    NUM    shift, and go to state 3
+    ID     shift, and go to state 4
+    "("  shift, and go to state 5
+
+    expr  go to state 27
+
+
+State 27
+
+    8 expr: expr • "*" expr
+    9     | expr • "+" expr
+   10     | expr • "/" expr
+   11     | expr • "-" expr
+   15 exprs: exprs "," expr •
+
+    "+"  shift, and go to state 13
+    "-"  shift, and go to state 14
+    "*"  shift, and go to state 15
+    "/"  shift, and go to state 16
+
+    $default  reduce using rule 15 (exprs)

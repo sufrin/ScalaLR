@@ -1,0 +1,31 @@
+# --- sbt ---
+*/target
+project/target/
+project/project/
+project/metals.sbt
+
+# sbt cache / logs
+*.log
+
+# --- Scala / Metals / Bloop ---
+.metals/
+.bloop/
+.ammonite/
+.worksheet/
+.worksheet.sc
+
+# --- OS junk ---
+.DS_Store
+Thumbs.db
+
+# --- Logs / temp ---
+*.tmp
+*.swp
+*.bak
+
+# --- Generated sources (belt and braces) ---
+target/
+
+.scala-build/
+
+

@@ -1,0 +1,21 @@
+{
+  "name": "scala-cli",
+  "argv": [
+    "/Users/sufrin/Library/Application Support/Coursier/bin/.scala-cli.aux",
+    "bsp",
+    "--json-options",
+    "/Users/sufrin/GitHomes/ScalaLR/testbed/scala/.scala-build/ide-options-v2.json",
+    "--json-launcher-options",
+    "/Users/sufrin/GitHomes/ScalaLR/testbed/scala/.scala-build/ide-launcher-options.json",
+    "--envs-file",
+    "/Users/sufrin/GitHomes/ScalaLR/testbed/scala/.scala-build/ide-envs.json",
+    "/Users/sufrin/GitHomes/ScalaLR/testbed/scala/runsmall.scala",
+    "/Users/sufrin/GitHomes/ScalaLR/testbed/scala/small"
+  ],
+  "version": "1.10.0",
+  "bspVersion": "2.1.1",
+  "languages": [
+    "scala",
+    "java"
+  ]
+}

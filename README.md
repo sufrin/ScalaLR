@@ -1,0 +1,226 @@
+# ScalaLR
+
+**ScalaLR** is a straightforward LR-parser generator for Scala that
+translates its input notation (a description of a parser)  to 
+the essential components of a parser expressed in Scala.
+It uses **GNU Bison (version 3.8.2)** as an internal workhorse to generate 
+the LR shift-reduce parser tables; and it generates the 
+remaining components directly.
+
+It is built on the assumption the components it generates will
+become part of a parser that will yield an abstract syntax tree. *Of course
+there's no harm in the parser yielding (say) a numeric value, or even being
+run for its side-effects and yielding `Unit` -- though this may not be common.*
+
+Its current production form is the `scalalrgen` program. This is described in 
+the `COMMANDLINE` documentation, and delivered in the eponymous directory.
+
+That program can be self-hosted, in the sense that its input language can
+be described *in* its input language, and parsed by a parser whose
+essential components it generated itself. [See the documentation for PREPAREFLAB
+for a discussion of this]
+
+
+### Grammar notation 
+The notation for productions and priorities is somewhat similar to
+Bison's notation; but there are important overall differences, as exemplified by
+the following fragment. We will document these in detail in due course; but for the moment it should be
+sufficient for a knowledgeable reader to inspect the files `generatesmall.scala`
+with `runsmall.scala` and `generatexpr.scala` with `runexpr.scala`
+````
+%notation  Expr
+%package   expr.Expr
+%path      "testbed/src/main/scala/expr"
+
+%include {
+   // Scala source to be included in a generated file that supports or implements a lexer
+   import org.sufrin.utility.SourceTextCursor
+   import org.sufrin.scalalr.SourceLocation
+
+    object Scanner {
+      def apply(chars: SourceTextCursor): Scanner = new Scanner(chars)
+    }
+
+    class Scanner(chars: SourceTextCursor) extends Iterator[Token] { ... }
+
+}
+
+%token ID(String) `(` `)` `[` `]` `;` LEXICALERROR(String)  // §1
+%left `+`                                                   // §2
+%left `*`                                                   // §2
+
+%rules
+
+%include {
+ // Scala source to be included in a generated file that supports or implements
+ // the abstract syntax derived from productions
+
+ import org.sufrin.scalalr.SourceLocation
+ // Abstract syntax nodes §4
+ trait Expr { val loc: SourceLocation }                     // §4
+ case class Id(s: String, loc: SourceLocation) extends Expr
+ case class Binop(op: String, l: Expr, r: Expr, loc: SourceLocation) extends Expr
+ case class Bra(expr: Expr, loc: SourceLocation)extends Expr
+}
+
+exprs: (List[Expr]) = expr            { List($expr) }                   // §3, §4
+                  |   exprs `;` expr  { $expr::$exprs }                 // §4
+                  ;
+
+expr: Expr = ID                  { Id($ID, $START) }                    // §4, 
+           | l:expr `*` r:expr   { Binop("*", $l, $r, $START) }
+           | l:expr `+` r:expr   { Binop("+", $l, $r, $START) }
+           | "(" expr ")"        { Bra($expr, $START) }                 //§5
+           | `[` expr `]`        { $expr }
+           ;
+````
+
+  1. Tokens (terminal symbols) may be specified. Each that carries an irredundant value
+  must have the type of that value specified. 
+
+  2. Shift-reduce conflicts can be resolved by specifying the
+  associativity and precedence of (terminal) symbols, as in Bison.
+
+  3. Nonterminal symbols have types specified explicitly on the left hand side of 
+  their definition.
+
+  4. The abstract syntax node represented by each production is specified as a Scala block 
+  expression at its end. Such expressions may refer to
+  the values of symbols (terminal or nonterminal) that appear in the production,
+  by `$label` (for a symbol labelled in the production by prefixing it with `label:`), 
+  or by `$symbol` when that `symbol` appears unlabelled and uniquely. 
+  They  may also refer to the start and end source location of the
+  text matched by the production using `$START` and `$END`.
+  
+  5. Tokens enclosed in single quotes, double quotes
+  or backticks are treated identically during code generation: they need not be declared
+  in a `%token` section. 
+
+
+
+### Generated files
+
+When all is well, the generator produces three Scala files from each parser specification; 
+these appear in  the directory corresponding to `%path` specification, and are
+named:
+
+  1. **Scanner.scala** 
+  defines the Scala case classes and types corresponding to each `%token` definition.
+  There is provision for including the source text of the lexical scanner in this file.
+
+  2. **Tables.scala**  defines the shift-reduce tables corresponding to the grammar. These will be
+  interpreted by an LRParser automaton at parse-time.
+
+  3. **Reduction.scala** defines a function that maps each production number to a 
+  function that combines the  values that are generated by its right-hand-side to form 
+  the value of the production itself.
+
+These files are generated in three phases:
+
+  1. The generator produces a plain Bison grammar `.y` file
+  in which all grammar tokens enclosed in quotes have been transformed to straightforward 
+  Bison names of the  form **TOK**-*nn* in order to avoid confusing Bison.
+  Under normal circumstances one need not inspect the `.y` file, and the
+  diagnostic/report files are expressed as they were in the Scalalr source. 
+
+  2. Bison is run to generate the LR parse tables as well as report and 
+  diagnostic files, all named for the specified `%notation.`
+  The `.output` and `.html` files contain identical information: a report
+  on the notation with details of states, conflicts, etc. The `.log` file
+  provides (when appropriate) counterexamples illustrating conflicts in the
+  grammar.  These are intended to be
+  helpful in diagnosing conflicts/ambiguities that Bison discovers 
+  while processing the
+  grammar specification.
+
+  3. The `.xml` file output by Bison contains, among other information,
+  an encoding of the information Scalalr now uses to generate 
+  its **Tables** and **Reduction** files.
+
+### Testing
+Some test grammars (for the bootstrap generator) appear in `bootstrap/src/test/scala` as embedded strings: for example 
+`generatexpr.scala` and `generatesmall.scala` and `generatetinyfun.scala` -- they can be used 
+generate scala code  by running them as from IntelliJ (or elsewhere). Those mentioned above generate code 
+under `testbed/scala/src/test/scala` in the directories  `{expr,small,tinyfun}` that can be 
+tested by running one of `{runsmall,runexpr,runtinyfun}` from IntelliJ 
+or using `scala-cli` in `testbed/scala/src/test/scala` with one of the
+commands:
+
+    scala-cli run runsmall.scala small --jar ../../../../scalalr.jar
+    scala-cli run runexpr.scala expr --jar ../../../../scalalr.jar
+    scala-cli run runtinyfun.scala TinyFun.scala tinyfun --jar ../../../../scalalr.jar
+
+#### Library jar file
+
+The ScalaLR jar file in the root is an artefact that I get
+IntelliJ to build. Most of the jar is destined for use at scala
+code-generation time; but the LRParser automata live there too at the moment.
+
+#### Behaviour on Conflicts
+A few notation definitions that result in shift-reduce or reduce-reduce 
+conflicts are gathered (as embedded strings) in the `App` defined n
+`bootstrap/src/test/scala/genconflicts.scala`.
+This can be run to test the reporting of such conflicts. Each example
+generates a log (as well as the expected generated files) in 
+`testbed/src/test/conflicts.`
+
+### Gotchas
+1. **Error recovery** is not yet properly implemented. 
+The `Pull` automaton 
+reports the first syntax error and bails by throwing anexception. 
+The `Push` automaton does likewise if there
+is no `error`-handling state available (see Bison documentation for an explanation of 
+the `error` virtual token), and the "recovery" that otherwise results 
+is not properly implemented or documented. Despite this it is straightforward to 
+construct an REP-type interface that appears to recover from syntax errors. 
+For an example, see `runtinyfun`
+2. **Scala code quotations** such as appear in `%include` passages and as action 
+expressions
+need a little care. The normal form of a code quotation is a passage that opens with `{`, has
+properly-nested occurences of `{` and `}` within it and ends with a closing `}` that matches 
+the opening. **But** if an unmatched brace appears (for example in a character or string 
+quote or in a comment)
+it can upset balance. **NB:** *Bison itself has the same requirement for its code inserts
+and quotations.* One solution is to use the alternative braces 
+«» to quote code. Another solution, "forcibly" balancing the quotation, is exemplified by the following
+extract from a code quotation defining the scanner for the Scalalr notation itself.
+````
+           case '{' => // } to balance the code quotation
+           nextChar(); afterNextChar(CODE(chars.takeNested('{', '}')  .mkString("")))
+           case '«' => // » to balance the code quotation
+           nextChar(); afterNextChar(CODE(chars.takeNested('«', '»')  .mkString("")))
+ ````
+
+
+### Roadmap
+We aim to accomplish the following tasks as soon as we can. They are listed
+here in no particular order.
+
+1. Error recovery properly implemented.
+
+2. System to be self-hosting: ie using a scalalr-derived parser rather
+   than the present hand-coded recursive descent parser. 
+
+3. Higher-level constructs such as %list, %option to express complex 
+   grammar expressions that would normally have to be "hand-coded" such as:
+````     
+      exprlist: List[Expr]  = exprlistr { $exprlistr.reverse }
+      exprlistr: List[Expr] = 
+                expr { List($expr) } | exprlist1 ',' expr  { $expr :: $exprlistr }
+      exprlist: List[Expr] = 
+                expr { List($expr) } | expr ',' exprlist  { $expr :: $exprlist }
+      optexpr: Option[Expr] = 
+            { None } | expr { Some($expr) }
+````
+These could be expressed more concisely in-situ, for example:
+````          
+      ID '(' exprlist: (%revlist expr ',') ')' { Apply($ID, $exprlist) }  
+      ID '(' exprlist: (%list    expr ',') ')' { Apply($ID, $exprlist) }
+      RETURN optexpr: (%option expr) ';'       { Return($optexpr) }
+````
+
+The published code will reflect current partial progress towards them when appropriate.
+
+BS: April 14th, 2026
+
+

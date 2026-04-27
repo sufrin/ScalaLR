@@ -1,0 +1,7 @@
+# make a parser for flab using the boot generator (parser specified by flab)
+ROOT=/Users/sufrin/GitHomes/ScalaLR/
+scala -cp $ROOT/scalalr.jar org.sufrin.scalalr.flab.Generator --output=flab-flab flab-notation.scalalr
+echo now move to build latest
+echo cp flab-flab/parser/"*" " " $ROOT/flab/src/main/scala/scalalr/parser
+
+

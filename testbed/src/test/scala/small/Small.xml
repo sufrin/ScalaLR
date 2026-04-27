@@ -1,0 +1,175 @@
+<?xml version="1.0"?>
+
+<bison-xml-report version="3.8.2" bug-report="bug-bison@gnu.org" url="https://www.gnu.org/software/bison/">
+
+  <filename>testbed/src/test/scala/small/Small.y</filename>
+
+  <grammar>
+    <rules>
+      <rule number="0" usefulness="useful">
+        <lhs>$accept</lhs>
+        <rhs>
+          <symbol>ids</symbol>
+          <symbol>$end</symbol>
+        </rhs>
+      </rule>
+      <rule number="1" usefulness="useful">
+        <lhs>ids</lhs>
+        <rhs>
+          <symbol>idList</symbol>
+        </rhs>
+      </rule>
+      <rule number="2" usefulness="useful">
+        <lhs>idList</lhs>
+        <rhs>
+          <symbol>ID</symbol>
+        </rhs>
+      </rule>
+      <rule number="3" usefulness="useful">
+        <lhs>idList</lhs>
+        <rhs>
+          <symbol>idList</symbol>
+          <symbol>TOK-4</symbol>
+          <symbol>ID</symbol>
+        </rhs>
+      </rule>
+    </rules>
+    <terminals>
+      <terminal symbol-number="0" token-number="0" name="$end" type="" usefulness="useful"/>
+      <terminal symbol-number="1" token-number="256" name="error" type="" usefulness="useful"/>
+      <terminal symbol-number="3" token-number="258" name="ID" type="" usefulness="useful"/>
+      <terminal symbol-number="4" token-number="259" name="TOK-4" type="" usefulness="useful"/>
+      <terminal symbol-number="5" token-number="260" name="LEXICALERROR" type="" usefulness="unused-in-grammar"/>
+    </terminals>
+    <nonterminals>
+      <nonterminal symbol-number="6" name="$accept" type="" usefulness="useful"/>
+      <nonterminal symbol-number="7" name="ids" type="" usefulness="useful"/>
+      <nonterminal symbol-number="8" name="idList" type="" usefulness="useful"/>
+    </nonterminals>
+  </grammar>
+
+  <automaton>
+
+    <state number="0">
+      <itemset>
+        <item rule-number="0" dot="0"/>
+        <item rule-number="1" dot="0"/>
+        <item rule-number="2" dot="0"/>
+        <item rule-number="3" dot="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="1"/>
+          <transition type="goto" symbol="ids" state="2"/>
+          <transition type="goto" symbol="idList" state="3"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="1">
+      <itemset>
+        <item rule-number="2" dot="1">
+          <lookaheads>
+            <symbol>$end</symbol>
+            <symbol>TOK-4</symbol>
+          </lookaheads>
+        </item>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$end" rule="2" enabled="true"/>
+          <reduction symbol="TOK-4" rule="2" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="2">
+      <itemset>
+        <item rule-number="0" dot="1"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="$end" state="4"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="3">
+      <itemset>
+        <item rule-number="1" dot="1">
+          <lookaheads>
+            <symbol>$end</symbol>
+          </lookaheads>
+        </item>
+        <item rule-number="3" dot="1"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="TOK-4" state="5"/>
+        </transitions>
+        <errors/>
+        <reductions>
+          <reduction symbol="$end" rule="1" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="4">
+      <itemset>
+        <item rule-number="0" dot="2"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="accept" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="5">
+      <itemset>
+        <item rule-number="3" dot="2"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="ID" state="6"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="6">
+      <itemset>
+        <item rule-number="3" dot="3">
+          <lookaheads>
+            <symbol>$end</symbol>
+            <symbol>TOK-4</symbol>
+          </lookaheads>
+        </item>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$end" rule="3" enabled="true"/>
+          <reduction symbol="TOK-4" rule="3" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+  </automaton>
+</bison-xml-report>

@@ -4,8 +4,8 @@
 # 
 ROOT=/Users/sufrin/GitHomes/ScalaLR/
 echo Making a command-line generator for scalalr components
-(cd $ROOT; sbt "commandlinemodules / clean ; commandlinemodules / package")
+(cd $ROOT; sbt "clean ; package")
 scala-cli --power package scalalrgen.scala -o scalalrgen --assembly -f
 echo If all has gone well you can synchronise this with scripts by nswering "y" below
-sync=n; read -p "Synchronise? [y for yes]: " sync
+read -p "Synchronise? [y for yes]: " sync
 test $sync = "y" && rsync -av ./scalalrgen ../scripts/

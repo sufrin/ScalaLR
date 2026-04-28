@@ -12,8 +12,8 @@ components must be prepared and placed in
 The best way to do this is to run one of the following (short) commands from the ScalaLR project
 `root/PREPAREFLAB`
 
-     ./flabgenerate -boot
-     ./flabgenerate -flab
+     ./prepareflab.sh -boot
+     ./prepareflab.sh -flab
 
 If all goes well (ie if this stage of the bootstrap hasn't gone wrong) then
 these should generate functionally identical files; and you will

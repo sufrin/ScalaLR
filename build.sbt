@@ -18,6 +18,13 @@ lazy val root = (project in file("."))
     idePackagePrefix := Some("org.sufrin.scalalr")
   )
 
+//
+lazy val commandlinemodules = (project in file("commandlinemodules"))
+  .aggregate(bootstrap, shared, flab, utilities, testbed)   // exclude slab
+  .settings(
+    publish / skip := true
+  )
+
 lazy val loggingApi = (project in file("logging-api"))
 
 lazy val shared = (project in file("shared"))

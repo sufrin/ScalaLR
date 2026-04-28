@@ -24,7 +24,7 @@ object Reduction {
      }
 
  implicit class ID2Path(val string: String) extends AnyVal {
-          def toPathString: String = string.replace('/', '.').replace('.', '/') match {
+          val toPathString: String = string.replace('/', '.').replace('.', '/') match {
             case s"\"$unquoted\"" => unquoted
             case unquoted => unquoted
           }

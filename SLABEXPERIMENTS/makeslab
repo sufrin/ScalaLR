@@ -1,0 +1,10 @@
+#!/bin/bash
+ROOT=~/GitHomes/ScalaLR
+echo Making parser components for slab $MODE
+echo Depends on $ROOT/scripts/scalalrgen
+$ROOT/scripts/scalalrgen $MODE --output=generated$MODE slab-notation.scalalr
+echo Now sync with the generated components of the main scala source
+echo By rsync -av generated$MODE $ROOT/slab/src/main/scala/generated
+sync=n; read -p "Install?" sync
+test "$sync" = "y" && rsync -av generated$MODE $ROOT/slab/src/main/scala/generated
+

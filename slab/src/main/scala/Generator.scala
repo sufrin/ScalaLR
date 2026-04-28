@@ -1,9 +1,9 @@
 /**
  * First Language Atop Bootstrap
  *
- * Parser:     from flab-notation.scalalr
- * Tree:       flab.AST
- * Generator:  flab.AST => bootstrap.Parser.Parser.Notation => Scala
+ * Parser:     from slab-notation.scalalr
+ * Tree:       slab.SLAB
+ * Generator:  slab.AST => bootstrap.Parser.Parser.Notation => Scala
  */
 
 package org.sufrin.scalalr

@@ -5,7 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="91372ed0-436a-419c-9015-c4c30c0eb662" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/PREPAREFLAB.md" beforeDir="false" afterPath="$PROJECT_DIR$/PREPAREFLAB/PREPAREFLAB.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slab/src/main/resources/slab-generate.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/slab/src/main/resources/slab-notation.scalalr" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/slab/src/main/scala/Generator.scala" beforeDir="false" afterPath="$PROJECT_DIR$/slab/src/main/scala/Generator.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slab/src/main/scala/generated/generated/parser/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/slab/src/main/scala/generated/generated/parser/Components.scala" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,18 +54,18 @@
     <option name="showLibraryContents" value="true" />
     <option name="showMembers" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.generatexpr.executor": "Run",
-    "Application.runexpr.executor": "Run",
-    "Application.runsmall.executor": "Run",
-    "Application.runtinyfun.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/sufrin/GitHomes/ScalaLR/build.sbt",
-    "settings.editor.selected.configurable": "preferences.lookFeel"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.generatexpr.executor&quot;: &quot;Run&quot;,
+    &quot;Application.runexpr.executor&quot;: &quot;Run&quot;,
+    &quot;Application.runsmall.executor&quot;: &quot;Run&quot;,
+    &quot;Application.runtinyfun.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/sufrin/GitHomes/ScalaLR/build.sbt&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="" />

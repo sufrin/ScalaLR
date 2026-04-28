@@ -5,18 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="91372ed0-436a-419c-9015-c4c30c0eb662" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.bsp/sbt.json" beforeDir="false" afterPath="$PROJECT_DIR$/.bsp/sbt.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COMMANDLINE/makescalalrgen.sh" beforeDir="false" afterPath="$PROJECT_DIR$/COMMANDLINE/makescalalrgen.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COMMANDLINE/scalalrgen" beforeDir="false" afterPath="$PROJECT_DIR$/COMMANDLINE/scalalrgen" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PREPAREFLAB/PREPAREFLAB.md" beforeDir="false" afterPath="$PROJECT_DIR$/PREPAREFLAB/PREPAREFLAB.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/flab-generate.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/generated-boot/parser/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/PREPAREFLAB/generated-boot/parser/Components.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.sbt" beforeDir="false" afterPath="$PROJECT_DIR$/build.sbt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flab/src/main/scala/generated/generated-boot/parser/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/flab/src/main/scala/generated/generated-boot/parser/Components.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/scalalrgen" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/scalalrgen" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/slab/src/main/resources/generated/parser/Reduction.scala" beforeDir="false" afterPath="$PROJECT_DIR$/slab/src/main/resources/generated/parser/Reduction.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tree.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,6 +52,10 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Application.generatexpr.executor": "Run",
+    "Application.runexpr.executor": "Run",
+    "Application.runsmall.executor": "Run",
+    "Application.runtinyfun.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/sufrin/GitHomes/ScalaLR/build.sbt",
@@ -74,7 +67,53 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.runtinyfun">
+    <configuration name="generatexpr" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.bootstrap.generatexpr" />
+      <module name="scalalr.bootstrap" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.sufrin.scalalr.bootstrap.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="runexpr" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.runexpr" />
+      <module name="scalalr.testbed" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.sufrin.scalalr.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="runsmall" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.runsmall" />
+      <module name="scalalr.testbed" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.sufrin.scalalr.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="runtinyfun" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="runtinyfun" />
+      <module name="scalalr.testbed" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="JetRunConfigurationType">
       <module name="scalalr_3679" />
       <method v="2">
@@ -88,6 +127,14 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.runtinyfun" />
+        <item itemvalue="Application.runsmall" />
+        <item itemvalue="Application.runexpr" />
+        <item itemvalue="Application.generatexpr" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="ScalaProjectSettings">
     <option name="migrateConfigurationsNotificationShown" value="true" />

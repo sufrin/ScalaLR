@@ -1,14 +1,13 @@
 
 package tinyfun
-object Scanner {
+object Scanner{
 
    import org.sufrin.scalalr.SourceLocation
    import org.sufrin.utility.SourceTextCursor
 
-    object Scanner {
-      def apply(chars: SourceTextCursor): Scanner = new Scanner(chars)
-    }
-
+    
+    def Scanner(chars: SourceTextCursor): Scanner = new Scanner(chars)
+    
     class Scanner(chars: SourceTextCursor) extends Iterator[Token] {
       def sourceLocation(): SourceLocation = SourceLocation(chars.lines,  chars.chars)
       @inline def hasChar: Boolean = chars.hasCurrent
@@ -20,7 +19,7 @@ object Scanner {
       }
 
       def hasNext: Boolean = chars.hasCurrent
-      def next(): Token = {
+      def next(): Token = if (hasChar) {
           chars.current match {
             case '\n'     =>
                  chars.current = ' '            // the subsequent next() skips this space without accounting
@@ -59,7 +58,7 @@ object Scanner {
                LEXICALERROR(s"Unrecognised $other (at ${sourceLocation()}")
 
           }
-      }
+      } else $end
     }
 
 trait Token extends org.sufrin.scalalr.Lexeme { val value: Any ; val symbol: Int } 

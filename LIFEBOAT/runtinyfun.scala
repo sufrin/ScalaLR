@@ -1,51 +1,33 @@
-//> using scala "2.13"
-//> using jar "scalalr.jar"
+
+//> using scala 2.13
+//> using jar ../bootstrap/target/bootstrap-0.8.0.jar
+//> using jar ../shared/target/shared-0.8.0.jar
+//> using jar ../utilities/target/utilities-0.8.0.jar
+//> using jar ../logging-api/lib/Logging.jar
+//> using dep org.scala-lang.modules::scala-xml::2.4.0
 
 import org.sufrin.utility.SourceTextCursor
 
 object runtinyfun  {
-  import org.sufrin.scalalr._
-  import tinyfun.Reduction._       
-  import tinyfun.Scanner._
-  import tinyfun.Tables._
-  //import tinyfun.TinyFun._
 
   import java.nio.file.Paths
 
   def main(args: Array[String]): Unit = {
+    import org.sufrin.scalalr._
+    import tinyfun.Components
+    import tinyfun.Scanner._
+
     val log  = args.contains("-l")
-    val pull = !args.contains("-push")
     val file = (args.toList.filterNot(_.startsWith("-")) ++ List("/dev/tty")).head
 
     print("Welcome to TinyFun\n> ")
 
-    while (pull) {
       val scanner = Scanner(SourceTextCursor(Paths.get(file)))
-      def next(): Token = if (scanner.hasNext) scanner.next() else $end
-      val parser = new LRParser.Pull[Token](ACTIONTABLE, GOTOTABLE, reduction, symbolName, scanner.sourceLocation)
+      val parser = LRParser.Pull[Token](Components)(scanner.sourceLocation)
       parser.logState = log
-      try parser.run(next) catch {
+      try parser.run(scanner.next) catch {
         case err: java.lang.Error => println(err)
       }
-    }
-
-    while (!pull) {
-      val scanner = Scanner(SourceTextCursor(Paths.get(file)))
-      val parser = new LRParser.Push[Token](ACTIONTABLE, GOTOTABLE, reduction, symbolName, scanner.sourceLocation)
-      var state = parser.start()
-      parser.logState = log
-      try {
-        while (state == LRParser.NEXTSTEP) {
-          val input = if (scanner.hasNext) scanner.next() else $end
-          state = parser.step(input, scanner.sourceLocation())
-          if (log) System.out.println(parser.mkString)
-          System.out.flush()
-        }
-      }
-      catch {
-        case err: java.lang.Error => println(err)
-      }
-    }
   }
 }
 

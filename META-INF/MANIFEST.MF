@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Specification-Title: commandlinemodules
-Specification-Version: 0.8.0
-Specification-Vendor: org.sufrin
-Implementation-Title: commandlinemodules
-Implementation-Version: 0.8.0
-Implementation-Vendor: org.sufrin
-Implementation-Vendor-Id: org.sufrin
-

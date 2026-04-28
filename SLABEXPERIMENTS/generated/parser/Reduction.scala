@@ -37,17 +37,17 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
   { case List(dol$Notation: Notation) => 
           translate(dol$Notation) 
   }
- /* Notation: Notation = "%notation" theName: ID "%package" thePackage: ID thePath: OptPath OptDialects Tables tokensInclude: OptInclude Tokens "%rules" rulesInclude: OptInclude Rules OptSemicolon {  val dialects = $OptDialects; Notation($thePackage, $theName, $thePath, $Tables, "Scanner", Type("Token", Nil, $START), $Tokens, $Rules.reverse, $tokensInclude, $rulesInclude, dialects) } */
+ /* Notation: Notation = "%notation" theName: ID a: OptSemicolon "%package" thePackage: ID b: OptSemicolon thePath: OptPath OptDialects Tables tokensInclude: OptInclude Tokens "%rules" rulesInclude: OptInclude Rules c: OptSemicolon {  val dialects = $OptDialects; Notation($thePackage, $theName, $thePath, $Tables, "Scanner", Type("Token", Nil, $START), $Tokens, $Rules.reverse, $tokensInclude, $rulesInclude, dialects) } */
  case 2 => 
-  { case List(_, dol$theName: String, _, dol$thePackage: String, dol$thePath: String, dol$OptDialects: Tuple2[String @unchecked,String], dol$Tables: String, dol$tokensInclude: String, dol$Tokens: List[TokenSpec @unchecked], _, dol$rulesInclude: String, dol$Rules: List[Rule @unchecked], dol$OptSemicolon: Unit) => 
+  { case List(_, dol$theName: String, dol$a: Unit, _, dol$thePackage: String, dol$b: Unit, dol$thePath: String, dol$OptDialects: Tuple2[String @unchecked,String], dol$Tables: String, dol$tokensInclude: String, dol$Tokens: List[TokenSpec @unchecked], _, dol$rulesInclude: String, dol$Rules: List[Rule @unchecked], dol$c: Unit) => 
           val dialects = dol$OptDialects; Notation(dol$thePackage, dol$theName, dol$thePath, dol$Tables, "Scanner", Type("Token", Nil, dol$START), dol$Tokens, dol$Rules.reverse, dol$tokensInclude, dol$rulesInclude, dialects) 
   }
  /* OptPath: String =  {  "" } */
  case 3 => 
   { case List() =>    ""  } 
- /* OptPath: String = "%path" ID {  $ID.toPathString } */
+ /* OptPath: String = "%path" ID OptSemicolon {  $ID.toPathString } */
  case 4 => 
-  { case List(_, dol$ID: String) => 
+  { case List(_, dol$ID: String, dol$OptSemicolon: Unit) => 
           dol$ID.toPathString 
   }
  /* OptInclude: String =  {  "" } */
@@ -56,12 +56,12 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
  /* OptInclude: String = "%include" CODE {  $CODE } */
  case 6 => 
   { case List(_, dol$CODE: String) =>    dol$CODE  } 
- /* OptDialects: Tuple2[String,String] = "%dialect" l: ID "%scalalr" r: ID {  ($l, $r) } */
+ /* OptDialects: Tuple2[String,String] = "%dialect" l: ID "%scalalr" r: ID OptSemicolon {  ($l, $r) } */
  case 7 => 
-  { case List(_, dol$l: String, _, dol$r: String) =>    (dol$l, dol$r)  } 
- /* OptDialects: Tuple2[String,String] = "%scalalr" l: ID "%dialect" r: ID {  ($r, $l) } */
+  { case List(_, dol$l: String, _, dol$r: String, dol$OptSemicolon: Unit) =>    (dol$l, dol$r)  } 
+ /* OptDialects: Tuple2[String,String] = "%scalalr" l: ID "%dialect" r: ID OptSemicolon {  ($r, $l) } */
  case 8 => 
-  { case List(_, dol$l: String, _, dol$r: String) =>    (dol$r, dol$l)  } 
+  { case List(_, dol$l: String, _, dol$r: String, dol$OptSemicolon: Unit) =>    (dol$r, dol$l)  } 
  /* OptDialects: Tuple2[String,String] =  {  ("", "") } */
  case 9 => 
   { case List() =>    ("", "")  } 
@@ -242,19 +242,19 @@ def parsetreereduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  
  case 1 => 
   { case trees$trees => PARSETREE("""command: Unit = Notation {  translate($Notation) }""", 1, trees$trees ) }
  case 2 => 
-  { case trees$trees => PARSETREE("""Notation: Notation = "%notation" theName: ID "%package" thePackage: ID thePath: OptPath OptDialects Tables tokensInclude: OptInclude Tokens "%rules" rulesInclude: OptInclude Rules OptSemicolon {  val dialects = $OptDialects; Notation($thePackage, $theName, $thePath, $Tables, "Scanner", Type("Token", Nil, $START), $Tokens, $Rules.reverse, $tokensInclude, $rulesInclude, dialects) }""", 2, trees$trees ) }
+  { case trees$trees => PARSETREE("""Notation: Notation = "%notation" theName: ID a: OptSemicolon "%package" thePackage: ID b: OptSemicolon thePath: OptPath OptDialects Tables tokensInclude: OptInclude Tokens "%rules" rulesInclude: OptInclude Rules c: OptSemicolon {  val dialects = $OptDialects; Notation($thePackage, $theName, $thePath, $Tables, "Scanner", Type("Token", Nil, $START), $Tokens, $Rules.reverse, $tokensInclude, $rulesInclude, dialects) }""", 2, trees$trees ) }
  case 3 => 
   { case trees$trees => PARSETREE("""OptPath: String =  {  "" }""", 3, trees$trees ) }
  case 4 => 
-  { case trees$trees => PARSETREE("""OptPath: String = "%path" ID {  $ID.toPathString }""", 4, trees$trees ) }
+  { case trees$trees => PARSETREE("""OptPath: String = "%path" ID OptSemicolon {  $ID.toPathString }""", 4, trees$trees ) }
  case 5 => 
   { case trees$trees => PARSETREE("""OptInclude: String =  {  "" }""", 5, trees$trees ) }
  case 6 => 
   { case trees$trees => PARSETREE("""OptInclude: String = "%include" CODE {  $CODE }""", 6, trees$trees ) }
  case 7 => 
-  { case trees$trees => PARSETREE("""OptDialects: Tuple2[String,String] = "%dialect" l: ID "%scalalr" r: ID {  ($l, $r) }""", 7, trees$trees ) }
+  { case trees$trees => PARSETREE("""OptDialects: Tuple2[String,String] = "%dialect" l: ID "%scalalr" r: ID OptSemicolon {  ($l, $r) }""", 7, trees$trees ) }
  case 8 => 
-  { case trees$trees => PARSETREE("""OptDialects: Tuple2[String,String] = "%scalalr" l: ID "%dialect" r: ID {  ($r, $l) }""", 8, trees$trees ) }
+  { case trees$trees => PARSETREE("""OptDialects: Tuple2[String,String] = "%scalalr" l: ID "%dialect" r: ID OptSemicolon {  ($r, $l) }""", 8, trees$trees ) }
  case 9 => 
   { case trees$trees => PARSETREE("""OptDialects: Tuple2[String,String] =  {  ("", "") }""", 9, trees$trees ) }
  case 10 => 

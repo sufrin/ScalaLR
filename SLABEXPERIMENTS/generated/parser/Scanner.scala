@@ -37,7 +37,7 @@ object Scanner{
     def isBisonic(c: Char): Boolean = c.isLetterOrDigit || c=='.' || c=='_'
 
     def hasNext: Boolean = chars.hasCurrent
-    def next(): Token = {
+    def next(): Token = if (hasChar) {
       chars.current match {
         // NL at the start of a line is just a space
         //case '\n' if chars.chars>0    =>
@@ -100,7 +100,7 @@ object Scanner{
         case other =>
           LEXICALERROR(s"Unrecognised $other (at ${sourceLocation()}")
       }
-    }
+    } else $end
   }
 
 

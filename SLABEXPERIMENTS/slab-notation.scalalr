@@ -45,7 +45,7 @@
     def isBisonic(c: Char): Boolean = c.isLetterOrDigit || c=='.' || c=='_'
 
     def hasNext: Boolean = chars.hasCurrent
-    def next(): Token = {
+    def next(): Token = if (hasChar) {
       chars.current match {
         // NL at the start of a line is just a space
         //case '\n' if chars.chars>0    =>
@@ -108,7 +108,7 @@
         case other =>
           LEXICALERROR(s"Unrecognised $other (at ${sourceLocation()}")
       }
-    }
+    } else $end
   }
 
 }
@@ -163,9 +163,9 @@ command: Unit = Notation { translate($Notation) };
 
 
 Notation: Notation =
-   `%notation`     theName:ID
-   `%package`      thePackage:ID
-    thePath: OptPath
+   `%notation`     theName:ID    a:OptSemicolon
+   `%package`      thePackage:ID b:OptSemicolon
+    thePath:       OptPath
     OptDialects
     Tables
     tokensInclude: OptInclude
@@ -174,15 +174,15 @@ Notation: Notation =
     rulesInclude:
     OptInclude
     Rules
-    OptSemicolon
+    c:OptSemicolon
     { val dialects = $OptDialects; Notation($thePackage, $theName, $thePath, $Tables, "Scanner", Type("Token", Nil, $START), $Tokens, $Rules.reverse, $tokensInclude, $rulesInclude, dialects) };
 
-OptPath: String = %empty { "" } | `%path` ID { $ID.toPathString };
+OptPath: String = %empty { "" } | `%path` ID OptSemicolon { $ID.toPathString };
 
 OptInclude: String = %empty { "" } | `%include` CODE { $CODE };
 
-OptDialects:((String,String)) = `%dialect` l:ID `%scalalr` r:ID { ($l, $r) }
-                              | `%scalalr` l:ID `%dialect` r:ID { ($r, $l) }
+OptDialects:((String,String)) = `%dialect` l:ID `%scalalr` r:ID OptSemicolon { ($l, $r) }
+                              | `%scalalr` l:ID `%dialect` r:ID OptSemicolon { ($r, $l) }
                               | %empty     { ("", "") }
                               ;
 

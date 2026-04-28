@@ -10,11 +10,11 @@
 /**
  * BUILDING A RUNNABLE ASSEMBLY
  *
- *   scala-cli --power package scalalrgen.scala -o scalalrgen --assembly
+ *   scala-cli --power package scalalrslab.scala -o scalalrslab --assembly
  *  
  * AD-HOC RUN
  *
- *   scala-cli run scalalrgen.scala -- [source files]
+ *   scala-cli run scalalrslab.scala -- [source files]
  * 
  */
 package org.sufrin.scalalr
@@ -29,7 +29,7 @@ object scalalrslab{
     )
   }
   def main(args: Array[String]): Unit = {
-    var genargs: List[String] = Nil
+    var genargs: List[String] = List("--output=SLABOUTPUT")
     var boot = false
     for { arg <- args } arg match {
       case s"-h"    => printHelp()

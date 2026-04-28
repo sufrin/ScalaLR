@@ -5,22 +5,64 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="91372ed0-436a-419c-9015-c4c30c0eb662" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.bsp/sbt.json" beforeDir="false" afterPath="$PROJECT_DIR$/.bsp/sbt.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/scalalr_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/scalalr.flab.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/scalalr.flab.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/scalalr.scalalr-build.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/scalalr.scalalr-build.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sbt.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sbt.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/scala_compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/scala_compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allfiles.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.sbt" beforeDir="false" afterPath="$PROJECT_DIR$/build.sbt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/duse.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/COMMANDLINE/COMMANDLINE.md" beforeDir="false" afterPath="$PROJECT_DIR$/COMMANDLINE/COMMANDLINE.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/COMMANDLINE/TEST/parser/Components.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/COMMANDLINE/TEST/parser/Reduction.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/COMMANDLINE/TEST/parser/ScalaLR.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/COMMANDLINE/TEST/parser/ScalaLR.output" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/COMMANDLINE/TEST/parser/ScalaLR.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/COMMANDLINE/TEST/parser/ScalaLR.y" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/COMMANDLINE/TEST/parser/Scanner.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/COMMANDLINE/TEST/parser/Tables.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/COMMANDLINE/TESTBOOT/parser/Components.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/COMMANDLINE/TESTBOOT/parser/Reduction.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/COMMANDLINE/TESTBOOT/parser/ScalaLR.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/COMMANDLINE/TESTBOOT/parser/ScalaLR.output" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/COMMANDLINE/TESTBOOT/parser/ScalaLR.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/COMMANDLINE/TESTBOOT/parser/ScalaLR.y" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/COMMANDLINE/TESTBOOT/parser/Scanner.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/COMMANDLINE/TESTBOOT/parser/Tables.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/COMMANDLINE/scalalrgen" beforeDir="false" afterPath="$PROJECT_DIR$/COMMANDLINE/scalalrgen" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/PREPAREFLAB.md" beforeDir="false" afterPath="$PROJECT_DIR$/PREPAREFLAB/PREPAREFLAB.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/flab-boot/parser/Components.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/flab-boot/parser/Reduction.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/flab-boot/parser/ScalaLR.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/flab-boot/parser/ScalaLR.output" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/flab-boot/parser/ScalaLR.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/flab-boot/parser/ScalaLR.y" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/flab-boot/parser/Scanner.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/flab-boot/parser/Tables.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/flab-flab/parser/Reduction.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/flab-flab/parser/ScalaLR.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/flab-flab/parser/ScalaLR.output" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/flab-flab/parser/ScalaLR.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/flab-flab/parser/ScalaLR.y" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/flab-flab/parser/Scanner.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/flab-flab/parser/Tables.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/flab-generate.sh" beforeDir="false" afterPath="$PROJECT_DIR$/PREPAREFLAB/flab-generate.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/flab-notation.scalalr" beforeDir="false" afterPath="$PROJECT_DIR$/PREPAREFLAB/flab-notation.scalalr" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/makeflabgeneratorwithboot" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/makeflabgeneratorwithflab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/src/main/scala/Generator.scala" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/src/main/scala/Generator.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flab/src/main/scala/scalalr/parser/Components.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flab/src/main/scala/scalalr/parser/Reduction.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flab/src/main/scala/scalalr/parser/ScalaLR.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flab/src/main/scala/scalalr/parser/ScalaLR.output" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flab/src/main/scala/scalalr/parser/ScalaLR.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flab/src/main/scala/scalalr/parser/ScalaLR.y" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flab/src/main/scala/scalalr/parser/Scanner.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flab/src/main/scala/scalalr/parser/Tables.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/slab/src/main/resources/scalalrgen" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/slab/src/main/resources/slab-notation.scalalr" beforeDir="false" afterPath="$PROJECT_DIR$/slab/src/main/resources/slab-notation.scalalr" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slab/src/main/scala/scalalr.slab.parser/Components.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/slab/src/main/scala/scalalr.slab.parser/Reduction.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/slab/src/main/scala/scalalr.slab.parser/Scanner.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/slab/src/main/scala/scalalr.slab.parser/Tables.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/slab/src/main/scala/scalalr.slab.parser/parser.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/slab/src/main/scala/scalalr.slab.parser/parser.output" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/slab/src/main/scala/scalalr.slab.parser/parser.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/slab/src/main/scala/scalalr.slab.parser/parser.y" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

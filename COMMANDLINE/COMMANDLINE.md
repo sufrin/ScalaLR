@@ -16,6 +16,10 @@ generate parser components from scalalr source files using the bootstrap generat
 
 ### Building
 
+Naturally (!) *sbt* must be installed; and so must `scala-cli`.
+
+#### By hand
+
 In the root directory of `ScalaLR` run
 
     sbt "clean ; root package"
@@ -29,6 +33,12 @@ In this directory `ScalaLR/COMMANDLINE`  run
     scala-cli --power package scalalrgen.scala -f -o scalalrgen --assembly
 
 and ... you're done.
+
+#### By script
+
+From this directory `ScalaLR/COMMANDLINE`  run
+
+   ./makescalalrgen.sh
 
 #### Acknowledgement
 The authors of scala-cli, whoever they are, deserve our gratitude for taking the bull

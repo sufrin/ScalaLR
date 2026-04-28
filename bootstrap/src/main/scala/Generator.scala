@@ -63,7 +63,7 @@ class Generator(val notation: Notation, prefix: String="") {
   val thePath =
     if (explicitPath.isEmpty)
          Path.of(prefix, thePackage.replace('/', '.').replace('.', '/')).getParent().toString // Normalize
-    else Path.of(prefix, explicitPath)
+    else Path.of(prefix, explicitPath.unquoted)
   val theNotationName = Path.of(prefix,theName.replace('/', '.').replace('.', '/')).getFileName.toString // Normalize
 
   def makeFiles(): Unit = {

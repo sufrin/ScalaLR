@@ -4,7 +4,7 @@
 
 %notation  parser
 %package   scalalr.slab.parser
-%path      scalalr.slab.parser
+%path      "parser"
 
 %dialect   "joint boot / flab"
 %scalalr   "slab => boot syntax => scala"
@@ -147,6 +147,13 @@
         case _      => println(s"Warning: wrong %tables type $tableTypeName; canonical assumed");  "canonical-lr"
      }
 
+ implicit class ID2Path(val string: String) extends AnyVal {
+          def toPathString: String = string.replace('/', '.').replace('.', '/') match {
+            case s"\"$unquoted\"" => unquoted
+            case unquoted => unquoted
+          }
+        }
+
 }
 
 
@@ -158,7 +165,7 @@ command: Unit = Notation { translate($Notation) };
 Notation: Notation =
    `%notation`     theName:ID
    `%package`      thePackage:ID
-   `%path`         thePath:ID
+    thePath: OptPath
     OptDialects
     Tables
     tokensInclude: OptInclude
@@ -169,6 +176,8 @@ Notation: Notation =
     Rules
     OptSemicolon
     { val dialects = $OptDialects; Notation($thePackage, $theName, $thePath, $Tables, "Scanner", Type("Token", Nil, $START), $Tokens, $Rules.reverse, $tokensInclude, $rulesInclude, dialects) };
+
+OptPath: String = %empty { "" } | `%path` ID { $ID.toPathString };
 
 OptInclude: String = %empty { "" } | `%include` CODE { $CODE };
 

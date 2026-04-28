@@ -1,0 +1,10 @@
+#!/bin/bash
+# Makes a command-line tool for scalalr
+# DEPENDS ON scala-cli and sbt being installed
+# 
+ROOT=/Users/sufrin/GitHomes/ScalaLR/
+echo Making a command-line generator for scalalr components
+(cd $ROOT; sbt "clean ; package")
+scala-cli --power package scalalrgen.scala -o scalalrgen --assembly -f
+echo If all has gone well you can synchronise this with scripts
+rsync -av ./scalalrgen ../scripts/

@@ -96,7 +96,10 @@ object Scanner{
           val prefix = chars.takeWhile(isBisonic)
           ID((prefix).mkString(""))
 
-        case ';' => afterNextChar(`;`)
+        case ';' =>
+           nextChar()
+           eatWhitespace()
+           `;`
 
         case c if c.isWhitespace =>
           var vertical: Int =  0

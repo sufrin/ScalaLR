@@ -1,3 +1,4 @@
+
 /**
 
     Forgiving syntax for grammars; rules end in vertical whitespace
@@ -6,19 +7,19 @@
     `enableNL` holds, a visible vertical gap of any depth (>1) maps
     to the NL symbol and is otherwise ignored.
 
-    THIS notation file is in the bootstrap notation (rules terminate
-    with ';').
-
-    THE file slab-notation.slab is in the notation described here.
+    THIS notation file is in the notation described HERE. In short
+    parsers using the components that it describes are SELF-HOSTING.
 
 */
+
 
 %notation  parser
 %package   scalalr.slab.parser
 %path      "parser"
 
-%dialect   "scalalr boot/flab notation"
-%scalalr   "components made by scalalrgen [-boot or -flab]"
+
+%dialect   "scalalr slab notation"
+%scalalr   "components made by slab or slabslab"
 
 %include {
   import org.sufrin.utility.SourceTextCursor
@@ -184,7 +185,7 @@
 
 
 
-command: Unit = Notation { translate($Notation) };
+command: Unit = Notation { translate($Notation) }
 
 
 Notation: Notation =
@@ -200,87 +201,85 @@ Notation: Notation =
     NL
     Rules
     OptSemicolon
-    { val dialects = $OptDialects; Notation($thePackage, $theName, $thePath, $Tables, "Scanner", Type("Token", Nil, $START), $Tokens, $Rules.reverse, $tokensInclude, $rulesInclude, dialects) };
+    { val dialects = $OptDialects; Notation($thePackage, $theName, $thePath, $Tables, "Scanner", Type("Token", Nil, $START), $Tokens, $Rules.reverse, $tokensInclude, $rulesInclude, dialects) }
 
 
-RULES: Unit = `%rules` { println("IMPLICIT RULE ENDINGS ENABLED"); Scanner.enableNL=true };
+RULES: Unit = `%rules` { println("IMPLICIT RULE ENDINGS ENABLED"); Scanner.enableNL=true }
 
-OptSemicolon: Unit = %empty {()} | `;` {()};
+OptSemicolon: Unit = %empty {()} | `;` {()}
 
-OptPath: String = %empty { "" } | `%path` ID  { $ID.toPathString };
+OptPath: String = %empty { "" } | `%path` ID  { $ID.toPathString }
 
-OptInclude: String = %empty { "" } | `%include` CODE { $CODE };
+OptInclude: String = %empty { "" } | `%include` CODE { $CODE }
 
 OptDialects:((String,String)) = `%dialect` l:ID `%scalalr` r:ID  { ($l, $r) }
                               | `%scalalr` l:ID `%dialect` r:ID  { ($r, $l) }
                               | %empty     { ("", "") }
-                              ;
+
 
 
 Tokens:(List[TokenSpec]) = %empty           { Nil }
                          | TokenSpec Tokens { $TokenSpec :: $Tokens }
-                         ;
+
 
 TokenSpec: TokenSpec =
         `%left`  TypedTerminals { Left($TypedTerminals) }
       | `%right` TypedTerminals { Right($TypedTerminals) }
       | `%non`   TypedTerminals { Nonassoc($TypedTerminals) }
       | `%token` TypedTerminals { Tokens($TypedTerminals) }
-      ;
+
 
 TypedTerminals:(List[TypedTerminal]) =
          TypedTerminal { List($TypedTerminal) }
       |  TypedTerminal TypedTerminals  { $TypedTerminal :: $TypedTerminals }
-      ;
+
 
 TypedTerminal:(TypedTerminal) = ID ':' Type      {  TypedTerminal($ID, $Type, $START)   }
                               | ID '(' Type ')'  {  TypedTerminal($ID, $Type, $START) }   // for compatibility with boot notation
                               | ID               {  TypedTerminal($ID, Untyped, $START) }
-                              ;
+
 
 Tables:(String) = %empty       { "lalr" }
                 | `%tables` ID { mkTableType($ID) }
-                ;
+
 
 
 Rules:(List[Rule]) = Rule           { List($Rule) }
-                   | Rules NL Rule  { $Rule :: $Rules };
+                   | Rules NL Rule  { $Rule :: $Rules }
 
-Rule: Rule = LHS '=' OptBar RHS { Rule($LHS, $RHS, $START) };
+Rule: Rule = LHS '=' OptBar RHS { Rule($LHS, $RHS, $START) }
 
-OptBar: Unit = '|' {()} | %empty {()};
+OptBar: Unit = '|' {()} | %empty {()}
 
 LHS: TypedNonterminal  = ID ':' Type {  TypedNonterminal($ID, $Type, $START) }
                        | ID          {  TypedNonterminal($ID, Untyped, $START) }
-                       ;
+
 
 RHS:(List[Production]) =
       Production         { List($Production)   }
-    | Production '|' RHS { $Production :: $RHS } ;
+    | Production '|' RHS { $Production :: $RHS }
 
-Production: Production = NamedFields Action Precedence { Production($NamedFields, $Action, $Precedence, $START) };
+Production: Production = NamedFields Action Precedence { Production($NamedFields, $Action, $Precedence, $START) }
 
 NamedFields:(List[NamedField]) =
       `%empty`               { Nil }
     | NamedField             { List($NamedField) }
     | NamedField NamedFields { $NamedField :: $NamedFields }
-    ;
+
 
 NamedField: NamedField = ID                              { NamedField(theName = None, fieldSymbol = $ID, $START) }
                        | theName: ID ':' fieldSymbol: ID { NamedField(Some($theName), $fieldSymbol, $START) }
-                       ;
 
-Action:(Option[Expression])    = %empty { None } | CODE { Some($CODE) };
 
-Precedence: (Option[Terminal]) =  %empty { None } | `%prec` ID { Some(new Terminal($ID)) };
+Action:(Option[Expression])    = %empty { None } | CODE { Some($CODE) }
+
+Precedence: (Option[Terminal]) =  %empty { None } | `%prec` ID { Some(new Terminal($ID)) }
 
 Type:(Type) = ID               { Type($ID, Nil, $START) }
             | ID '[' Types ']' { Type($ID, $Types, $START) }
             | '('    Types ')' { makeTupleType($Types, $START) }
             | '(' ')'          { Type("Unit", Nil, $START) }
-            ;
+
 
 Types:(List[Type]) = Type            { List($Type) }
                    | Type  ',' Types { $Type :: $Types }
-                   ;
-        

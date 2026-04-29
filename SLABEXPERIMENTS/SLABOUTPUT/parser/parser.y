@@ -31,13 +31,16 @@
 // "%scalalr" TOK-34
 %%
 command:  Notation;
-Notation:  TOK-23 ID OptSemicolon TOK-24 ID OptSemicolon OptPath OptDialects Tables OptInclude Tokens TOK-29 OptInclude Rules OptSemicolon;
+Notation:  TOK-23 ID TOK-24 ID OptPath OptDialects Tables OptInclude Tokens RULES OptInclude NL Rules OptSemicolon;
+RULES:  TOK-29;
+OptSemicolon: ;
+OptSemicolon:  TOK-10;
 OptPath: ;
-OptPath:  TOK-20 ID OptSemicolon;
+OptPath:  TOK-20 ID;
 OptInclude: ;
 OptInclude:  TOK-30 CODE;
-OptDialects:  TOK-33 ID TOK-34 ID OptSemicolon;
-OptDialects:  TOK-34 ID TOK-33 ID OptSemicolon;
+OptDialects:  TOK-33 ID TOK-34 ID;
+OptDialects:  TOK-34 ID TOK-33 ID;
 OptDialects: ;
 Tokens: ;
 Tokens:  TokenSpec Tokens;
@@ -53,10 +56,10 @@ TypedTerminal:  ID;
 Tables: ;
 Tables:  TOK-32 ID;
 Rules:  Rule;
-Rules:  Rules TOK-10 Rule;
-Rule:  LHS TOK-11 RHS;
-OptSemicolon: ;
-OptSemicolon:  TOK-10;
+Rules:  Rules NL Rule;
+Rule:  LHS TOK-11 OptBar RHS;
+OptBar:  TOK-12;
+OptBar: ;
 LHS:  ID TOK-13 Type;
 LHS:  ID;
 RHS:  Production;

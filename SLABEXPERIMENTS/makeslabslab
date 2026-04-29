@@ -1,9 +1,9 @@
 #!/bin/bash
 ROOT=~/GitHomes/ScalaLR
-MODE=${1-"-boot"}
+MODE=${1-"-slab"}
 echo Making parser components for slab $MODE
-echo Depends on $ROOT/scripts/scalalrgen
-$ROOT/scripts/scalalrgen $MODE --output=generated$MODE slab-notation.scalalr
+echo Depends on ./slab
+./slab --output=generated$MODE slab-notation.slab
 sync=n; read -p "Install the generated components in the slab source code? [y]" sync
 test "$sync" = "y" && rsync -av generated$MODE/ $ROOT/slab/src/main/scala/generated
 if [ "$sync" = "y" ]
@@ -12,9 +12,8 @@ then
   [ "$sync" = "y" ] && ( cd .. ; sbt "slab / clean; slab / package")
   if [ "$sync" = "y" ]
   then
-   read -p "Make the binary slab? " sync
-   [ "$sync" = "y" ] && scala-cli --power package slab.scala -o slab --assembly -f
+   read -p "Make the binary slabslab? " sync
+   [ "$sync" = "y" ] && scala-cli --power package slabslab.scala -o slabslab --assembly -f
   fi
 fi
-
 

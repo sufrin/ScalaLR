@@ -10,19 +10,24 @@
 /**
  * BUILDING A RUNNABLE ASSEMBLY
  *
- *   scala-cli --power package scalalrslab.scala -o scalalrslab --assembly
+ *   scala-cli --power package slab.scala -o slab --assembly -f
  *  
  * AD-HOC RUN
  *
- *   scala-cli run scalalrslab.scala -- [source files]
+ *   scala-cli run slab.scala -- [source files]
  * 
  */
 package org.sufrin.scalalr
 
-object scalalrslab{
+object slabMain {
   def printHelp(): Unit = {
+    val signature = {
+      import scalalr.slab.parser.DialectInformation._
+      s"Notation \"$name\" (for $notation) $scalalr"
+    }
     println(
-      """Usage: scalalrslab [--output=<outputpath>] [ <file> ...]
+      s"""$signature
+        |Usage: slab [--output=<outputpath> (default SLABOUTPUT)] [ <file> ...]
         | Generate parser tables from scalalr source files using the bootstrap generator
         | and the slab parser.
         |""".stripMargin
@@ -32,11 +37,11 @@ object scalalrslab{
     var genargs: List[String] = List("--output=SLABOUTPUT")
     var boot = false
     for { arg <- args } arg match {
-      case s"-h"    => printHelp()
-      case _        => genargs = arg::genargs
+      case s"-h"        => printHelp()
+      case s"--o=$path" => genargs = List(s"--output=$path")
+      case _            => genargs = arg::genargs
     }
-    val mainargs =  genargs.reverse.toArray   
-
+    val mainargs =  genargs.reverse.toArray
     slab.Generator.main(mainargs)
   }
 }

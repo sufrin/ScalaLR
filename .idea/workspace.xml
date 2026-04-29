@@ -6,25 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="91372ed0-436a-419c-9015-c4c30c0eb662" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COMMANDLINE/scalalrgen" beforeDir="false" afterPath="$PROJECT_DIR$/COMMANDLINE/scalalrgen" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LIFEBOAT/generated/tinyfun/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/LIFEBOAT/generated/tinyfun/Components.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LIFEBOAT/generated/tinyfun/Scanner.scala" beforeDir="false" afterPath="$PROJECT_DIR$/LIFEBOAT/generated/tinyfun/Scanner.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LIFEBOAT/runtinyfun" beforeDir="false" afterPath="$PROJECT_DIR$/LIFEBOAT/runtinyfun" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LIFEBOAT/scalalrlifeboat" beforeDir="false" afterPath="$PROJECT_DIR$/LIFEBOAT/scalalrlifeboat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LIFEBOAT/tinyfun.scalalr" beforeDir="false" afterPath="$PROJECT_DIR$/LIFEBOAT/tinyfun.scalalr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/PREPAREFLAB.md" beforeDir="false" afterPath="$PROJECT_DIR$/PREPAREFLAB/PREPAREFLAB.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/generated-boot/parser/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/PREPAREFLAB/generated-boot/parser/Components.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/prepareflab.sh" beforeDir="false" afterPath="$PROJECT_DIR$/PREPAREFLAB/prepareflab.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/generated/parser/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/SLABEXPERIMENTS/generated/parser/Components.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/generated/parser/Reduction.scala" beforeDir="false" afterPath="$PROJECT_DIR$/SLABEXPERIMENTS/generated/parser/Reduction.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/makeslab" beforeDir="false" afterPath="$PROJECT_DIR$/SLABEXPERIMENTS/makeslab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/slab-notation.scalalr" beforeDir="false" afterPath="$PROJECT_DIR$/SLABEXPERIMENTS/slab-notation.scalalr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/src/main/scala/Generator.scala" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/src/main/scala/Generator.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flab/src/main/scala/generated/generated-boot/parser/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/flab/src/main/scala/generated/generated-boot/parser/Components.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/scalalrgen" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/scalalrgen" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/scalalrlifeboat" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/scalalrlifeboat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/slab/src/main/scala/generated/generated/parser/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/slab/src/main/scala/generated/generated/parser/Components.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/slab/src/main/scala/generated/generated/parser/Reduction.scala" beforeDir="false" afterPath="$PROJECT_DIR$/slab/src/main/scala/generated/generated/parser/Reduction.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

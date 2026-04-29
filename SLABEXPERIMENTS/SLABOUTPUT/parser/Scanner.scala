@@ -5,6 +5,7 @@ object Scanner{
   import org.sufrin.utility.SourceTextCursor
   import org.sufrin.scalalr.SourceLocation
 
+  var enableNL = false
 
   def apply(chars: SourceTextCursor): Scanner = new Scanner(chars)
 
@@ -32,6 +33,11 @@ object Scanner{
       }
       //println("end comment")
       nextChar()
+      eatWhitespace()
+    }
+
+    def eatWhitespace(): Unit = {
+       while (hasChar && theChar.isWhitespace) nextChar()
     }
 
     def isBisonic(c: Char): Boolean = c.isLetterOrDigit || c=='.' || c=='_'
@@ -39,11 +45,6 @@ object Scanner{
     def hasNext: Boolean = chars.hasCurrent
     def next(): Token = if (hasChar) {
       chars.current match {
-        // NL at the start of a line is just a space
-        //case '\n' if chars.chars>0    =>
-        //         chars.current = ' '            // the subsequent next() skips this space without accounting
-        //         NL                             // NL once
-
         case '(' => afterNextChar(`(`)
         case ')' => afterNextChar(`)`)
         case '[' => afterNextChar(`[`)
@@ -52,7 +53,6 @@ object Scanner{
         case '=' => afterNextChar(`=`)
         case ',' => afterNextChar(`,`)
         case ':' => afterNextChar(`:`)
-        case ';' => afterNextChar(`;`)
         case '%' =>
           nextChar()
           val directive = chars.takeWhile(_.isLetterOrDigit).mkString("")
@@ -79,6 +79,7 @@ object Scanner{
               eatComment()
             case '/' =>
               chars.dropWhile( c=>c!='\n')
+              eatWhitespace()
             case other =>
               //Syntax.Parser.warn(s"Malformed comment sentinel: \"/$other\" at $sourceLocation")
               chars.dropWhile( c=>c!='\n')
@@ -94,8 +95,20 @@ object Scanner{
         case c if c.isLetter =>
           val prefix = chars.takeWhile(isBisonic)
           ID((prefix).mkString(""))
+
+        case ';' =>
+           nextChar()
+           eatWhitespace()
+           `;`
+
         case c if c.isWhitespace =>
-          while (hasChar && theChar.isWhitespace) nextChar()
+          var vertical: Int =  0
+          while (hasChar && theChar.isWhitespace) {
+            if (theChar=='\n') vertical += 1
+            nextChar()
+          }
+          if (enableNL && vertical>1) NL
+          else
           if (hasChar) next() else $end
         case other =>
           LEXICALERROR(s"Unrecognised $other (at ${sourceLocation()}")
@@ -181,26 +194,28 @@ val symbolName: Map[Int, String] = collection.immutable.ListMap[Int, String](
 , 35 -> "$accept" 
 , 36 -> "command" 
 , 37 -> "Notation" 
-, 38 -> "OptPath" 
-, 39 -> "OptInclude" 
-, 40 -> "OptDialects" 
-, 41 -> "Tokens" 
-, 42 -> "TokenSpec" 
-, 43 -> "TypedTerminals" 
-, 44 -> "TypedTerminal" 
-, 45 -> "Tables" 
-, 46 -> "Rules" 
-, 47 -> "Rule" 
-, 48 -> "OptSemicolon" 
-, 49 -> "LHS" 
-, 50 -> "RHS" 
-, 51 -> "Production" 
-, 52 -> "NamedFields" 
-, 53 -> "NamedField" 
-, 54 -> "Action" 
-, 55 -> "Precedence" 
-, 56 -> "Type" 
-, 57 -> "Types" 
+, 38 -> "RULES" 
+, 39 -> "OptSemicolon" 
+, 40 -> "OptPath" 
+, 41 -> "OptInclude" 
+, 42 -> "OptDialects" 
+, 43 -> "Tokens" 
+, 44 -> "TokenSpec" 
+, 45 -> "TypedTerminals" 
+, 46 -> "TypedTerminal" 
+, 47 -> "Tables" 
+, 48 -> "Rules" 
+, 49 -> "Rule" 
+, 50 -> "OptBar" 
+, 51 -> "LHS" 
+, 52 -> "RHS" 
+, 53 -> "Production" 
+, 54 -> "NamedFields" 
+, 55 -> "NamedField" 
+, 56 -> "Action" 
+, 57 -> "Precedence" 
+, 58 -> "Type" 
+, 59 -> "Types" 
 )
 
 }

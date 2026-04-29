@@ -60,7 +60,7 @@ object Generator {
       else if (arg == "-p") pretty = true
       else if (arg.startsWith("-")) {
         println(
-          """Usage: org.sufrin.scalalr.flab.generate [--output=<outputpath] [-p | -l]* [<file> ...]
+          """Usage: slab [--output=<outputpath] [-p | -l]* [<file> ...]
             |Treat each <file> as a scalalr source files and generate the
             |scala files corresponding to the %notation it defines.
             |Place the generated files under the directory named by <outputpath>

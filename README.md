@@ -12,14 +12,32 @@ become part of a parser that will yield an abstract syntax tree. *Of course
 there's no harm in the parser yielding (say) a numeric value, or even being
 run for its side-effects and yielding `Unit` -- though this may not be common.*
 
-Its current production form is the `scalalrgen` program. This is described in 
-the `COMMANDLINE` documentation, and delivered in the eponymous directory.
+There are (now: late April 2026) several production forms of the
+program, bootstrapped from an original handwritten parser and
+a simple code generator.
 
-That program can be self-hosted, in the sense that its input language can
+      scripts/scalalrlifeboat 
+      scripts/scalalrgen
+
+The `scalalrgen` program is described in the `COMMANDLINE` documentation.
+It would be an exaggeration to say that its parser is completely self-hosting, 
+but it offers a choice of parsing with the original bootstrap parser, and 
+a parser for "much-the-same" syntax generated with scalalr technology
+(known as **FLaB** -- first language atop bootstrap).
+
+
+The most recent *experimental* forms of the program can be
+found in the **slab** module and the `SLABEXPERIMENTS/` directory.
+Experience with using earlier versions of scalalr
+demonstrated a rather high incidence of noisy errors with a single
+trivial cause: the omission of just one semicolon
+between rule definitions -- this was required by the earlier languages. 
+This has been corrected in the **slab** notation itself
+and is implemented right now in the **slab** and **slabslab**
+processors. The latter is the first in the entire sequence 
+that is self-hosting: in the sense that its input language can
 be described *in* its input language, and parsed by a parser whose
-essential components it generated itself. [See the documentation for PREPAREFLAB
-for a discussion of this]
-
+parsing components it generated itself.
 
 ### Grammar notation 
 The notation for productions and priorities is somewhat similar to
@@ -143,7 +161,8 @@ These files are generated in three phases:
 
 ### Further Reading 
 1. The best-documented simple example of a program that 
-uses *scalalr* appears in the `LIFEBOAT/` directory
+uses *scalalr*-generated parsing components appears 
+in the `LIFEBOAT/` directory
 in `runtinyfun.scalalr`. 
 
 2. Some cursory tests that were
@@ -151,7 +170,7 @@ used in building the initial bootstrap
 appear in `bootstrap/src/test`; they generate(d) components 
 in the **testbed** module's `src/test/scala directory`. 
 
-3. The `PREPAREFLAB/`  directory provides an explanation of the
+3. The file `Bootstrapping.md` provides an explanation of the
 self-hosting bootstrap stages.
 
 
@@ -173,8 +192,16 @@ is no `error`-handling state available (see Bison documentation for an explanati
 the `error` virtual token), and the "recovery" that otherwise results 
 is not properly implemented or documented. Despite this it is straightforward to 
 construct an REP-type interface that appears to recover from syntax errors. 
-For an example, see `runtinyfun`
-2. **Scala code quotations** such as appear in `%include` passages and as action 
+For an example, see `runtinyfun`.
+
+3. **Trivial typos** are problematic. Experience with using the languages early in the bootstrap sequence
+demonstrated the high incidence of errors caused by the omission of
+semicolons between rules. This has been corrected in the **slab** 
+notation and is implemented right now in the **slab** processor; and in
+the **slabslab** processor, the first in the entire sequence that is
+self-hosting.
+
+4. **Scala code quotations** such as appear in `%include` passages and as action 
 expressions
 need a little care. The normal form of a code quotation is a passage that opens with `{`, has
 properly-nested occurences of `{` and `}` within it and ends with a closing `}` that matches 
@@ -199,7 +226,7 @@ here in no particular order.
 1. Error recovery properly implemented.
 
 2. System to be self-hosting: ie using a scalalr-derived parser rather
-   than the present hand-coded recursive descent parser. 
+   than the present hand-coded recursive descent parser. [DONE]
 
 3. Higher-level constructs such as %list, %option to express complex 
    grammar expressions that would normally have to be "hand-coded" such as:
@@ -221,6 +248,6 @@ These could be expressed more concisely in-situ, for example:
 
 The published code will reflect current partial progress towards them when appropriate.
 
-BS: April 14th, 2026
+BS: April 29th, 2026
 
 

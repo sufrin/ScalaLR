@@ -1,7 +1,4 @@
 
-//> using scala "2.13"
-//> using jar "scalalr.jar"
-
 %notation TinyFun
 %package  tinyfun
 %path     tinyfun
@@ -25,7 +22,7 @@
       }
 
       def hasNext: Boolean = chars.hasCurrent
-      def next(): Token = {
+      def next(): Token = if (hasChar) {
           chars.current match {
             case '\n'     =>
                  chars.current = ' '            // the subsequent next() skips this space without accounting
@@ -64,7 +61,7 @@
                LEXICALERROR(s"Unrecognised $other (at ${sourceLocation()}")
 
           }
-      }
+      } else $end
     }
 }
 

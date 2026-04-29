@@ -5,9 +5,10 @@ object Scanner{
    import org.sufrin.scalalr.SourceLocation
    import org.sufrin.utility.SourceTextCursor
 
-    
-    def Scanner(chars: SourceTextCursor): Scanner = new Scanner(chars)
-    
+    object Scanner {
+      def apply(chars: SourceTextCursor): Scanner = new Scanner(chars)
+    }
+
     class Scanner(chars: SourceTextCursor) extends Iterator[Token] {
       def sourceLocation(): SourceLocation = SourceLocation(chars.lines,  chars.chars)
       @inline def hasChar: Boolean = chars.hasCurrent

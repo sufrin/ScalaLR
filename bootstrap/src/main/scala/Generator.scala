@@ -635,6 +635,16 @@ class Generator(val notation: Notation, prefix: String="") {
       }
     }
 
+    /*
+     *  Suppress the match for duplicated symbols: they need naming
+     */
+    val matchAll = Some("_")
+    def toPatterns(fields: Seq[NamedField]): Seq[String] = {
+        val anonfields = fields.filterNot(_.hasFieldName)
+        for { field <- fields } yield
+          if (anonfields.filter( _.==(field)).length <=1) toPattern(field) else "_"
+    }
+
     def outReduction(): Unit = {
       out("\ndef reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufrin.scalalr.SourceLocation, n: Int): PartialFunction[List[Any], Any] = n match {")
       var productionNum = 0
@@ -643,7 +653,7 @@ class Generator(val notation: Notation, prefix: String="") {
           productionNum += 1
           out(s"\n /* ${rule.lhs} = ${production} */")
           out(s"\n case $productionNum => \n  { case ")
-          out(production.symbols.map(toPattern).mkString("List(", ", ", ") => "))
+          out(toPatterns(production.symbols).mkString("List(", ", ", ") => "))
 
           production.reduction match {
             case None => out("None }")

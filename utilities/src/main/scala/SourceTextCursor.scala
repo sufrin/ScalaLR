@@ -69,6 +69,7 @@ object SourceTextCursor {
     else new SourceTextCursor(Files.readString(path).iterator)
 }
 
+/*
 object SourceTextCursorTest extends App {
   val c = SourceTextCursor("the\nrain\nin")
   while (c.hasCurrent) {
@@ -76,3 +77,4 @@ object SourceTextCursorTest extends App {
     c.next()
   }
 }
+*/

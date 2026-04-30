@@ -25,18 +25,15 @@ the `PREPAREFLAB` documentation.
 3. Now the compiler can’t compile its own source, and you have to use 
    another compiler entirely. 
 
-### Testing the Lifeboat
+### Making and Testing the Lifeboat
+1. Use `makelifeboat.sh` to construct a  `scalalrlifeboat` program
+in this directory using only `sbt` and `scala-cli`. If you are worried
+about the resulting program, then don't install it in scripts. 
 
-This command generates the parser-support files in ./generated/tinyfun
+2. The directory `examples/TinyFun` has a script  `maketinyfun`
+that uses the `scalalrlifeboat` program defined HERE to 
+generate components of a tiny example calculator. It then
+assembles a runnable `runtinyfun`.
 
-        ./scalalrlifeboat tinyfun.scalalr
-
-This command runs the runtinyfun top-level
-
-        scala-cli runtinyfun.scala TinyFun.scala generated
-
-This command packages the  runtinyfun top-level as an executable
-
-        scala-cli --power package -f -o runtinyfun runtinyfun.scala TinyFun.scala generated
-        
-
+3. When `runtinyfun` has been assemlbed, you can test it 
+by typing simple expressions and assignments at it.

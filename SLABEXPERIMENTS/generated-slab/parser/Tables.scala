@@ -21,16 +21,16 @@ val GOTOTABLE: Int => Int => Int = {
   case 46 => { case 58 => 52;  case 59 => 53;  }
   case 49 => { case 48 => 56;  case 49 => 57;  case 51 => 58;  }
   case 50 => { case 58 => 52;  case 59 => 59;  }
-  case 56 => { case 39 => 65;  }
-  case 60 => { case 58 => 52;  case 59 => 68;  }
-  case 62 => { case 58 => 69;  }
-  case 64 => { case 49 => 70;  case 51 => 58;  }
-  case 66 => { case 50 => 72;  }
-  case 72 => { case 52 => 75;  case 53 => 76;  case 54 => 77;  case 55 => 78;  }
-  case 77 => { case 56 => 82;  }
-  case 78 => { case 54 => 83;  case 55 => 78;  }
-  case 80 => { case 52 => 85;  case 53 => 76;  case 54 => 77;  case 55 => 78;  }
-  case 82 => { case 57 => 87;  }
+  case 56 => { case 39 => 64;  }
+  case 60 => { case 58 => 52;  case 59 => 67;  }
+  case 62 => { case 58 => 68;  }
+  case 63 => { case 49 => 69;  case 51 => 58;  }
+  case 65 => { case 50 => 71;  }
+  case 71 => { case 52 => 74;  case 53 => 75;  case 54 => 76;  case 55 => 77;  }
+  case 76 => { case 56 => 81;  }
+  case 77 => { case 54 => 82;  case 55 => 77;  }
+  case 79 => { case 52 => 84;  case 53 => 75;  case 54 => 76;  case 55 => 77;  }
+  case 81 => { case 57 => 86;  }
   case _ => { case _ => throw new Throwable("BAD GOTO")}
   }
 
@@ -92,39 +92,38 @@ val ACTIONTABLE: Int => Int => Action = {
   case 53 => { case 17 => SHIFT(61);  case _ => ERROR;  }
   case 54 => { case _ => REDUCE(46,22,4);  }
   case 55 => { case 13 => SHIFT(62);  case _ => REDUCE(51,32,1);  }
-  case 56 => { case 10 => SHIFT(63);  case 19 => SHIFT(64);  case _ => REDUCE(39,4,0);  }
+  case 56 => { case 19 => SHIFT(63);  case _ => REDUCE(39,4,0);  }
   case 57 => { case _ => REDUCE(48,26,1);  }
-  case 58 => { case 11 => SHIFT(66);  case _ => ERROR;  }
-  case 59 => { case 9 => SHIFT(67);  case _ => ERROR;  }
+  case 58 => { case 11 => SHIFT(65);  case _ => ERROR;  }
+  case 59 => { case 9 => SHIFT(66);  case _ => ERROR;  }
   case 60 => { case 3 => SHIFT(45);  case 16 => SHIFT(46);  case _ => ERROR;  }
   case 61 => { case _ => REDUCE(58,47,3);  }
   case 62 => { case 3 => SHIFT(45);  case 16 => SHIFT(46);  case _ => ERROR;  }
-  case 63 => { case _ => REDUCE(39,5,1);  }
-  case 64 => { case 3 => SHIFT(55);  case _ => ERROR;  }
-  case 65 => { case _ => REDUCE(37,2,14);  }
-  case 66 => { case 12 => SHIFT(71);  case _ => REDUCE(50,30,0);  }
-  case 67 => { case _ => REDUCE(58,46,4);  }
-  case 68 => { case _ => REDUCE(59,50,3);  }
-  case 69 => { case _ => REDUCE(51,31,3);  }
-  case 70 => { case _ => REDUCE(48,27,3);  }
-  case 71 => { case _ => REDUCE(50,29,1);  }
-  case 72 => { case 3 => SHIFT(73);  case 22 => SHIFT(74);  case _ => ERROR;  }
-  case 73 => { case 13 => SHIFT(79);  case _ => REDUCE(55,39,1);  }
-  case 74 => { case _ => REDUCE(54,36,1);  }
-  case 75 => { case _ => REDUCE(49,28,4);  }
-  case 76 => { case 12 => SHIFT(80);  case _ => REDUCE(52,33,1);  }
-  case 77 => { case 5 => SHIFT(81);  case _ => REDUCE(56,41,0);  }
-  case 78 => { case 3 => SHIFT(73);  case 22 => SHIFT(74);  case _ => REDUCE(54,37,1);  }
-  case 79 => { case 3 => SHIFT(84);  case _ => ERROR;  }
-  case 80 => { case 3 => SHIFT(73);  case 22 => SHIFT(74);  case _ => ERROR;  }
-  case 81 => { case _ => REDUCE(56,42,1);  }
-  case 82 => { case 31 => SHIFT(86);  case _ => REDUCE(57,43,0);  }
-  case 83 => { case _ => REDUCE(54,38,2);  }
-  case 84 => { case _ => REDUCE(55,40,3);  }
-  case 85 => { case _ => REDUCE(52,34,3);  }
-  case 86 => { case 3 => SHIFT(88);  case _ => ERROR;  }
-  case 87 => { case _ => REDUCE(53,35,3);  }
-  case 88 => { case _ => REDUCE(57,44,2);  }
+  case 63 => { case 3 => SHIFT(55);  case _ => REDUCE(39,5,1);  }
+  case 64 => { case _ => REDUCE(37,2,14);  }
+  case 65 => { case 12 => SHIFT(70);  case _ => REDUCE(50,30,0);  }
+  case 66 => { case _ => REDUCE(58,46,4);  }
+  case 67 => { case _ => REDUCE(59,50,3);  }
+  case 68 => { case _ => REDUCE(51,31,3);  }
+  case 69 => { case _ => REDUCE(48,27,3);  }
+  case 70 => { case _ => REDUCE(50,29,1);  }
+  case 71 => { case 3 => SHIFT(72);  case 22 => SHIFT(73);  case _ => ERROR;  }
+  case 72 => { case 13 => SHIFT(78);  case _ => REDUCE(55,39,1);  }
+  case 73 => { case _ => REDUCE(54,36,1);  }
+  case 74 => { case _ => REDUCE(49,28,4);  }
+  case 75 => { case 12 => SHIFT(79);  case _ => REDUCE(52,33,1);  }
+  case 76 => { case 5 => SHIFT(80);  case _ => REDUCE(56,41,0);  }
+  case 77 => { case 3 => SHIFT(72);  case 22 => SHIFT(73);  case _ => REDUCE(54,37,1);  }
+  case 78 => { case 3 => SHIFT(83);  case _ => ERROR;  }
+  case 79 => { case 3 => SHIFT(72);  case 22 => SHIFT(73);  case _ => ERROR;  }
+  case 80 => { case _ => REDUCE(56,42,1);  }
+  case 81 => { case 31 => SHIFT(85);  case _ => REDUCE(57,43,0);  }
+  case 82 => { case _ => REDUCE(54,38,2);  }
+  case 83 => { case _ => REDUCE(55,40,3);  }
+  case 84 => { case _ => REDUCE(52,34,3);  }
+  case 85 => { case 3 => SHIFT(87);  case _ => ERROR;  }
+  case 86 => { case _ => REDUCE(53,35,3);  }
+  case 87 => { case _ => REDUCE(57,44,2);  }
   case _ => { case _ => ERROR }
   }
 }

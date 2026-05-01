@@ -2,14 +2,14 @@
  * Second Language Atop Bootstrap
  *
  * Parser:     from slab-notation.scalalr
- * Tree:       slab.SLAB
+ * Tree:       slab.AST
  * Generator:  slab.AST => bootstrap.Parser.Parser.Notation => Scala
  */
 
 package org.sufrin.scalalr
 package slab
 
-import org.sufrin.scalalr.slab.SLAB.{Notation => NewNotation}
+import org.sufrin.scalalr.slab.AST.{Notation => NewNotation}
 import org.sufrin.utility.PrettyPrint.AnyPretty
 
 import java.nio.file.Paths

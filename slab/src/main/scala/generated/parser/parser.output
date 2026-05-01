@@ -3,6 +3,7 @@ Terminals unused in grammar
     NUM
     COMMENT
     LEXICALERROR
+    ";"
     "{"
     "}"
     "%type"
@@ -14,12 +15,12 @@ Grammar
 
     1 command: Notation
 
-    2 Notation: "%notation" ID "%package" ID OptPath OptDialects Tables OptInclude Tokens RULES OptInclude NL Rules OptSemicolon
+    2 Notation: "%notation" ID "%package" ID OptPath OptDialects Tables OptInclude Tokens RULES OptInclude NL Rules OptNL
 
     3 RULES: "%rules"
 
-    4 OptSemicolon: ε
-    5             | ";"
+    4 OptNL: ε
+    5      | NL
 
     6 OptPath: ε
     7        | "%path" ID
@@ -98,7 +99,7 @@ Terminals, with rules where they appear
     LEXICALERROR (262)
     "[" (263) 46
     "]" (264) 46
-    ";" (265) 5
+    ";" (265)
     "=" (266) 28
     "|" (267) 29 34
     ":" (268) 21 31 40
@@ -107,7 +108,7 @@ Terminals, with rules where they appear
     "(" (271) 22 47 48
     ")" (272) 22 47 48
     "," (273) 50
-    NL (274) 2 27
+    NL (274) 2 5 27
     "%path" (275) 7
     "%type" (276)
     "%empty" (277) 36
@@ -138,7 +139,7 @@ Nonterminals, with rules where they appear
     RULES (38)
         on left: 3
         on right: 2
-    OptSemicolon (39)
+    OptNL (39)
         on left: 4 5
         on right: 2
     OptPath (40)
@@ -215,7 +216,7 @@ State 0
 
 State 1
 
-    2 Notation: "%notation" • ID "%package" ID OptPath OptDialects Tables OptInclude Tokens RULES OptInclude NL Rules OptSemicolon
+    2 Notation: "%notation" • ID "%package" ID OptPath OptDialects Tables OptInclude Tokens RULES OptInclude NL Rules OptNL
 
     ID  shift, and go to state 4
 
@@ -236,7 +237,7 @@ State 3
 
 State 4
 
-    2 Notation: "%notation" ID • "%package" ID OptPath OptDialects Tables OptInclude Tokens RULES OptInclude NL Rules OptSemicolon
+    2 Notation: "%notation" ID • "%package" ID OptPath OptDialects Tables OptInclude Tokens RULES OptInclude NL Rules OptNL
 
     "%package"  shift, and go to state 6
 
@@ -250,14 +251,14 @@ State 5
 
 State 6
 
-    2 Notation: "%notation" ID "%package" • ID OptPath OptDialects Tables OptInclude Tokens RULES OptInclude NL Rules OptSemicolon
+    2 Notation: "%notation" ID "%package" • ID OptPath OptDialects Tables OptInclude Tokens RULES OptInclude NL Rules OptNL
 
     ID  shift, and go to state 7
 
 
 State 7
 
-    2 Notation: "%notation" ID "%package" ID • OptPath OptDialects Tables OptInclude Tokens RULES OptInclude NL Rules OptSemicolon
+    2 Notation: "%notation" ID "%package" ID • OptPath OptDialects Tables OptInclude Tokens RULES OptInclude NL Rules OptNL
 
     "%path"  shift, and go to state 8
 
@@ -275,7 +276,7 @@ State 8
 
 State 9
 
-    2 Notation: "%notation" ID "%package" ID OptPath • OptDialects Tables OptInclude Tokens RULES OptInclude NL Rules OptSemicolon
+    2 Notation: "%notation" ID "%package" ID OptPath • OptDialects Tables OptInclude Tokens RULES OptInclude NL Rules OptNL
 
     "%dialect"  shift, and go to state 11
     "%scalalr"  shift, and go to state 12
@@ -308,7 +309,7 @@ State 12
 
 State 13
 
-    2 Notation: "%notation" ID "%package" ID OptPath OptDialects • Tables OptInclude Tokens RULES OptInclude NL Rules OptSemicolon
+    2 Notation: "%notation" ID "%package" ID OptPath OptDialects • Tables OptInclude Tokens RULES OptInclude NL Rules OptNL
 
     "%tables"  shift, and go to state 16
 
@@ -340,7 +341,7 @@ State 16
 
 State 17
 
-    2 Notation: "%notation" ID "%package" ID OptPath OptDialects Tables • OptInclude Tokens RULES OptInclude NL Rules OptSemicolon
+    2 Notation: "%notation" ID "%package" ID OptPath OptDialects Tables • OptInclude Tokens RULES OptInclude NL Rules OptNL
 
     "%include"  shift, and go to state 21
 
@@ -379,7 +380,7 @@ State 21
 
 State 22
 
-    2 Notation: "%notation" ID "%package" ID OptPath OptDialects Tables OptInclude • Tokens RULES OptInclude NL Rules OptSemicolon
+    2 Notation: "%notation" ID "%package" ID OptPath OptDialects Tables OptInclude • Tokens RULES OptInclude NL Rules OptNL
 
     "%token"  shift, and go to state 26
     "%left"  shift, and go to state 27
@@ -455,7 +456,7 @@ State 29
 
 State 30
 
-    2 Notation: "%notation" ID "%package" ID OptPath OptDialects Tables OptInclude Tokens • RULES OptInclude NL Rules OptSemicolon
+    2 Notation: "%notation" ID "%package" ID OptPath OptDialects Tables OptInclude Tokens • RULES OptInclude NL Rules OptNL
 
     "%rules"  shift, and go to state 38
 
@@ -539,7 +540,7 @@ State 38
 
 State 39
 
-    2 Notation: "%notation" ID "%package" ID OptPath OptDialects Tables OptInclude Tokens RULES • OptInclude NL Rules OptSemicolon
+    2 Notation: "%notation" ID "%package" ID OptPath OptDialects Tables OptInclude Tokens RULES • OptInclude NL Rules OptNL
 
     "%include"  shift, and go to state 21
 
@@ -584,7 +585,7 @@ State 43
 
 State 44
 
-    2 Notation: "%notation" ID "%package" ID OptPath OptDialects Tables OptInclude Tokens RULES OptInclude • NL Rules OptSemicolon
+    2 Notation: "%notation" ID "%package" ID OptPath OptDialects Tables OptInclude Tokens RULES OptInclude • NL Rules OptNL
 
     NL  shift, and go to state 49
 
@@ -628,7 +629,7 @@ State 48
 
 State 49
 
-    2 Notation: "%notation" ID "%package" ID OptPath OptDialects Tables OptInclude Tokens RULES OptInclude NL • Rules OptSemicolon
+    2 Notation: "%notation" ID "%package" ID OptPath OptDialects Tables OptInclude Tokens RULES OptInclude NL • Rules OptNL
 
     ID  shift, and go to state 55
 
@@ -691,15 +692,14 @@ State 55
 
 State 56
 
-    2 Notation: "%notation" ID "%package" ID OptPath OptDialects Tables OptInclude Tokens RULES OptInclude NL Rules • OptSemicolon
+    2 Notation: "%notation" ID "%package" ID OptPath OptDialects Tables OptInclude Tokens RULES OptInclude NL Rules • OptNL
    27 Rules: Rules • NL Rule
 
-    ";"  shift, and go to state 63
-    NL      shift, and go to state 64
+    NL  shift, and go to state 63
 
-    $default  reduce using rule 4 (OptSemicolon)
+    $default  reduce using rule 4 (OptNL)
 
-    OptSemicolon  go to state 65
+    OptNL  go to state 64
 
 
 State 57
@@ -713,14 +713,14 @@ State 58
 
    28 Rule: LHS • "=" OptBar RHS
 
-    "="  shift, and go to state 66
+    "="  shift, and go to state 65
 
 
 State 59
 
    46 Type: ID "[" Types • "]"
 
-    "]"  shift, and go to state 67
+    "]"  shift, and go to state 66
 
 
 State 60
@@ -731,7 +731,7 @@ State 60
     "("  shift, and go to state 46
 
     Type   go to state 52
-    Types  go to state 68
+    Types  go to state 67
 
 
 State 61
@@ -748,225 +748,221 @@ State 62
     ID      shift, and go to state 45
     "("  shift, and go to state 46
 
-    Type  go to state 69
+    Type  go to state 68
 
 
 State 63
 
-    5 OptSemicolon: ";" •
-
-    $default  reduce using rule 5 (OptSemicolon)
-
-
-State 64
-
+    5 OptNL: NL •
    27 Rules: Rules NL • Rule
 
     ID  shift, and go to state 55
 
-    Rule  go to state 70
+    $default  reduce using rule 5 (OptNL)
+
+    Rule  go to state 69
     LHS   go to state 58
 
 
-State 65
+State 64
 
-    2 Notation: "%notation" ID "%package" ID OptPath OptDialects Tables OptInclude Tokens RULES OptInclude NL Rules OptSemicolon •
+    2 Notation: "%notation" ID "%package" ID OptPath OptDialects Tables OptInclude Tokens RULES OptInclude NL Rules OptNL •
 
     $default  reduce using rule 2 (Notation)
 
 
-State 66
+State 65
 
    28 Rule: LHS "=" • OptBar RHS
 
-    "|"  shift, and go to state 71
+    "|"  shift, and go to state 70
 
     $default  reduce using rule 30 (OptBar)
 
-    OptBar  go to state 72
+    OptBar  go to state 71
 
 
-State 67
+State 66
 
    46 Type: ID "[" Types "]" •
 
     $default  reduce using rule 46 (Type)
 
 
-State 68
+State 67
 
    50 Types: Type "," Types •
 
     $default  reduce using rule 50 (Types)
 
 
-State 69
+State 68
 
    31 LHS: ID ":" Type •
 
     $default  reduce using rule 31 (LHS)
 
 
-State 70
+State 69
 
    27 Rules: Rules NL Rule •
 
     $default  reduce using rule 27 (Rules)
 
 
-State 71
+State 70
 
    29 OptBar: "|" •
 
     $default  reduce using rule 29 (OptBar)
 
 
-State 72
+State 71
 
    28 Rule: LHS "=" OptBar • RHS
 
-    ID      shift, and go to state 73
-    "%empty"  shift, and go to state 74
+    ID      shift, and go to state 72
+    "%empty"  shift, and go to state 73
 
-    RHS          go to state 75
-    Production   go to state 76
-    NamedFields  go to state 77
-    NamedField   go to state 78
+    RHS          go to state 74
+    Production   go to state 75
+    NamedFields  go to state 76
+    NamedField   go to state 77
 
 
-State 73
+State 72
 
    39 NamedField: ID •
    40           | ID • ":" ID
 
-    ":"  shift, and go to state 79
+    ":"  shift, and go to state 78
 
     $default  reduce using rule 39 (NamedField)
 
 
-State 74
+State 73
 
    36 NamedFields: "%empty" •
 
     $default  reduce using rule 36 (NamedFields)
 
 
-State 75
+State 74
 
    28 Rule: LHS "=" OptBar RHS •
 
     $default  reduce using rule 28 (Rule)
 
 
-State 76
+State 75
 
    33 RHS: Production •
    34    | Production • "|" RHS
 
-    "|"  shift, and go to state 80
+    "|"  shift, and go to state 79
 
     $default  reduce using rule 33 (RHS)
 
 
-State 77
+State 76
 
    35 Production: NamedFields • Action Precedence
 
-    CODE  shift, and go to state 81
+    CODE  shift, and go to state 80
 
     $default  reduce using rule 41 (Action)
 
-    Action  go to state 82
+    Action  go to state 81
 
 
-State 78
+State 77
 
    37 NamedFields: NamedField •
    38            | NamedField • NamedFields
 
-    ID      shift, and go to state 73
-    "%empty"  shift, and go to state 74
+    ID      shift, and go to state 72
+    "%empty"  shift, and go to state 73
 
     $default  reduce using rule 37 (NamedFields)
 
-    NamedFields  go to state 83
-    NamedField   go to state 78
+    NamedFields  go to state 82
+    NamedField   go to state 77
+
+
+State 78
+
+   40 NamedField: ID ":" • ID
+
+    ID  shift, and go to state 83
 
 
 State 79
 
-   40 NamedField: ID ":" • ID
+   34 RHS: Production "|" • RHS
 
-    ID  shift, and go to state 84
+    ID      shift, and go to state 72
+    "%empty"  shift, and go to state 73
+
+    RHS          go to state 84
+    Production   go to state 75
+    NamedFields  go to state 76
+    NamedField   go to state 77
 
 
 State 80
-
-   34 RHS: Production "|" • RHS
-
-    ID      shift, and go to state 73
-    "%empty"  shift, and go to state 74
-
-    RHS          go to state 85
-    Production   go to state 76
-    NamedFields  go to state 77
-    NamedField   go to state 78
-
-
-State 81
 
    42 Action: CODE •
 
     $default  reduce using rule 42 (Action)
 
 
-State 82
+State 81
 
    35 Production: NamedFields Action • Precedence
 
-    "%prec"  shift, and go to state 86
+    "%prec"  shift, and go to state 85
 
     $default  reduce using rule 43 (Precedence)
 
-    Precedence  go to state 87
+    Precedence  go to state 86
 
 
-State 83
+State 82
 
    38 NamedFields: NamedField NamedFields •
 
     $default  reduce using rule 38 (NamedFields)
 
 
-State 84
+State 83
 
    40 NamedField: ID ":" ID •
 
     $default  reduce using rule 40 (NamedField)
 
 
-State 85
+State 84
 
    34 RHS: Production "|" RHS •
 
     $default  reduce using rule 34 (RHS)
 
 
-State 86
+State 85
 
    44 Precedence: "%prec" • ID
 
-    ID  shift, and go to state 88
+    ID  shift, and go to state 87
 
 
-State 87
+State 86
 
    35 Production: NamedFields Action Precedence •
 
     $default  reduce using rule 35 (Production)
 
 
-State 88
+State 87
 
    44 Precedence: "%prec" ID •
 

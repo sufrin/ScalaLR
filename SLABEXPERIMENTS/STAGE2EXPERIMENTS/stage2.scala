@@ -1,6 +1,7 @@
 //> using scala 2.13
 //> using jar ROOT/bootstrap/target/bootstrap-0.8.0.jar
 //> using jar ROOT/shared/target/shared-0.8.0.jar
+//> using jar ROOT/stage2/target/stage2-0.8.0.jar 
 //> using jar ROOT/utilities/target/utilities-0.8.0.jar
 //> using jar ROOT/logging-api/lib/Logging.jar
 //> using dep org.scala-lang.modules::scala-xml::2.4.0
@@ -17,23 +18,23 @@
  * 
  */
 package org.sufrin.scalalr
+package stage2
 
-object slabMain {
+object main {
   def printHelp(): Unit = {
     val signature = {
-      import scalalr.slab.parser.DialectInformation._
+      import scalalr.stage2.parser.DialectInformation._
       s"Notation \"$name\" (for $notation) $scalalr"
     }
     println(
       s"""$signature
-        |Usage: slab [--output=<outputpath> (default SLABOUTPUT)] [ <file> ...]
-        | Generate parser tables from scalalr source files using the bootstrap generator
-        | and the slab parser.
+        |Usage: stage2 [--output=<outputpath> (default STAGE2OUTPUT)] [ <file> ...]
+        | *** EVENTUALLY **** Generate parser tables from notation source files 
         |""".stripMargin
     )
   }
   def main(args: Array[String]): Unit = {
-    var genargs: List[String] = List("--output=SLABOUTPUT")
+    var genargs: List[String] = List("--output=STAGE2OUTPUT")
     var boot = false
     for { arg <- args } arg match {
       case s"-h"        => printHelp()
@@ -41,7 +42,7 @@ object slabMain {
       case _            => genargs = arg::genargs
     }
     val mainargs =  genargs.reverse.toArray
-    slab.Generator.main(mainargs)
+    stage2.Generator.main(mainargs)
   }
 }
 

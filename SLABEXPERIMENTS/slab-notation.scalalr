@@ -118,7 +118,8 @@
         case ';' =>
            nextChar()
            eatWhitespace()
-           `;`
+
+           if (enableNL) NL else next()
 
         case c if c.isWhitespace =>
           var vertical: Int =  0
@@ -150,7 +151,7 @@
 %rules
 
 %include {
- import org.sufrin.scalalr.slab.NEWAST._
+ import org.sufrin.scalalr.slab.AST._
  import org.sufrin.scalalr.slab.Generator._
  import scalalr.slab.parser.Scanner
  import org.sufrin.utility.SourceTextCursor
@@ -199,13 +200,13 @@ Notation: Notation =
     rulesInclude:  OptInclude
     NL
     Rules
-    OptSemicolon
+    OptNL
     { val dialects = $OptDialects; Notation($thePackage, $theName, $thePath, $Tables, "Scanner", Type("Token", Nil, $START), $Tokens, $Rules.reverse, $tokensInclude, $rulesInclude, dialects) };
 
 
 RULES: Unit = `%rules` { println("IMPLICIT RULE ENDINGS ENABLED"); Scanner.enableNL=true };
 
-OptSemicolon: Unit = %empty {()} | `;` {()};
+OptNL: Unit = %empty {()} | NL {()};
 
 OptPath: String = %empty { "" } | `%path` ID  { $ID.toPathString };
 
@@ -283,4 +284,4 @@ Type:(Type) = ID               { Type($ID, Nil, $START) }
 Types:(List[Type]) = Type            { List($Type) }
                    | Type  ',' Types { $Type :: $Types }
                    ;
-        
+

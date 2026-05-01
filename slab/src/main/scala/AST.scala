@@ -1,7 +1,7 @@
 package org.sufrin.scalalr
 package slab
 
-object SLAB {
+object AST {
 
   import org.sufrin.scalalr.bootstrap.Syntax.{Parser => Boot}
   import org.sufrin.scalalr.bootstrap.{Syntax => BootSyntax}

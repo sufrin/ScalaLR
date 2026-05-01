@@ -1,46 +1,23 @@
 /**
- * Second Language Atop Bootstrap
+ * Stage 2 language
  *
  * Parser:     from slab-notation.scalalr
- * Tree:       slab.SLAB
+ * Tree:       slab.AST
  * Generator:  slab.AST => Scala
  */
 
 package org.sufrin.scalalr
-package slab
-
-import org.sufrin.scalalr.slab.SLAB.{Notation => NewNotation}
-import org.sufrin.utility.PrettyPrint.AnyPretty
-
-import java.nio.file.Paths
+package stage2
 
 
-object NewGenerator {
-  import org.sufrin.scalalr.bootstrap.Syntax.Parser.{Notation => BootstrapNotation}
-  implicit class AsBootstrapNotation(val notation: NewNotation) extends AnyVal {
-    def toBootstrapNotation: BootstrapNotation = {
-      import notation._
-      BootstrapNotation(
-        notation.thePackage,
-        notation.theName,
-        notation.theExplicitPath,
-        notation.tablesType,
-        notation.theScannerName,
-        theTokenType     = theTokenType.toBootstrapNotation,
-        theTokens        = theTokens.map(_.toBootstrapNotation),
-        theRules         = theRules.map(_.toBootstrapNotation),
-        theTokensInclude = theTokensInclude,
-        theRulesInclude  = theRulesInclude,
-        theNotationDialect = theDialects._1,
-        theScalalrDialect = theDialects._2
-      )
-    }
-  }
+object Generator {
+  import java.nio.file.Paths
+  import org.sufrin.utility.PrettyPrint._
 
-  var pretty: Boolean = false
+  var pretty: Boolean = true
   var output: String = "generated"
 
-  def translate(notation: NewNotation): Unit = {
+  def translate(notation: AST.Notation): Unit = {
     if (pretty) notation.prettyPrint()
     else {
       //val translation = bootstrap.Generator(notation.toBootstrapNotation, output)
@@ -50,7 +27,7 @@ object NewGenerator {
 
   def main(args: Array[String]): Unit = {
     import org.sufrin.utility._
-    import scalalr.slab.parser.{Components, Scanner}
+    import scalalr.stage2.parser.{Components, Scanner}
 
     var log = false
     for  { arg <- args } if (arg.startsWith("--output=")) {
@@ -60,7 +37,7 @@ object NewGenerator {
     else if (arg == "-p") pretty = true
     else if (arg.startsWith("-")) {
       println(
-        """Usage: slab [--output=<outputpath] [-p | -l]* [<file> ...]
+        """Usage: stage2 [--output=<outputpath] [-p | -l]* [<file> ...]
           |Treat each <file> as a scalalr source files and generate the
           |scala files corresponding to the %notation it defines.
           |Place the generated files under the directory named by <outputpath>

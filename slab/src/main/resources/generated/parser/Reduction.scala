@@ -2,7 +2,7 @@
 package scalalr.slab.parser
 object Reduction {
 
- import org.sufrin.scalalr.slab.SLAB._
+ import org.sufrin.scalalr.slab.AST._
  import org.sufrin.scalalr.slab.Generator._
  import org.sufrin.utility.SourceTextCursor
  import org.sufrin.scalalr.SourceLocation

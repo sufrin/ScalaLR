@@ -13,12 +13,12 @@
 */
 
 
-%notation  parser
-%package   scalalr.slab.parser
+%notation  stage2
+%package   scalalr.stage2.parser
 %path      "parser"
 
 
-%dialect   "scalalr slab notation"
+%dialect   "scalalr stage2 notation"
 %scalalr   "components made by slab or slabslab"
 
 %include {
@@ -116,10 +116,10 @@
           val prefix = chars.takeWhile(isBisonic)
           ID((prefix).mkString(""))
 
-        case ';' =>
-           nextChar()
-           eatWhitespace()
-           `;`
+         case ';' =>
+                   nextChar()
+                   eatWhitespace()
+                   if (enableNL) NL else next()
 
         case c if c.isWhitespace =>
           var vertical: Int =  0
@@ -151,9 +151,9 @@
 %rules
 
 %include {
- import org.sufrin.scalalr.slab.NEWAST._
- import org.sufrin.scalalr.slab.Generator._
- import scalalr.slab.parser.Scanner
+ import org.sufrin.scalalr.stage2.AST._
+ import org.sufrin.scalalr.stage2.Generator._
+ import scalalr.stage2.parser.Scanner
  import org.sufrin.utility.SourceTextCursor
  import org.sufrin.scalalr.SourceLocation
  import org.sufrin.utility.PrettyPrint._
@@ -200,13 +200,13 @@ Notation: Notation =
     rulesInclude:  OptInclude
     NL
     Rules
-    OptSemicolon
+    OptNL
     { val dialects = $OptDialects; Notation($thePackage, $theName, $thePath, $Tables, "Scanner", Type("Token", Nil, $START), $Tokens, $Rules.reverse, $tokensInclude, $rulesInclude, dialects) }
 
 
 RULES: Unit = `%rules` { println("IMPLICIT RULE ENDINGS ENABLED"); Scanner.enableNL=true }
 
-OptSemicolon: Unit = %empty {()} | `;` {()}
+OptNL: Unit = %empty {()} | NL {()}
 
 OptPath: String = %empty { "" } | `%path` ID  { $ID.toPathString }
 

@@ -1,0 +1,20 @@
+#!/bin/bash
+ROOT=~/GitHomes/ScalaLR
+GEN=${1-slabslab}
+echo Making parser components for stage2
+echo Depends on ../slab or ../slabslab
+../$GEN --output=generated-$GEN stage2-notation.slab
+sync=n; read -p "Install the generated components in the stage2 source code? [y]" sync
+test "$sync" = "y" && rm -rf $ROOT/stage2/src/main/scala/generated/ && rsync -av generated-$GEN $ROOT/stage2/src/main/scala/generated/
+if [ "$sync" = "y" ]
+then
+  sync=n; read -p "Rebuild the stage2 module with sbt? [y]" sync
+  [ "$sync" = "y" ] && ( cd ROOT ; sbt "stage2 / clean; stage2 / package")
+  if [ "$sync" = "y" ]
+  then
+   read -p "Make the binary stage2? " sync
+   [ "$sync" = "y" ] && scala-cli --power package stage2.scala -o stage2 --assembly -f
+  fi
+fi
+
+  

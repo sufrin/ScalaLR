@@ -96,10 +96,10 @@ object Scanner{
           val prefix = chars.takeWhile(isBisonic)
           ID((prefix).mkString(""))
 
-        case ';' =>
-           nextChar()
-           eatWhitespace()
-           `;`
+         case ';' =>
+                   nextChar()
+                   eatWhitespace()
+                   if (enableNL) NL else next()
 
         case c if c.isWhitespace =>
           var vertical: Int =  0
@@ -195,7 +195,7 @@ val symbolName: Map[Int, String] = collection.immutable.ListMap[Int, String](
 , 36 -> "command" 
 , 37 -> "Notation" 
 , 38 -> "RULES" 
-, 39 -> "OptSemicolon" 
+, 39 -> "OptNL" 
 , 40 -> "OptPath" 
 , 41 -> "OptInclude" 
 , 42 -> "OptDialects" 

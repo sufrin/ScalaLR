@@ -27,7 +27,7 @@ object Generator {
 
   def main(args: Array[String]): Unit = {
     import org.sufrin.utility._
-    import scalalr.stage2.parser.{Components, Scanner}
+    import scalalr.stage2.{Components, Scanner}
 
     var log = false
     for  { arg <- args } if (arg.startsWith("--output=")) {

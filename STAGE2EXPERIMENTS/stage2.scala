@@ -23,7 +23,7 @@ package stage2
 object main {
   def printHelp(): Unit = {
     val signature = {
-      import scalalr.stage2.parser.DialectInformation._
+      import scalalr.stage2.DialectInformation._
       s"Notation \"$name\" (for $notation) $scalalr"
     }
     println(
@@ -42,7 +42,7 @@ object main {
       case _            => genargs = arg::genargs
     }
     val mainargs =  genargs.reverse.toArray
-    stage2.Generator.main(mainargs)
+    Generator.main(mainargs)
   }
 }
 

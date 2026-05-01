@@ -14,7 +14,7 @@
 
 
 %notation  stage2
-%package   scalalr.stage2.parser
+%package   scalalr.stage2
 %path      "parser"
 
 
@@ -153,7 +153,7 @@
 %include {
  import org.sufrin.scalalr.stage2.AST._
  import org.sufrin.scalalr.stage2.Generator._
- import scalalr.stage2.parser.Scanner
+ import scalalr.stage2.Scanner
  import org.sufrin.utility.SourceTextCursor
  import org.sufrin.scalalr.SourceLocation
  import org.sufrin.utility.PrettyPrint._

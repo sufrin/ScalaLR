@@ -1,5 +1,5 @@
 
-package scalalr.stage2.parser
+package scalalr.stage2
 object Tables {
 val GOTOTABLE: Int => Int => Int = {
   case 0 => { case 36 => 2;  case 37 => 3;  }

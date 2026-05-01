@@ -1,5 +1,5 @@
 
-package scalalr.stage2.parser
+package scalalr.stage2
 object Scanner{
 
   import org.sufrin.utility.SourceTextCursor

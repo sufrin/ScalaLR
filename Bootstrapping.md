@@ -13,7 +13,7 @@ parser. The generated components are always placed in
 a directory specified in the prologue of the input file.
 
 
-### Stage 1: bootstrap
+### Stage 1a: bootstrap
 The bootstrapping sequence for `scalalr` starts with the bootstrap generator
 constructed entirely by hand in `scala.` This is specified entirely (ie
 input language syntax and output component semantics) by  objects of 
@@ -96,7 +96,7 @@ object runtinyfun  {
 ````
 
 
-### Stage 2: FLaB
+### Stage 1b: FLaB
 The next stage (First Language atop Bootstrap) is the
 first stage at which  `scalalr`-generated parser components
 can be incorporated into a processor for a dialect of the `scalalr`
@@ -127,9 +127,37 @@ Although the handwritten bootstrap parser accepts a slightly more general notati
 than the Scalalr-generated parser for Flab, there is no practically-useable
 difference between them.
 
-### Further stages: SLab ...
+### Stage 2: Slab and successors
 Further stages - starting with *SLaB* - will incorporate a re-engineered
 component generation phase, and also be self-hosting. Our intention is
 also to test some macro-like novelties that support more concise
-descriptions of list- and option- yielding productions.
+descriptions of list- and option- yielding productions. 
 
+All work described below is done in the `SLABEXPERIMENTS/` directory.
+
+#### (TL/DR) The state of play on May Day 2026 is summarised as:
+````
+    slab     = (LRParser(flab), flab.generator)(slab-notation.scalalr)
+    slabslab = (LRParser(slab), slab.generator)(slab-notation.slab)
+````
+
+
+The former components, and the `slab` processor, are constructed (with MODE `-boot` or `-flab`) by 
+the `makeslab` script that starts and ends as follows:
+````bash
+    scalalrgen $MODE --output=generated$MODE slab-notation.scalalr
+    ...
+    scala-cli --power package slab.scala -o slab --assembly -f
+````
+The latter are constructed, using the `slab` program by the `makeslabslab`
+script that starts and ends as follows:
+````bash
+    ./slab --output=generated$MODE slab-notation.slab
+    ...
+    scala-cli --power package slabslab.scala -o slabslab --assembly -f
+ ````
+
+Both notation descriptions *describe* the same syntax, namely
+one that accepts "visible vertical space" between productions, rather than
+requiring semicolons. The former is  expressed in the "semicolon" syntax,
+the latter in the "vertical space" syntax.

@@ -4,11 +4,13 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/scalalr.iml" filepath="$PROJECT_DIR$/.idea/modules/scalalr.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/scalalr.bootstrap.iml" filepath="$PROJECT_DIR$/.idea/modules/scalalr.bootstrap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/scalalr.commandlinemodules.iml" filepath="$PROJECT_DIR$/.idea/modules/scalalr.commandlinemodules.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/scalalr.flab.iml" filepath="$PROJECT_DIR$/.idea/modules/scalalr.flab.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/scalalr.loggingApi.iml" filepath="$PROJECT_DIR$/.idea/modules/scalalr.loggingApi.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/scalalr.scalalr-build.iml" filepath="$PROJECT_DIR$/.idea/modules/scalalr.scalalr-build.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/scalalr.shared.iml" filepath="$PROJECT_DIR$/.idea/modules/scalalr.shared.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/scalalr.slab.iml" filepath="$PROJECT_DIR$/.idea/modules/scalalr.slab.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/scalalr.stage2.iml" filepath="$PROJECT_DIR$/.idea/modules/scalalr.stage2.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/scalalr.testbed.iml" filepath="$PROJECT_DIR$/.idea/modules/scalalr.testbed.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/scalalr.utilities.iml" filepath="$PROJECT_DIR$/.idea/modules/scalalr.utilities.iml" />
     </modules>

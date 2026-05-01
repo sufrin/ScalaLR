@@ -11,11 +11,13 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/bootstrap" />
+            <option value="$PROJECT_DIR$/commandlinemodules" />
             <option value="$PROJECT_DIR$/flab" />
             <option value="$PROJECT_DIR$/logging-api" />
             <option value="$PROJECT_DIR$/project" />
             <option value="$PROJECT_DIR$/shared" />
             <option value="$PROJECT_DIR$/slab" />
+            <option value="$PROJECT_DIR$/stage2" />
             <option value="$PROJECT_DIR$/testbed" />
             <option value="$PROJECT_DIR$/utilities" />
           </set>

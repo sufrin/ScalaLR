@@ -151,7 +151,7 @@
 %rules
 
 %include {
- import org.sufrin.scalalr.slab.SLAB._
+ import org.sufrin.scalalr.slab.NEWAST._
  import org.sufrin.scalalr.slab.Generator._
  import scalalr.slab.parser.Scanner
  import org.sufrin.utility.SourceTextCursor

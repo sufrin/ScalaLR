@@ -1,5 +1,5 @@
 /**
- * First Language Atop Bootstrap
+ * Second Language Atop Bootstrap
  *
  * Parser:     from slab-notation.scalalr
  * Tree:       slab.SLAB

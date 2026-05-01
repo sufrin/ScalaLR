@@ -36,8 +36,11 @@ lazy val bootstrap = (project in file("bootstrap"))
 lazy val flab = (project in file("flab")) // first language atop bootstrap
   .dependsOn(shared, utilities, bootstrap)
 
-lazy val slab = (project in file("slab")) // first language atop bootstrap
+lazy val slab = (project in file("slab")) // second language atop bootstrap
   .dependsOn(shared, utilities, bootstrap)
+
+lazy val stage2 = (project in file("stage2")) // 
+  .dependsOn(shared, utilities)
 
 lazy val utilities = (project in file("utilities"))
   .dependsOn(loggingApi)

@@ -1,6 +1,6 @@
 
 package scalalr.slab.parser
-object Tables {
+object Tables {case class ErroneousGoto(state: Int, symbol: Int) extends Throwable
 val GOTOTABLE: Int => Int => Int = {
   case 0 => { case 36 => 2;  case 37 => 3;  }
   case 7 => { case 40 => 9;  }
@@ -31,7 +31,7 @@ val GOTOTABLE: Int => Int => Int = {
   case 77 => { case 54 => 82;  case 55 => 77;  }
   case 79 => { case 52 => 84;  case 53 => 75;  case 54 => 76;  case 55 => 77;  }
   case 81 => { case 57 => 86;  }
-  case _ => { case _ => throw new Throwable("BAD GOTO")}
+  case state => { case symbol => throw ErroneousGoto(state, symbol)}
   }
 
 import org.sufrin.scalalr.Action._

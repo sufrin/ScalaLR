@@ -13,12 +13,13 @@
 */
 
 
-%notation  stage2
-%package   scalalr.stage2
+%notation  parser
+%package   scalalr.slab.parser
 %path      "parser"
 
 
-%dialect   "scalalr stage2 notation"
+
+%dialect   "scalalr slab notation"
 %scalalr   "components made by slab or slabslab"
 
 %include {
@@ -63,12 +64,7 @@
     def isBisonic(c: Char): Boolean = c.isLetterOrDigit || c=='.' || c=='_'
 
     def hasNext: Boolean = chars.hasCurrent
-    def next(): Token = {
-     val s = nnext()
-     println(s)
-     s
-    }
-    def nnext(): Token = if (hasChar) {
+    def next(): Token = if (hasChar) {
       chars.current match {
         case '(' => afterNextChar(`(`)
         case ')' => afterNextChar(`)`)
@@ -95,7 +91,6 @@
                   case "path"         => `%path`
                   case "dialect"      => `%dialect`
                   case "scalalr"      => `%scalalr`
-                  case "tables"       => `%tables`
                   case _ => LEXICALERROR(s"Unknown directive %$directive (at ${sourceLocation()})")
            }
         case '/' =>
@@ -110,7 +105,7 @@
               //Syntax.Parser.warn(s"Malformed comment sentinel: \"/$other\" at $sourceLocation")
               chars.dropWhile( c=>c!='\n')
           }
-          nnext()
+          next()
         case '{' => // } to balance the %include
           nextChar(); afterNextChar(CODE(chars.takeNested('{', '}')  .mkString("")))
         case '«' => // » to balance the %include
@@ -125,7 +120,7 @@
          case ';' =>
                    nextChar()
                    eatWhitespace()
-                   NL
+                   if (enableNL) NL else next()
 
         case c if c.isWhitespace =>
           var vertical: Int =  0
@@ -135,7 +130,7 @@
           }
           if (enableNL && vertical>1) NL
           else
-          if (hasChar) nnext() else $end
+          if (hasChar) next() else $end
         case other =>
           LEXICALERROR(s"Unrecognised $other (at ${sourceLocation()}")
       }
@@ -157,9 +152,9 @@
 %rules
 
 %include {
- import org.sufrin.scalalr.stage2.AST._
- import org.sufrin.scalalr.stage2.Generator._
- import scalalr.stage2.Scanner
+ import org.sufrin.scalalr.slab.AST._
+ import org.sufrin.scalalr.slab.Generator._
+ import scalalr.slab.parser.Scanner
  import org.sufrin.utility.SourceTextCursor
  import org.sufrin.scalalr.SourceLocation
  import org.sufrin.utility.PrettyPrint._
@@ -188,37 +183,44 @@
 
 }
 
+
+
+
 command: Unit = Notation { translate($Notation) }
 
-Notation: Notation = p: Prologue RULES INCLUDE Rules  { $p.copy(theRules = $Rules, theRulesInclude = $INCLUDE) }
 
-Prologue: Notation = %empty                                       { Notation() }
-                     | p: Prologue `%notation` ID                 { $p.copy(theName=$ID) }
-                     | p: Prologue `%package`  ID                 { $p.copy(thePackage=$ID) }
-                     | p: Prologue `%path`     ID                 { $p.copy(theExplicitPath=$ID.toPathString) }
-                     | p: Prologue `%tables`   ID                 { $p.copy(tablesType=mkTableType($ID)) }
-                     | p: Prologue `%include`  CODE               { $p.copy(theTokensInclude=$CODE) }
-
+Notation: Notation =
+   `%notation`     theName:ID
+   `%package`      thePackage:ID
+    thePath:       OptPath
+    OptDialects
+    Tables
+    tokensInclude: OptInclude
+    Tokens
+    RULES
+    rulesInclude:  OptInclude
+    NL
+    Rules
+    OptNL
+    { val dialects = $OptDialects; Notation($thePackage, $theName, $thePath, $Tables, "Scanner", Type("Token", Nil, $START), $Tokens, $Rules.reverse, $tokensInclude, $rulesInclude, dialects) }
 
 
 RULES: Unit = `%rules` { println("IMPLICIT RULE ENDINGS ENABLED"); Scanner.enableNL=true }
 
-INCLUDE: String = `%include` CODE NL { $CODE } | %empty {""}
+OptNL: Unit = %empty {()} | NL {()}
 
-//OptNL: Unit = %empty {()} | NL {()}
+OptPath: String = %empty { "" } | `%path` ID  { $ID.toPathString }
 
-//OptPath: String = %empty { "" } | `%path` ID  { $ID.toPathString }
+OptInclude: String = %empty { "" } | `%include` CODE { $CODE }
 
-//OptInclude: String = %empty { "" } | `%include` CODE { $CODE }
+OptDialects:((String,String)) = `%dialect` l:ID `%scalalr` r:ID  { ($l, $r) }
+                              | `%scalalr` l:ID `%dialect` r:ID  { ($r, $l) }
+                              | %empty     { ("", "") }
 
-//OptDialects:((String,String)) = `%dialect` l:ID `%scalalr` r:ID  { ($l, $r) }
-//                              | `%scalalr` l:ID `%dialect` r:ID  { ($r, $l) }
-//                              |  %empty     { ("", "") }
 
-/*
 
-Tokens:(List[TokenSpec]) = TokenSpec        { List($TokenSpec) }
-                         | Tokens TokenSpec { $TokenSpec :: $Tokens }
+Tokens:(List[TokenSpec]) = %empty           { Nil }
+                         | TokenSpec Tokens { $TokenSpec :: $Tokens }
 
 
 TokenSpec: TokenSpec =
@@ -229,16 +231,17 @@ TokenSpec: TokenSpec =
 
 
 TypedTerminals:(List[TypedTerminal]) =
-         %empty                         { Nil }
-      |  TypedTerminal TypedTerminals   { $TypedTerminal :: $TypedTerminals }
+         TypedTerminal { List($TypedTerminal) }
+      |  TypedTerminal TypedTerminals  { $TypedTerminal :: $TypedTerminals }
 
 
 TypedTerminal:(TypedTerminal) = ID ':' Type      {  TypedTerminal($ID, $Type, $START)   }
                               | ID '(' Type ')'  {  TypedTerminal($ID, $Type, $START) }   // for compatibility with boot notation
                               | ID               {  TypedTerminal($ID, Untyped, $START) }
-*/
 
-//Tables:(String) = %empty       { "lalr" }  | `%tables` ID { mkTableType($ID) }
+
+Tables:(String) = %empty       { "lalr" }
+                | `%tables` ID { mkTableType($ID) }
 
 
 

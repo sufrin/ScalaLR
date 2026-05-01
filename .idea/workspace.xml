@@ -5,31 +5,49 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="91372ed0-436a-419c-9015-c4c30c0eb662" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.bsp/sbt.json" beforeDir="false" afterPath="$PROJECT_DIR$/.bsp/sbt.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/STAGE2EXPERIMENTS/.bsp/scala-cli.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/STAGE2EXPERIMENTS/GENERATED" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/STAGE2EXPERIMENTS/ROOT" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/STAGE2EXPERIMENTS/generated-slabslab/parser/Components.scala" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/STAGE2EXPERIMENTS/generated-slabslab/parser/Reduction.scala" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/STAGE2EXPERIMENTS/generated-slabslab/parser/Scanner.scala" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/STAGE2EXPERIMENTS/generated-slabslab/parser/Tables.scala" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/STAGE2EXPERIMENTS/generated-slabslab/parser/parser.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/STAGE2EXPERIMENTS/generated-slabslab/parser/parser.output" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/STAGE2EXPERIMENTS/generated-slabslab/parser/parser.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/STAGE2EXPERIMENTS/generated-slabslab/parser/parser.y" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/STAGE2EXPERIMENTS/generated-slabslab/parser/stage2.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/STAGE2EXPERIMENTS/generated-slabslab/parser/stage2.output" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/STAGE2EXPERIMENTS/generated-slabslab/parser/stage2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/STAGE2EXPERIMENTS/generated-slabslab/parser/stage2.y" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/STAGE2EXPERIMENTS/makestage2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/STAGE2EXPERIMENTS/stage2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/STAGE2EXPERIMENTS/stage2-notation.slab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/STAGE2EXPERIMENTS/stage2.scala" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/stage2/src/main/scala/Generator.scala" beforeDir="false" afterPath="$PROJECT_DIR$/stage2/src/main/scala/Generator.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/COMMANDLINE/scalalrgen" beforeDir="false" afterPath="$PROJECT_DIR$/COMMANDLINE/scalalrgen" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PREPAREFLAB/generated-boot/parser/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/PREPAREFLAB/generated-boot/parser/Components.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/generated-boot/parser/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/SLABEXPERIMENTS/generated-boot/parser/Components.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/generated-boot/parser/Tables.scala" beforeDir="false" afterPath="$PROJECT_DIR$/SLABEXPERIMENTS/generated-boot/parser/Tables.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/generated-slab/parser/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/SLABEXPERIMENTS/generated-slab/parser/Components.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/generated-slab/parser/Tables.scala" beforeDir="false" afterPath="$PROJECT_DIR$/SLABEXPERIMENTS/generated-slab/parser/Tables.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/slab" beforeDir="false" afterPath="$PROJECT_DIR$/SLABEXPERIMENTS/slab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SLABEXPERIMENTS/slabslab" beforeDir="false" afterPath="$PROJECT_DIR$/SLABEXPERIMENTS/slabslab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/generated-slabslab/parser/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/generated-slabslab/parser/Components.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/generated-slabslab/parser/Reduction.scala" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/generated-slabslab/parser/Reduction.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/generated-slabslab/parser/Scanner.scala" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/generated-slabslab/parser/Scanner.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/generated-slabslab/parser/Tables.scala" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/generated-slabslab/parser/Tables.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/generated-slabslab/parser/parser.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/generated-slabslab/parser/parser.output" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/generated-slabslab/parser/parser.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/generated-slabslab/parser/parser.y" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/generated-slabslab/parser/stage2.html" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/generated-slabslab/parser/stage2.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/generated-slabslab/parser/stage2.output" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/generated-slabslab/parser/stage2.output" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/generated-slabslab/parser/stage2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/generated-slabslab/parser/stage2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/generated-slabslab/parser/stage2.y" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/generated-slabslab/parser/stage2.y" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/stage2" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/stage2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/stage2-notation.slab" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/stage2-notation.slab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/stage2.scala" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/stage2.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/src/main/scala/Generator.scala" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/src/main/scala/Generator.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flab/src/main/scala/generated/generated-boot/parser/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/flab/src/main/scala/generated/generated-boot/parser/Components.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/scalalrgen" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/scalalrgen" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slab/src/main/scala/generated/parser/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/slab/src/main/scala/generated/parser/Components.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slab/src/main/scala/generated/parser/Tables.scala" beforeDir="false" afterPath="$PROJECT_DIR$/slab/src/main/scala/generated/parser/Tables.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage2/src/main/scala/AST.scala" beforeDir="false" afterPath="$PROJECT_DIR$/stage2/src/main/scala/AST.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/stage2/src/main/scala/generated/generated-slabslab/parser/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/stage2/src/main/scala/generated/generated-slabslab/parser/Components.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/stage2/src/main/scala/generated/generated-slabslab/parser/Reduction.scala" beforeDir="false" afterPath="$PROJECT_DIR$/stage2/src/main/scala/generated/generated-slabslab/parser/Reduction.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/stage2/src/main/scala/generated/generated-slabslab/parser/Scanner.scala" beforeDir="false" afterPath="$PROJECT_DIR$/stage2/src/main/scala/generated/generated-slabslab/parser/Scanner.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/stage2/src/main/scala/generated/generated-slabslab/parser/Tables.scala" beforeDir="false" afterPath="$PROJECT_DIR$/stage2/src/main/scala/generated/generated-slabslab/parser/Tables.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage2/src/main/scala/generated/generated-slabslab/parser/parser.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage2/src/main/scala/generated/generated-slabslab/parser/parser.output" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage2/src/main/scala/generated/generated-slabslab/parser/parser.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage2/src/main/scala/generated/generated-slabslab/parser/parser.y" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage2/src/main/scala/generated/generated-slabslab/parser/stage2.html" beforeDir="false" afterPath="$PROJECT_DIR$/stage2/src/main/scala/generated/generated-slabslab/parser/stage2.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage2/src/main/scala/generated/generated-slabslab/parser/stage2.output" beforeDir="false" afterPath="$PROJECT_DIR$/stage2/src/main/scala/generated/generated-slabslab/parser/stage2.output" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage2/src/main/scala/generated/generated-slabslab/parser/stage2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/stage2/src/main/scala/generated/generated-slabslab/parser/stage2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage2/src/main/scala/generated/generated-slabslab/parser/stage2.y" beforeDir="false" afterPath="$PROJECT_DIR$/stage2/src/main/scala/generated/generated-slabslab/parser/stage2.y" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -174,5 +192,16 @@
       <updated>1777313175630</updated>
     </task>
     <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="scala-line">
+          <url>file://$PROJECT_DIR$/bootstrap/src/main/scala/Generator.scala</url>
+          <line>499</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

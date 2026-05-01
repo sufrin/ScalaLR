@@ -43,7 +43,12 @@ object Scanner{
     def isBisonic(c: Char): Boolean = c.isLetterOrDigit || c=='.' || c=='_'
 
     def hasNext: Boolean = chars.hasCurrent
-    def next(): Token = if (hasChar) {
+    def next(): Token = {
+     val s = nnext()
+     println(s)
+     s
+    }
+    def nnext(): Token = if (hasChar) {
       chars.current match {
         case '(' => afterNextChar(`(`)
         case ')' => afterNextChar(`)`)
@@ -70,6 +75,7 @@ object Scanner{
                   case "path"         => `%path`
                   case "dialect"      => `%dialect`
                   case "scalalr"      => `%scalalr`
+                  case "tables"       => `%tables`
                   case _ => LEXICALERROR(s"Unknown directive %$directive (at ${sourceLocation()})")
            }
         case '/' =>
@@ -84,7 +90,7 @@ object Scanner{
               //Syntax.Parser.warn(s"Malformed comment sentinel: \"/$other\" at $sourceLocation")
               chars.dropWhile( c=>c!='\n')
           }
-          next()
+          nnext()
         case '{' => // } to balance the %include
           nextChar(); afterNextChar(CODE(chars.takeNested('{', '}')  .mkString("")))
         case '«' => // » to balance the %include
@@ -99,7 +105,7 @@ object Scanner{
          case ';' =>
                    nextChar()
                    eatWhitespace()
-                   if (enableNL) NL else next()
+                   NL
 
         case c if c.isWhitespace =>
           var vertical: Int =  0
@@ -109,7 +115,7 @@ object Scanner{
           }
           if (enableNL && vertical>1) NL
           else
-          if (hasChar) next() else $end
+          if (hasChar) nnext() else $end
         case other =>
           LEXICALERROR(s"Unrecognised $other (at ${sourceLocation()}")
       }
@@ -194,28 +200,21 @@ val symbolName: Map[Int, String] = collection.immutable.ListMap[Int, String](
 , 35 -> "$accept" 
 , 36 -> "command" 
 , 37 -> "Notation" 
-, 38 -> "RULES" 
-, 39 -> "OptNL" 
-, 40 -> "OptPath" 
-, 41 -> "OptInclude" 
-, 42 -> "OptDialects" 
-, 43 -> "Tokens" 
-, 44 -> "TokenSpec" 
-, 45 -> "TypedTerminals" 
-, 46 -> "TypedTerminal" 
-, 47 -> "Tables" 
-, 48 -> "Rules" 
-, 49 -> "Rule" 
-, 50 -> "OptBar" 
-, 51 -> "LHS" 
-, 52 -> "RHS" 
-, 53 -> "Production" 
-, 54 -> "NamedFields" 
-, 55 -> "NamedField" 
-, 56 -> "Action" 
-, 57 -> "Precedence" 
-, 58 -> "Type" 
-, 59 -> "Types" 
+, 38 -> "Prologue" 
+, 39 -> "RULES" 
+, 40 -> "INCLUDE" 
+, 41 -> "Rules" 
+, 42 -> "Rule" 
+, 43 -> "OptBar" 
+, 44 -> "LHS" 
+, 45 -> "RHS" 
+, 46 -> "Production" 
+, 47 -> "NamedFields" 
+, 48 -> "NamedField" 
+, 49 -> "Action" 
+, 50 -> "Precedence" 
+, 51 -> "Type" 
+, 52 -> "Types" 
 )
 
 }

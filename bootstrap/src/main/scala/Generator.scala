@@ -498,6 +498,7 @@ class Generator(val notation: Notation, prefix: String="") {
         out(s"\npackage $thePackage\nobject Tables {")
 
         // GOTO TABLES
+        out(s"case class ErroneousGoto(state: Int, symbol: Int) extends Throwable")
         out(s"\nval GOTOTABLE: Int => Int => Int = {")
         for {entry <- entries if entry.gotos.nonEmpty} {
           fine(entry.toString)
@@ -506,7 +507,7 @@ class Generator(val notation: Notation, prefix: String="") {
           for {(sy, GOTO(from, to)) <- entry.gotos} out(s"case $sy => $to;  ")
           out("}")
         }
-        out("\n  case _ => { case _ => throw new Throwable(\"BAD GOTO\")}")
+        out("\n  case state => { case symbol => throw ErroneousGoto(state, symbol)}")
         out("\n  }\n")
 
         // Action TABLES

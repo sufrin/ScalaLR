@@ -44,17 +44,17 @@ object AST {
   case class Error(message: String)
 
   case class Notation
-  (thePackage: String,
-   theName: String,
-   theExplicitPath: String,
-   tablesType: String,
-   theScannerName: String,
-   theTokenType: Type,
-   theTokens: Seq[TokenSpec],
-   theRules: Seq[Rule],
-   theTokensInclude: String,
-   theRulesInclude: String,
-   theDialects: (String, String)
+  (thePackage: String = "defaultNotation.Notation",
+   theName: String = "Notation",
+   theExplicitPath: String = "components",
+   tablesType: String = "lalr",
+   theScannerName: String = "Scanner",
+   theTokenType: Type = Type(name="Token", parameters = Nil, location = SourceLocation(-1, -1)),
+   theTokens: List[TokenSpec] = Nil,
+   theRules: List[Rule] = Nil,
+   theTokensInclude: String = "",
+   theRulesInclude: String = "",
+   theDialects: (String, String) = ("","")
   )
 
 

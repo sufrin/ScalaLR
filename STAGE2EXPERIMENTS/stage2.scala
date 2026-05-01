@@ -42,7 +42,13 @@ object main {
       case _            => genargs = arg::genargs
     }
     val mainargs =  genargs.reverse.toArray
-    Generator.main(mainargs)
+    try
+      Generator.main(mainargs)
+    catch { case scalalr.stage2.Tables.ErroneousGoto(state, symbol) =>
+                   println(s"Erroneous GOTO from state $state at ${scalalr.stage2.Scanner.symbolName(symbol)}")
+            case exn: Throwable =>
+                   println(exn.toString)
+          }
   }
 }
 

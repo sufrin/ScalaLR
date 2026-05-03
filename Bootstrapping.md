@@ -18,13 +18,13 @@ The bootstrapping sequence for `scalalr` starts with the bootstrap generator
 constructed entirely by hand in `scala.` This is specified entirely (ie
 input language syntax and output component semantics) by  objects of 
 the `bootstrap` module, and the driver for the runnable program is 
-`scalalrlifeboat.scala.` We put these all together (from the `LIFEBOAT/` directory) 
+`scalalrboot.scala.` We put these all together (from the `LIFEBOAT/` directory) 
 using sbt to  package the dependencies for the bootstrap, then `scala-cli` to
 construct a self-contained runnable for eventual placement in the `scripts/` directory.
 
       (cd ..; sbt "bootstrap / clean ; bootstrap / package")
 
-      scala-cli --power package -o scalalrlifeboat --assembly -f scalalrlifeboat.scala 
+      scala-cli --power package -o scalalrlifeboat --assembly -f scalalrboot.scala 
 
 The runnable `scalalrlifeboat` makes parser components for any notation 
 described in the bootstrap `.scalalr` notation.  The generated components 
@@ -147,7 +147,7 @@ the `makeslab` script that starts and ends as follows:
 ````bash
     scalalrgen $MODE --output=generated$MODE slab-notation.scalalr
     ...
-    scala-cli --power package slab.scala -o slab --assembly -f
+    scala-cli --power package stage1a.scala -o slab --assembly -f
 ````
 The latter are constructed, using the `slab` program by the `makeslabslab`
 script that starts and ends as follows:

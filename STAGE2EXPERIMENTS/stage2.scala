@@ -10,11 +10,11 @@
 /**
  * BUILDING A RUNNABLE ASSEMBLY
  *
- *   scala-cli --power package slab.scala -o slab --assembly -f
+ *   scala-cli --power package stage1a.scala -o slab --assembly -f
  *  
  * AD-HOC RUN
  *
- *   scala-cli run slab.scala -- [source files]
+ *   scala-cli run stage1a.scala -- [source files]
  * 
  */
 package org.sufrin.scalalr

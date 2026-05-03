@@ -140,7 +140,7 @@ a simple code generator.
    `scalalrboot`...
 
 ````bash
-      Usage: scalalrlifeboat [--output=<outputpath>] [ <file> ...]
+      Usage: scalalrboot [--output=<outputpath>] [ <file> ...]
 ````
 
 2. The `scalalrgen` program is described in the `COMMANDLINE` documentation.

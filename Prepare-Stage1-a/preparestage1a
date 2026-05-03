@@ -1,0 +1,20 @@
+#!/bin/bash
+ROOT=~/GitHomes/ScalaLR
+MODE=${1-"-boot"}
+echo Making parser components for slab $MODE
+echo Depends on $ROOT/scripts/scalalrgen
+$ROOT/scripts/scalalrgen $MODE --output=generated$MODE slab-notation.scalalr
+sync=n; read -p "Install the generated components in the stage1a source code? [y]" sync
+test "$sync" = "y" && rsync -av generated$MODE/ $ROOT/stage1a/src/main/scala/generated
+if [ "$sync" = "y" ]
+then
+  sync=n; read -p "Rebuild the STAGE1A module with sbt? [y]" sync
+  [ "$sync" = "y" ] && ( cd .. ; sbt "stage1a / clean; stage1a / package")
+  if [ "$sync" = "y" ]
+  then
+   read -p "Make the binary slab? " sync
+   [ "$sync" = "y" ] && scala-cli --power package stage1a.scala -o slab --assembly -f
+  fi
+fi
+
+

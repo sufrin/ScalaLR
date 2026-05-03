@@ -11,7 +11,7 @@ ThisBuild / scalacOptions ++= Seq(
 )
 
 lazy val root = (project in file("."))
-  .aggregate(bootstrap, shared, flab, slab, utilities, testbed)
+  .aggregate(bootstrap, shared, stage1, stage1a, utilities, testbed)
   .settings(
     publish / skip := true,
     name := "scalalr",
@@ -20,7 +20,7 @@ lazy val root = (project in file("."))
 
 //
 lazy val commandlinemodules = (project in file("commandlinemodules"))
-  .aggregate(bootstrap, shared, flab, utilities, testbed)   // exclude slab
+  .aggregate(bootstrap, shared, stage1, utilities, testbed)   // exclude slab
   .settings(
     publish / skip := true
   )
@@ -33,10 +33,10 @@ lazy val shared = (project in file("shared"))
 lazy val bootstrap = (project in file("bootstrap"))
   .dependsOn(shared, utilities)
 
-lazy val flab = (project in file("flab")) // first language atop bootstrap
+lazy val stage1 = (project in file("stage1")) // first language atop bootstrap
   .dependsOn(shared, utilities, bootstrap)
 
-lazy val slab = (project in file("slab")) // second language atop bootstrap
+lazy val stage1a = (project in file("stage1a")) // second language atop bootstrap
   .dependsOn(shared, utilities, bootstrap)
 
 lazy val stage2 = (project in file("stage2")) // 

@@ -1,11 +1,17 @@
 
 /**
 
-    Forgiving syntax for grammars; rules end in vertical whitespace
-    not semicolon. The detail is implemented in `Scanner.next()`
+
+    Forgiving syntax for grammars:
+
+    1. rules are separated by vertical whitespace
+    and semicolons (followed by any amount whitespace) are
+    equivalent. The detail is implemented in `Scanner.next()`
     as it scans "leading" whitespace in a symbol. When
     `enableNL` holds, a visible vertical gap of any depth (>1) maps
     to the NL symbol and is otherwise ignored.
+
+    2. Directives that precede %rules can appear in any order.
 
     THIS notation file is in the notation described HERE. In short
     parsers using the components that it describes are SELF-HOSTING.

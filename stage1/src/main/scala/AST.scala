@@ -1,4 +1,5 @@
 package org.sufrin.scalalr
+package stage1
 
 object AST {
 

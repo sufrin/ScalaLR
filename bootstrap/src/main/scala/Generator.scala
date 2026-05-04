@@ -72,7 +72,7 @@ class Generator(val notation: Notation, prefix: String="") {
     if (translation.makeBisonTables(s"${translation.thePath}/$theNotationName")) {
       writeSource(scannerSource, s"${translation.thePath}/Scanner.scala")
       writeSource(reduction,     s"${translation.thePath}/Reduction.scala")
-      writeSource(makeScalaTables(s"${translation.thePath}/$theNotationName"), s"${translation.thePath}/Tables.scala")
+      writeSource(makeScalaTables(s"${translation.thePath}/$theNotationName"),  s"${translation.thePath}/Tables.scala")
       writeSource(makeLRComponents(s"${translation.thePath}/$theNotationName"), s"${translation.thePath}/Components.scala")
     }
     else error("No files generated")
@@ -498,7 +498,6 @@ class Generator(val notation: Notation, prefix: String="") {
         out(s"\npackage $thePackage\nobject Tables {")
 
         // GOTO TABLES
-        out(s"case class ErroneousGoto(state: Int, symbol: Int) extends Throwable")
         out(s"\nval GOTOTABLE: Int => Int => Int = {")
         for {entry <- entries if entry.gotos.nonEmpty} {
           fine(entry.toString)
@@ -507,7 +506,7 @@ class Generator(val notation: Notation, prefix: String="") {
           for {(sy, GOTO(from, to)) <- entry.gotos} out(s"case $sy => $to;  ")
           out("}")
         }
-        out("\n  case state => { case symbol => throw ErroneousGoto(state, symbol)}")
+        out("\n  case state => { case symbol => throw org.sufrin.scalalr.ErroneousGoto(state, symbol)}")
         out("\n  }\n")
 
         // Action TABLES

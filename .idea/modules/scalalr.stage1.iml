@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.id="stage1a [file:/Users/sufrin/GitHomes/ScalaLR/]" external.linked.project.path="$MODULE_DIR$/../../stage1a" external.root.project.path="$MODULE_DIR$/../.." external.system.id="SBT" external.system.module.type="nestedProject" type="JAVA_MODULE" version="4">
+<module external.linked.project.id="stage1 [file:/Users/sufrin/GitHomes/ScalaLR/]" external.linked.project.path="$MODULE_DIR$/../../stage1" external.root.project.path="$MODULE_DIR$/../.." external.system.id="SBT" external.system.module.type="nestedProject" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_X">
-    <output url="file://$MODULE_DIR$/../../stage1a/target/classes" />
-    <output-test url="file://$MODULE_DIR$/../../stage1a/target/test-classes" />
+    <output url="file://$MODULE_DIR$/../../stage1/target/classes" />
+    <output-test url="file://$MODULE_DIR$/../../stage1/target/test-classes" />
     <exclude-output />
-    <content url="file://$MODULE_DIR$/../../stage1a">
-      <sourceFolder url="file://$MODULE_DIR$/../../stage1a/src/main/scala" isTestSource="false" />
-      <excludeFolder url="file://$MODULE_DIR$/../../stage1a/target" />
+    <content url="file://$MODULE_DIR$/../../stage1">
+      <sourceFolder url="file://$MODULE_DIR$/../../stage1/src/main/scala" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/../../stage1/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

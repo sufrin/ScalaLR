@@ -3,8 +3,8 @@
 */
 
 %notation  ScalaLR
-%package   scalalr.parser.ScalaLR
-%path      parser
+%package   org.sufrin.scalalr.stage1.ScalaLR
+%path      ""
 
 %dialect   "joint boot / flab"
 %scalalr   "flab => boot syntax => scala"
@@ -20,6 +20,7 @@
   class Scanner(chars: SourceTextCursor) extends Iterator[Token] {
     def sourceLocation(): SourceLocation = SourceLocation(chars.lines,  chars.chars)
     @inline def hasChar: Boolean = chars.hasCurrent
+    @inline def atEnd: Boolean = !chars.hasCurrent
     @inline def theChar: Char = chars.current
     @inline def nextChar(): Unit = chars.next()
     @inline def afterNextChar(t: Token): Token = { nextChar(); t }
@@ -45,7 +46,7 @@
     def isBisonic(c: Char): Boolean = c.isLetterOrDigit || c=='.' || c=='_'
 
     def hasNext: Boolean = chars.hasCurrent
-    def next(): Token = {
+    def next(): Token = if (atEnd) $end else {
       chars.current match {
         // NL at the start of a line is just a space
         //case '\n' if chars.chars>0    =>
@@ -126,10 +127,9 @@
   `%path` `%type` `%empty` `%notation` `%package` `%token` `%left` `%right` `%non` `%rules` `%include` `%prec` `%tables` `%dialect` `%scalalr`
 
 %rules
-
 %include {
- import org.sufrin.scalalr.AST._
- import org.sufrin.scalalr.flab.Generator._
+ import org.sufrin.scalalr.stage1.AST._
+ import org.sufrin.scalalr.stage1.ScalaLR._
  import org.sufrin.utility.SourceTextCursor
  import org.sufrin.scalalr.SourceLocation
  import org.sufrin.utility.PrettyPrint._
@@ -159,11 +159,6 @@
 }
 
 
-
-
-command: Unit = Notation { translate($Notation) };
-
-
 Notation: Notation =
    `%notation`     theName:ID
    `%package`      thePackage:ID
@@ -177,7 +172,8 @@ Notation: Notation =
     OptInclude
     Rules
     OptSemicolon
-    { val dialects = $OptDialects; Notation($thePackage, $theName, $thePath, $Tables, "Scanner", Type("Token", Nil, $START), $Tokens, $Rules.reverse, $tokensInclude, $rulesInclude, dialects) };
+    { val dialects = $OptDialects;
+      Notation($thePackage, $theName, $thePath, $Tables, "Scanner", Type("Token", Nil, $START), $Tokens, $Rules.reverse, $tokensInclude, $rulesInclude, dialects) };
 
 OptPath: String = %empty { "" } | `%path` ID { $ID.toPathString };
 

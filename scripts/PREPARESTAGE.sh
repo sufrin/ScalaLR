@@ -1,10 +1,11 @@
 #!/bin/bash
 ROOT=~/GitHomes/ScalaLR
 SCRIPTS=$ROOT/scripts
+[ -e ROOT ] || ln -s -f $ROOT ROOT
 #
 GEN=scalalrboot
 STAGE=1
-NOTATION=flab-notation.scalalr
+NOTATION=stage1-notation.scalalr
 SCALA=stage$STAGE.scala
 #
 echo Making parser components for stage $STAGE with $GEN"($NOTATION)"
@@ -14,7 +15,7 @@ sync=n; read -p "Install the generated components in the stage$STAGE source code
 if [ "$sync" = "" ]
 then
   sync=n; read -p "Rebuild the stage$STAGE module incrementally with sbt? " sync       
-  [ "$sync" = "" ] && ( cd $ROOT ; sbt "stage$STAGE / compile; stage$STAGE / package")
+  [ "$sync" = "" ] && ( cd $ROOT ; sbt "stage$STAGE / clean; stage$STAGE / package")
   if [ "$sync" = "" ]
   then
    read -p "Make the binary stage$STAGE? " sync

@@ -1,5 +1,5 @@
 package org.sufrin.scalalr
-package flab
+package stage1
 
 /**
  * First Language Atop Bootstrap
@@ -10,15 +10,13 @@ package flab
  */
 
 import org.sufrin.utility.PrettyPrint.AnyPretty
-import scalalr.parser.ScalaLR.Reduction.reduction
-import scalalr.parser.ScalaLR.Tables.{ACTIONTABLE, GOTOTABLE}
 
 import java.nio.file.Paths
 
 
 object Generator {
-   import org.sufrin.scalalr.AST.{Notation => NewNotation}
    import org.sufrin.scalalr.bootstrap.Syntax.Parser.{TokenSpec, Notation => BootstrapNotation}
+   import org.sufrin.scalalr.stage1.AST.{Notation => NewNotation}
    implicit class AsBootstrapNotation(val notation: NewNotation) extends AnyVal {
      def toBootstrapNotation: BootstrapNotation = {
        import notation._
@@ -51,20 +49,21 @@ object Generator {
    }
 
   def main(args: Array[String]): Unit = {
-      import org.sufrin.utility._
-      import scalalr.parser.ScalaLR.Scanner
-      import scalalr.parser.ScalaLR.Scanner._
+    import org.sufrin.utility._
+    import stage1.ScalaLR._
 
-      import java.nio.file.Path
-      var log = false
-      for  { arg <- args } if (arg.startsWith("--output=")) {
+    var log = false
+    var lastArg = ""
+    for  { arg <- args } {
+      if (arg.startsWith("--output=")) {
         output = arg.replace("--output=", "")
       }
       else if (arg == "-log") log = true
       else if (arg == "-p") pretty = true
+      else if (arg == "-o") {}
       else if (arg.startsWith("-")) {
         println(
-          """Usage: org.sufrin.scalalr.flab.generate [--output=<outputpath] [-p | -l]* [<file> ...]
+          """Usage: stage2 [--output=<outputpath] [-p | -l]* [<file> ...]
             |Treat each <file> as a scalalr source files and generate the
             |scala files corresponding to the %notation it defines.
             |Place the generated files under the directory named by <outputpath>
@@ -76,15 +75,20 @@ object Generator {
             |""".stripMargin)
         System.exit(0)
       }
+      else if (lastArg=="-o") output=arg
       else
       {
         val scanner = Scanner(SourceTextCursor(Paths.get(arg)))
-        def next(): Token = if (scanner.hasNext) scanner.next() else $end
-        val parser = new LRParser.Pull[Token](ACTIONTABLE, GOTOTABLE, reduction, symbolName, scanner.sourceLocation)
+        val parser = LRParser.Pull[Scanner.Token](Components)(scanner.sourceLocation)
         parser.logState = log
-        parser.run(next)
+        parser.run(scanner.next) match {
+          case org.sufrin.scalalr.LRParser.ACCEPTED(notation) => translate(notation.asInstanceOf[org.sufrin.scalalr.stage1.AST.Notation])
+          case _ =>
+        }
       }
+      lastArg=arg
     }
+  }
 
 }
 

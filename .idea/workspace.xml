@@ -5,150 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="91372ed0-436a-419c-9015-c4c30c0eb662" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.bsp/sbt.json" beforeDir="false" afterPath="$PROJECT_DIR$/.bsp/sbt.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Bootstrapping.md" beforeDir="false" afterPath="$PROJECT_DIR$/Bootstrapping.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COMMANDLINE/COMMANDLINE.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/COMMANDLINE/makescalalrgen.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/COMMANDLINE/scalalrgen" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/COMMANDLINE/scalalrgen.scala" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1-a/.bsp/scala-cli.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1-a/flab-notation.scalalr" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1-a/makeslabslab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1-a/preparestage1a" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1-a/slab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1-a/slab-notation.scalalr" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1-a/slab-notation.slab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1-a/slabslab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1-a/slabslab.scala" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1-a/stage1a.scala" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1-a/tinyfun.slab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1/Prepare-Stage1.md" beforeDir="false" afterPath="$PROJECT_DIR$/Prepare-Stage1/Prepare-Stage1.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Components.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Reduction.scala" beforeDir="false" afterPath="$PROJECT_DIR$/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Reduction.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.html" beforeDir="false" afterPath="$PROJECT_DIR$/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.output" beforeDir="false" afterPath="$PROJECT_DIR$/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.y" beforeDir="false" afterPath="$PROJECT_DIR$/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.y" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Scanner.scala" beforeDir="false" afterPath="$PROJECT_DIR$/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Scanner.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Tables.scala" beforeDir="false" afterPath="$PROJECT_DIR$/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Tables.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1/preparestage1.sh" beforeDir="false" afterPath="$PROJECT_DIR$/Prepare-Stage1/preparestage1.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1/stage1" beforeDir="false" afterPath="$PROJECT_DIR$/Prepare-Stage1/stage1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1/stage1-notation.scalalr" beforeDir="false" afterPath="$PROJECT_DIR$/Prepare-Stage1/stage1-notation.scalalr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prepare-Stage1/stage1.scala" beforeDir="false" afterPath="$PROJECT_DIR$/Prepare-Stage1/stage1.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Prepare-bootstrap/scalalrboot" beforeDir="false" afterPath="$PROJECT_DIR$/Prepare-bootstrap/scalalrboot" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Bootstrapping.md" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Bootstrapping.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/COMMANDLINE/COMMANDLINE.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/COMMANDLINE/makescalalrgen.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/COMMANDLINE/scalalrgen" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/COMMANDLINE/scalalrgen.scala" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1-a/.bsp/scala-cli.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1-a/flab-notation.scalalr" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1-a/makeslabslab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1-a/preparestage1a" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1-a/slab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1-a/slab-notation.scalalr" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1-a/slab-notation.slab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1-a/slabslab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1-a/slabslab.scala" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1-a/stage1a.scala" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1-a/tinyfun.slab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/Prepare-Stage1.md" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/Prepare-Stage1.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Components.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Reduction.scala" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Reduction.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.html" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.output" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.xml" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.y" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.y" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Scanner.scala" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Scanner.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Tables.scala" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Tables.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/preparestage1.sh" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/preparestage1.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/stage1" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/stage1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/stage1-notation.scalalr" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/stage1-notation.scalalr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/stage1.scala" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-Stage1/stage1.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-bootstrap/scalalrboot" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/Prepare-bootstrap/scalalrboot" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/STAGE2EXPERIMENTS/stage2-notation.slab" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/STAGE2EXPERIMENTS/stage2-notation.slab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/bootstrap/src/main/scala/Syntax.scala" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/bootstrap/src/main/scala/Syntax.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/scripts/PREPARESTAGE.sh" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/scripts/PREPARESTAGE.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/scripts/scalalrboot" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/scripts/scalalrboot" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/scripts/scalalrgen" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/scripts/scalalrlifeboat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Components.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Reduction.scala" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Reduction.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.html" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.output" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.xml" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.y" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.y" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Scanner.scala" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Scanner.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Tables.scala" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Tables.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STAGE2EXPERIMENTS/stage2-notation.slab" beforeDir="false" afterPath="$PROJECT_DIR$/STAGE2EXPERIMENTS/stage2-notation.slab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/src/main/scala/Syntax.scala" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/src/main/scala/Syntax.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Bootstrapping.md" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/Bootstrapping.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/COMMANDLINE/COMMANDLINE.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/COMMANDLINE/makescalalrgen.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/COMMANDLINE/scalalrgen" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/COMMANDLINE/scalalrgen.scala" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1-a/.bsp/scala-cli.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1-a/flab-notation.scalalr" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1-a/makeslabslab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1-a/preparestage1a" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1-a/slab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1-a/slab-notation.scalalr" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1-a/slab-notation.slab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1-a/slabslab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1-a/slabslab.scala" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1-a/stage1a.scala" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1-a/tinyfun.slab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/Prepare-Stage1.md" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/Prepare-Stage1.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Components.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Reduction.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Reduction.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.html" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.output" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.xml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.y" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.y" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Scanner.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Scanner.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Tables.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/generated-scalalrboot/org/sufrin/scalalr/stage1/Tables.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/preparestage1.sh" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/preparestage1.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/stage1" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/stage1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/stage1-notation.scalalr" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/stage1-notation.scalalr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/stage1.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-Stage1/stage1.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-bootstrap/scalalrboot" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/Prepare-bootstrap/scalalrboot" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/STAGE2EXPERIMENTS/stage2-notation.slab" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/STAGE2EXPERIMENTS/stage2-notation.slab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/bootstrap/src/main/scala/Syntax.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/bootstrap/src/main/scala/Syntax.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/scripts/PREPARESTAGE.sh" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/scripts/PREPARESTAGE.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/scripts/scalalrboot" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/scripts/scalalrboot" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/scripts/scalalrgen" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/scripts/scalalrlifeboat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Components.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Reduction.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Reduction.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.html" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.output" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.xml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.y" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.y" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Scanner.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Scanner.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Tables.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Tables.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/maketinyfun.sh" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/maketinyfun.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/runtinyfun" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/runtinyfun" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/small/generated-boot/small/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/small/generated-boot/small/Components.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/small/generated-boot/small/Tables.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/small/generated-boot/small/Tables.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/small/generated-flab/small/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/small/generated-flab/small/Components.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/small/generated-flab/small/Tables.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/small/generated-flab/small/Tables.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/small/small.scalalr" beforeDir="false" afterPath="$PROJECT_DIR$/examples/small/small.scalalr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/small/testsmall.sh" beforeDir="false" afterPath="$PROJECT_DIR$/examples/small/testsmall.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/PREPARESTAGE.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/PREPARESTAGE.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/scalalrboot" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/scalalrboot" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/scalalrgen" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/scalalrlifeboat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Components.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Reduction.scala" beforeDir="false" afterPath="$PROJECT_DIR$/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Reduction.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.html" beforeDir="false" afterPath="$PROJECT_DIR$/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.output" beforeDir="false" afterPath="$PROJECT_DIR$/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.xml" beforeDir="false" afterPath="$PROJECT_DIR$/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.y" beforeDir="false" afterPath="$PROJECT_DIR$/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/ScalaLR.y" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Scanner.scala" beforeDir="false" afterPath="$PROJECT_DIR$/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Scanner.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Tables.scala" beforeDir="false" afterPath="$PROJECT_DIR$/stage1/src/main/scala/generated/generated-scalalrboot/org/sufrin/scalalr/stage1/Tables.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.sbt" beforeDir="false" afterPath="$PROJECT_DIR$/build.sbt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage1a/.bsp/sbt.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage1a/.idea/modules/slab.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage1a/.idea/modules/slab.slab-build~2.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage1a/.idea/modules/slab.slab-build~3.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage1a/project/build.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage1a/src/main/scala/AST.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage1a/src/main/scala/Generator.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage1a/src/main/scala/generated/parser/Components.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage1a/src/main/scala/generated/parser/Reduction.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage1a/src/main/scala/generated/parser/Scanner.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage1a/src/main/scala/generated/parser/Tables.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage1a/src/main/scala/generated/parser/parser.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage1a/src/main/scala/generated/parser/parser.output" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage1a/src/main/scala/generated/parser/parser.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage1a/src/main/scala/generated/parser/parser.y" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage1a/src/main/scala/generated/parser/stage2.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage1a/src/main/scala/generated/parser/stage2.output" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage1a/src/main/scala/generated/parser/stage2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage1a/src/main/scala/generated/parser/stage2.y" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -193,22 +72,22 @@
     <option name="showLibraryContents" value="true" />
     <option name="showMembers" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.generatexpr.executor": "Run",
-    "Application.runexpr.executor": "Run",
-    "Application.runsmall.executor": "Run",
-    "Application.runtinyfun.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/sufrin/GitHomes/ScalaLR/Prepare-Stage1",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.37201804",
-    "settings.editor.selected.configurable": "preferences.lookFeel"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.generatexpr.executor&quot;: &quot;Run&quot;,
+    &quot;Application.runexpr.executor&quot;: &quot;Run&quot;,
+    &quot;Application.runsmall.executor&quot;: &quot;Run&quot;,
+    &quot;Application.runtinyfun.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/sufrin/GitHomes/ScalaLR/Prepare-Stage1&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.37201804&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/Prepare-Stage1" />

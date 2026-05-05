@@ -28,7 +28,7 @@ object main {
     }
     println(
       s"""$signature
-        |Usage: stage1 [--output=<outputpath> (default STAGE1OUTPUT) | -o <outputpath>] [ <file> ...]cleandir""".stripMargin
+        |Usage: stage1 [--output=<outputpath> (default STAGE1OUTPUT) | -o <outputpath>] [ <file> ...]""".stripMargin
     )
   }
   def main(args: Array[String]): Unit = {

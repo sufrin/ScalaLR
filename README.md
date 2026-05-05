@@ -107,11 +107,9 @@ object runexpr {
   def main(args: Array[String]): Unit = {
     val source = """a; a+b; a*b+c*d*(e+f)*[g+h]; p+q*r"""
     val scanner = Scanner(SourceTextCursor(source))
-
-    def next(): Token = if (scanner.hasNext) scanner.next() else $end
-
+     
     val parser = LRParser.Pull[Token](Components)(scanner.sourceLocation)
-    parser.run(next).prettyPrint()
+    parser.run(scanner.next()).prettyPrint()
   }
 }
 

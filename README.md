@@ -131,31 +131,31 @@ the source notation, and to do any necessary detailed diagnostics on the
 grammar. 
 
 ### Production-quality Implementations
-There are (now: late April 2026) several stable production quality implementations of the
+There are (now: late April 2026) two stable production quality implementations of the
 program, bootstrapped from an original handwritten parser and
 a simple code generator.
 
-1. The `scalalrlifeboat` program uses the original bootstrap handwritten parser and
-   the original bootstrap code generator. Perhaps we should have called it
-   `scalalrboot`...
+1. The `scalalrboot` program uses the original bootstrap handwritten parser and
+   the original bootstrap code generator. 
 
 ````bash
       Usage: scalalrboot [--output=<outputpath>] [ <file> ...]
 ````
 
-2. The `scalalrgen` program is described in the `COMMANDLINE` documentation.
-It would be an exaggeration to say that its parser is completely self-hosting, 
-but it offers a choice of parsing with the original bootstrap parser, and 
-a parser for compatible syntax generated with scalalr technology
-(known as **FLaB** -- first language atop bootstrap).
-````bash  
-      Usage: scalalrgen [-flab | -boot | -h | [--output=<outputpath>] [ <file> ...]
+2. The `scalalrstage1` program is described in the `Bootstrapping.md`
+documentation. It accepts the "forgiving" notation, and
+code generation uses the bootstrap generator, translating:
+      
+      forgiving-notation AST => bootstrap AST => scala
+
+````bash
+    Usage: stage1 [--output=<outputpath> (default STAGE1OUTPUT) | -o <outputpath>] [ <file> ...]
 ```` 
 
 
 ### Generated files
 
-When all is well, the generator produces several components (in distinct files)
+When all is well, a generator produces several components (in distinct files)
 from each parser specification; these appear in  the directory corresponding to `%path` specification, and are
 named:
 
@@ -201,10 +201,9 @@ Experience with using earlier versions of scalalr
 demonstrated a rather high incidence of noisy errors with a single
 trivial cause: the omission of just one semicolon
 between rule definitions that was required by the earlier host notation.
-
-This has been corrected in later versions of the  host notation 
-and is implemented right now in the **slab** and **slabslab**
-processors. 
+This has been corrected -- both in the
+bootstrap (handwritten) parser and the (forgiving)
+stage1 parser.
 
 The latter is the first in the entire sequence
 that is self-hosting: in the sense that its input language can
@@ -212,8 +211,9 @@ be described *in* its input language, and parsed by a parser whose
 parsing components it generated itself.
 
 The most recent *experimental* implmentations of the program can be
-found in the **slab** module and the `SLABEXPERIMENTS/` directory.
-
+found in the **stage2** module and the `SLABEXPERIMENTS/` directory.
+Our main target is to provide a completely new
+code generator with better error diagnostics.
 
 ## Further Reading 
 1. The best-documented simple examples of programs that 

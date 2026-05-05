@@ -1,13 +1,17 @@
 /**
-    This is the language of the bootstrap translator described in the scalalr notation
+    This is the ORIGINAL language of the bootstrap translator described in the bootstrap notation.
+    In fact, the bootstrap notation parser is rather forgiving: rules are separated by
+    1. a SEMICOLON, followed by any amount of whitespace
+    OR
+    2. a vertical GAP (ie 1 or more empty-looking lines)
 */
 
 %notation  ScalaLR
 %package   org.sufrin.scalalr.stage1.ScalaLR
 %path      ""
 
-%dialect   "joint boot / flab"
-%scalalr   "flab => boot syntax => scala"
+%dialect   "Original strict bootstrap notation; described in that notation"
+%scalalr   "Generation: notation AST => bootstrap AST => scala"
 
 %include {
   import org.sufrin.utility.SourceTextCursor
@@ -47,6 +51,7 @@
 
     def hasNext: Boolean = chars.hasCurrent
     def next(): Token = if (atEnd) $end else {
+    val symb =
       chars.current match {
         // NL at the start of a line is just a space
         //case '\n' if chars.chars>0    =>
@@ -109,6 +114,8 @@
         case other =>
           LEXICALERROR(s"Unrecognised $other (at ${sourceLocation()}")
       }
+      //println(symb)
+      symb
     }
   }
 
@@ -127,6 +134,7 @@
   `%path` `%type` `%empty` `%notation` `%package` `%token` `%left` `%right` `%non` `%rules` `%include` `%prec` `%tables` `%dialect` `%scalalr`
 
 %rules
+
 %include {
  import org.sufrin.scalalr.stage1.AST._
  import org.sufrin.scalalr.stage1.ScalaLR._
@@ -158,7 +166,6 @@
 
 }
 
-
 Notation: Notation =
    `%notation`     theName:ID
    `%package`      thePackage:ID
@@ -181,8 +188,8 @@ OptInclude: String = %empty { "" } | `%include` CODE { $CODE };
 
 OptDialects:((String,String)) = `%dialect` l:ID `%scalalr` r:ID { ($l, $r) }
                               | `%scalalr` l:ID `%dialect` r:ID { ($r, $l) }
-                              | %empty     { ("", "") }
-                              ;
+                              | %empty     { ("", "") };
+
 
 
 Tokens:(List[TokenSpec]) = %empty           { Nil }
@@ -245,10 +252,8 @@ Precedence: (Option[Terminal]) =  %empty { None } | `%prec` ID { Some(new Termin
 Type:(Type) = ID               { Type($ID, Nil, $START) }
             | ID '[' Types ']' { Type($ID, $Types, $START) }
             | '('    Types ')' { makeTupleType($Types, $START) }
-            | '(' ')'          { Type("Unit", Nil, $START) }
-            ;
+            | '(' ')'          { Type("Unit", Nil, $START) };
+
 
 Types:(List[Type]) = Type            { List($Type) }
                    | Type  ',' Types { $Type :: $Types }
-                   ;
-        

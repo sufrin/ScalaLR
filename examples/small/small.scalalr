@@ -55,6 +55,7 @@
  // after rules
 }
 
-ids:(List[String]) = idList { $idList.reverse };
-idList:(List[String]) = ID { List($ID) } | idList ";" ID { $ID :: $idList };
+ids:(List[String]) = idList { $idList.reverse }
+
+idList:(List[String]) = ID { List($ID) } | idList ";" ID { $ID :: $idList }
 

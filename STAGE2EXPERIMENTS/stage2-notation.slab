@@ -128,7 +128,7 @@
           val prefix = chars.takeWhile(isBisonic)
           ID((prefix).mkString(""))
 
-         case ';' =>
+        case ';' =>
                    nextChar()
                    eatWhitespace()
                    NL

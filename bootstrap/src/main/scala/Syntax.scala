@@ -64,7 +64,7 @@ object Syntax {
     case object ALT                 extends Atom
     case object HASTYPE             extends Atom
     case object IS                  extends Atom
-    case object SEMICOLON           extends Atom
+    case object SEPARATOR           extends Atom
     case object BRA                 extends Atom
     case object KET                 extends Atom
     case object LRTABLETYPE         extends Atom
@@ -92,6 +92,8 @@ object Syntax {
     object Scanner {
       def apply(chars: SourceTextCursor): Scanner = new Scanner(chars)
     }
+
+    var enableNL = false
 
     class Scanner(chars: SourceTextCursor) extends Iterator[Token] {
       var sl, sc: Int = 0
@@ -124,8 +126,13 @@ object Syntax {
         nextChar()
       }
 
+      def eatWhitespace(): Unit = {
+        while (hasChar && theChar.isWhitespace) nextChar()
+      }
+
+
       def hasNext: Boolean = chars.hasCurrent
-      def next(): Token = {
+      def next(): Token = if (hasNext) {
         sl = chars.lines
         sc = chars.chars
         val result =
@@ -153,7 +160,6 @@ object Syntax {
               nextChar(); afterNextChar(CODE(chars.takeNested('«', '»')  .mkString("")))
             case '(' =>
               nextChar(); afterNextChar(TYPE(chars.takeNested('(', ')')  .mkString("")))
-            case ';' => afterNextChar(SEMICOLON)
             case '%' =>
               nextChar()
               if (chars.current=='%') { afterNextChar(RULES) }
@@ -171,10 +177,13 @@ object Syntax {
                   case "left"         => LEFT
                   case "right"        => RIGHT
                   case "non"          => NONASSOC
-                  case "rules"        => RULES
                   case "include"      => INCLUDE
                   case "dialect"      => DIALECT
                   case "scalalr"      => SCALALR
+                  case "rules"        =>
+                    enableNL=true
+                    eatWhitespace()
+                    RULES
                   case _ => syntaxError(s"Unknown directive %$directive (at $sourceLocation)")
                 }
               }
@@ -182,6 +191,20 @@ object Syntax {
             case '\'' => nextChar(); afterNextChar(ID(chars.takeWhile( c => c!='\'') .mkString("\"", "", "\"")))
             case '`' => nextChar(); afterNextChar(ID(chars.takeWhile( c => c!='`') .mkString("\"", "", "\"")))
 
+            case ';' =>
+              nextChar()
+              eatWhitespace()
+              SEPARATOR
+
+            case c if c.isWhitespace =>
+              var vertical: Int =  0
+              while (hasChar && theChar.isWhitespace) {
+                if (theChar=='\n') vertical += 1
+                nextChar()
+              }
+              if (enableNL && vertical>1) SEPARATOR
+              else
+                if (hasChar) next() else EOF
             case c if c.isLetter =>
               val prefix = chars.takeWhile(isBisonic(_))
               ID((prefix).mkString(""))
@@ -193,8 +216,9 @@ object Syntax {
                nextChar()
                r
           }
+        // println(s"${chars.lines}.${chars.chars}: $result")
         result
-      }
+      } else EOF
     }
   }
 
@@ -244,9 +268,9 @@ object Syntax {
 
       def parseRules(): Seq[Rule] = {
         val rules = Buffer(parseRule())
-        while (scan.current==SEMICOLON) {
+        while (scan.hasCurrent && scan.current==SEPARATOR) {
           Skip()
-          if (scan.current.isInstanceOf[ID])
+          if (scan.hasCurrent && scan.current.isInstanceOf[ID])
              rules addOne parseRule()
         }
         rules.toSeq
@@ -282,7 +306,7 @@ object Syntax {
               Skip()
               reduction = Some(new Expression(text))
               go = false
-            case SEMICOLON | ALT  =>
+            case SEPARATOR | ALT  =>
               go = false
             case other =>
               syntaxError(s"Production ends with $other ${scanner.sourceLocation}")
@@ -371,7 +395,6 @@ object Syntax {
         var explicitPath = ""
         var go = true
         while (go) {
-          println(s"Paragraph: ${scan.current} (${scanner.sourceLocation})")
           scan.current match {
             case DIALECT      => theNotationDialect = parseNameAfter(DIALECT)
             case SCALALR      => theScalalrDialect = parseNameAfter(SCALALR)
@@ -390,6 +413,7 @@ object Syntax {
         Skip(RULES)
         finest(s"Paragraph: ${scan.current} (${scanner.sourceLocation})")
         val rulesInclude = parseInclude()
+        Skip(SEPARATOR)
         val rules = parseRules().toList
 
         Notation(packageName, name, explicitPath, tablesType, scannerName, new Type(traitName), tokenDefs, rules, tokensInclude, rulesInclude, theScalalrDialect=theScalalrDialect, theNotationDialect=theNotationDialect)
@@ -430,7 +454,7 @@ object Syntax {
       def parseTyped(): (String, Type) = {
         val name = Expecting {
           case ID(name) => Shift(name)
-          case other => syntaxError(s"Expecting an ID, found $other")
+          case other => syntaxError(s"Expecting an ID, found $other  (at ${scanner.sourceLocation})")
         }
         scan.current match {
           case TYPE(text) =>

@@ -1,11 +1,18 @@
 
 /**
 
-    Forgiving syntax for grammars; rules end in vertical whitespace
-    not semicolon. The detail is implemented in `Scanner.next()`
-    as it scans "leading" whitespace in a symbol. When
+    This is the FORGIVING language of the bootstrap translator described in the forgiving bootstrap notation.
+
+    Rules are separated by
+
+    1. a SEMICOLON, followed by any amount of whitespace
+    OR
+    2. a vertical GAP (ie 1 or more empty-looking lines)
+
+    The detail is implemented in `Scanner.next()`
+    as it scans the leading whitespace before a symbol. When
     `enableNL` holds, a visible vertical gap of any depth (>1) maps
-    to the NL symbol and is otherwise ignored.
+    to the SEPARATOR symbol and is otherwise ignored.
 
     THIS notation file is in the notation described HERE. In short
     parsers using the components that it describes are SELF-HOSTING.
@@ -13,14 +20,13 @@
 */
 
 
-%notation  parser
-%package   scalalr.slab.parser
-%path      "parser"
 
+%notation  ScalaLR
+%package   org.sufrin.scalalr.stage1.ScalaLR
+%path      ""
 
-
-%dialect   "scalalr slab notation"
-%scalalr   "components made by slab or slabslab"
+%dialect   "Forgiving bootstrap notation; described in the forgiving notation"
+%scalalr   "Generation: notation AST => bootstrap AST => scala"
 
 %include {
   import org.sufrin.utility.SourceTextCursor
@@ -120,7 +126,7 @@
          case ';' =>
                    nextChar()
                    eatWhitespace()
-                   if (enableNL) NL else next()
+                   if (enableNL) SEPARATOR else next()
 
         case c if c.isWhitespace =>
           var vertical: Int =  0
@@ -128,7 +134,7 @@
             if (theChar=='\n') vertical += 1
             nextChar()
           }
-          if (enableNL && vertical>1) NL
+          if (enableNL && vertical>1) SEPARATOR
           else
           if (hasChar) next() else $end
         case other =>
@@ -146,18 +152,17 @@
   COMMENT:(String)
   LEXICALERROR:(String)
   `[` `]` `;` `=` `|`  `:`  // Left here as a test of diagnostics
-  `{` `}` `(` `)` ',' NL
+  `{` `}` `(` `)` ',' SEPARATOR
   `%path` `%type` `%empty` `%notation` `%package` `%token` `%left` `%right` `%non` `%rules` `%include` `%prec` `%tables` `%dialect` `%scalalr`
 
 %rules
 
 %include {
- import org.sufrin.scalalr.slab.AST._
- import org.sufrin.scalalr.slab.Generator._
- import scalalr.slab.parser.Scanner
- import org.sufrin.utility.SourceTextCursor
- import org.sufrin.scalalr.SourceLocation
- import org.sufrin.utility.PrettyPrint._
+  import org.sufrin.scalalr.stage1.AST._
+  import org.sufrin.scalalr.stage1.ScalaLR._
+  import org.sufrin.utility.SourceTextCursor
+  import org.sufrin.scalalr.SourceLocation
+  import org.sufrin.utility.PrettyPrint._
 
  def makeTupleType(types: Seq[Type], location: SourceLocation): Type =
      types.size match {
@@ -186,7 +191,7 @@
 
 
 
-command: Unit = Notation { translate($Notation) }
+
 
 
 Notation: Notation =
@@ -199,7 +204,7 @@ Notation: Notation =
     Tokens
     RULES
     rulesInclude:  OptInclude
-    NL
+    SEPARATOR
     Rules
     OptNL
     { val dialects = $OptDialects; Notation($thePackage, $theName, $thePath, $Tables, "Scanner", Type("Token", Nil, $START), $Tokens, $Rules.reverse, $tokensInclude, $rulesInclude, dialects) }
@@ -207,7 +212,7 @@ Notation: Notation =
 
 RULES: Unit = `%rules` { println("IMPLICIT RULE ENDINGS ENABLED"); Scanner.enableNL=true }
 
-OptNL: Unit = %empty {()} | NL {()}
+OptNL: Unit = %empty {()} | SEPARATOR {()}
 
 OptPath: String = %empty { "" } | `%path` ID  { $ID.toPathString }
 
@@ -245,8 +250,8 @@ Tables:(String) = %empty       { "lalr" }
 
 
 
-Rules:(List[Rule]) = Rule           { List($Rule) }
-                   | Rules NL Rule  { $Rule :: $Rules }
+Rules:(List[Rule]) = Rule                  { List($Rule) }
+                   | Rules SEPARATOR Rule  { $Rule :: $Rules }
 
 Rule: Rule = LHS '=' OptBar RHS { Rule($LHS, $RHS, $START) }
 

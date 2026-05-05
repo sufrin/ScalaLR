@@ -1,6 +1,6 @@
 #!/bin/bash
-echo Making the runtinyfun app with scalalrlifeboat
+echo Making the runtinyfun app 
 ROOT=../..
 [ ! -e ROOT ] && ln -s $ROOT ROOT
-$ROOT/LIFEBOAT/scalalrlifeboat tinyfun.scalalr
+$ROOT/scripts/scalalrbootstrap tinyfun.scalalr
 scala-cli --power package -f -o runtinyfun runtinyfun.scala TinyFun.scala generated

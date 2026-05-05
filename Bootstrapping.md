@@ -6,126 +6,82 @@ the scalalr input language by:
 
     (bootstrap.Syntax, bootstrap.Generator)(scalalrInputFile)
 
+or just
+
+    bootstrap(scalalrInputFile)
+
 This denotes the components generated from `scalalrInputFile` by 
 the bootstrap code-generator. The `scalalrInputFile` must be in
 the  notation accepted by the handwritten bootstrap 
-parser. The generated components are always placed in 
-a directory specified in the prologue of the input file.
+parser (which has become somewhat forgiving since this
+document was originally written). The generated components 
+are always placed under  a directory specified in the prologue of 
+the input file.
 
 
-### Stage 1a: bootstrap
+### Stage 1: bootstrap
 The bootstrapping sequence for `scalalr` starts with the bootstrap generator
 constructed entirely by hand in `scala.` This is specified entirely (ie
 input language syntax and output component semantics) by  objects of 
 the `bootstrap` module, and the driver for the runnable program is 
-`scalalrboot.scala.` We put these all together (from the `LIFEBOAT/` directory) 
+`scalalrboot.scala.` 
+
+We put these all together (from the `Prepare-bootstrap/` directory) 
 using sbt to  package the dependencies for the bootstrap, then `scala-cli` to
-construct a self-contained runnable for eventual placement in the `scripts/` directory.
+construct a self-contained runnable for eventual placement in 
+the `scripts/` directory. The script 
 
-      (cd ..; sbt "bootstrap / clean ; bootstrap / package")
+      preparebootstrap.sh
 
-      scala-cli --power package -o scalalrlifeboat --assembly -f scalalrboot.scala 
+handles the (not very significant) details.
 
-The runnable `scalalrlifeboat` makes parser components for any notation 
+The runnable `scalalrbootstrap` makes parser components for any notation 
 described in the bootstrap `.scalalr` notation.  The generated components 
-can be incorporated in any program  that needs a parser, and this parseer is 
+can be incorporated in any program  that needs a parser, and this parser is 
 implemented by the `shared` module parsing  automaton `LRParser.` 
 
+#### A complete example explained
+A good place to find a complete example is
 
-An extract from such a program `runtinyfun` -- all of whose components
-can be found in the `LIFEBOAT/` directory --  may be helpful in illustrating 
-how straightforward the construction  of a program that incorporates scalalr 
-components can be.
-````scala
-oject runtinyfun {
-  import org.sufrin.scalalr._
-  import org.sufrin.utility.SourceTextCursor
-  import java.nio.file.Paths
+        $ROOT/examples/TinyFun
 
-  import tinyfun.Components
-  import tinyfun.Scanner._
+in which the script `maketinyfun` uses the bootstrap scalalr followed
+by `scala-cli` to generate a runnable program
+        ROOT=../..
+        [ ! -e ROOT ] && ln -s -f $ROOT ROOT
+        scalalrbootstrap tinyfun.scalalr
+        scala-cli --power package -f -o runtinyfun runtinyfun.scala TinyFun.scala generated
 
-  val log = args.contains("-l")
-  val file = (args.toList.filterNot(_.startsWith("-")) ++ List("/dev/tty")).head
+The scala source `runtinyfun.scala` uses `scala-cli` directives to
+establish classpath, etc.
 
-  print("Welcome to TinyFun\n> ")
+        //> using scala 2.13
+        //> using jar ROOT/bootstrap/target/bootstrap-0.8.0.jar
+        //> using jar ROOT/shared/target/shared-0.8.0.jar
+        //> using jar ROOT/utilities/target/utilities-0.8.0.jar
+        //> using jar ROOT/logging-api/lib/Logging.jar
+        //> using dep org.scala-lang.modules::scala-xml::2.4.0
 
-  val scanner = Scanner(SourceTextCursor(Paths.get(file)))
-  val parser = LRParser.Pull[Token](Components)(scanner.sourceLocation)
-  parser.logState = log
-  try parser.run(scanner.next) catch {
-    case err: java.lang.Error => println(err)
-  }
-}
-````
+        object runtinyfun { ... }
 
-Its parser components are generated (below the `generated/` directory) by 
-
-      scalalrlifeboat --output=generated tinyfun.scalalr
-
-their provenance is
-
-      (bootstrap.Syntax, bootstrap.Generator) (tinyfun.scalalr)
-
-The `generated/` components , and
-the remaining  essential components of `runtinyfun` -- its driver program 
-`runtinyfun.scala` and  its abstract syntax and semantics defined in 
-`TinyFun.scala` -- can be put together using `scala-cli`:
-
-      scala-cli compile runtinyfun.scala TinyFun.scala generated
-      scala-cli run runtinyfun.scala TinyFun.scala generated
-
-or compiled and packaged into a self-contained script by
-
-      scala-cli --power package runtinyfun.scala TinyFun.scala generated -o runtinyfun --assembly -f
-
-The really useful thing about `scala-cli` is that it makes very straightforward the
-declaration of the dependencies of a source file. The whole of `runtinyfun.scala`
-is:
-````scala
-//> using scala 2.13
-//> using jar ../bootstrap/target/bootstrap-0.8.0.jar
-//> using jar ../shared/target/shared-0.8.0.jar
-//> using jar ../utilities/target/utilities-0.8.0.jar
-//> using jar ../logging-api/lib/Logging.jar
-//> using dep org.scala-lang.modules::scala-xml::2.4.0
-
-object runtinyfun  {
-  ...
-}
-````
-
-
-### Stage 1b: FLaB
+### Stage 1
 The next stage (First Language atop Bootstrap) is the
 first stage at which  `scalalr`-generated parser components
 can be incorporated into a processor for a dialect of the `scalalr`
 notation. There are two possibilities for building
-generator components. The first yields:
+generator components. 
 
-      flab = (bootstrap.Syntax, bootstrap.Generator)(flab-notation.scalalr)
+      stage1 = bootstrap(stage1-notation.scalalr)
 
-the second uses the `LRParser` automaton with the `flab` components to
-parse the notation it was described in, then the `flab.Generator` to
-generate the corresponding components:
+      stage1 = bootstrap(forgiving-stage1-notation.scalalr)
 
-      (LRParser(flab), flab.Generator)(flab-notation.scalalr)
-
-In fact the `flab.Generator` does no more than translate `flab` abstract
+We prefer the second: but whatever choice is made, the resulting `stage1` does no more 
+after parsing the notation description than translate `stage1` abstract
 syntax into bootstrap syntax, then invoke the `bootstrap.Generator`.
-
-So when compiled *alongside the rest of the `FLaB` implementation*, namely
-`Generator.scala` and `AST.scala` in the appropriate `flab/src/main/scala`
-directory, this yields a generator *with the same component semantics* and
-*the same input language syntax* but whose parser is now implemented
-with the `LRParser` shared automaton and the generated components. 
-(See `PREPAREFLAB/` for an account of this)
-
-
-### Flab *vs* Bootstrap Syntax
-Although the handwritten bootstrap parser accepts a slightly more general notation
-than the Scalalr-generated parser for Flab, there is no practically-useable
-difference between them.
+So there is no practically-discernable difference between code
+generated by the bootstrap and the stage1 scalalalr programs,
+and we can say that at this stage we have a self-hosting 
+code generator.
 
 ### Stage 2: Slab and successors
 Further stages - starting with *SLaB* - will incorporate a re-engineered
@@ -133,31 +89,4 @@ component generation phase, and also be self-hosting. Our intention is
 also to test some macro-like novelties that support more concise
 descriptions of list- and option- yielding productions. 
 
-All work described below is done in the `SLABEXPERIMENTS/` directory.
-
-#### (TL/DR) The state of play on May Day 2026 is summarised as:
-````
-    slab     = (LRParser(flab), flab.generator)(slab-notation.scalalr)
-    slabslab = (LRParser(slab), slab.generator)(slab-notation.slab)
-````
-
-
-The former components, and the `slab` processor, are constructed (with MODE `-boot` or `-flab`) by 
-the `makeslab` script that starts and ends as follows:
-````bash
-    scalalrgen $MODE --output=generated$MODE slab-notation.scalalr
-    ...
-    scala-cli --power package stage1a.scala -o slab --assembly -f
-````
-The latter are constructed, using the `slab` program by the `makeslabslab`
-script that starts and ends as follows:
-````bash
-    ./slab --output=generated$MODE slab-notation.slab
-    ...
-    scala-cli --power package slabslab.scala -o slabslab --assembly -f
- ````
-
-Both notation descriptions *describe* the same syntax, namely
-one that accepts "visible vertical space" between productions, rather than
-requiring semicolons. The former is  expressed in the "semicolon" syntax,
-the latter in the "vertical space" syntax.
+Currently the `SLABEXPERIMENTS/` directory houses this work.

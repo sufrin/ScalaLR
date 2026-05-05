@@ -23,13 +23,12 @@ package stage1
 object main {
   def printHelp(): Unit = {
     val signature = {
-      "Stage 1"
+      import org.sufrin.scalalr.stage1.ScalaLR.DialectInformation._
+      s"$name: $notation ($scalalr)"
     }
     println(
       s"""$signature
-        |Usage: stage1 [--output=<outputpath> (default STAGE1OUTPUT) | -o <outputpath>] [ <file> ...]
-        |
-        |""".stripMargin
+        |Usage: stage1 [--output=<outputpath> (default STAGE1OUTPUT) | -o <outputpath>] [ <file> ...]cleandir""".stripMargin
     )
   }
   def main(args: Array[String]): Unit = {

@@ -5,7 +5,6 @@ object Scanner{
   import org.sufrin.utility.SourceTextCursor
   import org.sufrin.scalalr.SourceLocation
 
-  var enableNL = false
 
   def apply(chars: SourceTextCursor): Scanner = new Scanner(chars)
 
@@ -13,6 +12,7 @@ object Scanner{
   class Scanner(chars: SourceTextCursor) extends Iterator[Token] {
     def sourceLocation(): SourceLocation = SourceLocation(chars.lines,  chars.chars)
     @inline def hasChar: Boolean = chars.hasCurrent
+    @inline def atEnd: Boolean = !chars.hasCurrent
     @inline def theChar: Char = chars.current
     @inline def nextChar(): Unit = chars.next()
     @inline def afterNextChar(t: Token): Token = { nextChar(); t }
@@ -33,18 +33,19 @@ object Scanner{
       }
       //println("end comment")
       nextChar()
-      eatWhitespace()
-    }
-
-    def eatWhitespace(): Unit = {
-       while (hasChar && theChar.isWhitespace) nextChar()
     }
 
     def isBisonic(c: Char): Boolean = c.isLetterOrDigit || c=='.' || c=='_'
 
     def hasNext: Boolean = chars.hasCurrent
-    def next(): Token = if (hasChar) {
+    def next(): Token = if (atEnd) $end else {
+    val symb =
       chars.current match {
+        // NL at the start of a line is just a space
+        //case '\n' if chars.chars>0    =>
+        //         chars.current = ' '            // the subsequent next() skips this space without accounting
+        //         NL                             // NL once
+
         case '(' => afterNextChar(`(`)
         case ')' => afterNextChar(`)`)
         case '[' => afterNextChar(`[`)
@@ -53,6 +54,7 @@ object Scanner{
         case '=' => afterNextChar(`=`)
         case ',' => afterNextChar(`,`)
         case ':' => afterNextChar(`:`)
+        case ';' => afterNextChar(`;`)
         case '%' =>
           nextChar()
           val directive = chars.takeWhile(_.isLetterOrDigit).mkString("")
@@ -79,7 +81,6 @@ object Scanner{
               eatComment()
             case '/' =>
               chars.dropWhile( c=>c!='\n')
-              eatWhitespace()
             case other =>
               //Syntax.Parser.warn(s"Malformed comment sentinel: \"/$other\" at $sourceLocation")
               chars.dropWhile( c=>c!='\n')
@@ -95,26 +96,18 @@ object Scanner{
         case c if c.isLetter =>
           val prefix = chars.takeWhile(isBisonic)
           ID((prefix).mkString(""))
-
-         case ';' =>
-                   nextChar()
-                   eatWhitespace()
-                   if (enableNL) SEPARATOR else next()
-
         case c if c.isWhitespace =>
-          var vertical: Int =  0
-          while (hasChar && theChar.isWhitespace) {
-            if (theChar=='\n') vertical += 1
-            nextChar()
-          }
-          if (enableNL && vertical>1) SEPARATOR
-          else
+          while (hasChar && theChar.isWhitespace) nextChar()
           if (hasChar) next() else $end
         case other =>
           LEXICALERROR(s"Unrecognised $other (at ${sourceLocation()}")
       }
-    } else $end
+      //println(symb)
+      symb
+    }
   }
+
+
 
 
 trait Token extends org.sufrin.scalalr.Lexeme { val value: Any ; val symbol: Int } 
@@ -134,7 +127,7 @@ case object `}` extends Token { val value = (); val symbol = 15 }
 case object `(` extends Token { val value = (); val symbol = 16 }
 case object `)` extends Token { val value = (); val symbol = 17 }
 case object `,` extends Token { val value = (); val symbol = 18 }
-case object SEPARATOR extends Token { val value = (); val symbol = 19 }
+case object NL extends Token { val value = (); val symbol = 19 }
 case object `%path` extends Token { val value = (); val symbol = 20 }
 case object `%type` extends Token { val value = (); val symbol = 21 }
 case object `%empty` extends Token { val value = (); val symbol = 22 }
@@ -174,7 +167,7 @@ val symbolName: Map[Int, String] = collection.immutable.ListMap[Int, String](
 , 16 -> "("
 , 17 -> ")"
 , 18 -> ","
-, 19 -> "SEPARATOR"
+, 19 -> "NL"
 , 20 -> "%path"
 , 21 -> "%type"
 , 22 -> "%empty"
@@ -193,28 +186,26 @@ val symbolName: Map[Int, String] = collection.immutable.ListMap[Int, String](
 // GLOSSARY OF NONTERMINAL SYMBOL NAMES
 , 35 -> "$accept" 
 , 36 -> "Notation" 
-, 37 -> "RULES" 
-, 38 -> "OptNL" 
-, 39 -> "OptPath" 
-, 40 -> "OptInclude" 
-, 41 -> "OptDialects" 
-, 42 -> "Tokens" 
-, 43 -> "TokenSpec" 
-, 44 -> "TypedTerminals" 
-, 45 -> "TypedTerminal" 
-, 46 -> "Tables" 
-, 47 -> "Rules" 
-, 48 -> "Rule" 
-, 49 -> "OptBar" 
-, 50 -> "LHS" 
-, 51 -> "RHS" 
-, 52 -> "Production" 
-, 53 -> "NamedFields" 
-, 54 -> "NamedField" 
-, 55 -> "Action" 
-, 56 -> "Precedence" 
-, 57 -> "Type" 
-, 58 -> "Types" 
+, 37 -> "OptPath" 
+, 38 -> "OptInclude" 
+, 39 -> "OptDialects" 
+, 40 -> "Tokens" 
+, 41 -> "TokenSpec" 
+, 42 -> "TypedTerminals" 
+, 43 -> "TypedTerminal" 
+, 44 -> "Tables" 
+, 45 -> "Rules" 
+, 46 -> "Rule" 
+, 47 -> "OptSemicolon" 
+, 48 -> "LHS" 
+, 49 -> "RHS" 
+, 50 -> "Production" 
+, 51 -> "NamedFields" 
+, 52 -> "NamedField" 
+, 53 -> "Action" 
+, 54 -> "Precedence" 
+, 55 -> "Type" 
+, 56 -> "Types" 
 )
 
 }

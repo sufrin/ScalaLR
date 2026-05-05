@@ -1,7 +1,7 @@
 
 // notation ScalaLR
 %define lr.type lalr
-%token ID NUM CODE COMMENT LEXICALERROR TOK-8 TOK-9 TOK-10 TOK-11 TOK-12 TOK-13 TOK-14 TOK-15 TOK-16 TOK-17 TOK-18 SEPARATOR TOK-20 TOK-21 TOK-22 TOK-23 TOK-24 TOK-25 TOK-26 TOK-27 TOK-28 TOK-29 TOK-30 TOK-31 TOK-32 TOK-33 TOK-34
+%token ID NUM CODE COMMENT LEXICALERROR TOK-8 TOK-9 TOK-10 TOK-11 TOK-12 TOK-13 TOK-14 TOK-15 TOK-16 TOK-17 TOK-18 NL TOK-20 TOK-21 TOK-22 TOK-23 TOK-24 TOK-25 TOK-26 TOK-27 TOK-28 TOK-29 TOK-30 TOK-31 TOK-32 TOK-33 TOK-34
 // Special symbols
 // "[" TOK-8
 // "]" TOK-9
@@ -30,10 +30,7 @@
 // "%dialect" TOK-33
 // "%scalalr" TOK-34
 %%
-Notation:  TOK-23 ID TOK-24 ID OptPath OptDialects Tables OptInclude Tokens RULES OptInclude SEPARATOR Rules OptNL;
-RULES:  TOK-29;
-OptNL: ;
-OptNL:  SEPARATOR;
+Notation:  TOK-23 ID TOK-24 ID OptPath OptDialects Tables OptInclude Tokens TOK-29 OptInclude Rules OptSemicolon;
 OptPath: ;
 OptPath:  TOK-20 ID;
 OptInclude: ;
@@ -55,10 +52,10 @@ TypedTerminal:  ID;
 Tables: ;
 Tables:  TOK-32 ID;
 Rules:  Rule;
-Rules:  Rules SEPARATOR Rule;
-Rule:  LHS TOK-11 OptBar RHS;
-OptBar:  TOK-12;
-OptBar: ;
+Rules:  Rules TOK-10 Rule;
+Rule:  LHS TOK-11 RHS;
+OptSemicolon: ;
+OptSemicolon:  TOK-10;
 LHS:  ID TOK-13 Type;
 LHS:  ID;
 RHS:  Production;

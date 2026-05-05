@@ -3,7 +3,7 @@ package small.Small
 object Tables {
 val GOTOTABLE: Int => Int => Int = {
   case 0 => { case 7 => 2;  case 8 => 3;  }
-  case _ => { case _ => throw new Throwable("BAD GOTO")}
+  case state => { case symbol => throw org.sufrin.scalalr.ErroneousGoto(state, symbol)}
   }
 
 import org.sufrin.scalalr.Action._

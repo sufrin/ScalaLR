@@ -66,14 +66,14 @@ or as *IELR* tables.
 ````
 exprs: (List[Expr]) = expr            { List($expr) }                   // §3, §4
                   |   exprs `;` expr  { $expr::$exprs }                 // §4
-                  ;
+                  
 
 expr: Expr = ID                  { Id($ID, $START) }                    // §4, 
            | l:expr `*` r:expr   { Binop("*", $l, $r, $START) }
            | l:expr `+` r:expr   { Binop("+", $l, $r, $START) }
            | "(" expr ")"        { Bra($expr, $START) }                 //§5
            | `[` expr `]`        { $expr }
-           ;
+           
 ````
 
 
@@ -93,6 +93,9 @@ expr: Expr = ID                  { Id($ID, $START) }                    // §4,
    or backticks are treated identically during code generation: they need not be declared
    in a `%token` section.
 
+6. %rules are (these days) separated by visible vertical space, or by semicolons followed by
+any amount of empty space.
+
 The generated target language code can easily be incorporated into a production Scala
 program. Here's a test of the earlier example that uses the `Pull` automaton.
 ```scala
@@ -107,9 +110,11 @@ object runexpr {
   def main(args: Array[String]): Unit = {
     val source = """a; a+b; a*b+c*d*(e+f)*[g+h]; p+q*r"""
     val scanner = Scanner(SourceTextCursor(source))
-     
+
+    def next(): Token = if (scanner.hasNext) scanner.next() else $end
+
     val parser = LRParser.Pull[Token](Components)(scanner.sourceLocation)
-    parser.run(scanner.next()).prettyPrint()
+    parser.run(next).prettyPrint()
   }
 }
 
@@ -117,7 +122,7 @@ object runexpr {
 
 Documentation is evolving but for the moment it should be sufficient for a knowledgeable 
 reader to inspect the source texts of the notation specifications and driver programs
-to be found within directories nested with `examples`.
+to be found within directories nested within `examples`.
 
 ## Implementations
 
@@ -129,31 +134,51 @@ the source notation, and to do any necessary detailed diagnostics on the
 grammar. 
 
 ### Production-quality Implementations
-There are (now: late April 2026) two stable production quality implementations of the
+There are (now: early May 2026) several stable production quality implementations of the
 program, bootstrapped from an original handwritten parser and
 a simple code generator.
 
 1. The `scalalrboot` program uses the original bootstrap handwritten parser and
-   the original bootstrap code generator. 
+   the original bootstrap code generator. Guess why we called it
+   `scalalrboot`...
 
 ````bash
       Usage: scalalrboot [--output=<outputpath>] [ <file> ...]
 ````
 
-2. The `scalalrstage1` program is described in the `Bootstrapping.md`
-documentation. It accepts the "forgiving" notation, and
-code generation uses the bootstrap generator, translating:
-      
-      forgiving-notation AST => bootstrap AST => scala
+2. The `scalalrstage1` program  has a notation-descripion language that is  lot like
+   the bootstrap generator.
+````bash  
+  Usage: stage1 [--output=<outputpath> (default STAGE1OUTPUT) | -o <outputpath>] [ <file> ...]
+```` 
 
-````bash
-    Usage: stage1 [--output=<outputpath> (default STAGE1OUTPUT) | -o <outputpath>] [ <file> ...]
+2. The `scalalrstage2` program  has a very forgiving notation-descripion language, and many more 
+options than its predecessor. More importantly it generates fairly good error diagnostics: both
+when something is wrong with the notation description it is working on, and also when the 
+grammar rules give rise to LR parsing conflicts. 
+````bash  
+      Usage: scalalrstage2 OPTION ... PATH ...
+      Treat (each) PATH as the  path in the filestore to scalalr SOURCE  and generate the
+      scala files corresponding to the %notation it defines.
+      
+      Place the generated files under the directory named by OUTPUTPATH
+      catenated with the %path (if any) declared in the scalalr source.
+      The default OUTPUTPATH is "./generated".
+      
+      OPTIONS:
+      -pp        prettyprint only
+      -log       log the input source parse
+      -html      output grammar report in html form
+      -c         generate detailed conflict report
+      
+      LOGGING OPTIONS
+      -Lsym      inventory the symbols
 ```` 
 
 
 ### Generated files
 
-When all is well, a generator produces several components (in distinct files)
+When all is well, the generator produces several components (in distinct files)
 from each parser specification; these appear in  the directory corresponding to `%path` specification, and are
 named:
 
@@ -171,12 +196,15 @@ named:
 4. **Components.scala** defines a structure that incorporates the semantics of the
    Tables and Reduction files.
 
-These files are generated in three phases:
+These files are generated in four phases:
+
+0. The generator performs a superficial sanity check on the notation description, and
+   informs of any obvious problems. If this is successful...
 
 1. The generator produces a plain Bison grammar `.y` file
-   in which all grammar tokens enclosed in quotes have been transformed to straightforward
-   Bison names of the  form **TOK**-*nn* in order to avoid confusing Bison.
-   Under normal circumstances one need not inspect the `.y` file, and the
+   in which all grammar symbols (terminal and nonterminal) have been transformed to straightforward
+   Bison names of the  form **TOK**-*ddd* in order to avoid confusing Bison.
+   Under normal circumstances one need not inspect the `.y` file, and symbols in the
    diagnostic/report files are expressed as they were in the Scalalr source.
 
 2. Bison is run to generate the LR parse tables as well as report and
@@ -194,24 +222,14 @@ These files are generated in three phases:
    its **Tables** and **Reduction** files.
 
 
-## Experimental Implementations
+## Improvements since the Bootstrap
 Experience with using earlier versions of scalalr
 demonstrated a rather high incidence of noisy errors with a single
-trivial cause: the omission of just one semicolon
-between rule definitions that was required by the earlier host notation.
-This has been corrected -- both in the
-bootstrap (handwritten) parser and the (forgiving)
-stage1 parser.
+trivial cause: the accidental omission of  semicolons
+between rule definitions.
 
-The latter is the first in the entire sequence
-that is self-hosting: in the sense that its input language can
-be described *in* its input language, and parsed by a parser whose
-parsing components it generated itself.
-
-The most recent *experimental* implmentations of the program can be
-found in the **stage2** module and the `SLABEXPERIMENTS/` directory.
-Our main target is to provide a completely new
-code generator with better error diagnostics.
+This has been corrected in later versions of the  host notation 
+and has been retrofitted to the bootstrap and stage1 processors.
 
 ## Further Reading 
 1. The best-documented simple examples of programs that 
@@ -236,7 +254,7 @@ generates a log (as well as the expected generated files) in
 
 ## Gotchas
 1. **Error recovery** is not yet properly implemented. 
-The `Pull` automaton reports the first syntax error and bails by throwing anexception. 
+The `Pull` automaton reports the first syntax error and bails by throwing an exception. 
 The `Push` automaton does likewise if there
 is no `error`-handling state available (see Bison documentation for an explanation of 
 the `error` virtual token), and the "recovery" that otherwise results 
@@ -246,10 +264,7 @@ For an example, see `runtinyfun`.
 
 3. **Trivial typos** are problematic. Experience with using the languages early in the bootstrap sequence
 demonstrated the high incidence of errors caused by the omission of
-semicolons between rules. This has been corrected in the **slab** 
-notation and is implemented right now in the **slab** processor; and in
-the **slabslab** processor, the first in the entire sequence that is
-self-hosting.
+semicolons between rules. This has been corrected.
 
 4. **Scala code quotations** such as appear in `%include` passages and as 
 production result expressions need a little care. The normal form of a code 
@@ -257,13 +272,17 @@ quotation is a passage that opens with `{`, has  properly-nested occurences of
 `{` and `}` within it and ends with a closing `}` that matches 
 the opening. **But** if an unmatched brace appears (for example in a character or string 
 quote or in a comment) it can upset balance and lead to an incorrect anlysis.
-   2. **Happily** almost all the potential
+   1. **Happily** almost all the potential
    pain is avoidable if code `%import`sections simply consist of scala `include`
    directives, and if  production result code doesn't quote braces.
    
-   3. One solution is to use the alternative braces
+   2. One solution is to use the alternative "guiullemot" braces
      «» to quote code. 
    
+   3. As it happens *Bison/Yacc themselves have analogous (not identical) lexical requirements for
+      code inserts.* The only clean solution to this kind of thing is to build a parser for the
+      target language of the generator within the generator. 
+
    4. A *last resort* (and fragile) solution, "forcibly" balancing the 
      quotation, is exemplified by the following
      extract from a code quotation defining the scanner for the Scalalr 
@@ -278,8 +297,7 @@ quote or in a comment) it can upset balance and lead to an incorrect anlysis.
            afterNextChar(CODE(chars.takeNested('«', '»')  .mkString("")))
  ````
 
-4. **NB:** *Bison/Yacc themselves have analogous balance requirements for 
-code inserts.* 
+4. 
 
    
 ## Roadmap
@@ -291,31 +309,57 @@ here in no particular order.
 2. System to be self-hosting: ie using a scalalr-derived parser rather
    than the present hand-coded recursive descent parser. [DONE]
 
-3. Higher-level constructs such as %list, %option to express complex 
+3. Higher-level constructs to express simplify 
    grammar expressions that would normally have to be "hand-coded" such as:
 ````     
-      exprlist: List[Expr]  = exprlistr { $exprlistr.reverse }
-      exprlistr: List[Expr] = 
-                expr { List($expr) } | exprlist1 ',' expr  { $expr :: $exprlistr }
-      exprlist: List[Expr] = 
-                expr { List($expr) } | expr ',' exprlist  { $expr :: $exprlist }
+      exprlist:    List[Expr]  = exprlistREV { $exprlistREV.reverse }
+      
+      exprlistREV: List[Expr] = 
+                   expr { List($expr) } | exprlistREV ',' expr  { $expr :: $exprlistREV }
+                   
+      exprlistPLUS: List[Expr] = 
+                    expr exprlist { $expr :: $exprlist }
+      
       optexpr: Option[Expr] = 
-            { None } | expr { Some($expr) }
+                %empty { None } | expr { Some($expr) }
 ````
 These could be expressed more concisely in-situ, for example:
 ````          
-      ID '(' exprlist: (%revlist expr ',') ')' { Apply($ID, $exprlist) }  
-      ID '(' exprlist: (%list    expr ',') ')' { Apply($ID, $exprlist) }
-      RETURN optexpr: (%option expr) ';'       { Return($optexpr) }
+      ID '(' exprlist: (expr ',')* ')' { Apply($ID, $exprlist) }  
+      ID '(' exprlist: (expr ',')+ ')' { Apply($ID, $exprlist) }
+      RETURN optexpr:  (expr)? ';'     { Return($optexpr) }
 ````
 
-4. Build a new code generation module. This
-should be straightforward, and we expect to improve drastically 
-on the structure, and functionality of the existing generator as we now
-have a parser derived from a definitive grammar and abstract syntax.
-
-The published code will reflect current partial progress towards 
-them when appropriate.
+4. Additional higher level constructs that support "say it once"
+specification of notation and abstract syntax, as well as
+less "fragile" expressions of the AST results ofproduction. We have in mind
+doing this in two stages. The first exploits the fact that scala methods
+can be called with "keyword" parameters. Suppose our expression
+abstract syntax has been simplified:
+```scala
+      trait Expr
+       case class Id(name: String) extends Expr
+       case class Binop(op: String, l: Expr, r: Expr) extends Expr
+       case class Bra(expr: Expr)   extends Expr
+```
+then a concise way of expressing the productions would be
+````
+expr: Expr = name: ID              -> Id               
+           | l:expr op: `*` r:expr -> Binop
+           | l:expr op: `+` r:expr -> Binop 
+           | "(" expr ")"          -> Bra      
+           | `[` expr `]`          { $expr }
+           ;
+````
+and the generator could  turn this, mechanically, into
+````
+expr: Expr = name: ID              {Id(name=$name)}               
+           | l:expr op: `*` r:expr {Binop(l=$l, op=$op, r=$r) }
+           | l:expr op: `+` r:expr {Binop(l=$l, op=$op, r=$r) }
+           | "(" expr ")"          {Bra(expr=$expr)}      
+           | `[` expr `]`          { $expr }
+           ;
+````
 
 ## Working Assumption
 **ScalaLR** was designed on the assumption the components it generates will
@@ -331,6 +375,6 @@ run for its side effects and yielding `Unit` -- though this may not be common.*
    it can **still** be  used in a near production environment is testimony to 
    my cunning, but I couldn't possibly comment! 
 
-BS: April 29th, 2026
+BS: April 29th, May 13th 2026
 
 

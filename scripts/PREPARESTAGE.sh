@@ -25,7 +25,7 @@ then
    if [ "$sync" = "" ] && scala-cli --power package $SCALA -o stage$STAGE --assembly -f
    then
         read -p "Install the binary stage$STAGE in $ROOT/scripts? [ENTER for yes]" sync
-        [ "$sync" = "" ] && cp stage$STAGE $ROOT/scripts/scalalr$STAGE
+        [ "$sync" = "" ] && cp stage$STAGE $ROOT/scripts/scalalrstage$STAGE
    fi
   fi
 fi

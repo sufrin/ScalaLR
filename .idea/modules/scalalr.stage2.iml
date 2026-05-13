@@ -6,6 +6,7 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../stage2">
       <sourceFolder url="file://$MODULE_DIR$/../../stage2/src/main/scala" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../stage2/src/test/scala" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/../../stage2/target" />
     </content>
     <orderEntry type="inheritedJdk" />

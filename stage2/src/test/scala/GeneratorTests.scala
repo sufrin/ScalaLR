@@ -20,10 +20,6 @@ object test1 extends Test("")(
     |%package   scalalr.stage2test
     |%path      "parser"
     |
-    |
-    |%include { This is the inclusion }
-    |
-    |
     |%rules
     |Rule1: Unit = S1 S2 S3 { Code };
     |Rule2: Unit = a: S4 b: S5 { () }
@@ -33,25 +29,34 @@ object test1 extends Test("")(
 
 object test2 extends Test("-pp -Lsym")(
   """
-    |
     |%tables    ielr
     |%notation  stage2test
     |%package   scalalr.stage2test
     |%path      "parser"
-    |
-    |
     |%include { This is the inclusion }
-    |
-    |
     |%rules
-    |
     |Rule1: Unit = S1 S2 S3 { Code }
     |
     |Rule2: Unit = a: S4 b: S5 { () }
     |
     |""".stripMargin)
 
-object test3 extends Test()(
+object test2a extends Test("-pp -Lsym")(
+  """// test2
+    |//  prologue lines in different order
+    |//  rules separated by a semicolon
+    |%include { This is the inclusion }
+    |%tables    ielr
+    |%notation  stage2test
+    |%package   scalalr.stage2test
+    |%path      "parser"
+    |%rules
+    |Rule1: Unit = S1 S2 S3 { Code };Rule2: Unit = a: S4 b: S5 { () };
+    |
+    |""".stripMargin)
+
+
+object test3 extends Test("-Lsym")(
   """
     |
     |%tables    ielr
@@ -62,6 +67,8 @@ object test3 extends Test()(
     |
     |%include { This is the inclusion }
     |
+    |%token S1 S2 S3
+    |%left 'a' 'b'
     |
     |%rules
     |

@@ -6,7 +6,9 @@ import org.sufrin.SourceLocation._
 import org.sufrin.utility._
 
 /**
- * An App subclass to support simple tests.
+ * An App subclass to support simple scalalr tests.
+ *
+ * @see GeneratorTests
  *
  * @param counterExamples generate detailed report on conflicts
  * @param html    generate grammar report as html as well as text

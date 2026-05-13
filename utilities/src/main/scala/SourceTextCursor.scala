@@ -10,6 +10,11 @@ class SourceTextCursor(iterator: Iterator[Char]) extends Cursor[Char] {
   private var _chars = 0
   private var _lastChar: Char = 0 // Dummy
 
+  def withStartLine(atLine: Int): this.type = {
+    _lines = atLine+1
+    this
+  }
+
   /** `(lines, chars)` are the coordinates of `current`  */
   def chars: Int = _chars
   /** `(lines, chars)` are the coordinates of `current`  */

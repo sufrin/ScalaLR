@@ -3,21 +3,23 @@
 ROOT=../..
 PATH=$ROOT/scripts:$PATH
 
-echo Generating parser components with both bootstrap and flab
+echo Generating parser components 
 
-scalalrgen -boot --output=generated-boot expr.scalalr
+scalalrboot   --output=generated-boot expr.scalalr
 
-scalalrgen -flab --output=generated-flab expr.scalalr
+scalalrstage1 --output=generated-stage1 expr.scalalr
 
-echo The differences should only be in .html, .xml, and in the times of origin
+scalalrstage2 -html --output=generated-stage2 expr.scalalr
 
-diff -r -b generated-*
+echo  THESE DIFFS SHOULD BE NEGLIGIBLE
 
-scala-cli run runexpr.scala generated-boot > runboot.log
+diff -r -b generated-{boot,stage1}
 
-scala-cli run runexpr.scala generated-flab > runflab.log
+scala-cli run runexpr.scala generated-boot   > runboot.log
+scala-cli run runexpr.scala generated-stage1 > runstage1.log
+scala-cli run runexpr.scala generated-stage2 > runstage2.log
 
-if ( diff -b *log )
+if ( diff3 *log )
 then
   echo "No differences in the logs"
 else

@@ -60,19 +60,6 @@ object runexpr  {
       parser.run(scanner.next).prettyPrint()
     }
 
-    if (true) {
-      println("-------PARSETREE TRACE OF REDUCTIONS-------")
-      println("(Using the synthesised Reduction.parsetreereduction to trace reductions)")
-      val scanner = Scanner(SourceTextCursor(moreSource))
-
-      import Components._
-      import expr.Expr.Reduction
-      
-      val parser = new LRParser.Pull[Token](action, goto, Reduction.parsetreereduction, symbolName, scanner.sourceLocation)
-      parser.logState = false
-      parser.run(scanner.next).prettyPrint()
-    }
-
   }
 }
 

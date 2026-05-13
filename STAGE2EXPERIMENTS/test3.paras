@@ -15,3 +15,5 @@
 Rule1: Unit = S1 S2 S3 { Code }
 
 Rule2: Unit = a: S4 b: S5 { () }
+
+/* Tail comment */

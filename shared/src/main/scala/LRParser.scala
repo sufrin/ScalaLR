@@ -104,7 +104,7 @@ object LRParser {
         val sts = states.toSeq.map(_.toString).mkString ("States:  ", ", ", "")
         val vls = values.toSeq.map(_.toString).mkString ("Values:  ", ", ", "")
         val lox = locations.toSeq.map(_.toString).mkString ("Locations:  ", ", ", "")
-        s"$sts\n$sys\n$vls"
+        s"$sts\n$sys\n$vls\n$lox"
     }
   }
 
@@ -156,8 +156,9 @@ object LRParser {
             parseState = ACCEPTED(values(1))
           case ERROR =>
             println(s"Syntax error: ${sourceLocation()}")
-            throw new Error (diagnosis(input, currentState))
-            parseState = ERRONEOUS(diagnosis(input, currentState))
+            if (logState) parseState = ERRONEOUS(diagnosis(input, currentState))
+            else throw new Error (diagnosis(input, currentState))
+
 
           case REDUCE(lhsSymbol, production, size) =>
             var reduced: List[Any] = Nil
@@ -250,7 +251,6 @@ object LRParser {
         var currentState = states.top
         var act = action(currentState)(input.symbol)
         stepUnfinished = false
-        if (logState) Console.println(s"$currentState: «$input» $act")
         act match {
           case _: GOTO => //TODO: Not really an action
           case SHIFT(newState) =>
@@ -267,22 +267,24 @@ object LRParser {
               states.push(newState)
               symbols.push(errorSymbol)
               values.push(None)
+              locations.push(location)
               println(s"error SHIFT($newState)")
               parseState = NEXTSTEP
             } else  {
-              println(s"Syntax error: ${sourceLocation()}")
-              throw new Error (diagnosis(input, currentState))
+              if (logState) parseState = ERRONEOUS(diagnosis(input, currentState))
+              else throw new Error (diagnosis(input, currentState))
             }
 
           case REDUCE(lhsSymbol, production, size) =>
             var reduced: List[Any] = Nil
             var left, right: SourceLocation = location
             // pop the top "frame"
-            for {i <- 1 to size} {
+            for {i <- 1 to size} if (states.nonEmpty) {
               states.pop()
               symbols.pop()
               reduced = values.pop() :: reduced
-              left = locations.pop()
+              if (locations.nonEmpty)
+                 left = locations.pop()
             }
             // calculate the reduced "frame"
             val result = reduction(left, right, production)(reduced)
@@ -295,6 +297,7 @@ object LRParser {
             states.push(newState)
             stepUnfinished = true
         }
+        if (logState) Console.println(s"$currentState: «$input» $act")
       }
       parseState
     }

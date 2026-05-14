@@ -45,6 +45,7 @@ object Scanner{
               val prefix = chars.takeWhile(_.isLetterOrDigit)
               prefix.mkString("") match {
                 case "quit" => QUIT
+                case "log"  => LOG
                 case other  => ID(other)
               }
 
@@ -77,16 +78,17 @@ case object `,` extends Token { val value = (); val symbol = 9 }
 case class LEXICALERROR(value: String) extends Token { val symbol = 10 }
 case object NL extends Token { val value = (); val symbol = 11 }
 case object QUIT extends Token { val value = (); val symbol = 12 }
-case object `=` extends Token { val value = (); val symbol = 13 }
-case object `+` extends Token { val value = (); val symbol = 14 }
-case object `-` extends Token { val value = (); val symbol = 15 }
-case object `*` extends Token { val value = (); val symbol = 16 }
-case object `/` extends Token { val value = (); val symbol = 17 }
-case object `^` extends Token { val value = (); val symbol = 18 }
+case object LOG extends Token { val value = (); val symbol = 13 }
+case object `=` extends Token { val value = (); val symbol = 14 }
+case object `+` extends Token { val value = (); val symbol = 15 }
+case object `-` extends Token { val value = (); val symbol = 16 }
+case object `*` extends Token { val value = (); val symbol = 17 }
+case object `/` extends Token { val value = (); val symbol = 18 }
+case object `^` extends Token { val value = (); val symbol = 19 }
 // MAP SYMBOL NUMBERS TO NAMES
 val symbolName: collection.immutable.Map[Int, String] = {
      import org.sufrin.utility.ArrayMap
-    val arr = new Array[String](24)
+    val arr = new Array[String](25)
          locally {
           arr(0) = "$end"
           arr(1) = "error"
@@ -101,17 +103,18 @@ val symbolName: collection.immutable.Map[Int, String] = {
           arr(10) = "LEXICALERROR"
           arr(11) = "NL"
           arr(12) = "QUIT"
-          arr(13) = "`=`"
-          arr(14) = "`+`"
-          arr(15) = "`-`"
-          arr(16) = "`*`"
-          arr(17) = "`/`"
-          arr(18) = "`^`"
-          arr(19) = "$accept"
-          arr(20) = "loop"
-          arr(21) = "command"
-          arr(22) = "expr"
-          arr(23) = "exprs"
+          arr(13) = "LOG"
+          arr(14) = "`=`"
+          arr(15) = "`+`"
+          arr(16) = "`-`"
+          arr(17) = "`*`"
+          arr(18) = "`/`"
+          arr(19) = "`^`"
+          arr(20) = "$accept"
+          arr(21) = "loop"
+          arr(22) = "command"
+          arr(23) = "expr"
+          arr(24) = "exprs"
          } // locally
          ArrayMap(arr)
      }

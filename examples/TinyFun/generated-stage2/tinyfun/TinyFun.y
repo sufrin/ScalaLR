@@ -13,33 +13,36 @@
 // T-010	LEXICALERROR 
 // T-011	NL 
 // T-012	QUIT 
-// T-013	`=` 
-// T-014	`+` 
-// T-015	`-` 
-// T-016	`*` 
-// T-017	`/` 
-// T-018	`^` 
-%token T-003 T-004 T-005 T-006 T-007 T-008 T-009 T-010 T-011 T-012
-%right T-013
-%left T-014 T-015
-%left T-016 T-017
-%right T-018
+// T-013	LOG 
+// T-014	`=` 
+// T-015	`+` 
+// T-016	`-` 
+// T-017	`*` 
+// T-018	`/` 
+// T-019	`^` 
+%token T-003 T-004 T-005 T-006 T-007 T-008 T-009 T-010 T-011 T-012 T-013
+%right T-014
+%left T-015 T-016
+%left T-017 T-018
+%right T-019
 %%
-T-020:  // loop = 
-T-020: T-020 T-021 T-011 // loop = loop command NL
-T-020: T-020 error T-011 // loop = loop error NL
-T-021: T-023 // command = exprs
-T-021: T-012 // command = QUIT
-T-021:  // command = 
-T-022: T-004 // expr = ID
-T-022: T-003 // expr = NUM
-T-022: T-004 T-013 T-022 // expr = ID `=` expr
-T-022: T-022 T-018 T-022 // expr = l: expr `^` r: expr
-T-022: T-022 T-016 T-022 // expr = l: expr `*` r: expr
-T-022: T-022 T-014 T-022 // expr = l: expr `+` r: expr
-T-022: T-022 T-017 T-022 // expr = l: expr `/` r: expr
-T-022: T-022 T-015 T-022 // expr = l: expr `-` r: expr
-T-022: T-005 T-022 T-006 // expr = `(` expr `)`
-T-022: T-004 T-005 T-023 T-006 // expr = ID `(` exprs `)`
-T-023: T-022 // exprs = expr
-T-023: T-023 T-009 T-022 // exprs = exprs `,` expr
+T-021:  // loop = 
+T-021: T-021 T-022 T-011 // loop = loop command NL
+T-021: T-021 error T-011 // loop = loop error NL
+T-022: T-024 // command = exprs
+T-022: T-012 // command = QUIT
+T-022: T-013 // command = LOG
+T-022:  // command = 
+T-023: T-004 // expr = ID
+T-023: T-003 // expr = NUM
+T-023: T-004 T-014 T-023 // expr = ID `=` expr
+T-023: T-023 T-019 T-023 // expr = l: expr `^` r: expr
+T-023: T-023 T-017 T-023 // expr = l: expr `*` r: expr
+T-023: T-023 T-015 T-023 // expr = l: expr `+` r: expr
+T-023: T-023 T-018 T-023 // expr = l: expr `/` r: expr
+T-023: T-023 T-016 T-023 // expr = l: expr `-` r: expr
+T-023: T-005 T-023 T-006 // expr = `(` expr `)`
+T-023: T-005 error T-006 // expr = `(` error `)`
+T-023: T-004 T-005 T-024 T-006 // expr = ID `(` exprs `)`
+T-024: T-023 // exprs = expr
+T-024: T-024 T-009 T-023 // exprs = exprs `,` expr

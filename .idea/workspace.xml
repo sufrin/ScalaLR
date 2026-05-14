@@ -212,6 +212,7 @@
       <path value="$PROJECT_DIR$/Prepare-Stage1/ROOT" />
       <path value="$PROJECT_DIR$/Prepare-Stage2/ROOT" />
       <path value="$PROJECT_DIR$/examples/TinyFun/ROOT" />
+      <path value="$PROJECT_DIR$" />
     </ignored-roots>
   </component>
   <component name="XDebuggerManager">

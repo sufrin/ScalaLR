@@ -46,6 +46,7 @@
               val prefix = chars.takeWhile(_.isLetterOrDigit)
               prefix.mkString("") match {
                 case "quit" => QUIT
+                case "log"  => LOG
                 case other  => ID(other)
               }
 
@@ -65,7 +66,7 @@
     }
 }
 
-%token NUM(String) ID(String)  `(` `)` `[` `]` `,` LEXICALERROR(String) NL QUIT
+%token NUM(String) ID(String)  `(` `)` `[` `]` `,` LEXICALERROR(String) NL QUIT LOG
 %right `=`
 %left `+` `-`
 %left `*` `/`
@@ -92,11 +93,14 @@
 
 loop: Unit =
           %empty          { () }
-        | loop command NL { () }
-        | loop error NL { () }
+        | loop command NL { print("> "); System.out.flush() }
+        | loop error NL   { () }
         ;
 
-command: Unit = exprs { run($exprs.toList) } | QUIT { System.exit(0) } | %empty { System.exit(0) };
+command: Unit = exprs  { run($exprs.toList) }
+              | QUIT   { System.exit(0) }
+              | LOG    { }
+              | %empty { System.exit(0) };
 
 
 expr: Expr =
@@ -109,6 +113,7 @@ expr: Expr =
         | l:expr `/` r:expr   { Binop("/", $l, $r, $START) }
         | l:expr `-` r:expr   { Binop("-", $l, $r, $START) }
         | "(" expr ")"        { $expr }
+        | "(" error ")"       { Num(1.0/0.0, $START) }
         | ID `(` exprs `)`    { Apply($ID, $exprs.toList, $START) }
         ;
 

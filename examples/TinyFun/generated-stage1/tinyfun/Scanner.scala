@@ -44,6 +44,7 @@ object Scanner{
               val prefix = chars.takeWhile(_.isLetterOrDigit)
               prefix.mkString("") match {
                 case "quit" => QUIT
+                case "log"  => LOG
                 case other  => ID(other)
               }
 
@@ -73,12 +74,13 @@ case object `,` extends Token { val value = (); val symbol = 9 }
 case class LEXICALERROR(value: String) extends Token { val symbol = 10 }
 case object NL extends Token { val value = (); val symbol = 11 }
 case object QUIT extends Token { val value = (); val symbol = 12 }
-case object `=` extends Token { val value = (); val symbol = 13 }
-case object `+` extends Token { val value = (); val symbol = 14 }
-case object `-` extends Token { val value = (); val symbol = 15 }
-case object `*` extends Token { val value = (); val symbol = 16 }
-case object `/` extends Token { val value = (); val symbol = 17 }
-case object `^` extends Token { val value = (); val symbol = 18 }
+case object LOG extends Token { val value = (); val symbol = 13 }
+case object `=` extends Token { val value = (); val symbol = 14 }
+case object `+` extends Token { val value = (); val symbol = 15 }
+case object `-` extends Token { val value = (); val symbol = 16 }
+case object `*` extends Token { val value = (); val symbol = 17 }
+case object `/` extends Token { val value = (); val symbol = 18 }
+case object `^` extends Token { val value = (); val symbol = 19 }
 case object $end extends Token { val value = (); val symbol = 0 }
 case object error extends Token { val value = (); val symbol = 1 }
 case object UNDEF extends Token { val value = (); val symbol = 2 }
@@ -97,18 +99,19 @@ val symbolName: Map[Int, String] = collection.immutable.ListMap[Int, String](
 , 10 -> "LEXICALERROR"
 , 11 -> "NL"
 , 12 -> "QUIT"
-, 13 -> "="
-, 14 -> "+"
-, 15 -> "-"
-, 16 -> "*"
-, 17 -> "/"
-, 18 -> "^"
+, 13 -> "LOG"
+, 14 -> "="
+, 15 -> "+"
+, 16 -> "-"
+, 17 -> "*"
+, 18 -> "/"
+, 19 -> "^"
 // GLOSSARY OF NONTERMINAL SYMBOL NAMES
-, 19 -> "$accept" 
-, 20 -> "loop" 
-, 21 -> "command" 
-, 22 -> "expr" 
-, 23 -> "exprs" 
+, 20 -> "$accept" 
+, 21 -> "loop" 
+, 22 -> "command" 
+, 23 -> "expr" 
+, 24 -> "exprs" 
 )
 
 }

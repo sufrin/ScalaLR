@@ -94,7 +94,7 @@ object Generator extends org.sufrin.logging.SourceLoggable {
 
     def sanityCheck(): Boolean = {
       def fatal(message: String): Unit = {
-        warning(s"$message (*)")
+        warning(s"(*) $message")
         fatalErrors += 1
       }
 
@@ -111,7 +111,7 @@ object Generator extends org.sufrin.logging.SourceLoggable {
       val ambiguousSymbols = declaredTerminalNames.intersect(declaredNonterminalNames).distinct
 
 
-      for  { symbol <- usedSymbolNames    if !ALLDECLARED.contains(symbol)} fatal(s"Undeclared $symbol")
+      for  { symbol <- usedSymbolNames if !ALLDECLARED.contains(symbol)} fatal(s"Undeclared ${symbol.toFullString}")
       for  {symbol <- ALLDECLARED if ambiguousSymbols.contains(symbol)}    warning(s"Ambiguously defined $symbol")
 
       if (logGeneration contains "sym") {
@@ -626,7 +626,7 @@ object Generator extends org.sufrin.logging.SourceLoggable {
     if (pretty) notation.prettyPrint()
     val symbolTables = new SymbolTables(notation)
     val generator    = new CodeGenerator(notation, symbolTables)
-    if (symbolTables.sanityCheck()) generator.generateScalaFiles() else println(s"${symbolTables.fatalErrors}(*) stopped code generation")
+    if (symbolTables.sanityCheck()) generator.generateScalaFiles() else println(s"${symbolTables.fatalErrors} (*) warnings -- no code generation")
   }
 
   def processScalaLR(cursor: SourceTextCursor): Unit = {
@@ -652,6 +652,7 @@ object Generator extends org.sufrin.logging.SourceLoggable {
       arg
     }
     var startLineNumber = 1
+    var startColNumber = 0
 
     while (arguments.nonEmpty) {
       val arg = nextArgument()
@@ -659,8 +660,9 @@ object Generator extends org.sufrin.logging.SourceLoggable {
       else if (arg.startsWith("--output=")) prefix = arg.replace("--output=", "")
       else if (arg == "-p" && arguments.nonEmpty) prefix = nextArgument()
       else if (arg == "-o" && arguments.nonEmpty) prefix = nextArgument()
-      else if (arg == "-#" && arguments.nonEmpty) startLineNumber = nextArgument().toInt
-      else if (arg == "-s" && arguments.nonEmpty) processScalaLR(SourceTextCursor(nextArgument().iterator).withStartLine(startLineNumber))
+      else if (arg == "-#" && arguments.nonEmpty)  { startLineNumber = nextArgument().toInt }
+      else if (arg == "-##" && arguments.nonEmpty) { startColNumber = nextArgument().toInt }
+      else if (arg == "-s" && arguments.nonEmpty) processScalaLR(SourceTextCursor(nextArgument().iterator).withStartLocation(startLineNumber, startColNumber))
       else if (arg == "-log")               logParse = true
       else if (arg.startsWith("-L"))        logGeneration ::= arg.replace("-L", "")
       else if (arg == "-pp")                pretty = true
@@ -692,7 +694,8 @@ object Generator extends org.sufrin.logging.SourceLoggable {
             |--prefix=OUTPUTPATH
             |
             |LITERAL SOURCE (reserved for programmatic testing) a notation may be defined directly in an argument
-            |-#         INT     first SOURCE line numbered
+            |-#         INT     first SOURCE line number
+            |-##        INT     first SOURCE column number
             |-s         SOURCE
             |""".stripMargin)
         System.exit(0)

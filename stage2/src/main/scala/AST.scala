@@ -78,7 +78,8 @@ object AST {
   trait Symbol { def theName: Name }
 
   case class Name(unQuoted: String, isQuoted: Boolean, location: SourceLocation = SourceLocation(-1, -1)) {
-    override def toString: String = if (isQuoted) s"`$unQuoted`" else unQuoted
+    override val toString: String = if (isQuoted) s"`$unQuoted`" else unQuoted
+    lazy val toFullString: String = s"$toString@${location.line}.${location.col}"
     val forScala: String = toString
     def asPath: String = unQuoted.replace('/', '.').replace('.', '/')
     def warnQuoted: Name = {

@@ -20,8 +20,8 @@ object LexicalScanner {
     @inline def theChar: Char = chars.current
     @inline def nextChar(): Unit = chars.next()
     @inline def afterNextChar(t: Token): Token = { nextChar(); t }
-    def makeID(unQuoted: String, isQuoted: Boolean): ID =
-        ID(AST.Name(unQuoted, isQuoted, sourceLocation()))
+    def makeID(unQuoted: String, isQuoted: Boolean, location: SourceLocation): ID =
+        ID(AST.Name(unQuoted, isQuoted, location))
 
     var enableSEPARATOR = false
 
@@ -57,6 +57,7 @@ object LexicalScanner {
       s
     }
     def nnext(): Token = if (hasChar) {
+      val startLocation = sourceLocation()
       chars.current match {
         case '(' => afterNextChar(`(`)
         case ')' => afterNextChar(`)`)
@@ -109,13 +110,13 @@ object LexicalScanner {
         case '«' => // » to balance the %include
           nextChar(); afterNextChar(CODE(chars.takeNested('«', '»')  .mkString("")))
 
-        case '"'  => nextChar(); afterNextChar(makeID(chars.takeWhile( c => c!='"').mkString(""), true))
-        case '\'' => nextChar(); afterNextChar(makeID(chars.takeWhile( c => c!='\'').mkString(""), true))
-        case '`' => nextChar(); afterNextChar(makeID(chars.takeWhile( c => c!='`').mkString(""), true))
+        case '"'  => nextChar(); afterNextChar(makeID(chars.takeWhile( c => c!='"').mkString(""), true, startLocation))
+        case '\'' => nextChar(); afterNextChar(makeID(chars.takeWhile( c => c!='\'').mkString(""), true, startLocation))
+        case '`'  => nextChar(); afterNextChar(makeID(chars.takeWhile( c => c!='`').mkString(""), true, startLocation))
 
         case c if c.isLetter =>
           val prefix = chars.takeWhile(isBisonic)
-          makeID((prefix).mkString(""), false)
+          makeID((prefix).mkString(""), false, startLocation)
 
         case ';' =>
           nextChar()

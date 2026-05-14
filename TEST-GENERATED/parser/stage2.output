@@ -1,0 +1,919 @@
+Terminals unused in grammar
+
+    NUM
+    COMMENT
+    LEXICALERROR
+    `;`
+    `{`
+    `}`
+    `%type`
+
+
+Grammar
+
+    0 $accept: command $end
+
+    1 command: Notation
+
+    2 Notation: Prefix `%rules` INCLUDE Rules OPTSEPARATOR
+
+    3 Prefix: ε
+    4      | Prefix `%notation` ID
+    5      | Prefix `%package` ID
+    6      | Prefix `%path` ID
+    7      | Prefix `%tables` ID
+    8      | Prefix `%include` CODE
+    9      | Prefix `%token` TypedTerminals
+   10      | Prefix `%left` TypedTerminals
+   11      | Prefix `%right` TypedTerminals
+   12      | Prefix `%non` TypedTerminals
+   13      | Prefix `%prec` TypedTerminals
+   14      | Prefix `%dialect` ID
+   15      | Prefix `%scalalr` ID
+   16      | Prefix `%signature` ID
+
+   17 INCLUDE: `%include` CODE SEPARATOR
+   18      | ε
+
+   19 OPTSEPARATOR: ε
+   20      | SEPARATOR
+
+   21 TypedTerminals: ε
+   22      | TypedTerminal TypedTerminals
+
+   23 TypedTerminal: ID `:` Type
+   24      | ID `(` Type `)`
+   25      | ID
+
+   26 Rules: Rule
+   27      | Rules SEPARATOR Rule
+
+   28 Rule: LHS `=` OptBar RHS
+
+   29 OptBar: `|`
+   30      | ε
+
+   31 LHS: ID `:` Type
+   32      | ID
+
+   33 RHS: Production
+   34      | Production `|` RHS
+
+   35 Production: NamedFields Action Precedence
+
+   36 NamedFields: `%empty`
+   37      | NamedField
+   38      | NamedField NamedFields
+
+   39 NamedField: ID
+   40      | ID `:` ID
+
+   41 Action: ε
+   42      | CODE
+
+   43 Precedence: ε
+   44      | `%prec` ID
+
+   45 Type: ID
+   46      | ID `[` Types `]`
+   47      | `(` Types `)`
+   48      | `(` `)`
+
+   49 Types: Type
+   50      | Type `,` Types
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    ID (258) 4 5 6 7 14 15 16 23 24 25 31 32 39 40 44 45 46
+    NUM (259)
+    CODE (260) 8 17 42
+    COMMENT (261)
+    LEXICALERROR (262)
+    `[` (263) 46
+    `]` (264) 46
+    `;` (265)
+    `=` (266) 28
+    `|` (267) 29 34
+    `:` (268) 23 31 40
+    `{` (269)
+    `}` (270)
+    `(` (271) 24 47 48
+    `)` (272) 24 47 48
+    `,` (273) 50
+    SEPARATOR (274) 17 20 27
+    `%path` (275) 6
+    `%type` (276)
+    `%empty` (277) 36
+    `%notation` (278) 4
+    `%package` (279) 5
+    `%token` (280) 9
+    `%left` (281) 10
+    `%right` (282) 11
+    `%non` (283) 12
+    `%rules` (284) 2
+    `%include` (285) 8 17
+    `%prec` (286) 13 44
+    `%tables` (287) 7
+    `%dialect` (288) 14
+    `%scalalr` (289) 15
+    `%signature` (290) 16
+
+
+Nonterminals, with rules where they appear
+
+    $accept (36)
+        on left: 0
+    command (37)
+        on left: 1
+        on right: 0
+    Notation (38)
+        on left: 2
+        on right: 1
+    Prefix (39)
+        on left: 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+        on right: 2 4 5 6 7 8 9 10 11 12 13 14 15 16
+    INCLUDE (40)
+        on left: 17 18
+        on right: 2
+    OPTSEPARATOR (41)
+        on left: 19 20
+        on right: 2
+    TypedTerminals (42)
+        on left: 21 22
+        on right: 9 10 11 12 13 22
+    TypedTerminal (43)
+        on left: 23 24 25
+        on right: 22
+    Rules (44)
+        on left: 26 27
+        on right: 2 27
+    Rule (45)
+        on left: 28
+        on right: 26 27
+    OptBar (46)
+        on left: 29 30
+        on right: 28
+    LHS (47)
+        on left: 31 32
+        on right: 28
+    RHS (48)
+        on left: 33 34
+        on right: 28 34
+    Production (49)
+        on left: 35
+        on right: 33 34
+    NamedFields (50)
+        on left: 36 37 38
+        on right: 35 38
+    NamedField (51)
+        on left: 39 40
+        on right: 37 38
+    Action (52)
+        on left: 41 42
+        on right: 35
+    Precedence (53)
+        on left: 43 44
+        on right: 35
+    Type (54)
+        on left: 45 46 47 48
+        on right: 23 24 31 49 50
+    Types (55)
+        on left: 49 50
+        on right: 46 47 50
+
+
+State 0
+
+    0 $accept: • command $end
+
+    $default  reduce using rule 3 (Prefix)
+
+    command  go to state 1
+    Notation  go to state 2
+    Prefix  go to state 3
+
+
+State 1
+
+    0 $accept: command • $end
+
+    $end  shift, and go to state 4
+
+
+State 2
+
+    1 command: Notation •
+
+    $default  reduce using rule 1 (command)
+
+
+State 3
+
+    2 Notation: Prefix • `%rules` INCLUDE Rules OPTSEPARATOR
+    4 Prefix: Prefix • `%notation` ID
+    5      | Prefix • `%package` ID
+    6      | Prefix • `%path` ID
+    7      | Prefix • `%tables` ID
+    8      | Prefix • `%include` CODE
+    9      | Prefix • `%token` TypedTerminals
+   10      | Prefix • `%left` TypedTerminals
+   11      | Prefix • `%right` TypedTerminals
+   12      | Prefix • `%non` TypedTerminals
+   13      | Prefix • `%prec` TypedTerminals
+   14      | Prefix • `%dialect` ID
+   15      | Prefix • `%scalalr` ID
+   16      | Prefix • `%signature` ID
+
+    `%path`  shift, and go to state 5
+    `%notation`  shift, and go to state 6
+    `%package`  shift, and go to state 7
+    `%token`  shift, and go to state 8
+    `%left`  shift, and go to state 9
+    `%right`  shift, and go to state 10
+    `%non`  shift, and go to state 11
+    `%rules`  shift, and go to state 12
+    `%include`  shift, and go to state 13
+    `%prec`  shift, and go to state 14
+    `%tables`  shift, and go to state 15
+    `%dialect`  shift, and go to state 16
+    `%scalalr`  shift, and go to state 17
+    `%signature`  shift, and go to state 18
+
+
+State 4
+
+    0 $accept: command $end •
+
+    $default  accept
+
+
+State 5
+
+    6 Prefix: Prefix `%path` • ID
+
+    ID  shift, and go to state 19
+
+
+State 6
+
+    4 Prefix: Prefix `%notation` • ID
+
+    ID  shift, and go to state 20
+
+
+State 7
+
+    5 Prefix: Prefix `%package` • ID
+
+    ID  shift, and go to state 21
+
+
+State 8
+
+    9 Prefix: Prefix `%token` • TypedTerminals
+
+    ID  shift, and go to state 22
+
+    $default  reduce using rule 21 (TypedTerminals)
+
+    TypedTerminals  go to state 23
+    TypedTerminal  go to state 24
+
+
+State 9
+
+   10 Prefix: Prefix `%left` • TypedTerminals
+
+    ID  shift, and go to state 22
+
+    $default  reduce using rule 21 (TypedTerminals)
+
+    TypedTerminals  go to state 25
+    TypedTerminal  go to state 24
+
+
+State 10
+
+   11 Prefix: Prefix `%right` • TypedTerminals
+
+    ID  shift, and go to state 22
+
+    $default  reduce using rule 21 (TypedTerminals)
+
+    TypedTerminals  go to state 26
+    TypedTerminal  go to state 24
+
+
+State 11
+
+   12 Prefix: Prefix `%non` • TypedTerminals
+
+    ID  shift, and go to state 22
+
+    $default  reduce using rule 21 (TypedTerminals)
+
+    TypedTerminals  go to state 27
+    TypedTerminal  go to state 24
+
+
+State 12
+
+    2 Notation: Prefix `%rules` • INCLUDE Rules OPTSEPARATOR
+
+    `%include`  shift, and go to state 28
+
+    $default  reduce using rule 18 (INCLUDE)
+
+    INCLUDE  go to state 29
+
+
+State 13
+
+    8 Prefix: Prefix `%include` • CODE
+
+    CODE  shift, and go to state 30
+
+
+State 14
+
+   13 Prefix: Prefix `%prec` • TypedTerminals
+
+    ID  shift, and go to state 22
+
+    $default  reduce using rule 21 (TypedTerminals)
+
+    TypedTerminals  go to state 31
+    TypedTerminal  go to state 24
+
+
+State 15
+
+    7 Prefix: Prefix `%tables` • ID
+
+    ID  shift, and go to state 32
+
+
+State 16
+
+   14 Prefix: Prefix `%dialect` • ID
+
+    ID  shift, and go to state 33
+
+
+State 17
+
+   15 Prefix: Prefix `%scalalr` • ID
+
+    ID  shift, and go to state 34
+
+
+State 18
+
+   16 Prefix: Prefix `%signature` • ID
+
+    ID  shift, and go to state 35
+
+
+State 19
+
+    6 Prefix: Prefix `%path` ID •
+
+    $default  reduce using rule 6 (Prefix)
+
+
+State 20
+
+    4 Prefix: Prefix `%notation` ID •
+
+    $default  reduce using rule 4 (Prefix)
+
+
+State 21
+
+    5 Prefix: Prefix `%package` ID •
+
+    $default  reduce using rule 5 (Prefix)
+
+
+State 22
+
+   23 TypedTerminal: ID • `:` Type
+   24      | ID • `(` Type `)`
+   25      | ID •
+
+    `:`  shift, and go to state 36
+    `(`  shift, and go to state 37
+
+    $default  reduce using rule 25 (TypedTerminal)
+
+
+State 23
+
+    9 Prefix: Prefix `%token` TypedTerminals •
+
+    $default  reduce using rule 9 (Prefix)
+
+
+State 24
+
+   22 TypedTerminals: TypedTerminal • TypedTerminals
+
+    ID  shift, and go to state 22
+
+    $default  reduce using rule 21 (TypedTerminals)
+
+    TypedTerminals  go to state 38
+    TypedTerminal  go to state 24
+
+
+State 25
+
+   10 Prefix: Prefix `%left` TypedTerminals •
+
+    $default  reduce using rule 10 (Prefix)
+
+
+State 26
+
+   11 Prefix: Prefix `%right` TypedTerminals •
+
+    $default  reduce using rule 11 (Prefix)
+
+
+State 27
+
+   12 Prefix: Prefix `%non` TypedTerminals •
+
+    $default  reduce using rule 12 (Prefix)
+
+
+State 28
+
+   17 INCLUDE: `%include` • CODE SEPARATOR
+
+    CODE  shift, and go to state 39
+
+
+State 29
+
+    2 Notation: Prefix `%rules` INCLUDE • Rules OPTSEPARATOR
+
+    ID  shift, and go to state 40
+
+    Rules  go to state 41
+    Rule  go to state 42
+    LHS  go to state 43
+
+
+State 30
+
+    8 Prefix: Prefix `%include` CODE •
+
+    $default  reduce using rule 8 (Prefix)
+
+
+State 31
+
+   13 Prefix: Prefix `%prec` TypedTerminals •
+
+    $default  reduce using rule 13 (Prefix)
+
+
+State 32
+
+    7 Prefix: Prefix `%tables` ID •
+
+    $default  reduce using rule 7 (Prefix)
+
+
+State 33
+
+   14 Prefix: Prefix `%dialect` ID •
+
+    $default  reduce using rule 14 (Prefix)
+
+
+State 34
+
+   15 Prefix: Prefix `%scalalr` ID •
+
+    $default  reduce using rule 15 (Prefix)
+
+
+State 35
+
+   16 Prefix: Prefix `%signature` ID •
+
+    $default  reduce using rule 16 (Prefix)
+
+
+State 36
+
+   23 TypedTerminal: ID `:` • Type
+
+    ID  shift, and go to state 44
+    `(`  shift, and go to state 45
+
+    Type  go to state 46
+
+
+State 37
+
+   24 TypedTerminal: ID `(` • Type `)`
+
+    ID  shift, and go to state 44
+    `(`  shift, and go to state 45
+
+    Type  go to state 47
+
+
+State 38
+
+   22 TypedTerminals: TypedTerminal TypedTerminals •
+
+    $default  reduce using rule 22 (TypedTerminals)
+
+
+State 39
+
+   17 INCLUDE: `%include` CODE • SEPARATOR
+
+    SEPARATOR  shift, and go to state 48
+
+
+State 40
+
+   31 LHS: ID • `:` Type
+   32      | ID •
+
+    `:`  shift, and go to state 49
+
+    $default  reduce using rule 32 (LHS)
+
+
+State 41
+
+    2 Notation: Prefix `%rules` INCLUDE Rules • OPTSEPARATOR
+   27 Rules: Rules • SEPARATOR Rule
+
+    SEPARATOR  shift, and go to state 50
+
+    $default  reduce using rule 19 (OPTSEPARATOR)
+
+    OPTSEPARATOR  go to state 51
+
+
+State 42
+
+   26 Rules: Rule •
+
+    $default  reduce using rule 26 (Rules)
+
+
+State 43
+
+   28 Rule: LHS • `=` OptBar RHS
+
+    `=`  shift, and go to state 52
+
+
+State 44
+
+   45 Type: ID •
+   46      | ID • `[` Types `]`
+
+    `[`  shift, and go to state 53
+
+    $default  reduce using rule 45 (Type)
+
+
+State 45
+
+   47 Type: `(` • Types `)`
+   48      | `(` • `)`
+
+    ID  shift, and go to state 44
+    `(`  shift, and go to state 45
+    `)`  shift, and go to state 54
+
+    Type  go to state 55
+    Types  go to state 56
+
+
+State 46
+
+   23 TypedTerminal: ID `:` Type •
+
+    $default  reduce using rule 23 (TypedTerminal)
+
+
+State 47
+
+   24 TypedTerminal: ID `(` Type • `)`
+
+    `)`  shift, and go to state 57
+
+
+State 48
+
+   17 INCLUDE: `%include` CODE SEPARATOR •
+
+    $default  reduce using rule 17 (INCLUDE)
+
+
+State 49
+
+   31 LHS: ID `:` • Type
+
+    ID  shift, and go to state 44
+    `(`  shift, and go to state 45
+
+    Type  go to state 58
+
+
+State 50
+
+   20 OPTSEPARATOR: SEPARATOR •
+   27 Rules: Rules SEPARATOR • Rule
+
+    ID  shift, and go to state 40
+
+    $default  reduce using rule 20 (OPTSEPARATOR)
+
+    Rule  go to state 59
+    LHS  go to state 43
+
+
+State 51
+
+    2 Notation: Prefix `%rules` INCLUDE Rules OPTSEPARATOR •
+
+    $default  reduce using rule 2 (Notation)
+
+
+State 52
+
+   28 Rule: LHS `=` • OptBar RHS
+
+    `|`  shift, and go to state 60
+
+    $default  reduce using rule 30 (OptBar)
+
+    OptBar  go to state 61
+
+
+State 53
+
+   46 Type: ID `[` • Types `]`
+
+    ID  shift, and go to state 44
+    `(`  shift, and go to state 45
+
+    Type  go to state 55
+    Types  go to state 62
+
+
+State 54
+
+   48 Type: `(` `)` •
+
+    $default  reduce using rule 48 (Type)
+
+
+State 55
+
+   49 Types: Type •
+   50      | Type • `,` Types
+
+    `,`  shift, and go to state 63
+
+    $default  reduce using rule 49 (Types)
+
+
+State 56
+
+   47 Type: `(` Types • `)`
+
+    `)`  shift, and go to state 64
+
+
+State 57
+
+   24 TypedTerminal: ID `(` Type `)` •
+
+    $default  reduce using rule 24 (TypedTerminal)
+
+
+State 58
+
+   31 LHS: ID `:` Type •
+
+    $default  reduce using rule 31 (LHS)
+
+
+State 59
+
+   27 Rules: Rules SEPARATOR Rule •
+
+    $default  reduce using rule 27 (Rules)
+
+
+State 60
+
+   29 OptBar: `|` •
+
+    $default  reduce using rule 29 (OptBar)
+
+
+State 61
+
+   28 Rule: LHS `=` OptBar • RHS
+
+    ID  shift, and go to state 65
+    `%empty`  shift, and go to state 66
+
+    RHS  go to state 67
+    Production  go to state 68
+    NamedFields  go to state 69
+    NamedField  go to state 70
+
+
+State 62
+
+   46 Type: ID `[` Types • `]`
+
+    `]`  shift, and go to state 71
+
+
+State 63
+
+   50 Types: Type `,` • Types
+
+    ID  shift, and go to state 44
+    `(`  shift, and go to state 45
+
+    Type  go to state 55
+    Types  go to state 72
+
+
+State 64
+
+   47 Type: `(` Types `)` •
+
+    $default  reduce using rule 47 (Type)
+
+
+State 65
+
+   39 NamedField: ID •
+   40      | ID • `:` ID
+
+    `:`  shift, and go to state 73
+
+    $default  reduce using rule 39 (NamedField)
+
+
+State 66
+
+   36 NamedFields: `%empty` •
+
+    $default  reduce using rule 36 (NamedFields)
+
+
+State 67
+
+   28 Rule: LHS `=` OptBar RHS •
+
+    $default  reduce using rule 28 (Rule)
+
+
+State 68
+
+   33 RHS: Production •
+   34      | Production • `|` RHS
+
+    `|`  shift, and go to state 74
+
+    $default  reduce using rule 33 (RHS)
+
+
+State 69
+
+   35 Production: NamedFields • Action Precedence
+
+    CODE  shift, and go to state 75
+
+    $default  reduce using rule 41 (Action)
+
+    Action  go to state 76
+
+
+State 70
+
+   37 NamedFields: NamedField •
+   38      | NamedField • NamedFields
+
+    ID  shift, and go to state 65
+    `%empty`  shift, and go to state 66
+
+    $default  reduce using rule 37 (NamedFields)
+
+    NamedFields  go to state 77
+    NamedField  go to state 70
+
+
+State 71
+
+   46 Type: ID `[` Types `]` •
+
+    $default  reduce using rule 46 (Type)
+
+
+State 72
+
+   50 Types: Type `,` Types •
+
+    $default  reduce using rule 50 (Types)
+
+
+State 73
+
+   40 NamedField: ID `:` • ID
+
+    ID  shift, and go to state 78
+
+
+State 74
+
+   34 RHS: Production `|` • RHS
+
+    ID  shift, and go to state 65
+    `%empty`  shift, and go to state 66
+
+    RHS  go to state 79
+    Production  go to state 68
+    NamedFields  go to state 69
+    NamedField  go to state 70
+
+
+State 75
+
+   42 Action: CODE •
+
+    $default  reduce using rule 42 (Action)
+
+
+State 76
+
+   35 Production: NamedFields Action • Precedence
+
+    `%prec`  shift, and go to state 80
+
+    $default  reduce using rule 43 (Precedence)
+
+    Precedence  go to state 81
+
+
+State 77
+
+   38 NamedFields: NamedField NamedFields •
+
+    $default  reduce using rule 38 (NamedFields)
+
+
+State 78
+
+   40 NamedField: ID `:` ID •
+
+    $default  reduce using rule 40 (NamedField)
+
+
+State 79
+
+   34 RHS: Production `|` RHS •
+
+    $default  reduce using rule 34 (RHS)
+
+
+State 80
+
+   44 Precedence: `%prec` • ID
+
+    ID  shift, and go to state 82
+
+
+State 81
+
+   35 Production: NamedFields Action Precedence •
+
+    $default  reduce using rule 35 (Production)
+
+
+State 82
+
+   44 Precedence: `%prec` ID •
+
+    $default  reduce using rule 44 (Precedence)

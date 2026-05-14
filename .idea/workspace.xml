@@ -6,12 +6,20 @@
   <component name="ChangeListManager">
     <list default="true" id="91372ed0-436a-419c-9015-c4c30c0eb662" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stage2/src/main/scala/AST.scala" beforeDir="false" afterPath="$PROJECT_DIR$/stage2/src/main/scala/AST.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stage2/src/main/scala/Generator.scala" beforeDir="false" afterPath="$PROJECT_DIR$/stage2/src/main/scala/Generator.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TEST-GENERATED/parser/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/TEST-GENERATED/parser/Components.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TEST-GENERATED/parser/Reduction.scala" beforeDir="false" afterPath="$PROJECT_DIR$/TEST-GENERATED/parser/Reduction.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/TEST-GENERATED/parser/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/TEST-GENERATED/parser/Components.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/TEST-GENERATED/parser/Reduction.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/TEST-GENERATED/parser/Reduction.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage2/src/main/scala/LexicalScanner.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage2/src/main/scala/LexicalScanner.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage2/src/test/scala/GeneratorTests.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage2/src/test/scala/GeneratorTests.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/utilities/src/main/scala/Cursor.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/utilities/src/main/scala/Cursor.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shared/src/main/scala/LRParser.scala" beforeDir="false" afterPath="$PROJECT_DIR$/shared/src/main/scala/LRParser.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/stage2/src/main/scala/LexicalScanner.scala" beforeDir="false" afterPath="$PROJECT_DIR$/stage2/src/main/scala/LexicalScanner.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stage2/src/main/scala/Test.scala" beforeDir="false" afterPath="$PROJECT_DIR$/stage2/src/main/scala/Test.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/stage2/src/test/scala/GeneratorTests.scala" beforeDir="false" afterPath="$PROJECT_DIR$/stage2/src/test/scala/GeneratorTests.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utilities/src/main/scala/SourceTextCursor.scala" beforeDir="false" afterPath="$PROJECT_DIR$/utilities/src/main/scala/SourceTextCursor.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utilities/src/main/scala/Cursor.scala" beforeDir="false" afterPath="$PROJECT_DIR$/utilities/src/main/scala/Cursor.scala" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,9 +98,9 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.testSelf">
-    <configuration name="test3" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.test3" />
+  <component name="RunManager" selected="Application.test5">
+    <configuration name="test1" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.test1" />
       <module name="scalalr.stage2" />
       <extension name="coverage">
         <pattern>
@@ -104,8 +112,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="test4" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.test4" />
+    <configuration name="test3" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.test3" />
       <module name="scalalr.stage2" />
       <extension name="coverage">
         <pattern>
@@ -171,11 +179,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.test5" />
+        <item itemvalue="Application.test1" />
         <item itemvalue="Application.testSelf" />
         <item itemvalue="Application.testTiny" />
-        <item itemvalue="Application.test5" />
         <item itemvalue="Application.test3" />
-        <item itemvalue="Application.test4" />
       </list>
     </recent_temporary>
   </component>

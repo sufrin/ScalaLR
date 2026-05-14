@@ -91,6 +91,31 @@ trait Cursor[T] {
     result.toSeq
   }
 
+  def takeNested2(bra: T, ket: T): Seq[T] = {
+    val result = collection.mutable.ArrayBuffer[T]()
+    var count = 0
+    var go = true
+    var last: T = bra
+    var doubled = hasCurrent && current==bra
+    if (doubled) next()
+    while (go && hasCurrent) {
+      if (current==bra) count += 1
+      else
+      if (current==ket) {
+        count -= 1
+        go = if (doubled) {
+          last != ket
+        } else count >= 0
+      }
+      if (go) {
+        last = current
+        result append current
+        next()
+      }
+    }
+    result.toSeq
+  }
+
   /**
    * {{{
    *   == takeWhile(p).map(f)

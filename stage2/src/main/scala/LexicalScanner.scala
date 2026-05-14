@@ -2,13 +2,17 @@
 package org.sufrin.scalalr
 package stage2
 
-import org.sufrin.utility.SourceTextCursor
-import org.sufrin.scalalr.SourceLocation
+/**
+ *  Straightforward lexer, except that the interpretation of ';' followed
+ *  by (visible) vertical spaces changes after the "%rules" directive
+ *  appears.
+ */
+
 
 object LexicalScanner {
+  import org.sufrin.utility.SourceTextCursor
+  import org.sufrin.scalalr.SourceLocation
   import scalalr.stage2.Scanner._
-
-
   type Token = scalalr.stage2.Scanner.Token
 
   def apply(chars: SourceTextCursor): LexicalScanner = new LexicalScanner(chars)
@@ -20,15 +24,18 @@ object LexicalScanner {
     @inline def theChar: Char = chars.current
     @inline def nextChar(): Unit = chars.next()
     @inline def afterNextChar(t: Token): Token = { nextChar(); t }
+
     def makeID(unQuoted: String, isQuoted: Boolean, location: SourceLocation): ID =
         ID(AST.Name(unQuoted, isQuoted, location))
 
+    /**
+     * True after the %rules directive has been seen for the first time
+     */
     var enableSEPARATOR = false
 
     def eatComment(): Unit = {
       var level = 0
       var go = true
-      //println(s"start comment $theChar")
       nextChar() // skip the *
       while (go && hasChar) {
         //print(theChar)
@@ -39,7 +46,6 @@ object LexicalScanner {
         //println(theChar)
         if (theChar=='/') go=false
       }
-      //println("end comment")
       nextChar()
       eatWhitespace()
     }
@@ -69,6 +75,7 @@ object LexicalScanner {
         case ':' => afterNextChar(`:`)
         case '%' =>
           nextChar()
+          val startLocation = sourceLocation()
           val directive = chars.takeWhile(_.isLetterOrDigit).mkString("")
           directive.toLowerCase match {
             case "type"         => `%type`
@@ -90,7 +97,7 @@ object LexicalScanner {
               enableSEPARATOR = true
               eatWhitespace()
               `%rules`
-            case _ => LEXICALERROR(s"Unknown directive %$directive (at ${sourceLocation()})")
+            case _ => LEXICALERROR(s"Unknown directive %$directive (at ${startLocation})")
           }
         case '/' =>
           nextChar()
@@ -106,7 +113,7 @@ object LexicalScanner {
           }
           nnext()
         case '{' => // } to balance the %include
-          nextChar(); afterNextChar(CODE(chars.takeNested('{', '}')  .mkString("")))
+          nextChar(); afterNextChar(CODE(chars.takeNested2('{', '}')  .mkString("")))
         case '«' => // » to balance the %include
           nextChar(); afterNextChar(CODE(chars.takeNested('«', '»')  .mkString("")))
 
@@ -133,7 +140,7 @@ object LexicalScanner {
           else
             if (hasChar) nnext() else $end
         case other =>
-          LEXICALERROR(s"Unrecognised $other (at ${sourceLocation()}")
+          LEXICALERROR(s"Unrecognised $other (at ${startLocation}")
       }
     } else $end
   }

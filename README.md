@@ -266,69 +266,66 @@ For an example, see `runtinyfun`.
 demonstrated the high incidence of errors caused by the omission of
 semicolons between rules. This has been corrected.
 
-4. **Scala code quotations** such as appear in `%include` passages and as 
-production result expressions need a little care. The normal form of a code 
-quotation is a passage that opens with `{`, has  properly-nested occurences of 
-`{` and `}` within it and ends with a closing `}` that matches 
-the opening. **But** if an unmatched brace appears (for example in a character or string 
-quote or in a comment) it can upset balance and lead to an incorrect anlysis.
-   1. **Happily** almost all the potential
-   pain is avoidable if code `%import`sections simply consist of scala `include`
-   directives, and if  production result code doesn't quote braces.
-   
-   2. One solution is to use the alternative "guiullemot" braces
-     «» to quote code. 
-   
-   3. As it happens *Bison/Yacc themselves have analogous (not identical) lexical requirements for
-      code inserts.* The only clean solution to this kind of thing is to build a parser for the
+   4. **Scala code quotations** such as appear in `%include` passages and as 
+   production result expressions need a little care. The normal form of a code 
+   quotation is a passage that opens with `{`, has  properly-nested occurences of 
+   `{` and `}` within it and ends with a closing `}` that matches 
+   the opening. **But** if an unmatched brace appears (for example in a character or string 
+   quote or in a comment) it can upset balance and lead to an incorrect analysis.
+      1. As it happens *Bison/Yacc themselves have analogous (not identical) lexical requirements for
+      code inserts.* The only squeaky-clean solution to this kind of thing is to build a parser for the
       target language of the generator within the generator. 
+      2. **Happily** almost all the potential pain is avoidable: just use double-braces to
+      start and end the quotation; and don't worry about internal non-balance.
+      
+         `{{ like { th{is }}`
 
-   4. A *last resort* (and fragile) solution, "forcibly" balancing the 
-     quotation, is exemplified by the following
-     extract from a code quotation defining the scanner for the Scalalr 
-     notation itself.
-````
-           case '{' => // } balance the quoted character
-           nextChar()
-           afterNextChar(CODE(chars.takeNested('{', '}')  .mkString("")))
-           
-           case '«' => // » balance the quoted character
-           nextChar()
-           afterNextChar(CODE(chars.takeNested('«', '»')  .mkString("")))
- ````
-
-4. 
-
+      3. **and** if you *must* quote doubl braces, do it within guillemot-brackets
+      
+         `« like {{ th{{is »`
    
 ## Roadmap
 We aim to accomplish the following tasks as soon as we can. They are listed
 here in no particular order.
 
-1. Error recovery properly implemented. 
+1. Error recovery (in generated parsers) properly implemented. 
 
 2. System to be self-hosting: ie using a scalalr-derived parser rather
    than the present hand-coded recursive descent parser. [DONE]
 
-3. Higher-level constructs to express simplify 
-   grammar expressions that would normally have to be "hand-coded" such as:
-````     
-      exprlist:    List[Expr]  = exprlistREV { $exprlistREV.reverse }
-      
-      exprlistREV: List[Expr] = 
-                   expr { List($expr) } | exprlistREV ',' expr  { $expr :: $exprlistREV }
-                   
-      exprlistPLUS: List[Expr] = 
-                    expr exprlist { $expr :: $exprlist }
-      
-      optexpr: Option[Expr] = 
-                %empty { None } | expr { Some($expr) }
-````
-These could be expressed more concisely in-situ, for example:
+3. Higher-level constructs to simply express 
+   grammar expressions that would normally have to be "hand-coded" and 
+   could be expressed more concisely in-situ, for example:
 ````          
       ID '(' exprlist: (expr ',')* ')' { Apply($ID, $exprlist) }  
       ID '(' exprlist: (expr ',')+ ')' { Apply($ID, $exprlist) }
       RETURN optexpr:  (expr)? ';'     { Return($optexpr) }
 ````
+Here, assuming `expr: Expr` has been defined, these constructs will be transformed
+into invocations of additional, mechanically-derived, rules named arbitrarily
+````    
+      (expr)?        ==>  OPT1 
+      (expr  ',')+   ==>  PLUS1
+      (expr  ',')*   ==>  STAR1
+      (expr)*        ==>  STAR2
+````
+where 
+````
+      OPT1:   Option[Expr] = %empty           { None } 
+                           | expr             { Some($expr) }
+      PLUS1:  List[Expr]   = PLUS1R           { $PLUS1R.reverse }
+      STAR1:  List[Expr]   = STAR1R           { $PLUS1R.reverse }
+      STAR2:  List[Expr]   = STAR2R           { $STAR2R.reverse }
+      PLUS1R: List[Expr]   = Expr             { $Expr :: Nil }
+                           | PLUS1R ',' Expr  { $Expr :: $PLUS1R }
+      STAR1R: List[Expr]   = %empty           { Nil }
+                           | PLUS1R           { $PLUS1R }
+      STAR2R: List[Expr]   = %empty           { Nil } 
+                           | STAR2R Expr      { $Expr :: $PLUS1R }
+````
+Notice the left-recursive productions for list-yielding constructs. These
+conserve parse-stack space, and list-construction time, at the cost
+of accumulating their result lists in reverse order.
 
 4. Additional higher level constructs that support "say it once"
 specification of notation and abstract syntax, as well as
@@ -342,23 +339,22 @@ abstract syntax has been simplified:
        case class Binop(op: String, l: Expr, r: Expr) extends Expr
        case class Bra(expr: Expr)   extends Expr
 ```
-then a concise way of expressing the productions would be
+then a concise way of expressing `Expr` yielding productions would use a "result"
+arrow that would be translated into ordinary code sections, for example: 
 ````
 expr: Expr = name: ID              -> Id               
            | l:expr op: `*` r:expr -> Binop
            | l:expr op: `+` r:expr -> Binop 
            | "(" expr ")"          -> Bra      
            | `[` expr `]`          { $expr }
-           ;
 ````
-and the generator could  turn this, mechanically, into
+and the generator could  turn this mechanically into
 ````
 expr: Expr = name: ID              {Id(name=$name)}               
            | l:expr op: `*` r:expr {Binop(l=$l, op=$op, r=$r) }
            | l:expr op: `+` r:expr {Binop(l=$l, op=$op, r=$r) }
            | "(" expr ")"          {Bra(expr=$expr)}      
            | `[` expr `]`          { $expr }
-           ;
 ````
 
 ## Working Assumption

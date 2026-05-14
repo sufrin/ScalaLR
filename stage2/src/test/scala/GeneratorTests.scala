@@ -15,15 +15,16 @@ object test0 extends Test("-h")("""
      FOO = `bar`
      """)
 
-object test1 extends Test("")(
+object test1 extends Test("-pp")(
   """%tables    ielr
      %notation  stage2test
      %package   scalalr.stage2test
      %path      "parser"
 
      %rules
-     Rule1: Unit = S1 S2 S3 { Code };
-     Rule2: Unit = a: S4 b: S5 { () }
+     Rule1: Unit = S1 S2 S3 {{ Co{de }};
+     Rule2: Unit = a: S4 b: S5 { () };
+     Rule3: Unit = a: S4 b: S5 {{ this is  unba} }lan{ced { }}
 
 
      """)

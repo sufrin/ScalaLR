@@ -5,21 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="91372ed0-436a-419c-9015-c4c30c0eb662" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Prepare-Stage1/ROOT/stage2/src/main/scala/SymbolTables.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Prepare-Stage2/ROOT/stage2/src/main/scala/SymbolTables.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage2/src/main/scala/SymbolTables.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/stage2/src/main/scala/SymbolTables.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Prepare-Stage1/ROOT/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Prepare-Stage1/ROOT/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Prepare-Stage1/ROOT/TEST-GENERATED/parser/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/Prepare-Stage1/ROOT/TEST-GENERATED/parser/Components.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Prepare-Stage1/ROOT/TEST-GENERATED/parser/Reduction.scala" beforeDir="false" afterPath="$PROJECT_DIR$/Prepare-Stage1/ROOT/TEST-GENERATED/parser/Reduction.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Prepare-Stage1/ROOT/stage2/src/main/scala/Generator.scala" beforeDir="false" afterPath="$PROJECT_DIR$/Prepare-Stage1/ROOT/stage2/src/main/scala/Generator.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Prepare-Stage2/ROOT/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Prepare-Stage2/ROOT/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Prepare-Stage2/ROOT/TEST-GENERATED/parser/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/Prepare-Stage2/ROOT/TEST-GENERATED/parser/Components.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Prepare-Stage2/ROOT/TEST-GENERATED/parser/Reduction.scala" beforeDir="false" afterPath="$PROJECT_DIR$/Prepare-Stage2/ROOT/TEST-GENERATED/parser/Reduction.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Prepare-Stage2/ROOT/stage2/src/main/scala/Generator.scala" beforeDir="false" afterPath="$PROJECT_DIR$/Prepare-Stage2/ROOT/stage2/src/main/scala/Generator.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TEST-GENERATED/parser/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/TEST-GENERATED/parser/Components.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TEST-GENERATED/parser/Reduction.scala" beforeDir="false" afterPath="$PROJECT_DIR$/TEST-GENERATED/parser/Reduction.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/TEST-GENERATED/parser/Components.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/TEST-GENERATED/parser/Components.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/TEST-GENERATED/parser/Reduction.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/TEST-GENERATED/parser/Reduction.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage2/src/main/scala/LexicalScanner.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage2/src/main/scala/LexicalScanner.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage2/src/test/scala/GeneratorTests.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage2/src/test/scala/GeneratorTests.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/utilities/src/main/scala/Cursor.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/utilities/src/main/scala/Cursor.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shared/src/main/scala/LRParser.scala" beforeDir="false" afterPath="$PROJECT_DIR$/shared/src/main/scala/LRParser.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stage2/src/main/scala/LexicalScanner.scala" beforeDir="false" afterPath="$PROJECT_DIR$/stage2/src/main/scala/LexicalScanner.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stage2/src/test/scala/GeneratorTests.scala" beforeDir="false" afterPath="$PROJECT_DIR$/stage2/src/test/scala/GeneratorTests.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utilities/src/main/scala/Cursor.scala" beforeDir="false" afterPath="$PROJECT_DIR$/utilities/src/main/scala/Cursor.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage2/src/main/scala/Generator.scala" beforeDir="false" afterPath="$PROJECT_DIR$/examples/TinyFun/ROOT/stage2/src/main/scala/Generator.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage2/src/main/scala/Generator.scala" beforeDir="false" afterPath="$PROJECT_DIR$/stage2/src/main/scala/Generator.scala" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,6 +61,7 @@
   &quot;associatedIndex&quot;: 3
 }</component>
   <component name="ProjectId" id="3Cx311cMBU9LMUCcPUsqGS0shmv" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="autoscrollToSource" value="true" />
     <option name="flattenModules" value="true" />
@@ -64,31 +70,31 @@
     <option name="showLibraryContents" value="true" />
     <option name="showMembers" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.generatexpr.executor": "Run",
-    "Application.runexpr.executor": "Run",
-    "Application.runsmall.executor": "Run",
-    "Application.runtinyfun.executor": "Run",
-    "Application.test0.executor": "Run",
-    "Application.test1.executor": "Run",
-    "Application.test2.executor": "Run",
-    "Application.test2a.executor": "Run",
-    "Application.test3.executor": "Run",
-    "Application.test4.executor": "Run",
-    "Application.test5.executor": "Run",
-    "Application.testSelf.executor": "Run",
-    "Application.testTiny.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/sufrin/GitHomes/ScalaLR/Prepare-Stage1",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.37201804",
-    "settings.editor.selected.configurable": "preferences.lookFeel"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.generatexpr.executor&quot;: &quot;Run&quot;,
+    &quot;Application.runexpr.executor&quot;: &quot;Run&quot;,
+    &quot;Application.runsmall.executor&quot;: &quot;Run&quot;,
+    &quot;Application.runtinyfun.executor&quot;: &quot;Run&quot;,
+    &quot;Application.test0.executor&quot;: &quot;Run&quot;,
+    &quot;Application.test1.executor&quot;: &quot;Run&quot;,
+    &quot;Application.test2.executor&quot;: &quot;Run&quot;,
+    &quot;Application.test2a.executor&quot;: &quot;Run&quot;,
+    &quot;Application.test3.executor&quot;: &quot;Run&quot;,
+    &quot;Application.test4.executor&quot;: &quot;Run&quot;,
+    &quot;Application.test5.executor&quot;: &quot;Run&quot;,
+    &quot;Application.testSelf.executor&quot;: &quot;Run&quot;,
+    &quot;Application.testTiny.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/sufrin/GitHomes/ScalaLR/Prepare-Stage1&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.37201804&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/Prepare-Stage1" />
@@ -98,7 +104,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.test5">
+  <component name="RunManager" selected="Application.testSelf">
     <configuration name="test1" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.test1" />
       <module name="scalalr.stage2" />
@@ -179,9 +185,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.testSelf" />
         <item itemvalue="Application.test5" />
         <item itemvalue="Application.test1" />
-        <item itemvalue="Application.testSelf" />
         <item itemvalue="Application.testTiny" />
         <item itemvalue="Application.test3" />
       </list>
@@ -201,6 +207,13 @@
     </task>
     <servers />
   </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/Prepare-Stage1/ROOT" />
+      <path value="$PROJECT_DIR$/Prepare-Stage2/ROOT" />
+      <path value="$PROJECT_DIR$/examples/TinyFun/ROOT" />
+    </ignored-roots>
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
@@ -218,6 +231,11 @@
           <url>file://$PROJECT_DIR$/stage2/src/test/scala/GeneratorTests.scala</url>
           <line>8</line>
           <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="scala-line">
+          <url>file://$PROJECT_DIR$/stage2/src/main/scala/CodeGenerator.scala</url>
+          <line>71</line>
+          <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

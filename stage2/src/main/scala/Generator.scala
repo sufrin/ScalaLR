@@ -96,7 +96,9 @@ object Generator extends org.sufrin.logging.SourceLoggable {
         val revlhs    = TypedNonterminal(theName, ListType(theType, START), START)
         val orNothing: List[Production] = if (repeatType==NoneOrMore) List(Production(Nil, Some(Expression("Nil")), None, START)) else Nil
         val revrhs:    Production = Production(List(NamedField(None, theListName, START)), Some(Expression(s"$$$theListName.reverse")), None, START)
-        List(Rule(lhs, rhs, START), Rule(revlhs, revrhs::orNothing, START))
+        val res = List(Rule(lhs, rhs, START), Rule(revlhs, revrhs::orNothing, START))
+        res.foreach(r => println(r.toString))
+        res
     }
   }
 

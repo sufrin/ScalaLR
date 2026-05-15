@@ -152,6 +152,69 @@ object textExpand extends Test("-pp -html -Lsym")(
      G = (',' A B )*
   """)
 
+object testSmall extends Test("-html -Lsym")(
+  """
+%notation  Small
+%package   small.Small
+%path      "small"
+
+%dialect   "host dialect: bootstrap syntax or stage1 or stage2 syntax"
+%scalalr   "scalalr: scalalrgen -boot or -flab"
+
+
+%include {
+   import org.sufrin.utility.{SourceTextCursor}
+   import org.sufrin.scalalr.SourceLocation
+
+
+    def Scanner(chars: SourceTextCursor): Scanner = new Scanner(chars)
+
+
+    class Scanner(chars: SourceTextCursor) extends Iterator[Token] {
+      def sourceLocation(): SourceLocation = SourceLocation(chars.lines,  chars.chars)
+
+      @inline def hasChar: Boolean = chars.hasCurrent
+      @inline def theChar: Char = chars.current
+      @inline def nextChar(): Unit = chars.next()
+      @inline def afterNextChar(t: Token): Token = {
+        nextChar()
+        t
+      }
+
+      def hasNext: Boolean = chars.hasCurrent
+
+      def next(): Token = if (hasNext)
+      {
+          chars.current match {
+            case ';' => afterNextChar(`;`)
+
+            case c if c.isLetter =>
+              val prefix = chars.takeWhile(_.isLetterOrDigit)
+              ID((prefix).mkString(""))
+            case c if c.isWhitespace =>
+               while (hasChar && theChar.isWhitespace) nextChar()
+               if (hasChar) next() else $end
+            case other =>
+               LEXICALERROR(s"Unrecognised $other (at ${sourceLocation()}")
+          }
+      } else $end
+    }
+
+
+}
+
+%token ID(String) ";" LEXICALERROR(String)
+
+%rules
+%include {
+ // after rules
+}
+
+top: Unit = ids { println($ids) };
+ids:(List[String]) = (';' ID)+;
+
+  """)
+
 object testTiny extends Test("-c")("""
         %notation TinyFun
         %package  tinyfun

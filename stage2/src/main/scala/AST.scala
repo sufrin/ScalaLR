@@ -41,13 +41,14 @@ object AST {
 
 
   case class Rule(lhs: TypedNonterminal, rhs: Seq[Production], location: SourceLocation) {
+    override def toString(): String = s"$lhs = $rhs"
   }
 
   case class Production(symbols:    Seq[NamedField],
                         reduction:  Option[Expression],
                         precedence: Option[Name],
                         location:   SourceLocation) {
-    val code = if (reduction.isDefined) s"{ ${reduction.get} }" else ""
+    val code = if (reduction.isDefined) s" { ${reduction.get} } " else ""
     val prec = if (precedence.isDefined) s" %prec ${precedence.get}" else ""
 
     override def toString: String = s"${symbols.map(_.toString).mkString(" ")}$code$prec"

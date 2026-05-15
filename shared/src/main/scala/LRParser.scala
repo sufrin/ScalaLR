@@ -185,7 +185,9 @@ object LRParser {
               left = locations.pop()
             }
             // calculate the reduced "frame"
+            if (logState) println(s"REDUCE ($reduced) to ")
             val result = reduction(left, right, production)(reduced)
+            if (logState) println(s"$result")
             // push its reduction and symbol type
             currentState = states.top
             symbols.push(lhsSymbol)

@@ -12,7 +12,7 @@
 package org.sufrin.scalalr
 package stage2
 
-import org.sufrin.utility.{SourceCode, SourceTextCursor}
+import org.sufrin.utility.SourceTextCursor
 
 object Generator extends org.sufrin.logging.SourceLoggable {
   locally { level = org.sufrin.logging.INFO }

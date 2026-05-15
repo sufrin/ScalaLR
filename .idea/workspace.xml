@@ -70,31 +70,36 @@
     <option name="showLibraryContents" value="true" />
     <option name="showMembers" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.generatexpr.executor&quot;: &quot;Run&quot;,
-    &quot;Application.runexpr.executor&quot;: &quot;Run&quot;,
-    &quot;Application.runsmall.executor&quot;: &quot;Run&quot;,
-    &quot;Application.runtinyfun.executor&quot;: &quot;Run&quot;,
-    &quot;Application.test0.executor&quot;: &quot;Run&quot;,
-    &quot;Application.test1.executor&quot;: &quot;Run&quot;,
-    &quot;Application.test2.executor&quot;: &quot;Run&quot;,
-    &quot;Application.test2a.executor&quot;: &quot;Run&quot;,
-    &quot;Application.test3.executor&quot;: &quot;Run&quot;,
-    &quot;Application.test4.executor&quot;: &quot;Run&quot;,
-    &quot;Application.test5.executor&quot;: &quot;Run&quot;,
-    &quot;Application.testSelf.executor&quot;: &quot;Run&quot;,
-    &quot;Application.testTiny.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/sufrin/GitHomes/ScalaLR/Prepare-Stage1&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.37201804&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.genconflicts.executor": "Run",
+    "Application.generatesmall.executor": "Run",
+    "Application.generatexpr.executor": "Run",
+    "Application.runexpr.executor": "Run",
+    "Application.runsmall.executor": "Run",
+    "Application.runtinyfun.executor": "Run",
+    "Application.test0.executor": "Run",
+    "Application.test1.executor": "Run",
+    "Application.test2.executor": "Run",
+    "Application.test2a.executor": "Run",
+    "Application.test3.executor": "Run",
+    "Application.test4.executor": "Run",
+    "Application.test5.executor": "Run",
+    "Application.testConflict.executor": "Run",
+    "Application.testConflictIFTHEN.executor": "Run",
+    "Application.testConflictSAB.executor": "Run",
+    "Application.testSelf.executor": "Run",
+    "Application.testTiny.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/sufrin/GitHomes/ScalaLR",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.37201804",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/Prepare-Stage1" />
@@ -103,10 +108,33 @@
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="" />
     </key>
+    <key name="ImportExportFile.TargetDir.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
   </component>
-  <component name="RunManager" selected="Application.testSelf">
-    <configuration name="test1" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.test1" />
+  <component name="RunManager" selected="Application.testConflictIFTHEN">
+    <configuration name="genconflicts" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="genconflicts" />
+      <module name="scalalr.bootstrap" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="generatesmall" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.bootstrap.generatesmall" />
+      <module name="scalalr.bootstrap" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.sufrin.scalalr.bootstrap.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="testConflict" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testConflict" />
       <module name="scalalr.stage2" />
       <extension name="coverage">
         <pattern>
@@ -118,8 +146,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="test3" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.test3" />
+    <configuration name="testConflictIFTHEN" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testConflictIFTHEN" />
       <module name="scalalr.stage2" />
       <extension name="coverage">
         <pattern>
@@ -131,34 +159,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="test5" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.test5" />
-      <module name="scalalr.stage2" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.sufrin.scalalr.stage2.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="testSelf" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testSelf" />
-      <module name="scalalr.stage2" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.sufrin.scalalr.stage2.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="testTiny" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testTiny" />
+    <configuration name="testConflictSAB" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testConflictSAB" />
       <module name="scalalr.stage2" />
       <extension name="coverage">
         <pattern>
@@ -185,11 +187,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.testSelf" />
-        <item itemvalue="Application.test5" />
-        <item itemvalue="Application.test1" />
-        <item itemvalue="Application.testTiny" />
-        <item itemvalue="Application.test3" />
+        <item itemvalue="Application.testConflictIFTHEN" />
+        <item itemvalue="Application.testConflictSAB" />
+        <item itemvalue="Application.testConflict" />
+        <item itemvalue="Application.generatesmall" />
+        <item itemvalue="Application.genconflicts" />
       </list>
     </recent_temporary>
   </component>

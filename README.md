@@ -217,10 +217,20 @@ These files are generated in four phases:
    while processing the
    grammar specification.
 
-3. The `.xml` file output by Bison contains, among other information,
+
+
+#### Files *notationName*.{xml,output,log,y}
+
+1. The `.xml` file output by Bison contains, among other information,
    an encoding of the information Scalalr now uses to generate
    its **Tables** and **Reduction** files.
-
+2. The `.output` file output by Bison contains a full report on the parsing automaton, including
+   details of any conflicts.
+3. When output the `.html` file output by Bison contains an *easily navigable* full report on the parsing automaton, including
+   details of any residual conflicts.  The `stage2` generator enables this with the `-html` flag: earlier
+   stage generators  always enable it.
+4. The `.log` file  output by Bison may contain detailed diagnostic messages that help explain 
+   conflicts.  
 
 ## Improvements since the Bootstrap
 Experience with using earlier versions of scalalr
@@ -246,43 +256,107 @@ self-hosting bootstrap stages.
 
 ## LR Parsing Conflict Illustrations
 A few notation definitions that result in shift-reduce or reduce-reduce 
-conflicts are gathered (as embedded strings) in the `App` defined in
-`bootstrap/src/test/scala/genconflicts.scala`.
-This can be run to test the reporting of such conflicts. Each example
-generates a log (as well as the expected generated files) in 
-`testbed/src/test/conflicts.`
+conflicts are gathered (as embedded strings) in the `GeneratorTests` of `stage2`.
+Here's an ambiguous grammar, and the full diagnostic reported by the stage2 generator with
+`-c` set.
+````
+   %token a
+   %rules
+   S = A 
+     | B;
+   A = a;
+   B = a;
+   
+   TEST-GENERATED/conflicts/SAB/SAB.y: warning: 1 reduce/reduce conflict [-Wconflicts-rr]
+   TEST-GENERATED/conflicts/SAB/SAB.y: warning: reduce/reduce conflict on token $end
+   Example: a •
+   First reduce derivation
+   S
+   ↳ 1: A
+   ↳ 3: a •
+   Second reduce derivation
+   S
+   ↳ 2: B
+   ↳ 4: a •
+````
+Here's the classic "dangling else" ambiguity, and a full diagnosis
+````
+   %token IF THEN ELSE ID '+'
+   %rules
+   expr = ID
+        | expr '+' ID
+        | IF expr THEN expr
+        | IF expr THEN expr ELSE expr
+        
+     TEST-GENERATED/conflicts/IfThenElse/IfThenElse.y: warning: 3 shift/reduce conflicts [-Wconflicts-sr]
+     TEST-GENERATED/conflicts/IfThenElse/IfThenElse.y: warning: shift/reduce conflict on token `+`
+     Example: IF expr THEN expr • `+` ID
+     Shift derivation
+       expr
+       ↳ 3: IF expr THEN expr
+                              ↳ 2: expr • `+` ID
+     Reduce derivation
+       expr
+       ↳ 2: expr                          `+` ID
+            ↳ 3: IF expr THEN expr •
+   
+   TEST-GENERATED/conflicts/IfThenElse/IfThenElse.y: warning: shift/reduce conflict on token ELSE
+     Example: IF expr THEN IF expr THEN expr • ELSE expr
+     Shift derivation
+       expr
+       ↳ 3: IF expr THEN expr
+                              ↳ 4: IF expr THEN expr • ELSE expr
+     Reduce derivation
+       expr
+       ↳ 4: IF expr THEN expr                          ELSE expr
+                              ↳ 3: IF expr THEN expr •
+                              
+   TEST-GENERATED/conflicts/IfThenElse/IfThenElse.y: warning: shift/reduce conflict on token `+`
+     Example: IF expr THEN expr ELSE expr • `+` ID
+     Shift derivation
+       expr
+       ↳ 4: IF expr THEN expr ELSE expr
+                                          ↳ 2: expr • `+` ID
+     Reduce derivation
+       expr
+       ↳ 2: expr                                      `+` ID
+            ↳ 4: IF expr THEN expr ELSE expr •
+````
 
 ## Gotchas
-1. **Error recovery** is not yet properly implemented. 
-The `Pull` automaton reports the first syntax error and bails by throwing an exception. 
-The `Push` automaton does likewise if there
-is no `error`-handling state available (see Bison documentation for an explanation of 
-the `error` virtual token), and the "recovery" that otherwise results 
-is not properly implemented or documented. Despite this it is straightforward to 
-construct an REP-type interface that appears to recover from syntax errors. 
-For an example, see `runtinyfun`.
+1. **Error recovery** is not yet satisfactorily implemented. 
+Both `Pull` and `Push` automata report the first syntax error and bail by throwing an exception,
+unless their `attemptRecovery` variable is `true` and an `error`-handling state is
+present on the parse stack (see the Bison documentation for an explanation of
+the `error` virtual token). If their `logRecovery` variable is `true` then the recovery 
+attempt is documented (in some detail). It is nevertheless straightforward to
+construct an Read-Eval-Print-type interface that appears to recover from syntax errors by
+enclosing its top-level in a throw-handling loop.
 
-3. **Trivial typos** are problematic. Experience with using the languages early in the bootstrap sequence
-demonstrated the high incidence of errors caused by the omission of
-semicolons between rules. This has been corrected.
+2. **Trivial typos** used to be problematic. Experience with using the notation-specification 
+languages early in the bootstrap sequence *used to* demonstrate the high incidence of errors 
+caused by the omission of  semicolons between rules. This was *corrected in and after stage1: 
+a semicolon can be omitted between two rules, providing there is visible vertical space between
+them.* Semicolons are still forbidden between `%...` directives before `%rules`.
 
-   4. **Scala code quotations** such as appear in `%include` passages and as 
-   production result expressions need a little care. The normal form of a code 
-   quotation is a passage that opens with `{`, has  properly-nested occurences of 
-   `{` and `}` within it and ends with a closing `}` that matches 
-   the opening. **But** if an unmatched brace appears (for example in a character or string 
-   quote or in a comment) it can upset balance and lead to an incorrect analysis.
-      1. As it happens *Bison/Yacc themselves have analogous (not identical) lexical requirements for
-      code inserts.* The only squeaky-clean solution to this kind of thing is to build a parser for the
-      target language of the generator within the generator. 
-      2. **Happily** almost all the potential pain is avoidable: just use double-braces to
-      start and end the quotation; and don't worry about internal non-balance.
+4. **Scala code quotations** such as appear in `%include` passages and as 
+production result expressions need a little care. The normal form of a code 
+quotation is a passage that opens with `{`, has  properly-nested occurences of 
+`{` and `}` within it and ends with a closing `}` that matches 
+the opening. **But** if an unmatched brace appears (for example in a character or string 
+quote or in a comment) it can upset balance and lead to an incorrect analysis.
+   1. As it happens *Bison/Yacc themselves have analogous (not identical) lexical requirements for
+   code inserts.* The only squeaky-clean solution to this kind of thing is to build a parser for the
+   target language of the generator within the generator; and this is not really practical 
+   for Scala (given our resources).
+   2. **Happily** almost all the potential pain is avoidable: just use double-braces to
+   start and end the quotation; and don't worry about internal non-balance.
       
-         `{{ like { th{is }}`
+      `{{ like { th{is }}`
 
-      3. **and** if you *must* quote doubl braces, do it within guillemot-brackets
+   3. **and** if you *must* quote double braces, do it within guillemot-brackets
       
-         `« like {{ th{{is »`
+      `« like {{ th{{is »`
    
 ## Roadmap
 We aim to accomplish the following tasks as soon as we can. They are listed
@@ -291,9 +365,9 @@ here in no particular order.
 1. Error recovery (in generated parsers) properly implemented. 
 
 2. System to be self-hosting: ie using a scalalr-derived parser rather
-   than the present hand-coded recursive descent parser. [DONE]
+   than the present hand-coded recursive descent parser. **[DONE April '26]**
 
-3. Higher-level constructs to simply express 
+3. Higher-level constructs to denote, simply,
    grammar expressions that would normally have to be "hand-coded" and 
    could be expressed more concisely in-situ, for example:
 ````          
@@ -365,7 +439,11 @@ run for its side effects and yielding `Unit` -- though this may not be common.*
 
 ## Valediction
 
-   I regret  **the inscrutability of the bootstrap code-generator**. I have no
+   The **stage2** code generator, being reasonably-well structured, is now  scrutable by
+   others, and might be a good place to start making enhancements to the notation-description 
+   language. 
+   
+   **I regret  the inscrutability of the bootstrap code-generator**. I have no
    excuse for this beyond my having wanted to prioritise fast turnaround while I
    was first experimenting with my approach. Some might say that the fact that 
    it can **still** be  used in a near production environment is testimony to 

@@ -426,3 +426,39 @@ object testSelf extends Test ()(
 
  """
 )
+
+object testConflictSAB extends Test("-c")(
+  """
+    |%notation  SAB
+    |%package   SAB
+    |%path      "conflicts/SAB"
+    |
+    |%token a
+    |
+    |%rules
+    |
+    | S = A | B
+    |
+    | A = a
+    |
+    | B = a
+    |
+    |
+    |""".stripMargin)
+
+object testConflictIFTHEN extends Test("-c")(
+  """
+    |%notation  IfThenElse
+    |%package   IfThenElse
+    |%path      "conflicts/IfThenElse"
+    |
+    |%token IF THEN ELSE ID '+'
+    |
+    |%rules
+    |
+    |expr = ID
+    |     | expr '+' ID
+    |     | IF expr THEN expr
+    |     | IF expr THEN expr ELSE expr
+    |
+    |""".stripMargin)

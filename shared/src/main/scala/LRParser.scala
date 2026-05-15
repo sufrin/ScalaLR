@@ -63,15 +63,17 @@ object LRParser {
     val locations = new Stack[SourceLocation] //
     var parseState: ParseState = RUNNING
     var logState: Boolean = false
+    var attemptRecovery = false
+    var logRecovery = true
     var currentState = 0
 
     val errorSymbol: Int = 1 // MUST BE IDENTICAL TO THE BISON CODE FOR THE VIRTUAL TERMINAL SYMBOL "error"
 
     /**
-     * Find a state on the stack of states that will shift "error"
+     * Find a state on the stack of states that will shift "error"; report the `cause`
      */
-    def findRecoveryState(): Boolean = {
-      println(s"Recovering from:\n${mkString}")
+    def findRecoveryState(cause: String): Boolean = {
+      if (logRecovery) println(s"$cause\nFinding an error-SHIFT state:\n${mkString}")
       def cannotShiftError(state: State): Boolean = !(action(state)(errorSymbol).isInstanceOf[SHIFT])
       while (states.nonEmpty && cannotShiftError(states.top)) {
         states.pop()
@@ -79,6 +81,7 @@ object LRParser {
         symbols.pop()
         locations.pop()
       }
+      if (logRecovery && states.nonEmpty) println(s"Recovered to:\n${mkString}")
       states.nonEmpty
     }
 
@@ -155,9 +158,19 @@ object LRParser {
           case ACCEPT =>
             parseState = ACCEPTED(values(1))
           case ERROR =>
-            println(s"Syntax error: ${sourceLocation()}")
-            if (logState) parseState = ERRONEOUS(diagnosis(input, currentState))
-            else throw new Error (diagnosis(input, currentState))
+            val cause = diagnosis(input, currentState)
+            if (attemptRecovery && findRecoveryState(cause)) {
+              val SHIFT(newState) = action(states.top)(errorSymbol)
+              states.push(newState)
+              symbols.push(errorSymbol)
+              values.push(None)
+              locations.push(location)
+              //println(s"error SHIFT($newState)")
+              parseState = NEXTSTEP
+            } else  {
+              // if (logState) parseState = ERRONEOUS(diagnosis(input, currentState))
+              throw new Error (cause)
+            }
 
 
           case REDUCE(lhsSymbol, production, size) =>
@@ -262,17 +275,18 @@ object LRParser {
           case ACCEPT =>
             parseState = ACCEPTED(values(1))
           case ERROR =>
-            if (findRecoveryState()) {
+            val cause = diagnosis(input, currentState)
+            if (attemptRecovery && findRecoveryState(cause)) {
               val SHIFT(newState) = action(states.top)(errorSymbol)
               states.push(newState)
               symbols.push(errorSymbol)
               values.push(None)
               locations.push(location)
-              println(s"error SHIFT($newState)")
+              //println(s"error SHIFT($newState)")
               parseState = NEXTSTEP
             } else  {
-              if (logState) parseState = ERRONEOUS(diagnosis(input, currentState))
-              else throw new Error (diagnosis(input, currentState))
+              // if (logState) parseState = ERRONEOUS(diagnosis(input, currentState))
+              throw new Error (cause)
             }
 
           case REDUCE(lhsSymbol, production, size) =>

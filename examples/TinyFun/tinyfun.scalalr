@@ -2,6 +2,7 @@
 %notation TinyFun
 %package  tinyfun
 %path     tinyfun
+%tables   lr
 
 %include {
    import org.sufrin.scalalr.SourceLocation

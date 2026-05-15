@@ -26,6 +26,7 @@ object runtinyfun  {
     if (push) {
       val parser = LRParser.Push[Token](Components)(scanner.sourceLocation)
       parser.logState = log
+      parser.attemptRecovery = true
       var state = parser.start()
       while (state == LRParser.NEXTSTEP) {
         //println(parser.mkString)

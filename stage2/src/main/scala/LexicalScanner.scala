@@ -73,6 +73,9 @@ object LexicalScanner {
         case '=' => afterNextChar(`=`)
         case ',' => afterNextChar(`,`)
         case ':' => afterNextChar(`:`)
+        case '?' => afterNextChar(`?`)
+        case '*' => afterNextChar(`*`)
+        case '+' => afterNextChar(`+`)
         case '%' =>
           nextChar()
           val startLocation = sourceLocation()

@@ -131,8 +131,8 @@ Rule: Rule = LHS '=' OptBar RHS { Rule($LHS, $RHS, $START) }
 
 OptBar: Unit = '|' {()} | %empty {()}
 
-LHS: TypedNonterminal  = ID ':' Type {  (TypedNonterminal($ID.warnQuoted, $Type, $START)) }
-                       | ID          {  (TypedNonterminal($ID.warnQuoted, NoType, $START)) }
+LHS: TypedNonterminal  = ID ':' Type {  declareTyped(TypedNonterminal($ID.warnQuoted, $Type, $START)) }
+                       | ID          {  declareTyped(TypedNonterminal($ID.warnQuoted, NoType, $START)) }
 
 
 RHS:(List[Production]) =
@@ -151,12 +151,14 @@ NamedField: NamedField = FIELD                            { NamedField(theFieldN
                        | theFieldName: ID ':' theName: ID { NamedField(theFieldName = Some($theFieldName.warnQuoted), $theName, $START) }
 
 
-FIELD: Name =   ID                            { $ID }
-            |   '(' NamedFields ')'  REPEAT   { expandRepeated($NamedFields, $REPEAT, $START, $END) }
+FIELD: Name =   ID                      { $ID }
+                |   '(' RHS ')' REPEAT  { expandCompositeField($RHS, $REPEAT, $START, $END) }
 
-REPEAT: Repeat  = '?'       { MaybeOne }
-                | '*'       { NoneOrMore }
-                | '+'       { OneOrMore }
+REPEAT: Repeat  = ':' Type  { JustOne($Type) }
+                | '?' Type  { MaybeOne($Type) }
+                | '*' Type  { NoneOrMore($Type) }
+                | '+' Type  { OneOrMore($Type) }
+                | %empty    { UnspecifiedRepeat }
 
 Action:(Option[Expression]) = %empty { None } | CODE { Some(Expression($CODE)) }
 

@@ -135,6 +135,23 @@ object test5 extends Test()(
 
      """)
 
+object textExpand extends Test("-pp -html -Lsym")(
+  """%notation  expand
+     %package   expand
+     %path      "expand"
+     %token a b c
+     %left `,`
+     %rules
+     TOP = A | B | C | D | E | F | G;
+     A: ATYPE = a | B;
+     B: BTYPE  = b (C)?;
+     C: CTYPE = a (A B)? c;
+     D = a (A y:B)? c;
+     E = (A y:B)?;
+     F = (',' A B )+;
+     G = (',' A B )*
+  """)
+
 object testTiny extends Test("-c")("""
         %notation TinyFun
         %package  tinyfun

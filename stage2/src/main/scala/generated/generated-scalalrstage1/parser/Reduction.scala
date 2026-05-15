@@ -44,6 +44,7 @@ object Reduction {
                  p.copy(theSignature = s"${p.theSignature} $signature")
  }
 
+
 def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufrin.scalalr.SourceLocation, n: Int): PartialFunction[List[Any], Any] = n match {
  /* Notation: Notation = Prefix "%rules" INCLUDE Rules OPTNL {  $Prefix.copy(theRules = $Rules.reverse, theRulesInclude = $INCLUDE) } */
  case 1 => 
@@ -167,15 +168,15 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
  /* OptBar: Unit =  { ()} */
  case 28 => 
   { case List() =>   () } 
- /* LHS: TypedNonterminal = ID ":" Type {   TypedNonterminal($ID.warnQuoted, $Type, $START) } */
+ /* LHS: TypedNonterminal = ID ":" Type {   (TypedNonterminal($ID.warnQuoted, $Type, $START)) } */
  case 29 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name, _, dol$Type: Type) => 
-           TypedNonterminal(dol$ID.warnQuoted, dol$Type, dol$START) 
+           (TypedNonterminal(dol$ID.warnQuoted, dol$Type, dol$START)) 
   }
- /* LHS: TypedNonterminal = ID {   TypedNonterminal($ID.warnQuoted, NoType, $START) } */
+ /* LHS: TypedNonterminal = ID {   (TypedNonterminal($ID.warnQuoted, NoType, $START)) } */
  case 30 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
-           TypedNonterminal(dol$ID.warnQuoted, NoType, dol$START) 
+           (TypedNonterminal(dol$ID.warnQuoted, NoType, dol$START)) 
   }
  /* RHS: List[Production] = Production {  List($Production)   } */
  case 31 => 
@@ -205,55 +206,72 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
   { case List(dol$NamedField: NamedField, dol$NamedFields: List[NamedField @unchecked]) => 
           dol$NamedField :: dol$NamedFields 
   }
- /* NamedField: NamedField = ID {  NamedField(theFieldName = None, theField = $ID, $START) } */
+ /* NamedField: NamedField = FIELD {  NamedField(theFieldName = None, theField = $FIELD, $START) } */
  case 37 => 
-  { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
-          NamedField(theFieldName = None, theField = dol$ID, dol$START) 
+  { case List(dol$FIELD: Name) => 
+          NamedField(theFieldName = None, theField = dol$FIELD, dol$START) 
   }
  /* NamedField: NamedField = theFieldName: ID ":" theName: ID {  NamedField(theFieldName = Some($theFieldName.warnQuoted), $theName, $START) } */
  case 38 => 
   { case List(dol$theFieldName: org.sufrin.scalalr.stage2.AST.Name, _, dol$theName: org.sufrin.scalalr.stage2.AST.Name) => 
           NamedField(theFieldName = Some(dol$theFieldName.warnQuoted), dol$theName, dol$START) 
   }
- /* Action: Option[Expression] =  {  None } */
+ /* FIELD: Name = ID {  $ID } */
  case 39 => 
+  { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) =>    dol$ID  } 
+ /* FIELD: Name = "(" NamedFields ")" REPEAT {  expandRepeated($NamedFields, $REPEAT, $START, $END) } */
+ case 40 => 
+  { case List(_, dol$NamedFields: List[NamedField @unchecked], _, dol$REPEAT: Repeat) => 
+          expandRepeated(dol$NamedFields, dol$REPEAT, dol$START, dol$END) 
+  }
+ /* REPEAT: Repeat = "?" {  MaybeOne } */
+ case 41 => 
+  { case List(_) =>    MaybeOne  } 
+ /* REPEAT: Repeat = "*" {  NoneOrMore } */
+ case 42 => 
+  { case List(_) =>    NoneOrMore  } 
+ /* REPEAT: Repeat = "+" {  OneOrMore } */
+ case 43 => 
+  { case List(_) =>    OneOrMore  } 
+ /* Action: Option[Expression] =  {  None } */
+ case 44 => 
   { case List() =>    None  } 
  /* Action: Option[Expression] = CODE {  Some(Expression($CODE)) } */
- case 40 => 
+ case 45 => 
   { case List(dol$CODE: String) => 
           Some(Expression(dol$CODE)) 
   }
  /* Precedence: Option[Name] =  {  None } */
- case 41 => 
+ case 46 => 
   { case List() =>    None  } 
  /* Precedence: Option[Name] = "%prec" ID {  Some($ID)} */
- case 42 => 
+ case 47 => 
   { case List(_, dol$ID: org.sufrin.scalalr.stage2.AST.Name) =>    Some(dol$ID) } 
  /* Type: Type = ID {  Type($ID.withoutQuotes, Nil, $START) } */
- case 43 => 
+ case 48 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
           Type(dol$ID.withoutQuotes, Nil, dol$START) 
   }
  /* Type: Type = ID "[" Types "]" {  Type($ID.withoutQuotes, $Types, $START) } */
- case 44 => 
+ case 49 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name, _, dol$Types: List[Type @unchecked], _) => 
           Type(dol$ID.withoutQuotes, dol$Types, dol$START) 
   }
  /* Type: Type = "(" Types ")" {  makeTupleType($Types, $START) } */
- case 45 => 
+ case 50 => 
   { case List(_, dol$Types: List[Type @unchecked], _) => 
           makeTupleType(dol$Types, dol$START) 
   }
  /* Type: Type = "(" ")" {  Type("Unit", Nil, $START) } */
- case 46 => 
+ case 51 => 
   { case List(_, _) => 
           Type("Unit", Nil, dol$START) 
   }
  /* Types: List[Type] = Type {  List($Type) } */
- case 47 => 
+ case 52 => 
   { case List(dol$Type: Type) =>    List(dol$Type)  } 
  /* Types: List[Type] = Type "," Types {  $Type :: $Types } */
- case 48 => 
+ case 53 => 
   { case List(dol$Type: Type, _, dol$Types: List[Type @unchecked]) => 
           dol$Type :: dol$Types 
   }
@@ -318,9 +336,9 @@ def parsetreereduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  
  case 28 => 
   { case trees$trees => PARSETREE("""OptBar: Unit =  { ()}""", 28, trees$trees ) }
  case 29 => 
-  { case trees$trees => PARSETREE("""LHS: TypedNonterminal = ID ":" Type {   TypedNonterminal($ID.warnQuoted, $Type, $START) }""", 29, trees$trees ) }
+  { case trees$trees => PARSETREE("""LHS: TypedNonterminal = ID ":" Type {   (TypedNonterminal($ID.warnQuoted, $Type, $START)) }""", 29, trees$trees ) }
  case 30 => 
-  { case trees$trees => PARSETREE("""LHS: TypedNonterminal = ID {   TypedNonterminal($ID.warnQuoted, NoType, $START) }""", 30, trees$trees ) }
+  { case trees$trees => PARSETREE("""LHS: TypedNonterminal = ID {   (TypedNonterminal($ID.warnQuoted, NoType, $START)) }""", 30, trees$trees ) }
  case 31 => 
   { case trees$trees => PARSETREE("""RHS: List[Production] = Production {  List($Production)   }""", 31, trees$trees ) }
  case 32 => 
@@ -334,29 +352,39 @@ def parsetreereduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  
  case 36 => 
   { case trees$trees => PARSETREE("""NamedFields: List[NamedField] = NamedField NamedFields {  $NamedField :: $NamedFields }""", 36, trees$trees ) }
  case 37 => 
-  { case trees$trees => PARSETREE("""NamedField: NamedField = ID {  NamedField(theFieldName = None, theField = $ID, $START) }""", 37, trees$trees ) }
+  { case trees$trees => PARSETREE("""NamedField: NamedField = FIELD {  NamedField(theFieldName = None, theField = $FIELD, $START) }""", 37, trees$trees ) }
  case 38 => 
   { case trees$trees => PARSETREE("""NamedField: NamedField = theFieldName: ID ":" theName: ID {  NamedField(theFieldName = Some($theFieldName.warnQuoted), $theName, $START) }""", 38, trees$trees ) }
  case 39 => 
-  { case trees$trees => PARSETREE("""Action: Option[Expression] =  {  None }""", 39, trees$trees ) }
+  { case trees$trees => PARSETREE("""FIELD: Name = ID {  $ID }""", 39, trees$trees ) }
  case 40 => 
-  { case trees$trees => PARSETREE("""Action: Option[Expression] = CODE {  Some(Expression($CODE)) }""", 40, trees$trees ) }
+  { case trees$trees => PARSETREE("""FIELD: Name = "(" NamedFields ")" REPEAT {  expandRepeated($NamedFields, $REPEAT, $START, $END) }""", 40, trees$trees ) }
  case 41 => 
-  { case trees$trees => PARSETREE("""Precedence: Option[Name] =  {  None }""", 41, trees$trees ) }
+  { case trees$trees => PARSETREE("""REPEAT: Repeat = "?" {  MaybeOne }""", 41, trees$trees ) }
  case 42 => 
-  { case trees$trees => PARSETREE("""Precedence: Option[Name] = "%prec" ID {  Some($ID)}""", 42, trees$trees ) }
+  { case trees$trees => PARSETREE("""REPEAT: Repeat = "*" {  NoneOrMore }""", 42, trees$trees ) }
  case 43 => 
-  { case trees$trees => PARSETREE("""Type: Type = ID {  Type($ID.withoutQuotes, Nil, $START) }""", 43, trees$trees ) }
+  { case trees$trees => PARSETREE("""REPEAT: Repeat = "+" {  OneOrMore }""", 43, trees$trees ) }
  case 44 => 
-  { case trees$trees => PARSETREE("""Type: Type = ID "[" Types "]" {  Type($ID.withoutQuotes, $Types, $START) }""", 44, trees$trees ) }
+  { case trees$trees => PARSETREE("""Action: Option[Expression] =  {  None }""", 44, trees$trees ) }
  case 45 => 
-  { case trees$trees => PARSETREE("""Type: Type = "(" Types ")" {  makeTupleType($Types, $START) }""", 45, trees$trees ) }
+  { case trees$trees => PARSETREE("""Action: Option[Expression] = CODE {  Some(Expression($CODE)) }""", 45, trees$trees ) }
  case 46 => 
-  { case trees$trees => PARSETREE("""Type: Type = "(" ")" {  Type("Unit", Nil, $START) }""", 46, trees$trees ) }
+  { case trees$trees => PARSETREE("""Precedence: Option[Name] =  {  None }""", 46, trees$trees ) }
  case 47 => 
-  { case trees$trees => PARSETREE("""Types: List[Type] = Type {  List($Type) }""", 47, trees$trees ) }
+  { case trees$trees => PARSETREE("""Precedence: Option[Name] = "%prec" ID {  Some($ID)}""", 47, trees$trees ) }
  case 48 => 
-  { case trees$trees => PARSETREE("""Types: List[Type] = Type "," Types {  $Type :: $Types }""", 48, trees$trees ) }
+  { case trees$trees => PARSETREE("""Type: Type = ID {  Type($ID.withoutQuotes, Nil, $START) }""", 48, trees$trees ) }
+ case 49 => 
+  { case trees$trees => PARSETREE("""Type: Type = ID "[" Types "]" {  Type($ID.withoutQuotes, $Types, $START) }""", 49, trees$trees ) }
+ case 50 => 
+  { case trees$trees => PARSETREE("""Type: Type = "(" Types ")" {  makeTupleType($Types, $START) }""", 50, trees$trees ) }
+ case 51 => 
+  { case trees$trees => PARSETREE("""Type: Type = "(" ")" {  Type("Unit", Nil, $START) }""", 51, trees$trees ) }
+ case 52 => 
+  { case trees$trees => PARSETREE("""Types: List[Type] = Type {  List($Type) }""", 52, trees$trees ) }
+ case 53 => 
+  { case trees$trees => PARSETREE("""Types: List[Type] = Type "," Types {  $Type :: $Types }""", 53, trees$trees ) }
  }
 
 }

@@ -5,6 +5,9 @@ object Scanner{
   // Substantive lexical scanner is elsewhere
 
 trait Token extends org.sufrin.scalalr.Lexeme { val value: Any ; val symbol: Int } 
+case object `?` extends Token { val value = (); val symbol = 36 }
+case object `*` extends Token { val value = (); val symbol = 37 }
+case object `+` extends Token { val value = (); val symbol = 38 }
 case class ID(value: org.sufrin.scalalr.stage2.AST.Name) extends Token { val symbol = 3 }
 case class NUM(value: String) extends Token { val symbol = 4 }
 case class CODE(value: String) extends Token { val symbol = 5 }
@@ -79,26 +82,31 @@ val symbolName: Map[Int, String] = collection.immutable.ListMap[Int, String](
 , 33 -> "%dialect"
 , 34 -> "%scalalr"
 , 35 -> "%signature"
+, 36 -> "?"
+, 37 -> "*"
+, 38 -> "+"
 // GLOSSARY OF NONTERMINAL SYMBOL NAMES
-, 36 -> "$accept" 
-, 37 -> "Notation" 
-, 38 -> "Prefix" 
-, 39 -> "INCLUDE" 
-, 40 -> "OPTNL" 
-, 41 -> "TypedTerminals" 
-, 42 -> "TypedTerminal" 
-, 43 -> "Rules" 
-, 44 -> "Rule" 
-, 45 -> "OptBar" 
-, 46 -> "LHS" 
-, 47 -> "RHS" 
-, 48 -> "Production" 
-, 49 -> "NamedFields" 
-, 50 -> "NamedField" 
-, 51 -> "Action" 
-, 52 -> "Precedence" 
-, 53 -> "Type" 
-, 54 -> "Types" 
+, 39 -> "$accept" 
+, 40 -> "Notation" 
+, 41 -> "Prefix" 
+, 42 -> "INCLUDE" 
+, 43 -> "OPTNL" 
+, 44 -> "TypedTerminals" 
+, 45 -> "TypedTerminal" 
+, 46 -> "Rules" 
+, 47 -> "Rule" 
+, 48 -> "OptBar" 
+, 49 -> "LHS" 
+, 50 -> "RHS" 
+, 51 -> "Production" 
+, 52 -> "NamedFields" 
+, 53 -> "NamedField" 
+, 54 -> "FIELD" 
+, 55 -> "REPEAT" 
+, 56 -> "Action" 
+, 57 -> "Precedence" 
+, 58 -> "Type" 
+, 59 -> "Types" 
 )
 
 }

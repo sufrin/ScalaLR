@@ -143,5 +143,9 @@ object AST {
   case class Prec(terminals:   Seq[TypedTerminal]) extends TokenSpec {
   }
 
+  trait Repeat
+  case object MaybeOne   extends Repeat
+  case object OneOrMore  extends Repeat
+  case object NoneOrMore extends Repeat
 
 }

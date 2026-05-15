@@ -90,7 +90,7 @@ object Generator extends org.sufrin.logging.SourceLoggable {
         val theListName = Name(theName.forScala++"LIST", false, START)
         val lhs = TypedNonterminal(theListName, ListType(theType, START), START)
         val rhs = List(
-          Production(fields.iterator.filterNot(hasNoType).toList,    Some(Expression(s"$$$theFieldName")), None, START),
+          Production(fields.iterator.filterNot(hasNoType).toList,    Some(Expression(s"List($$$theFieldName)")), None, START),
           Production(NamedField(None, theListName, START) :: fields, Some(Expression(s"$$$theFieldName :: $$$theListName")), None, START)
         )
         val revlhs    = TypedNonterminal(theName, ListType(theType, START), START)

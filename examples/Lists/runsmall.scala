@@ -15,9 +15,8 @@ object runsmall  {
 
 
   def main(args: Array[String]): Unit = {
-    val source = """a;b;c;
-    d;e;f;g"""
-    if (false) {
+    val source = """a;b;c;d;e;f;g"""
+    if (true) {
       println("-------\nPull parser: showing each transition\n-------")
       val scanner: Scanner = Scanner(SourceTextCursor(source))
       val parser = LRParser.Pull[Token](Components)(scanner.sourceLocation)
@@ -25,7 +24,7 @@ object runsmall  {
       parser.run(scanner.next).prettyPrint()
     }
 
-    if (true) {
+    if (false) {
       println("-------\nPush parser: showing internals at each transition\n-------")
       val scanner: Scanner = Scanner(SourceTextCursor(source))
       val parser = LRParser.Push[Token](Components)(scanner.sourceLocation)

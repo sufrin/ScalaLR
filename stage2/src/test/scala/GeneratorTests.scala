@@ -144,9 +144,9 @@ object textExpand extends Test("-Lsyn -html -Lsym")(
      %rules
      TOP = A | B | C | D | E | F | G;
      A: ATYPE = a | B;
-     B: BTYPE  = b (C)?;
-     C: CTYPE = a (A B)? c;
-     D = a (A y:B)? c;
+     B: BTYPE  = b me: (C)?;
+     C: CTYPE  = a (A B)? c;
+     D = a me: (A y:B)? c;
      E = (A y:B)?;
      F = (',' A B )+;
      G = (',' A B )*

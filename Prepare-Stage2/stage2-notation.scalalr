@@ -42,7 +42,7 @@
 
 %include {
  import org.sufrin.scalalr.stage2.AST._
- import org.sufrin.scalalr.stage2.Generator._
+ import org.sufrin.scalalr.stage2.Normalization._
  import scalalr.stage2.Scanner
  import org.sufrin.utility.SourceTextCursor
  import org.sufrin.scalalr.SourceLocation
@@ -150,7 +150,7 @@ NamedFields:(List[NamedField]) =
 NamedField: NamedField = FIELD                               { NamedField(theFieldName = None, theField = $FIELD, $START) }
                        | theFieldName: ID ':' theName: FIELD { NamedField(theFieldName = Some($theFieldName.warnQuoted), $theName, $START) }
 
-// NB: synthesiseRepeated yields the name of a new rule, and appends to synthesisedRules
+// NB: Normalization.synthesiseRepeated yields the name of a new rule, and appends to synthesisedRules
 //     definitions of the one or more rules needed by its right hand side.
 FIELD: Name =   ID                            { $ID }
             |   '(' NamedFields ')'  REPEAT   { synthesiseRepeated($NamedFields, $REPEAT, $START, $END) }

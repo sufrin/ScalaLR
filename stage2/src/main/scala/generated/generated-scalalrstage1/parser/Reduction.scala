@@ -2,12 +2,12 @@
 package scalalr.stage2
 object Reduction {
 
- import org.sufrin.scalalr.stage2.AST._
- import org.sufrin.scalalr.stage2.Generator._
- import scalalr.stage2.Scanner
- import org.sufrin.utility.SourceTextCursor
  import org.sufrin.scalalr.SourceLocation
+ import org.sufrin.scalalr.stage2.AST._
+ import org.sufrin.scalalr.stage2.Normalization._
  import org.sufrin.utility.PrettyPrint._
+ import org.sufrin.utility.SourceTextCursor
+ import scalalr.stage2.Scanner
 
  def makeTupleType(types: Seq[Type], location: SourceLocation): Type =
      types.size match {
@@ -219,10 +219,10 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
  /* FIELD: Name = ID {  $ID } */
  case 39 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) =>    dol$ID  } 
- /* FIELD: Name = "(" NamedFields ")" REPEAT {  expandRepeated($NamedFields, $REPEAT, $START, $END) } */
+ /* FIELD: Name = "(" NamedFields ")" REPEAT {  synthesiseRepeated($NamedFields, $REPEAT, $START, $END) } */
  case 40 => 
   { case List(_, dol$NamedFields: List[NamedField @unchecked], _, dol$REPEAT: Repeat) => 
-          synthesiseRepeated(dol$NamedFields, dol$REPEAT, dol$START, dol$END)
+          synthesiseRepeated(dol$NamedFields, dol$REPEAT, dol$START, dol$END) 
   }
  /* REPEAT: Repeat = "?" {  MaybeOne } */
  case 41 => 
@@ -358,7 +358,7 @@ def parsetreereduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  
  case 39 => 
   { case trees$trees => PARSETREE("""FIELD: Name = ID {  $ID }""", 39, trees$trees ) }
  case 40 => 
-  { case trees$trees => PARSETREE("""FIELD: Name = "(" NamedFields ")" REPEAT {  expandRepeated($NamedFields, $REPEAT, $START, $END) }""", 40, trees$trees ) }
+  { case trees$trees => PARSETREE("""FIELD: Name = "(" NamedFields ")" REPEAT {  synthesiseRepeated($NamedFields, $REPEAT, $START, $END) }""", 40, trees$trees ) }
  case 41 => 
   { case trees$trees => PARSETREE("""REPEAT: Repeat = "?" {  MaybeOne }""", 41, trees$trees ) }
  case 42 => 

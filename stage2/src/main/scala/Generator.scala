@@ -43,106 +43,6 @@ object Generator extends org.sufrin.logging.SourceLoggable {
 
   def warning(what: String): Unit = println(s"WARNING: $what")
 
-  var fieldNumber:     Int = 0
-  var syntheticRules:  List[DelayedRule] = Nil
-
-  case class DelayedRule(theName: Name, fields: List[NamedField], repeatType: Repeat, START: SourceLocation)
-
-  def OptionType(symbolType: SymbolType, START: SourceLocation): Type =
-    Type("Option", List(symbolType.asInstanceOf[Type]), START)
-
-  def ListType(symbolType: SymbolType, START: SourceLocation): Type =
-    Type("List", List(symbolType.asInstanceOf[Type]), START)
-
-
-  def synthesiseRepeated(fields: List[NamedField], repeatType: Repeat, START: SourceLocation, END: SourceLocation): Name = {
-      fieldNumber += 1
-      val theName = Name(s"REP$fieldNumber", false, START)
-      syntheticRules ::= DelayedRule(theName, fields, repeatType, START)
-      theName
-  }
-
-  def forceRule(symbolTable: SymbolTables)(delayedRule: DelayedRule): List[Rule] = {
-    import delayedRule._
-    def hasNoType(field: NamedField): Boolean = symbolTable.symbolType.getOrElse(field.theField, NoType)==NoType
-    val searchOrdered = fields.iterator.filterNot(_.isAnonymous) ++ fields.iterator.filterNot(hasNoType) ++ fields.iterator
-    repeatType match {
-      case MaybeOne =>
-        val field = searchOrdered.next()
-        val theType = symbolTable.symbolType(field.theField)
-        val theFieldName = field.theFieldName match {
-          case None => field.theField
-          case Some(other) => other
-        }
-        val lhs = TypedNonterminal(theName, OptionType(theType, START), START)
-        val rhs = List(
-          Production(Nil, Some(Expression("None")), None, START),
-          Production(fields, Some(Expression(s"Some($$$theFieldName)")), None, START)
-        )
-        List(Rule(lhs, rhs, START))
-
-      case OneOrMore | NoneOrMore =>
-        val field = searchOrdered.next()
-        val theType = symbolTable.symbolType.getOrElse(field.theField, NoType)
-        val theFieldName = field.theFieldName match {
-          case None        => field.theField
-          case Some(other) => other
-        }
-        val theListName = Name(theName.forScala++"LIST", false, START)
-        val lhs = TypedNonterminal(theListName, ListType(theType, START), START)
-        val rhs = List(
-          Production(fields.iterator.filterNot(hasNoType).toList,    Some(Expression(s"List($$$theFieldName)")), None, START),
-          Production(NamedField(None, theListName, START) :: fields, Some(Expression(s"$$$theFieldName :: $$$theListName")), None, START)
-        )
-        val revlhs    = TypedNonterminal(theName, ListType(theType, START), START)
-        val orNothing: List[Production] = if (repeatType==NoneOrMore) List(Production(Nil, Some(Expression("Nil")), None, START)) else Nil
-        val revrhs:    Production = Production(List(NamedField(None, theListName, START)), Some(Expression(s"$$$theListName.reverse")), None, START)
-        List(Rule(lhs, rhs, START), Rule(revlhs, revrhs::orNothing, START))
-    }
-  }
-
-  /**
-   *
-   * Invent/infer a reduction for a production that lacks one
-   * This is only effective if the production has exactly one symbol
-   * TODO: We could do better by taking the only value-carrying symbol (if there is one)
-   */
-  def inferReduction(symbolTable: SymbolTables)(rule: Rule): Rule = {
-    if (rule.rhs.forall(_.reduction.isDefined)) rule else {
-      val newRHS =
-      for { production <- rule.rhs } yield
-          production.symbols.length match {
-            case 1 =>
-              val field = production.symbols.head
-              val result: Name  =
-                field.theFieldName match {
-                  case Some(name) => name
-                  case None       => field.theField
-                }
-              production.copy(reduction = Some(Expression(s"$$$result")))
-            case _ =>
-              warn(s"No obvious value for reduction at: ${production.location}")
-              production.copy(reduction = Some(Expression(" None ")))
-          }
-      rule.copy(rhs=newRHS)
-    }
-  }
-
-  def expandCode(notation: Notation): Notation = {
-    val symbolTables = new SymbolTables(notation)
-    val expandedRules = notation.theRules ++ syntheticRules.reverse.flatMap(forceRule(symbolTables))
-    val inferencedRules = expandedRules.map(inferReduction(symbolTables))
-    if (syntheticRules.nonEmpty && Generator.logGeneration.contains("syn")) {
-      var i: Int = 0
-      val width = (for { Rule(lhs, rhs, _) <- inferencedRules} yield lhs.toString.size).max
-
-      for {Rule(lhs, rhs, _) <- inferencedRules; prod <- rhs} {
-        i += 1
-        println(f"$i%03d: ${lhs.toString} ${" " * (width - lhs.toString.size)} = $prod")
-      }
-    }
-    notation.copy(theRules = inferencedRules)
-  }
 
   def generateCode(notation: Notation): Unit = {
     if (pretty) notation.prettyPrint()
@@ -158,7 +58,7 @@ object Generator extends org.sufrin.logging.SourceLoggable {
     val parser  = LRParser.Pull[LexicalScanner.Token](Components)(scanner.sourceLocation)
     parser.logState = logParse
     parser.run(scanner.next) match {
-      case ACCEPTED(notation: Notation) => generateCode(expandCode(notation))
+      case ACCEPTED(notation: Notation) => generateCode(Normalization.normalize(notation))
       case other =>
     }
   }

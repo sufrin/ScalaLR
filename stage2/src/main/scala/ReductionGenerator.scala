@@ -1,7 +1,7 @@
 package org.sufrin.scalalr
 package stage2
 
-import org.sufrin.scalalr.stage2.AST.{Name, NamedField, NoType, Notation, mangle}
+import org.sufrin.scalalr.stage2.AST.{Expression, Name, NamedField, NoType, Notation, mangle}
 import org.sufrin.scalalr.stage2.Generator.warn
 import org.sufrin.utility.SourceCode
 
@@ -42,6 +42,8 @@ class ReductionGenerator(notation: Notation, symbolTables: SymbolTables) extends
 
     }
   }
+
+
 
   /*
    *  Suppress the match for duplicated symbols: they need naming

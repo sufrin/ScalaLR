@@ -21,22 +21,23 @@ object AST {
   }
 
   trait SymbolType {
-    def isUntyped: Boolean
+    def sourceTypeName: String
     def scalaTypeName: String
-    def scalaParameterTypeName: String
   }
 
   case class Type(name: String, parameters: Seq[Type], location: SourceLocation)  extends SymbolType {
     override val toString: String = if (parameters.isEmpty) s"$name$location" else parameters.map(_.toString).mkString(s"$name[", ",", s"]$location")
     def scalaTypeName: String = if (parameters.isEmpty) name else  parameters.map(_.scalaParameterTypeName).mkString(s"$name[", ",", "]")
     def scalaParameterTypeName: String = s"$scalaTypeName @unchecked"
-    def isUntyped: Boolean = false
+    def sourceTypeName: String = if (parameters.isEmpty) name else  parameters.map(_.sourceParameterTypeName).mkString(s"$name[", ",", "]")
+    def sourceParameterTypeName: String = s"$sourceTypeName"
   }
 
   case object NoType extends SymbolType {
     def isUntyped: Boolean = false
     def scalaTypeName: String = "_"
     def scalaParameterTypeName: String = "_"
+    def sourceTypeName: String = "NoType"
   }
 
 
@@ -76,7 +77,9 @@ object AST {
   }
 
 
-  trait Symbol { def theName: Name }
+  trait Symbol {
+    def theName:        Name
+  }
 
   case class Name(unQuoted: String, isQuoted: Boolean, location: SourceLocation = SourceLocation(-1, -1)) {
     override val toString: String = if (isQuoted) s"`$unQuoted`" else unQuoted
@@ -106,12 +109,13 @@ object AST {
   case class TypedTerminal(theName: Name, theType: SymbolType=NoType, location: SourceLocation) extends Symbol {
     def isTyped: Boolean    = theType!=NoType
     def theTypeName: String = theType.toString
-    def theScalaTypeName: String = theType.scalaTypeName
+    def theScalaTypeName: String = theType.toString
+    def sourceTypeName: String = theTypeName
   }
 
   case class TypedNonterminal(theName: Name, theType: SymbolType=NoType, location: SourceLocation) extends Symbol {
     override def toString: String =
-      if (theType==NoType) theName.toString else s"$theName: ${theType.scalaTypeName}"
+      if (theType==NoType) theName.toString else s"$theName: ${theType.sourceTypeName}"
   }
 
   case class NamedField(theFieldName: Option[Name], theField: Name, location: SourceLocation) {

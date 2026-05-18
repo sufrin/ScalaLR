@@ -74,7 +74,7 @@ NamedFields:  TOK-22;
 NamedFields:  NamedField;
 NamedFields:  NamedField NamedFields;
 NamedField:  FIELD;
-NamedField:  ID TOK-13 ID;
+NamedField:  ID TOK-13 FIELD;
 FIELD:  ID;
 FIELD:  TOK-16 NamedFields TOK-17 REPEAT;
 REPEAT:  TOK-36;

@@ -63,7 +63,7 @@ Grammar
    36            | NamedField NamedFields
 
    37 NamedField: FIELD
-   38           | ID ":" ID
+   38           | ID ":" FIELD
 
    39 FIELD: ID
    40      | "(" NamedFields ")" REPEAT
@@ -177,7 +177,7 @@ Nonterminals, with rules where they appear
         on right: 35 36
     FIELD (54)
         on left: 39 40
-        on right: 37
+        on right: 37 38
     REPEAT (55)
         on left: 41 42 43
         on right: 40
@@ -751,7 +751,7 @@ State 61
 
 State 62
 
-   38 NamedField: ID • ":" ID
+   38 NamedField: ID • ":" FIELD
    39 FIELD: ID •
 
     ":"  shift, and go to state 72
@@ -846,16 +846,19 @@ State 71
 
 State 72
 
-   38 NamedField: ID ":" • ID
+   38 NamedField: ID ":" • FIELD
 
-    ID  shift, and go to state 78
+    ID      shift, and go to state 78
+    "("  shift, and go to state 63
+
+    FIELD  go to state 79
 
 
 State 73
 
    40 FIELD: "(" NamedFields • ")" REPEAT
 
-    ")"  shift, and go to state 79
+    ")"  shift, and go to state 80
 
 
 State 74
@@ -866,7 +869,7 @@ State 74
     "("  shift, and go to state 63
     "%empty"  shift, and go to state 64
 
-    RHS          go to state 80
+    RHS          go to state 81
     Production   go to state 66
     NamedFields  go to state 67
     NamedField   go to state 68
@@ -884,11 +887,11 @@ State 76
 
    33 Production: NamedFields Action • Precedence
 
-    "%prec"  shift, and go to state 81
+    "%prec"  shift, and go to state 82
 
     $default  reduce using rule 46 (Precedence)
 
-    Precedence  go to state 82
+    Precedence  go to state 83
 
 
 State 77
@@ -900,72 +903,79 @@ State 77
 
 State 78
 
-   38 NamedField: ID ":" ID •
+   39 FIELD: ID •
 
-    $default  reduce using rule 38 (NamedField)
+    $default  reduce using rule 39 (FIELD)
 
 
 State 79
 
-   40 FIELD: "(" NamedFields ")" • REPEAT
+   38 NamedField: ID ":" FIELD •
 
-    "?"  shift, and go to state 83
-    "*"  shift, and go to state 84
-    "+"  shift, and go to state 85
-
-    REPEAT  go to state 86
+    $default  reduce using rule 38 (NamedField)
 
 
 State 80
+
+   40 FIELD: "(" NamedFields ")" • REPEAT
+
+    "?"  shift, and go to state 84
+    "*"  shift, and go to state 85
+    "+"  shift, and go to state 86
+
+    REPEAT  go to state 87
+
+
+State 81
 
    32 RHS: Production "|" RHS •
 
     $default  reduce using rule 32 (RHS)
 
 
-State 81
+State 82
 
    47 Precedence: "%prec" • ID
 
-    ID  shift, and go to state 87
+    ID  shift, and go to state 88
 
 
-State 82
+State 83
 
    33 Production: NamedFields Action Precedence •
 
     $default  reduce using rule 33 (Production)
 
 
-State 83
+State 84
 
    41 REPEAT: "?" •
 
     $default  reduce using rule 41 (REPEAT)
 
 
-State 84
+State 85
 
    42 REPEAT: "*" •
 
     $default  reduce using rule 42 (REPEAT)
 
 
-State 85
+State 86
 
    43 REPEAT: "+" •
 
     $default  reduce using rule 43 (REPEAT)
 
 
-State 86
+State 87
 
    40 FIELD: "(" NamedFields ")" REPEAT •
 
     $default  reduce using rule 40 (FIELD)
 
 
-State 87
+State 88
 
    47 Precedence: "%prec" ID •
 

@@ -1,13 +1,8 @@
 
-%notation  Small
-%package   small.Small
-%path      "small"
-
-%dialect   "host dialect: bootstrap syntax or stage1 or stage2 syntax"
-%scalalr   "scalalr: scalalrgen -boot or -flab"
+package small.Small
+object Scanner{
 
 
-%include {
    import org.sufrin.utility.{SourceTextCursor}
    import org.sufrin.scalalr.SourceLocation
 
@@ -46,16 +41,30 @@
     }
 
 
+
+trait Token extends org.sufrin.scalalr.Lexeme { val value: Any ; val symbol: Int } 
+case object $end extends Token { val value = (); val symbol = 0 }
+case object error extends Token { val value = (); val symbol = 1 }
+case object UNDEF extends Token { val value = (); val symbol = 2 }
+case class ID(value: String) extends Token { val symbol = 3 }
+case object `;` extends Token { val value = (); val symbol = 4 }
+case class LEXICALERROR(value: String) extends Token { val symbol = 5 }
+// MAP SYMBOL NUMBERS TO NAMES
+val symbolName: collection.immutable.Map[Int, String] = {
+     import org.sufrin.utility.ArrayMap
+    val arr = new Array[String](10)
+         locally {
+          arr(0) = "$end"
+          arr(1) = "error"
+          arr(2) = "UNDEF"
+          arr(3) = "ID"
+          arr(4) = "`;`"
+          arr(5) = "LEXICALERROR"
+          arr(6) = "$accept"
+          arr(7) = "top"
+          arr(8) = "ids"
+          arr(9) = "idList"
+         } // locally
+         ArrayMap(arr)
+     }
 }
-
-%token ID(String) ";" LEXICALERROR(String)
-
-%rules
-%include {
- // after rules
-}
-
-top: Unit = ids { println($ids) };
-ids:(List[String]) = ids: (';' ID)+ { $ids };
-
-

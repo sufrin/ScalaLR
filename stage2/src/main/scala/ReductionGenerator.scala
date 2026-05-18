@@ -1,7 +1,7 @@
 package org.sufrin.scalalr
 package stage2
 
-import org.sufrin.scalalr.stage2.AST.{NamedField, Notation, mangle, NoType}
+import org.sufrin.scalalr.stage2.AST.{Name, NamedField, NoType, Notation, mangle}
 import org.sufrin.scalalr.stage2.Generator.warn
 import org.sufrin.utility.SourceCode
 
@@ -69,7 +69,22 @@ class ReductionGenerator(notation: Notation, symbolTables: SymbolTables) extends
         out(s" case $productionNum => \n  { case ${pat}")
 
         production.reduction match {
-          case None => out("None }")
+          // No explicit result expression
+          case None =>
+            production.symbols.length match {
+              case 1 =>
+                val field = production.symbols.head
+                val result: Name  =
+                field.theFieldName match {
+                  case Some(name) => name
+                  case None       => field.theField
+                }
+                gen(s" ${mangle(result.forScala)} }")
+              case _ =>
+                warn(s"No obvious value for reduction at: ${production.location}")
+                gen(" None }")
+            }
+
           case Some(expression) =>
             val mangled = expression.mangle
             if (mangled.size + pat.size < 80) out(s" ${mangled} } ", false) else out(s"        ${mangled}\n  }")

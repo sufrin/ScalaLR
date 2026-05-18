@@ -288,7 +288,7 @@
         <rhs>
           <symbol>ID</symbol>
           <symbol>TOK-13</symbol>
-          <symbol>ID</symbol>
+          <symbol>FIELD</symbol>
         </rhs>
       </rule>
       <rule number="39" usefulness="useful">
@@ -1884,10 +1884,14 @@
     <state number="72">
       <itemset>
         <item rule-number="38" dot="2"/>
+        <item rule-number="39" dot="0"/>
+        <item rule-number="40" dot="0"/>
       </itemset>
       <actions>
         <transitions>
           <transition type="shift" symbol="ID" state="78"/>
+          <transition type="shift" symbol="TOK-16" state="63"/>
+          <transition type="goto" symbol="FIELD" state="79"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -1901,7 +1905,7 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="TOK-17" state="79"/>
+          <transition type="shift" symbol="TOK-17" state="80"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -1928,7 +1932,7 @@
           <transition type="shift" symbol="ID" state="62"/>
           <transition type="shift" symbol="TOK-16" state="63"/>
           <transition type="shift" symbol="TOK-22" state="64"/>
-          <transition type="goto" symbol="RHS" state="80"/>
+          <transition type="goto" symbol="RHS" state="81"/>
           <transition type="goto" symbol="Production" state="66"/>
           <transition type="goto" symbol="NamedFields" state="67"/>
           <transition type="goto" symbol="NamedField" state="68"/>
@@ -1968,8 +1972,8 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="TOK-31" state="81"/>
-          <transition type="goto" symbol="Precedence" state="82"/>
+          <transition type="shift" symbol="TOK-31" state="82"/>
+          <transition type="goto" symbol="Precedence" state="83"/>
         </transitions>
         <errors/>
         <reductions>
@@ -1995,6 +1999,20 @@
 
     <state number="78">
       <itemset>
+        <item rule-number="39" dot="1"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="39" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="79">
+      <itemset>
         <item rule-number="38" dot="3"/>
       </itemset>
       <actions>
@@ -2007,7 +2025,7 @@
       <solved-conflicts/>
     </state>
 
-    <state number="79">
+    <state number="80">
       <itemset>
         <item rule-number="40" dot="3"/>
         <item rule-number="41" dot="0"/>
@@ -2016,10 +2034,10 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="TOK-36" state="83"/>
-          <transition type="shift" symbol="TOK-37" state="84"/>
-          <transition type="shift" symbol="TOK-38" state="85"/>
-          <transition type="goto" symbol="REPEAT" state="86"/>
+          <transition type="shift" symbol="TOK-36" state="84"/>
+          <transition type="shift" symbol="TOK-37" state="85"/>
+          <transition type="shift" symbol="TOK-38" state="86"/>
+          <transition type="goto" symbol="REPEAT" state="87"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -2027,7 +2045,7 @@
       <solved-conflicts/>
     </state>
 
-    <state number="80">
+    <state number="81">
       <itemset>
         <item rule-number="32" dot="3"/>
       </itemset>
@@ -2041,13 +2059,13 @@
       <solved-conflicts/>
     </state>
 
-    <state number="81">
+    <state number="82">
       <itemset>
         <item rule-number="47" dot="1"/>
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="87"/>
+          <transition type="shift" symbol="ID" state="88"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -2055,7 +2073,7 @@
       <solved-conflicts/>
     </state>
 
-    <state number="82">
+    <state number="83">
       <itemset>
         <item rule-number="33" dot="3"/>
       </itemset>
@@ -2069,7 +2087,7 @@
       <solved-conflicts/>
     </state>
 
-    <state number="83">
+    <state number="84">
       <itemset>
         <item rule-number="41" dot="1"/>
       </itemset>
@@ -2083,7 +2101,7 @@
       <solved-conflicts/>
     </state>
 
-    <state number="84">
+    <state number="85">
       <itemset>
         <item rule-number="42" dot="1"/>
       </itemset>
@@ -2097,7 +2115,7 @@
       <solved-conflicts/>
     </state>
 
-    <state number="85">
+    <state number="86">
       <itemset>
         <item rule-number="43" dot="1"/>
       </itemset>
@@ -2111,7 +2129,7 @@
       <solved-conflicts/>
     </state>
 
-    <state number="86">
+    <state number="87">
       <itemset>
         <item rule-number="40" dot="4"/>
       </itemset>
@@ -2125,7 +2143,7 @@
       <solved-conflicts/>
     </state>
 
-    <state number="87">
+    <state number="88">
       <itemset>
         <item rule-number="47" dot="2"/>
       </itemset>

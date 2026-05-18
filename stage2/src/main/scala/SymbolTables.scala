@@ -88,20 +88,16 @@ class SymbolTables(notation: Notation) {
 
     if (logGeneration contains "sym") {
       println("\n// Symbols and their types in order of appearance")
+      val width = (for {(name, ty) <- symbolType} yield name.toString.size).max
+      for {(name, ty) <- symbolType} println(s"$name: ${" " * (width - name.toString.size)} $ty")
+    }
 
-      {
-        val width = (for {(name, ty) <- symbolType} yield name.toString.size).max
-        for {(name, ty) <- symbolType} println(s"$name: ${" " * (width - name.toString.size)} $ty")
-      }
-
-      println("\n// Nonterminals and their definitions")
-
-      {
-        val width = (for {(name, rhs) <- nonTerminalDefinition} yield name.toString.size).max
-        for {(name, rhs) <- nonTerminalDefinition; prod <- rhs} {
-          println(s"$name ${" " * (width - name.toString.size)} = $prod")
-        }
-      }
+    if (logGeneration.contains("")) {
+        println("\n// Nonterminals and their definitions")
+          val width = (for {(name, rhs) <- nonTerminalDefinition} yield name.toString.size).max
+          for {(name, rhs) <- nonTerminalDefinition; prod <- rhs} {
+            println(s"$name ${" " * (width - name.toString.size)} = $prod")
+          }
     }
 
     fatalErrors==0

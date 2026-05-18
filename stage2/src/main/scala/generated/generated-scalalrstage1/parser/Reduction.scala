@@ -211,9 +211,9 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
   { case List(dol$FIELD: Name) => 
           NamedField(theFieldName = None, theField = dol$FIELD, dol$START) 
   }
- /* NamedField: NamedField = theFieldName: ID ":" theName: ID {  NamedField(theFieldName = Some($theFieldName.warnQuoted), $theName, $START) } */
+ /* NamedField: NamedField = theFieldName: ID ":" theName: FIELD {  NamedField(theFieldName = Some($theFieldName.warnQuoted), $theName, $START) } */
  case 38 => 
-  { case List(dol$theFieldName: org.sufrin.scalalr.stage2.AST.Name, _, dol$theName: org.sufrin.scalalr.stage2.AST.Name) => 
+  { case List(dol$theFieldName: org.sufrin.scalalr.stage2.AST.Name, _, dol$theName: Name) => 
           NamedField(theFieldName = Some(dol$theFieldName.warnQuoted), dol$theName, dol$START) 
   }
  /* FIELD: Name = ID {  $ID } */
@@ -222,7 +222,7 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
  /* FIELD: Name = "(" NamedFields ")" REPEAT {  expandRepeated($NamedFields, $REPEAT, $START, $END) } */
  case 40 => 
   { case List(_, dol$NamedFields: List[NamedField @unchecked], _, dol$REPEAT: Repeat) => 
-          expandRepeated(dol$NamedFields, dol$REPEAT, dol$START, dol$END) 
+          synthesiseRepeated(dol$NamedFields, dol$REPEAT, dol$START, dol$END)
   }
  /* REPEAT: Repeat = "?" {  MaybeOne } */
  case 41 => 
@@ -354,7 +354,7 @@ def parsetreereduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  
  case 37 => 
   { case trees$trees => PARSETREE("""NamedField: NamedField = FIELD {  NamedField(theFieldName = None, theField = $FIELD, $START) }""", 37, trees$trees ) }
  case 38 => 
-  { case trees$trees => PARSETREE("""NamedField: NamedField = theFieldName: ID ":" theName: ID {  NamedField(theFieldName = Some($theFieldName.warnQuoted), $theName, $START) }""", 38, trees$trees ) }
+  { case trees$trees => PARSETREE("""NamedField: NamedField = theFieldName: ID ":" theName: FIELD {  NamedField(theFieldName = Some($theFieldName.warnQuoted), $theName, $START) }""", 38, trees$trees ) }
  case 39 => 
   { case trees$trees => PARSETREE("""FIELD: Name = ID {  $ID }""", 39, trees$trees ) }
  case 40 => 

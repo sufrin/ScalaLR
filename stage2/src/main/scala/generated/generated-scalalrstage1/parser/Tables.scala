@@ -23,9 +23,10 @@ val GOTOTABLE: Int => Int => Int = {
   case 63 => { case 52 => 73;  case 53 => 68;  case 54 => 69;  }
   case 67 => { case 56 => 76;  }
   case 68 => { case 52 => 77;  case 53 => 68;  case 54 => 69;  }
-  case 74 => { case 50 => 80;  case 51 => 66;  case 52 => 67;  case 53 => 68;  case 54 => 69;  }
-  case 76 => { case 57 => 82;  }
-  case 79 => { case 55 => 86;  }
+  case 72 => { case 54 => 79;  }
+  case 74 => { case 50 => 81;  case 51 => 66;  case 52 => 67;  case 53 => 68;  case 54 => 69;  }
+  case 76 => { case 57 => 83;  }
+  case 80 => { case 55 => 87;  }
   case state => { case symbol => throw org.sufrin.scalalr.ErroneousGoto(state, symbol)}
   }
 
@@ -103,22 +104,23 @@ val ACTIONTABLE: Int => Int => Action = {
   case 69 => { case _ => REDUCE(53,37,1);  }
   case 70 => { case _ => REDUCE(58,49,4);  }
   case 71 => { case _ => REDUCE(59,53,3);  }
-  case 72 => { case 3 => SHIFT(78);  case _ => ERROR;  }
-  case 73 => { case 17 => SHIFT(79);  case _ => ERROR;  }
+  case 72 => { case 3 => SHIFT(78);  case 16 => SHIFT(63);  case _ => ERROR;  }
+  case 73 => { case 17 => SHIFT(80);  case _ => ERROR;  }
   case 74 => { case 3 => SHIFT(62);  case 16 => SHIFT(63);  case 22 => SHIFT(64);  case _ => ERROR;  }
   case 75 => { case _ => REDUCE(56,45,1);  }
-  case 76 => { case 31 => SHIFT(81);  case _ => REDUCE(57,46,0);  }
+  case 76 => { case 31 => SHIFT(82);  case _ => REDUCE(57,46,0);  }
   case 77 => { case _ => REDUCE(52,36,2);  }
-  case 78 => { case _ => REDUCE(53,38,3);  }
-  case 79 => { case 36 => SHIFT(83);  case 37 => SHIFT(84);  case 38 => SHIFT(85);  case _ => ERROR;  }
-  case 80 => { case _ => REDUCE(50,32,3);  }
-  case 81 => { case 3 => SHIFT(87);  case _ => ERROR;  }
-  case 82 => { case _ => REDUCE(51,33,3);  }
-  case 83 => { case _ => REDUCE(55,41,1);  }
-  case 84 => { case _ => REDUCE(55,42,1);  }
-  case 85 => { case _ => REDUCE(55,43,1);  }
-  case 86 => { case _ => REDUCE(54,40,4);  }
-  case 87 => { case _ => REDUCE(57,47,2);  }
+  case 78 => { case _ => REDUCE(54,39,1);  }
+  case 79 => { case _ => REDUCE(53,38,3);  }
+  case 80 => { case 36 => SHIFT(84);  case 37 => SHIFT(85);  case 38 => SHIFT(86);  case _ => ERROR;  }
+  case 81 => { case _ => REDUCE(50,32,3);  }
+  case 82 => { case 3 => SHIFT(88);  case _ => ERROR;  }
+  case 83 => { case _ => REDUCE(51,33,3);  }
+  case 84 => { case _ => REDUCE(55,41,1);  }
+  case 85 => { case _ => REDUCE(55,42,1);  }
+  case 86 => { case _ => REDUCE(55,43,1);  }
+  case 87 => { case _ => REDUCE(54,40,4);  }
+  case 88 => { case _ => REDUCE(57,47,2);  }
   case _ => { case _ => ERROR }
   }
 }

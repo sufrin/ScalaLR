@@ -7,6 +7,6 @@ PATH=$ROOT/scripts:$PATH
 scalalrstage2   -Lsym -html --output=generated small.scalalr
 scala-cli run runsmall.scala generated
 
-scalalrstage2   -Lsym -html --output=generated-small small-hand.scalalr
-scala-cli run runsmall.scala generated-small
+#scalalrstage2   -Lsym -html --output=generated-hand small-hand.scalalr
+#scala-cli run runsmall.scala generated-hand
 exit

@@ -147,12 +147,13 @@ NamedFields:(List[NamedField]) =
     | NamedField NamedFields { $NamedField :: $NamedFields }
 
 
-NamedField: NamedField = FIELD                            { NamedField(theFieldName = None, theField = $FIELD, $START) }
-                       | theFieldName: ID ':' theName: ID { NamedField(theFieldName = Some($theFieldName.warnQuoted), $theName, $START) }
+NamedField: NamedField = FIELD                               { NamedField(theFieldName = None, theField = $FIELD, $START) }
+                       | theFieldName: ID ':' theName: FIELD { NamedField(theFieldName = Some($theFieldName.warnQuoted), $theName, $START) }
 
-
+// NB: synthesiseRepeated yields the name of a new rule, and appends to synthesisedRules
+//     definitions of the one or more rules needed by its right hand side.
 FIELD: Name =   ID                            { $ID }
-            |   '(' NamedFields ')'  REPEAT   { expandRepeated($NamedFields, $REPEAT, $START, $END) }
+            |   '(' NamedFields ')'  REPEAT   { synthesiseRepeated($NamedFields, $REPEAT, $START, $END) }
 
 REPEAT: Repeat  = '?'       { MaybeOne }
                 | '*'       { NoneOrMore }

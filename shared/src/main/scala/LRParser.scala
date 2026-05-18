@@ -7,6 +7,7 @@ trait Lexeme { val value: Any ; val symbol: Int }
 case class SourceLocation(line: Int, col: Int) { override def toString: String = s"@$line.$col"}
 case class ErroneousGoto(state: Int, symbol: Int) extends Throwable
 
+
 /**
  * This module provides two methods of parsing material according to a grammar specified
  * in the `scalalr` notation. The `Pull` algorithm parses until the material is accepted or the first

@@ -1,13 +1,14 @@
 /**
- * Stage 2 language
+ * Manages code generation for the Stage 2 language
  *
- * Parser:     built by stage1
+ * Parser:     built by stage1 or stage2
  * Tree:       stage2.AST
  * Generator:  stage2.AST => Scala
+ *
+ *
+ *
  */
 
-// TODO:  repackage mapping construction out of CodeGenerator into a separate class: NotationInformation
-//
 
 package org.sufrin.scalalr
 package stage2
@@ -42,8 +43,8 @@ object Generator extends org.sufrin.logging.SourceLoggable {
 
   def warning(what: String): Unit = println(s"WARNING: $what")
 
-  var fieldNumber: Int = 0
-  var delayedRules:  List[DelayedRule] = Nil
+  var fieldNumber:     Int = 0
+  var syntheticRules:  List[DelayedRule] = Nil
 
   case class DelayedRule(theName: Name, fields: List[NamedField], repeatType: Repeat, START: SourceLocation)
 
@@ -54,10 +55,10 @@ object Generator extends org.sufrin.logging.SourceLoggable {
     Type("List", List(symbolType.asInstanceOf[Type]), START)
 
 
-  def expandRepeated(fields: List[NamedField], repeatType: Repeat, START: SourceLocation, END: SourceLocation): Name = {
+  def synthesiseRepeated(fields: List[NamedField], repeatType: Repeat, START: SourceLocation, END: SourceLocation): Name = {
       fieldNumber += 1
       val theName = Name(s"REP$fieldNumber", false, START)
-      delayedRules ::= DelayedRule(theName, fields, repeatType, START)
+      syntheticRules ::= DelayedRule(theName, fields, repeatType, START)
       theName
   }
 
@@ -96,15 +97,51 @@ object Generator extends org.sufrin.logging.SourceLoggable {
         val revlhs    = TypedNonterminal(theName, ListType(theType, START), START)
         val orNothing: List[Production] = if (repeatType==NoneOrMore) List(Production(Nil, Some(Expression("Nil")), None, START)) else Nil
         val revrhs:    Production = Production(List(NamedField(None, theListName, START)), Some(Expression(s"$$$theListName.reverse")), None, START)
-        val res = List(Rule(lhs, rhs, START), Rule(revlhs, revrhs::orNothing, START))
-        res.foreach(r => println(r.toString))
-        res
+        List(Rule(lhs, rhs, START), Rule(revlhs, revrhs::orNothing, START))
+    }
+  }
+
+  /**
+   *
+   * Invent/infer a reduction for a production that lacks one
+   * This is only effective if the production has exactly one symbol
+   * TODO: We could do better by taking the only value-carrying symbol (if there is one)
+   */
+  def inferReduction(symbolTable: SymbolTables)(rule: Rule): Rule = {
+    if (rule.rhs.forall(_.reduction.isDefined)) rule else {
+      val newRHS =
+      for { production <- rule.rhs } yield
+          production.symbols.length match {
+            case 1 =>
+              val field = production.symbols.head
+              val result: Name  =
+                field.theFieldName match {
+                  case Some(name) => name
+                  case None       => field.theField
+                }
+              production.copy(reduction = Some(Expression(s"$$$result")))
+            case _ =>
+              warn(s"No obvious value for reduction at: ${production.location}")
+              production.copy(reduction = Some(Expression(" None ")))
+          }
+      rule.copy(rhs=newRHS)
     }
   }
 
   def expandCode(notation: Notation): Notation = {
     val symbolTables = new SymbolTables(notation)
-    notation.copy(theRules = notation.theRules ++ delayedRules.reverse.flatMap(forceRule(symbolTables)))
+    val expandedRules = notation.theRules ++ syntheticRules.reverse.flatMap(forceRule(symbolTables))
+    val inferencedRules = expandedRules.map(inferReduction(symbolTables))
+    if (syntheticRules.nonEmpty && Generator.logGeneration.contains("syn")) {
+      var i: Int = 0
+      val width = (for { Rule(lhs, rhs, _) <- inferencedRules} yield lhs.toString.size).max
+
+      for {Rule(lhs, rhs, _) <- inferencedRules; prod <- rhs} {
+        i += 1
+        println(f"$i%03d: ${lhs.toString} ${" " * (width - lhs.toString.size)} = $prod")
+      }
+    }
+    notation.copy(theRules = inferencedRules)
   }
 
   def generateCode(notation: Notation): Unit = {
@@ -170,7 +207,8 @@ object Generator extends org.sufrin.logging.SourceLoggable {
             |-c         generate detailed conflict report
             |
             |LOGGING OPTIONS
-            |-Lsym      inventory the symbols
+            |-Lsym      show an inventory of the symbols, their types, and their definitions
+            |-Lsyn      show the rules after code synthesis for repeated constructions
             |
             |OUTPUTPATH is set by one of
             |-p         OUTPUTPATH

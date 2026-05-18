@@ -28,7 +28,7 @@ object AST {
 
   case class Type(name: String, parameters: Seq[Type], location: SourceLocation)  extends SymbolType {
     override val toString: String = if (parameters.isEmpty) s"$name$location" else parameters.map(_.toString).mkString(s"$name[", ",", s"]$location")
-    def scalaTypeName: String = if (parameters.isEmpty) name else  parameters.map(_.scalaParameterTypeName).mkString(s"$name[", ",", s"]")
+    def scalaTypeName: String = if (parameters.isEmpty) name else  parameters.map(_.scalaParameterTypeName).mkString(s"$name[", ",", "]")
     def scalaParameterTypeName: String = s"$scalaTypeName @unchecked"
     def isUntyped: Boolean = false
   }
@@ -111,7 +111,7 @@ object AST {
 
   case class TypedNonterminal(theName: Name, theType: SymbolType=NoType, location: SourceLocation) extends Symbol {
     override def toString: String =
-      if (theType==NoType) theName.toString else s"$theName: ${theType.toString}"
+      if (theType==NoType) theName.toString else s"$theName: ${theType.scalaTypeName}"
   }
 
   case class NamedField(theFieldName: Option[Name], theField: Name, location: SourceLocation) {

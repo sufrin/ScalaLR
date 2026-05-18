@@ -135,7 +135,7 @@ object test5 extends Test()(
 
      """)
 
-object textExpand extends Test("-pp -html -Lsym")(
+object textExpand extends Test("-Lsyn -html -Lsym")(
   """%notation  expand
      %package   expand
      %path      "expand"
@@ -152,8 +152,9 @@ object textExpand extends Test("-pp -html -Lsym")(
      G = (',' A B )*
   """)
 
-object testSmall extends Test("-html -Lsym")(
+object testSmall extends Test("--output=examples/Bongo/generated/ -html -Lsym -Lexpanded")(
   """
+
 %notation  Small
 %package   small.Small
 %path      "small"
@@ -212,6 +213,8 @@ object testSmall extends Test("-html -Lsym")(
 
 top: Unit = ids { println($ids) };
 ids:(List[String]) = (';' ID)+;
+
+
 
   """)
 

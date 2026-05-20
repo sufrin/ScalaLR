@@ -88,7 +88,7 @@ object Normalization {
   /**
    *
    * Invent/infer a reduction for a production that lacks one
-   * This is only effective if the production has exactly one symbol
+   * This is only effective if the production has exactly one value-carrying symbol
    */
   def inferReduction(symbolTable: SymbolTables)(rule: Rule): Rule = {
     def hasNoType(field: NamedField): Boolean = symbolTable.symbolType.getOrElse(field.theField, NoType)==NoType
@@ -123,7 +123,7 @@ object Normalization {
               warn(s"""\n Using universal default reduction expression value \"()\" for the production at: ${production.location}
                       | this is because the production is empty.
                       | Recommended remedy: specify the reduction expression explicitly.
-                      | """)
+                      | """.stripMargin)
               production.copy(reduction = Some(Expression(" ()) ")))
             case 1 =>
               val field = production.symbols.head

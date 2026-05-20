@@ -119,7 +119,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.testInfer">
+  <component name="RunManager" selected="Application.testTiny">
     <configuration name="testAuto" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testAuto" />
       <module name="scalalr.stage2" />
@@ -172,8 +172,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="testRegex" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testRegex" />
+    <configuration name="testTiny" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testTiny" />
       <module name="scalalr.stage2" />
       <extension name="coverage">
         <pattern>
@@ -200,11 +200,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.testTiny" />
         <item itemvalue="Application.testInfer" />
         <item itemvalue="Application.testAutoMisc" />
         <item itemvalue="Application.testAutoWarn" />
         <item itemvalue="Application.testAuto" />
-        <item itemvalue="Application.testRegex" />
       </list>
     </recent_temporary>
   </component>

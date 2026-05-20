@@ -23,7 +23,7 @@ object Normalization {
 
   def synthesiseRepeated(fields: List[NamedField], repeatType: Repeat, START: SourceLocation, END: SourceLocation): Name = {
     synthNumber += 1
-    val theName = Name(s"S$$$synthNumber", false, START)
+    val theName = Name(s"S_$synthNumber", false, START)
     syntheticRules ::= DelayedRule(theName, fields, repeatType, START)
     theName
   }
@@ -54,7 +54,7 @@ object Normalization {
           case None        => field.theField
           case Some(other) => other
         }
-        val theListName = Name(theName.forScala++"LIST", false, START)
+        val theListName = Name(theName.forScala++"_L", false, START)
         val lhs = TypedNonterminal(theListName, ListType(theType, START), START)
         val rhs = List(
           Production(fields.iterator.filterNot(hasNoType).toList,    Some(Expression(s"List($$$theFieldName)")), None, START),
@@ -85,7 +85,7 @@ object Normalization {
         val scalaType = theType.scalaTypeName
         field.theFieldName match {
           case Some(name) =>
-            if (Type == NoType) {
+            if (theType == NoType) {
               warn(s"Named symbol ${name}: ${Type} carries no value")
               Expression(s"${mangle(name)}")
             }
@@ -93,7 +93,7 @@ object Normalization {
               Expression(s"${mangle(name)}")
 
           case None =>
-            if (Type == NoType) Expression("None") else Expression(s"${mangle(field.theField)}")
+            if (theType == NoType) Expression("None") else Expression(s"${mangle(field.theField)}")
         }
     }
 

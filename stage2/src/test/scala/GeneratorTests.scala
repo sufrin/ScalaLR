@@ -135,7 +135,7 @@ object test5 extends Test()(
 
      """)
 
-object textExpand extends Test("-Lsyn -html -Lsym")(
+object textExpand extends Test("-Lsyn -html -Lsym -Lsyn")(
   """%notation  expand
      %package   expand
      %path      "expand"
@@ -152,7 +152,7 @@ object textExpand extends Test("-Lsyn -html -Lsym")(
      G = (',' A B )*
   """)
 
-object testSmall extends Test("--output=examples/Bongo/generated/ -html -Lsym -Lexpanded")(
+object testSmall extends Test("-rose --output=examples/Lists/generated/ -html -Lsym -Lsyn")(
   """
 
 %notation  Small
@@ -160,7 +160,7 @@ object testSmall extends Test("--output=examples/Bongo/generated/ -html -Lsym -L
 %path      "small"
 
 %dialect   "host dialect: bootstrap syntax or stage1 or stage2 syntax"
-%scalalr   "scalalr: scalalrgen -boot or -flab"
+%scalalr   ""
 
 
 %include {

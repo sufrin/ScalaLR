@@ -2,12 +2,12 @@
 package scalalr.stage2
 object Reduction {
 
- import org.sufrin.scalalr.SourceLocation
  import org.sufrin.scalalr.stage2.AST._
  import org.sufrin.scalalr.stage2.Normalization._
- import org.sufrin.utility.PrettyPrint._
- import org.sufrin.utility.SourceTextCursor
  import scalalr.stage2.Scanner
+ import org.sufrin.utility.SourceTextCursor
+ import org.sufrin.scalalr.SourceLocation
+ import org.sufrin.utility.PrettyPrint._
 
  def makeTupleType(types: Seq[Type], location: SourceLocation): Type =
      types.size match {

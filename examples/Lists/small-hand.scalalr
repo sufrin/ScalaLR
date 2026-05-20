@@ -55,7 +55,7 @@
  // after rules
 }
 
-top: Unit = ids { println($ids) };
+top  = ids;
 ids:(List[String]) = idList { $idList.reverse };
 idList:(List[String]) = ID { List($ID) } | idList ";" ID { $ID :: $idList };
 

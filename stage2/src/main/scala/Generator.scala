@@ -28,6 +28,7 @@ object Generator extends org.sufrin.logging.SourceLoggable {
   var bisonHtml: Boolean = false
   var logParse: Boolean = false
   var logGeneration: List[String] = Nil
+  var roseTree: Boolean = false
 
   @inline def bisonTokenToInt(token: String): Int   = token match {
     case s"T-$num"  => num.toInt
@@ -86,6 +87,7 @@ object Generator extends org.sufrin.logging.SourceLoggable {
       else if (arg == "-##" && arguments.nonEmpty) { startColNumber = nextArgument().toInt }
       else if (arg == "-s" && arguments.nonEmpty) processScalaLR(SourceTextCursor(nextArgument().iterator).withStartLocation(startLineNumber, startColNumber))
       else if (arg == "-log")               logParse = true
+      else if (arg == "-rose")              roseTree = true
       else if (arg.startsWith("-L"))        logGeneration ::= arg.replace("-L", "")
       else if (arg == "-pp")                pretty = true
       else if (arg == "-html")              bisonHtml = true
@@ -105,6 +107,7 @@ object Generator extends org.sufrin.logging.SourceLoggable {
             |-log       log the input source parse
             |-html      output grammar report in html form
             |-c         generate detailed conflict report
+            |-rose      generate a RoseTreeReduction.reduction
             |
             |LOGGING OPTIONS
             |-Lsym      show an inventory of the symbols, their types, and their definitions

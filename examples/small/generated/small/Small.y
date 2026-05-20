@@ -9,7 +9,7 @@
 %token T-003 T-004 T-005
 %%
 T-007: T-008 // top = ids
-T-008: T-010 // ids = REP1
-T-009: T-003 // REP1LIST = ID
-T-009: T-009 T-004 T-003 // REP1LIST = REP1LIST `;` ID
-T-010: T-009 // REP1 = REP1LIST
+T-008: T-010 // ids = S$1
+T-009: T-003 // S$1LIST = ID
+T-009: T-009 T-004 T-003 // S$1LIST = S$1LIST `;` ID
+T-010: T-009 // S$1 = S$1LIST

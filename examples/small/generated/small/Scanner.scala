@@ -46,9 +46,9 @@ trait Token extends org.sufrin.scalalr.Lexeme { val value: Any ; val symbol: Int
 case object $end extends Token { val value = (); val symbol = 0 }
 case object error extends Token { val value = (); val symbol = 1 }
 case object UNDEF extends Token { val value = (); val symbol = 2 }
-case class ID(value: String) extends Token { val symbol = 3 }
+case class ID(value: String@207.16) extends Token { val symbol = 3 }
 case object `;` extends Token { val value = (); val symbol = 4 }
-case class LEXICALERROR(value: String) extends Token { val symbol = 5 }
+case class LEXICALERROR(value: String@207.41) extends Token { val symbol = 5 }
 // MAP SYMBOL NUMBERS TO NAMES
 val symbolName: collection.immutable.Map[Int, String] = {
      import org.sufrin.utility.ArrayMap
@@ -63,8 +63,8 @@ val symbolName: collection.immutable.Map[Int, String] = {
           arr(6) = "$accept"
           arr(7) = "top"
           arr(8) = "ids"
-          arr(9) = "REP1LIST"
-          arr(10) = "REP1"
+          arr(9) = "S$1LIST"
+          arr(10) = "S$1"
          } // locally
          ArrayMap(arr)
      }

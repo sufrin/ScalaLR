@@ -55,7 +55,6 @@
  // after rules
 }
 
-top: Unit = ids { println($ids) };
 ids:(List[String]) = ids: (';' ID)+ { $ids };
 
 

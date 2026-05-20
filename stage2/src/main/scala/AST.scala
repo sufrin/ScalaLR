@@ -23,6 +23,7 @@ object AST {
   trait SymbolType {
     def sourceTypeName: String
     def scalaTypeName: String
+
   }
 
   case class Type(name: String, parameters: Seq[Type], location: SourceLocation)  extends SymbolType {
@@ -109,7 +110,7 @@ object AST {
   case class TypedTerminal(theName: Name, theType: SymbolType=NoType, location: SourceLocation) extends Symbol {
     def isTyped: Boolean    = theType!=NoType
     def theTypeName: String = theType.toString
-    def theScalaTypeName: String = theType.toString
+    def theScalaTypeName: String = theType.scalaTypeName
     def sourceTypeName: String = theTypeName
   }
 

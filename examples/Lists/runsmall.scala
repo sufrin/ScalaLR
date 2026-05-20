@@ -11,6 +11,7 @@ object runsmall  {
   import org.sufrin.utility._
   import PrettyPrint._
   import small.Small.Components
+  import small.Small.RoseTreeReduction.{reduction=>roseTree}
   import small.Small.Scanner._
 
 
@@ -24,7 +25,15 @@ object runsmall  {
       parser.run(scanner.next).prettyPrint()
     }
 
-    if (false) {
+    if (true) {
+      println("-------\nPull parser with rose tree reduction\n-------")
+      val scanner: Scanner = Scanner(SourceTextCursor(source))
+      val parser = LRParser.Pull[Token](Components.withReduction(roseTree))(scanner.sourceLocation)
+      parser.logState = false
+      parser.run(scanner.next).prettyPrint()
+    }
+
+    if (true) {
       println("-------\nPush parser: showing internals at each transition\n-------")
       val scanner: Scanner = Scanner(SourceTextCursor(source))
       val parser = LRParser.Push[Token](Components)(scanner.sourceLocation)

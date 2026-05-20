@@ -147,6 +147,7 @@ class CodeGenerator(notation: Notation, symbolTables: SymbolTables) {
     import CodeGenerator.sourceToFile
     val targetPath = s"$thePath/$theNotationName"
     if (processGrammarWithBison(targetPath)) {
+      if (Generator.roseTree) sourceToFile(s"$thePath/RoseTreeReduction.scala")  (new RoseTreeReductionGenerator(notation, symbolTables))
       sourceToFile(s"$thePath/Reduction.scala")  (new ReductionGenerator(notation, symbolTables))
       sourceToFile(s"$thePath/Components.scala") (new ComponentsGenerator(notation))
       sourceToFile(s"$thePath/Tables.scala")     (new TableGenerator(targetPath, notation, symbolTables))

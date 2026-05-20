@@ -1,7 +1,7 @@
 package org.sufrin.scalalr
 package stage2
 
-import org.sufrin.scalalr.stage2.AST.{Expression, Name, NamedField, NoType, Notation, mangle}
+import org.sufrin.scalalr.stage2.AST.{Name, NamedField, NoType, Notation, mangle}
 import org.sufrin.scalalr.stage2.Generator.warn
 import org.sufrin.utility.SourceCode
 
@@ -17,8 +17,8 @@ import org.sufrin.utility.SourceCode
  * }
  */
 class ReductionGenerator(notation: Notation, symbolTables: SymbolTables) extends SourceCode {
-  import symbolTables.{symbolType}
   import notation.thePackage
+  import symbolTables.symbolType
   val theUnion = notation.theTokenType.name
   val theRules = notation.theRules
   val theRulesInclude = notation.theRulesInclude
@@ -98,22 +98,6 @@ class ReductionGenerator(notation: Notation, symbolTables: SymbolTables) extends
     out("\n }\n")
   }
 
-  def outTreeReduction(): Unit = {
-    out("case class PARSETREE(prod: String, rule: Int, trees:List[Any])")
-    out("def parsetreereduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufrin.scalalr.SourceLocation, n: Int): PartialFunction[List[Any], Any] = n match {")
-    var ruleNum = 0
-    for {rule <- theRules} {
-      // val lhsName = s"\"${rule.lhs.theName}\""
-      for {production <- rule.rhs} {
-        ruleNum += 1
-        val wholeProduction = s"${rule.lhs} = ${production}"
-        //out(s"\n // ${wholeProduction}")
-        out(s""" case $ruleNum => \n  { case trees$$trees => PARSETREE(\"\"\"$wholeProduction\"\"\", $ruleNum, trees$$trees ) }""")
-      }
-    }
-    out(" }\n")
-  }
-
   out(s"\npackage $thePackage\nobject Reduction {")
 
   out("\n")
@@ -124,3 +108,6 @@ class ReductionGenerator(notation: Notation, symbolTables: SymbolTables) extends
   //outTreeReduction()
   out("}\n")
 }
+
+
+

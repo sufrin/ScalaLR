@@ -3,8 +3,8 @@
 %package   small.Small
 %path      "small"
 
-%dialect   "host dialect: bootstrap syntax or stage1 or stage2 syntax"
-%scalalr   "scalalr: scalalrgen -boot or -flab"
+%dialect   "host dialect: stage2 syntax including regular extensions + * ?"
+%scalalr   ""
 
 
 %include {
@@ -55,7 +55,6 @@
  // after rules
 }
 
-top  = ids;
-ids:(List[String]) = idList { $idList.reverse };
-idList:(List[String]) = ID { List($ID) } | idList ";" ID { $ID :: $idList };
+ids:(List[String]) = ids: (';' ID)+ { $ids };
+
 

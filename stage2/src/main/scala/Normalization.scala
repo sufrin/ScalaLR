@@ -13,18 +13,25 @@ object Normalization {
   var synthNumber:     Int = 0
   var syntheticRules:  List[DelayedRule] = Nil
 
-  case class DelayedRule(theName: Name, fields: List[NamedField], repeatType: Repeat, START: SourceLocation)
+  case class DelayedRule(theName: Name, fields: List[NamedField], repeatType: Repeat, START: SourceLocation, END: SourceLocation)
 
   def OptionType(symbolType: SymbolType, START: SourceLocation): Type =
-    Type("Option", List(symbolType.asInstanceOf[Type]), START)
+    Type("Option", List(symbolType), START)
 
   def ListType(symbolType: SymbolType, START: SourceLocation): Type =
-    Type("List", List(symbolType.asInstanceOf[Type]), START)
+    Type("List", List(symbolType), START)
 
-  def synthesiseRepeated(fields: List[NamedField], repeatType: Repeat, START: SourceLocation, END: SourceLocation): Name = {
+  /**
+   * Generate (and yield) a synthetic rule for a production that recognises othe specified repeat
+   * of the given `fields`.
+   */
+  def syntheticRuleName(fields: List[NamedField], repeatType: Repeat, START: SourceLocation, END: SourceLocation): Name = {
     synthNumber += 1
     val theName = Name(s"S_$synthNumber", false, START)
-    syntheticRules ::= DelayedRule(theName, fields, repeatType, START)
+    val delayedFields = fields take 2
+    if (delayedFields != fields) warn(s"Shortening (${fields.mkString(" ")})$repeatType at $START...$END to (${delayedFields.mkString(" ")})$repeatType ")
+
+    syntheticRules ::= DelayedRule(theName, delayedFields, repeatType, START, END)
     theName
   }
 
@@ -48,21 +55,32 @@ object Normalization {
         List(Rule(lhs, rhs, START))
 
       case OneOrMore | NoneOrMore =>
-        val field = searchOrdered.next()
+        val field = searchOrdered.next() // the first named or typed field
         val theType = symbolTable.symbolType.getOrElse(field.theField, NoType)
         val theFieldName = field.theFieldName match {
           case None        => field.theField
           case Some(other) => other
         }
+
+        // force any "punctuation" symbol to the front of the body of the iteration
+        val reorderedFields = fields match {
+          case List(l, r) if (hasNoType(l))  =>
+            fields
+          case List(l, r) if (hasNoType(r))  =>
+            warn(s"Reordering ($l $r)$repeatType  at $START...$END to ($r $l)$repeatType (for natural left recursion)")
+            List(r, l)
+          case _ => fields
+        }
+
         val theListName = Name(theName.forScala++"_L", false, START)
         val lhs = TypedNonterminal(theListName, ListType(theType, START), START)
         val rhs = List(
           Production(fields.iterator.filterNot(hasNoType).toList,    Some(Expression(s"List($$$theFieldName)")), None, START),
-          Production(NamedField(None, theListName, START) :: fields, Some(Expression(s"$$$theFieldName :: $$$theListName")), None, START)
+          Production(NamedField(None, theListName, START) :: reorderedFields, Some(Expression(s"$$$theFieldName :: $$$theListName")), None, START)
         )
-        val revlhs    = TypedNonterminal(theName, ListType(theType, START), START)
+        val revlhs:    TypedNonterminal = TypedNonterminal(theName, ListType(theType, START), START)
         val orNothing: List[Production] = if (repeatType==NoneOrMore) List(Production(Nil, Some(Expression("Nil")), None, START)) else Nil
-        val revrhs:    Production = Production(List(NamedField(None, theListName, START)), Some(Expression(s"$$$theListName.reverse")), None, START)
+        val revrhs:    Production       = Production(List(NamedField(None, theListName, START)), Some(Expression(s"$$$theListName.reverse")), None, START)
         List(Rule(lhs, rhs, START), Rule(revlhs, revrhs::orNothing, START))
     }
   }
@@ -80,7 +98,7 @@ object Normalization {
       symbolTable.symbolType.get(field.theField) match {
         case None =>
           warn(s"Named symbol $field has no type")
-          Expression(" None ")
+          Expression(" () ")
         case Some(theType) =>
         val scalaType = theType.scalaTypeName
         field.theFieldName match {
@@ -101,6 +119,12 @@ object Normalization {
       val newRHS =
         for { production <- rule.rhs } yield
           production.symbols.length match {
+            case 0 =>
+              warn(s"""\n Using universal default reduction expression value \"()\" for the production at: ${production.location}
+                      | this is because the production is empty.
+                      | Recommended remedy: specify the reduction expression explicitly.
+                      | """)
+              production.copy(reduction = Some(Expression(" ()) ")))
             case 1 =>
               val field = production.symbols.head
               val result: Name  =
@@ -109,22 +133,32 @@ object Normalization {
                   case None       => field.theField
                 }
                 production.copy(reduction = Some(Expression(s"$$$result")))
-            case n if n>0 =>
-              val searchOrdered = production.symbols.filterNot(_.isAnonymous) ++ production.symbols.filterNot(hasNoType) ++ production.symbols
+            case n =>
+              val searchOrdered = production.symbols.filterNot(hasNoType)
               searchOrdered.length match {
                 case 0 =>
-                  warn(s"""Using default reduction expression value \"None\" for the reduction at: ${production.location}
-                           this is because the production has neither named nor value-carrying symbols""")
-                  production.copy(reduction = Some(Expression(" None ")))
-                case n if n>= 1 =>
-                  if (n>1)   warn(s"""Ambiguity for the reduction at: ${production.location}""")
-                  production.copy(reduction = Some(toExpression(searchOrdered.head)))
+                  warn(s"""\n Using universal default reduction expression value \"()\" for the production at: ${production.location}
+                          | this is because the production has no value-carrying symbols.
+                          | Recommended remedy: specify the reduction expression explicitly.""".stripMargin)
+                  production.copy(reduction = Some(Expression(" () ")))
+                case 1 =>
+                  val field = searchOrdered.head
+                  val result: Name  =
+                    field.theFieldName match {
+                      case Some(name) => name
+                      case None       => field.theField
+                    }
+                  production.copy(reduction = Some(Expression(s"$$$result")))
+                case n =>
+                  warn(
+                    s"""\n Using universal default reduction expression value \"()\" for the production $production at: ${production.location}
+                       | This is because the production's intended value cannot be determined (there is more than one value-carrying symbol).
+                       | Recommended remedy: specify the reduction expression explicitly.
+                       |""".stripMargin)
+                  production.copy(reduction =  Some(Expression(" () ")))
               }
 
-            case 0 =>
-              warn(s"""Using default reduction expression value \"None\" for the reduction at: ${production.location}
-                       this is because the production has an empty RHS""")
-              production.copy(reduction = Some(Expression(" None ")))
+
           }
       rule.copy(rhs=newRHS)
     }

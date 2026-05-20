@@ -219,10 +219,10 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
  /* FIELD: Name = ID {  $ID } */
  case 39 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) =>    dol$ID  } 
- /* FIELD: Name = "(" NamedFields ")" REPEAT {  synthesiseRepeated($NamedFields, $REPEAT, $START, $END) } */
+ /* FIELD: Name = "(" NamedFields ")" REPEAT {  syntheticRuleName($NamedFields, $REPEAT, $START, $END) } */
  case 40 => 
   { case List(_, dol$NamedFields: List[NamedField @unchecked], _, dol$REPEAT: Repeat) => 
-          synthesiseRepeated(dol$NamedFields, dol$REPEAT, dol$START, dol$END) 
+          syntheticRuleName(dol$NamedFields, dol$REPEAT, dol$START, dol$END) 
   }
  /* REPEAT: Repeat = "?" {  MaybeOne } */
  case 41 => 
@@ -358,7 +358,7 @@ def parsetreereduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  
  case 39 => 
   { case trees$trees => PARSETREE("""FIELD: Name = ID {  $ID }""", 39, trees$trees ) }
  case 40 => 
-  { case trees$trees => PARSETREE("""FIELD: Name = "(" NamedFields ")" REPEAT {  synthesiseRepeated($NamedFields, $REPEAT, $START, $END) }""", 40, trees$trees ) }
+  { case trees$trees => PARSETREE("""FIELD: Name = "(" NamedFields ")" REPEAT {  syntheticRuleName($NamedFields, $REPEAT, $START, $END) }""", 40, trees$trees ) }
  case 41 => 
   { case trees$trees => PARSETREE("""REPEAT: Repeat = "?" {  MaybeOne }""", 41, trees$trees ) }
  case 42 => 

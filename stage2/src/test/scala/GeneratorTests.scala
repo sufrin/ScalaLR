@@ -337,6 +337,50 @@ object testTiny extends Test("-c")("""
        """
 )
 
+object testAuto extends Test("--output=TEST-GENERATED  -Lsym -Lsyn")(
+  """
+     %notation  Auto
+     %package   auto.Auto
+     %path      "auto"
+     %token ID(String) RETURN
+     %rules
+       expr: Expr =
+             ID '(' exprlist: (',' expr)* ')' { Apply($ID, $exprlist) }
+           |    '{' exprlist: (';' expr)+ '}' { Sequence($ID, $exprlist) }
+           | RETURN optexpr:  (expr)? ';'     { Return($optexpr) }
+  """)
+
+object testAutoMisc extends Test("--output=TEST-GENERATED  -Lsym -Lsyn")(
+  """
+     %notation  Auto
+     %package   auto.Auto
+     %path      "auto"
+     %token ID(String) RETURN FOOTLE
+     %rules
+       expr: Expr =
+             ID '(' exprlist: (',' expr expr)* ')' { Apply($ID, $exprlist) }
+           |    '{' exprlist: (expr ';')+ '}' { Sequence($ID, $exprlist) }
+           |    RETURN optexpr:  ('->' expr )? ';'     { Return($optexpr) }
+           |    RETURN optexpr:  (expr '<-')? ';'      { Return($optexpr) }
+  """)
+
+object testInfer extends Test("--output=TEST-GENERATED  -Lsym -Lsyn")(
+  """
+     %notation  Infer
+     %package   infer.Infer
+     %path      "infer"
+     %token ID(String) RETURN FOOTLE
+     %rules
+
+     expr = ID
+          | this:ID
+          | '(' ID ')'
+          | '(' ID that: pig')'
+
+     pig = ID
+
+  """)
+
 object testSelf extends Test ()(
   """
 

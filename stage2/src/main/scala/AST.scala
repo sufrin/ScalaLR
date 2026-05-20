@@ -23,10 +23,11 @@ object AST {
   trait SymbolType {
     def sourceTypeName: String
     def scalaTypeName: String
-
+    def scalaParameterTypeName: String
+    def sourceParameterTypeName: String
   }
 
-  case class Type(name: String, parameters: Seq[Type], location: SourceLocation)  extends SymbolType {
+  case class Type(name: String, parameters: Seq[SymbolType], location: SourceLocation)  extends SymbolType {
     override val toString: String = if (parameters.isEmpty) s"$name$location" else parameters.map(_.toString).mkString(s"$name[", ",", s"]$location")
     def scalaTypeName: String = if (parameters.isEmpty) name else  parameters.map(_.scalaParameterTypeName).mkString(s"$name[", ",", "]")
     def scalaParameterTypeName: String = s"$scalaTypeName @unchecked"
@@ -39,6 +40,7 @@ object AST {
     def scalaTypeName: String = "_"
     def scalaParameterTypeName: String = "_"
     def sourceTypeName: String = "NoType"
+    def sourceParameterTypeName: String = "_"
   }
 
 
@@ -150,8 +152,8 @@ object AST {
   }
 
   trait Repeat
-  case object MaybeOne   extends Repeat
-  case object OneOrMore  extends Repeat
-  case object NoneOrMore extends Repeat
+  case object MaybeOne   extends Repeat { override val toString: String = "?" }
+  case object OneOrMore  extends Repeat { override val toString: String = "+" }
+  case object NoneOrMore extends Repeat { override val toString: String = "*" }
 
 }

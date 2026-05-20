@@ -150,10 +150,10 @@ NamedFields:(List[NamedField]) =
 NamedField: NamedField = FIELD                               { NamedField(theFieldName = None, theField = $FIELD, $START) }
                        | theFieldName: ID ':' theName: FIELD { NamedField(theFieldName = Some($theFieldName.warnQuoted), $theName, $START) }
 
-// NB: Normalization.synthesiseRepeated yields the name of a new rule, and appends to synthesisedRules
+// NB: Normalization.syntheticRuleName yields the name of a new rule, and appends to synthesisedRules,
 //     definitions of the one or more rules needed by its right hand side.
 FIELD: Name =   ID                            { $ID }
-            |   '(' NamedFields ')'  REPEAT   { synthesiseRepeated($NamedFields, $REPEAT, $START, $END) }
+            |   '(' NamedFields ')'  REPEAT   { syntheticRuleName($NamedFields, $REPEAT, $START, $END) }
 
 REPEAT: Repeat  = '?'       { MaybeOne }
                 | '*'       { NoneOrMore }

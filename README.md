@@ -364,46 +364,43 @@ here in no particular order.
 
 1. Error recovery (in generated parsers) properly implemented. 
 
-2. System to be self-hosting: ie using a scalalr-derived parser rather
-   than the present hand-coded recursive descent parser. **[DONE April '26]**
+2. **[DONE April '26]** System to be self-hosting: ie using a scalalr-derived parser rather
+   than the present hand-coded recursive descent parser. 
 
-3. Higher-level constructs to denote, simply,
-   grammar expressions that would normally have to be "hand-coded" and 
-   could be expressed more concisely in-situ, for example:
-````          
-      ID '(' exprlist: (expr ',')* ')' { Apply($ID, $exprlist) }  
-      ID '(' exprlist: (expr ',')+ ')' { Apply($ID, $exprlist) }
-      RETURN optexpr:  (expr)? ';'     { Return($optexpr) }
+3. **[DONE May '26]** Implement higher-level constructs for use in-situ in productions to denote 
+   repetitions and options 
+   that would normally have to be "hand-coded". For example
+````  
+     ...
+     %rules
+       expr: Expr = ID '(' exprlist: (',' expr)* ')' { Apply($ID, $exprlist) }
+                  |    '{' exprlist: (';' expr)+ '}' { Sequence($ID, $exprlist) }
+                  |     RETURN optexpr:  (expr)? ';' { Return($optexpr) }
 ````
-Here, assuming `expr: Expr` has been defined, these constructs will be transformed
-into invocations of additional, mechanically-derived, rules named arbitrarily
-````    
-      (expr)?        ==>  OPT1 
-      (expr  ',')+   ==>  PLUS1
-      (expr  ',')*   ==>  STAR1
-      (expr)*        ==>  STAR2
+will be transformed into invocations of additional, mechanically-derived, 
+rules (with mechanically generated names)
 ````
-where 
-````
-      OPT1:   Option[Expr] = %empty           { None } 
-                           | expr             { Some($expr) }
-      PLUS1:  List[Expr]   = PLUS1R           { $PLUS1R.reverse }
-      STAR1:  List[Expr]   = STAR1R           { $PLUS1R.reverse }
-      STAR2:  List[Expr]   = STAR2R           { $STAR2R.reverse }
-      PLUS1R: List[Expr]   = Expr             { $Expr :: Nil }
-                           | PLUS1R ',' Expr  { $Expr :: $PLUS1R }
-      STAR1R: List[Expr]   = %empty           { Nil }
-                           | PLUS1R           { $PLUS1R }
-      STAR2R: List[Expr]   = %empty           { Nil } 
-                           | STAR2R Expr      { $Expr :: $PLUS1R }
+001   expr: Expr         = ID `(` exprlist: S_1 `)` { Apply($ID, $exprlist) } 
+002   expr: Expr         =    `{` exprlist: S_2 `}` { Sequence($ID, $exprlist) } 
+003   expr: Expr         =    RETURN optexpr: S_3 `;` { Return($optexpr) } 
+004   S_1_L: List[Expr]  = expr { List($expr) } 
+005   S_1_L: List[Expr]  = S_1_L `,` expr { $expr :: $S_1_L } 
+006   S_1: List[Expr]    = S_1_L { $S_1_L.reverse } 
+007   S_1: List[Expr]    = %empty { Nil } 
+008   S_2_L: List[Expr]  = expr { List($expr) } 
+009   S_2_L: List[Expr]  = S_2_L `;` expr { $expr :: $S_2_L } 
+010   S_2: List[Expr]    = S_2_L { $S_2_L.reverse } 
+011   S_3: Option[Expr]  = %empty { None } 
+012   S_3: Option[Expr]  = expr { Some($expr) } 
 ````
 Notice the left-recursive productions for list-yielding constructs. These
 conserve parse-stack space, and list-construction time, at the cost
-of accumulating their result lists in reverse order.
+of accumulating their result lists in reverse order, then reversing them at
+the point of use
 
 4. Additional higher level constructs that support "say it once"
 specification of notation and abstract syntax, as well as
-less "fragile" expressions of the AST results ofproduction. We have in mind
+less "fragile" expressions of the AST results of productions. We have in mind
 doing this in two stages. The first exploits the fact that scala methods
 can be called with "keyword" parameters. Suppose our expression
 abstract syntax has been simplified:

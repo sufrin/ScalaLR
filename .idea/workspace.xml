@@ -85,9 +85,14 @@
     "Application.test3.executor": "Run",
     "Application.test4.executor": "Run",
     "Application.test5.executor": "Run",
+    "Application.testAuto.executor": "Run",
+    "Application.testAutoMisc.executor": "Run",
+    "Application.testAutoWarn.executor": "Run",
     "Application.testConflict.executor": "Run",
     "Application.testConflictIFTHEN.executor": "Run",
     "Application.testConflictSAB.executor": "Run",
+    "Application.testInfer.executor": "Run",
+    "Application.testRegex.executor": "Run",
     "Application.testSelf.executor": "Run",
     "Application.testSmall.executor": "Run",
     "Application.testTiny.executor": "Run",
@@ -114,9 +119,9 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.testSmall">
-    <configuration name="test5" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.test5" />
+  <component name="RunManager" selected="Application.testInfer">
+    <configuration name="testAuto" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testAuto" />
       <module name="scalalr.stage2" />
       <extension name="coverage">
         <pattern>
@@ -128,8 +133,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="testConflictIFTHEN" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testConflictIFTHEN" />
+    <configuration name="testAutoMisc" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testAutoMisc" />
       <module name="scalalr.stage2" />
       <extension name="coverage">
         <pattern>
@@ -141,8 +146,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="testConflictSAB" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testConflictSAB" />
+    <configuration name="testAutoWarn" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testAutoWarn" />
       <module name="scalalr.stage2" />
       <extension name="coverage">
         <pattern>
@@ -154,8 +159,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="testSmall" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testSmall" />
+    <configuration name="testInfer" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testInfer" />
       <module name="scalalr.stage2" />
       <extension name="coverage">
         <pattern>
@@ -167,8 +172,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="textExpand" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.textExpand" />
+    <configuration name="testRegex" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testRegex" />
       <module name="scalalr.stage2" />
       <extension name="coverage">
         <pattern>
@@ -195,11 +200,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.testSmall" />
-        <item itemvalue="Application.textExpand" />
-        <item itemvalue="Application.test5" />
-        <item itemvalue="Application.testConflictIFTHEN" />
-        <item itemvalue="Application.testConflictSAB" />
+        <item itemvalue="Application.testInfer" />
+        <item itemvalue="Application.testAutoMisc" />
+        <item itemvalue="Application.testAutoWarn" />
+        <item itemvalue="Application.testAuto" />
+        <item itemvalue="Application.testRegex" />
       </list>
     </recent_temporary>
   </component>
@@ -247,6 +252,21 @@
           <url>file://$PROJECT_DIR$/stage2/src/main/scala/CodeGenerator.scala</url>
           <line>71</line>
           <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="scala-line">
+          <url>file://$PROJECT_DIR$/stage2/src/test/scala/GeneratorTests.scala</url>
+          <line>339</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="scala-line">
+          <url>file://$PROJECT_DIR$/stage2/src/test/scala/GeneratorTests.scala</url>
+          <line>362</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="scala-line">
+          <url>file://$PROJECT_DIR$/stage2/src/test/scala/GeneratorTests.scala</url>
+          <line>352</line>
+          <option name="timeStamp" value="8" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

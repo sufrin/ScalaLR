@@ -136,12 +136,12 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
   }
  /* TypedTerminal: TypedTerminal = ID ":" Type {   TypedTerminal($ID, $Type, $START)   } */
  case 21 => 
-  { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name, _, dol$Type: Type) => 
+  { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name, _, dol$Type: SymbolType) => 
            TypedTerminal(dol$ID, dol$Type, dol$START)   
   }
  /* TypedTerminal: TypedTerminal = ID "(" Type ")" {   TypedTerminal($ID, $Type, $START) } */
  case 22 => 
-  { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name, _, dol$Type: Type, _) => 
+  { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name, _, dol$Type: SymbolType, _) => 
            TypedTerminal(dol$ID, dol$Type, dol$START) 
   }
  /* TypedTerminal: TypedTerminal = ID {   TypedTerminal($ID, NoType, $START) } */
@@ -170,13 +170,13 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
   { case List() =>   () } 
  /* LHS: TypedNonterminal = ID ":" Type {   (TypedNonterminal($ID.warnQuoted, $Type, $START)) } */
  case 29 => 
-  { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name, _, dol$Type: Type) => 
+  { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name, _, dol$Type: SymbolType) => 
            (TypedNonterminal(dol$ID.warnQuoted, dol$Type, dol$START)) 
   }
- /* LHS: TypedNonterminal = ID {   (TypedNonterminal($ID.warnQuoted, NoType, $START)) } */
+ /* LHS: TypedNonterminal = ID {   (TypedNonterminal($ID.warnQuoted, TypeVariable($ID), $START)) } */
  case 30 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
-           (TypedNonterminal(dol$ID.warnQuoted, NoType, dol$START)) 
+           (TypedNonterminal(dol$ID.warnQuoted, TypeVariable(dol$ID), dol$START)) 
   }
  /* RHS: List[Production] = Production {  List($Production)   } */
  case 31 => 
@@ -247,32 +247,32 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
  /* Precedence: Option[Name] = "%prec" ID {  Some($ID)} */
  case 47 => 
   { case List(_, dol$ID: org.sufrin.scalalr.stage2.AST.Name) =>    Some(dol$ID) } 
- /* Type: Type = ID {  Type($ID.withoutQuotes, Nil, $START) } */
+ /* Type: SymbolType = ID {  Type($ID.withoutQuotes, Nil, $START) } */
  case 48 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
           Type(dol$ID.withoutQuotes, Nil, dol$START) 
   }
- /* Type: Type = ID "[" Types "]" {  Type($ID.withoutQuotes, $Types, $START) } */
+ /* Type: SymbolType = ID "[" Types "]" {  Type($ID.withoutQuotes, $Types, $START) } */
  case 49 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name, _, dol$Types: List[Type @unchecked], _) => 
           Type(dol$ID.withoutQuotes, dol$Types, dol$START) 
   }
- /* Type: Type = "(" Types ")" {  makeTupleType($Types, $START) } */
+ /* Type: SymbolType = "(" Types ")" {  makeTupleType($Types, $START) } */
  case 50 => 
   { case List(_, dol$Types: List[Type @unchecked], _) => 
           makeTupleType(dol$Types, dol$START) 
   }
- /* Type: Type = "(" ")" {  Type("Unit", Nil, $START) } */
+ /* Type: SymbolType = "(" ")" {  Type("Unit", Nil, $START) } */
  case 51 => 
   { case List(_, _) => 
           Type("Unit", Nil, dol$START) 
   }
  /* Types: List[Type] = Type {  List($Type) } */
  case 52 => 
-  { case List(dol$Type: Type) =>    List(dol$Type)  } 
+  { case List(dol$Type: SymbolType) =>    List(dol$Type)  } 
  /* Types: List[Type] = Type "," Types {  $Type :: $Types } */
  case 53 => 
-  { case List(dol$Type: Type, _, dol$Types: List[Type @unchecked]) => 
+  { case List(dol$Type: SymbolType, _, dol$Types: List[Type @unchecked]) => 
           dol$Type :: dol$Types 
   }
  }
@@ -338,7 +338,7 @@ def parsetreereduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  
  case 29 => 
   { case trees$trees => PARSETREE("""LHS: TypedNonterminal = ID ":" Type {   (TypedNonterminal($ID.warnQuoted, $Type, $START)) }""", 29, trees$trees ) }
  case 30 => 
-  { case trees$trees => PARSETREE("""LHS: TypedNonterminal = ID {   (TypedNonterminal($ID.warnQuoted, NoType, $START)) }""", 30, trees$trees ) }
+  { case trees$trees => PARSETREE("""LHS: TypedNonterminal = ID {   (TypedNonterminal($ID.warnQuoted, TypeVariable($ID), $START)) }""", 30, trees$trees ) }
  case 31 => 
   { case trees$trees => PARSETREE("""RHS: List[Production] = Production {  List($Production)   }""", 31, trees$trees ) }
  case 32 => 
@@ -374,13 +374,13 @@ def parsetreereduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  
  case 47 => 
   { case trees$trees => PARSETREE("""Precedence: Option[Name] = "%prec" ID {  Some($ID)}""", 47, trees$trees ) }
  case 48 => 
-  { case trees$trees => PARSETREE("""Type: Type = ID {  Type($ID.withoutQuotes, Nil, $START) }""", 48, trees$trees ) }
+  { case trees$trees => PARSETREE("""Type: SymbolType = ID {  Type($ID.withoutQuotes, Nil, $START) }""", 48, trees$trees ) }
  case 49 => 
-  { case trees$trees => PARSETREE("""Type: Type = ID "[" Types "]" {  Type($ID.withoutQuotes, $Types, $START) }""", 49, trees$trees ) }
+  { case trees$trees => PARSETREE("""Type: SymbolType = ID "[" Types "]" {  Type($ID.withoutQuotes, $Types, $START) }""", 49, trees$trees ) }
  case 50 => 
-  { case trees$trees => PARSETREE("""Type: Type = "(" Types ")" {  makeTupleType($Types, $START) }""", 50, trees$trees ) }
+  { case trees$trees => PARSETREE("""Type: SymbolType = "(" Types ")" {  makeTupleType($Types, $START) }""", 50, trees$trees ) }
  case 51 => 
-  { case trees$trees => PARSETREE("""Type: Type = "(" ")" {  Type("Unit", Nil, $START) }""", 51, trees$trees ) }
+  { case trees$trees => PARSETREE("""Type: SymbolType = "(" ")" {  Type("Unit", Nil, $START) }""", 51, trees$trees ) }
  case 52 => 
   { case trees$trees => PARSETREE("""Types: List[Type] = Type {  List($Type) }""", 52, trees$trees ) }
  case 53 => 

@@ -132,7 +132,7 @@ Rule: Rule = LHS '=' OptBar RHS { Rule($LHS, $RHS, $START) }
 OptBar: Unit = '|' {()} | %empty {()}
 
 LHS: TypedNonterminal  = ID ':' Type {  (TypedNonterminal($ID.warnQuoted, $Type, $START)) }
-                       | ID          {  (TypedNonterminal($ID.warnQuoted, NoType, $START)) }
+                       | ID          {  (TypedNonterminal($ID.warnQuoted, TypeVariable($ID), $START)) }
 
 
 RHS:(List[Production]) =
@@ -163,7 +163,7 @@ Action:(Option[Expression]) = %empty { None } | CODE { Some(Expression($CODE)) }
 
 Precedence: (Option[Name])  = %empty { None } | `%prec` ID { Some($ID)}
 
-Type:(Type) = ID               { Type($ID.withoutQuotes, Nil, $START) }
+Type:(SymbolType) = ID               { Type($ID.withoutQuotes, Nil, $START) }
             | ID '[' Types ']' { Type($ID.withoutQuotes, $Types, $START) }
             | '('    Types ')' { makeTupleType($Types, $START) }
             | '(' ')'          { Type("Unit", Nil, $START) }

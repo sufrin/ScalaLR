@@ -369,7 +369,7 @@ object testInfer extends Test("--output=TEST-GENERATED  -Lsym -Lsyn")(
      %notation  Infer
      %package   infer.Infer
      %path      "infer"
-     %token ID(String) RETURN FOOTLE
+     %token ID(String) RETURN FOOTLE '(' ')'
      %rules
 
      expr = ID

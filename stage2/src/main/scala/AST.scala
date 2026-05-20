@@ -43,6 +43,15 @@ object AST {
     def sourceParameterTypeName: String = "_"
   }
 
+  case class TypeVariable(forName: Name) extends SymbolType {
+    def sourceTypeName: String = delegated.sourceTypeName
+    def scalaTypeName: String = delegated.scalaTypeName
+    def scalaParameterTypeName: String = delegated.scalaParameterTypeName
+    def sourceParameterTypeName: String = delegated.scalaParameterTypeName
+    def delegated: SymbolType = delegate.getOrElse(NoType)
+    var delegate: Option[SymbolType] = None
+  }
+
 
   case class Rule(lhs: TypedNonterminal, rhs: Seq[Production], location: SourceLocation) {
     override def toString(): String = s"$lhs = $rhs"

@@ -6,7 +6,12 @@
 // T-003	ID 
 // T-004	RETURN 
 // T-005	FOOTLE 
-%token T-003 T-004 T-005
+// T-006	`(` 
+// T-007	`)` 
+%token T-003 T-004 T-005 T-006 T-007
 %%
-T-007: T-003 // expr = ID
-T-007: T-003 T-003 // expr = this: ID ID
+T-009: T-003 // expr = ID
+T-009: T-003 // expr = this: ID
+T-009: T-006 T-003 T-007 // expr = `(` ID `)`
+T-009: T-006 T-003 T-010 T-007 // expr = `(` ID that: pig `)`
+T-010: T-003 // pig = ID

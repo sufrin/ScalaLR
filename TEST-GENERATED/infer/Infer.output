@@ -4,30 +4,47 @@ Terminals unused in grammar
     FOOTLE
 
 
+Rules useless in parser due to conflicts
+
+    2 expr: ID
+
+
+State 1 conflicts: 1 reduce/reduce
+
+
 Grammar
 
     0 $accept: expr $end
 
     1 expr: ID
-    2      | ID ID
+    2      | ID
+    3      | `(` ID `)`
+    4      | `(` ID pig `)`
+
+    5 pig: ID
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
     error (256)
-    ID (258) 1 2
+    ID (258) 1 2 3 4 5
     RETURN (259)
     FOOTLE (260)
+    `(` (261) 3 4
+    `)` (262) 3 4
 
 
 Nonterminals, with rules where they appear
 
-    $accept (6)
+    $accept (8)
         on left: 0
-    expr (7)
-        on left: 1 2
+    expr (9)
+        on left: 1 2 3 4
         on right: 0
+    pig (10)
+        on left: 5
+        on right: 4
 
 
 State 0
@@ -35,36 +52,77 @@ State 0
     0 $accept: • expr $end
 
     ID  shift, and go to state 1
+    `(`  shift, and go to state 2
 
-    expr  go to state 2
+    expr  go to state 3
 
 
 State 1
 
     1 expr: ID •
-    2      | ID • ID
+    2      | ID •
 
-    ID  shift, and go to state 3
-
+    $end      reduce using rule 1 (expr)
+    $end      [reduce using rule 2 (expr)]
     $default  reduce using rule 1 (expr)
 
 
 State 2
 
-    0 $accept: expr • $end
+    3 expr: `(` • ID `)`
+    4      | `(` • ID pig `)`
 
-    $end  shift, and go to state 4
+    ID  shift, and go to state 4
 
 
 State 3
 
-    2 expr: ID ID •
+    0 $accept: expr • $end
 
-    $default  reduce using rule 2 (expr)
+    $end  shift, and go to state 5
 
 
 State 4
 
+    3 expr: `(` ID • `)`
+    4      | `(` ID • pig `)`
+
+    ID  shift, and go to state 6
+    `)`  shift, and go to state 7
+
+    pig  go to state 8
+
+
+State 5
+
     0 $accept: expr $end •
 
     $default  accept
+
+
+State 6
+
+    5 pig: ID •
+
+    $default  reduce using rule 5 (pig)
+
+
+State 7
+
+    3 expr: `(` ID `)` •
+
+    $default  reduce using rule 3 (expr)
+
+
+State 8
+
+    4 expr: `(` ID pig • `)`
+
+    `)`  shift, and go to state 9
+
+
+State 9
+
+    4 expr: `(` ID pig `)` •
+
+    $default  reduce using rule 4 (expr)

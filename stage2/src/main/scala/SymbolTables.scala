@@ -8,14 +8,19 @@ import java.nio.file.Path
 import scala.collection.mutable
 
 class SymbolTables(notation: Notation) {
-  lazy val declaredTerminals:    Seq[TypedTerminal]    = notation.declaredTerminals
   lazy val declaredNonterminals: Seq[TypedNonterminal] = notation.declaredNonterminals
   lazy val usedSymbolNames: Seq[Name] = {
     val allSymbolNames = for { rule <-notation.theRules; rhs <- rule.rhs; symb <- rhs.symbols } yield symb.theField
     allSymbolNames.distinct
   }
 
-  lazy val declaredTerminalNames      = declaredTerminals.map(_.theName).distinct
+  lazy val quotedTerminals: Seq[TypedTerminal] = usedSymbolNames.filter(_.isQuoted).distinct.map{
+    case name: Name => TypedTerminal(name, NoType, SourceLocation(-1, -1))
+  }
+
+  lazy val declaredTerminals: Seq[TypedTerminal] = notation.declaredTerminals // ++ quotedTerminals
+
+  lazy val declaredTerminalNames      = (declaredTerminals.map(_.theName)).distinct
   lazy val declaredNonterminalNames   = declaredNonterminals.map(_.theName).distinct
 
 
@@ -83,7 +88,11 @@ class SymbolTables(notation: Notation) {
     val ambiguousSymbols = declaredTerminalNames.intersect(declaredNonterminalNames).distinct
 
 
-    for  { symbol <- usedSymbolNames if !ALLDECLARED.contains(symbol)} fatal(s"Undeclared ${symbol.toFullString}")
+    for  { symbol <- usedSymbolNames if !ALLDECLARED.contains(symbol)}
+         if (symbol.isQuoted)
+            fatal(s"Undeclared quoted ${symbol.toFullString}") // TODO: autodeclare quoted symbols
+         else
+            fatal(s"Undeclared ${symbol.toFullString}")
     for  {symbol <- ALLDECLARED if ambiguousSymbols.contains(symbol)}    warning(s"Ambiguously defined $symbol")
 
     if (logGeneration contains "sym") {

@@ -1,9 +1,9 @@
 #!/bin/bash
-
 ROOT=../..
 PATH=$ROOT/scripts:$PATH
+[ ! -e ROOT  ] && ln -s $ROOT ROOT
 
-echo Generating parser components with both boot and stage1
+echo Generating parser components with boot and stage1 and stage2
 
 scalalrboot     --output=generated-boot   small.scalalr
 
@@ -25,7 +25,7 @@ diff run{boot,stage1}.log
 
 
 echo The differences between stage1 and stage2 logs should be negligible
-echo * some symbols in the traces have different quotes *
+echo "* some symbols in the traces have different quotes *"
 
 scala-cli runsmall.scala generated-stage2 > runstage2.log
 

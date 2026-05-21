@@ -20,6 +20,15 @@ object runtinyfun  {
     val log = args.contains("-l")
     val push = args.contains("-p")
     val file = (args.toList.filterNot(_.startsWith("-")) ++ List("/dev/tty")).head
+    if (args.contains("-h")) {
+      println(
+        """Usage: runtinyfun [flags]
+          |  -l log the parse
+          |  -p use the "push" parser automaton
+          |""".stripMargin)
+
+      scala.sys.exit()
+    }
 
     print("Welcome to TinyFun\n> ")
     val scanner = Scanner(SourceTextCursor(Paths.get(file)))

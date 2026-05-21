@@ -4,7 +4,7 @@
 %path      "small"
 
 %dialect   "host dialect: bootstrap syntax or stage1 or stage2 syntax"
-%scalalr   "scalalr: scalalrgen -boot or -flab"
+%scalalr   ""
 
 
 %include {

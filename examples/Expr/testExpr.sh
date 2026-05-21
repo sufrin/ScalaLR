@@ -2,6 +2,7 @@
 
 ROOT=../..
 PATH=$ROOT/scripts:$PATH
+[ ! -e ROOT  ] && ln -s $ROOT ROOT
 
 echo Generating parser components 
 

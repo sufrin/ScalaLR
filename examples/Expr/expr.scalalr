@@ -1,4 +1,4 @@
-// Parser  for a simple expression notation
+// Parser for an incomplete expression notation
 // + intrinsically-defined abstract syntax of expressions
 
 %notation  Expr

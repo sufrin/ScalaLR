@@ -279,11 +279,11 @@ object testTiny extends Test("-c")("""
             }
         }
 
-        %token NUM: String ID: String  `(` `)` `[` `]` `,` LEXICALERROR: (String) NL QUIT `#` HIGH
+        %token NUM: String ID: String  LEXICALERROR: (String) NL // QUIT //`(` `)` `[` `]` `,` `#` HIGH
 
         %right `=`
         %left `+` `-`
-        %left HIGH
+        %left "HIGH"
         %left `*` `/`
 
 
@@ -310,7 +310,7 @@ object testTiny extends Test("-c")("""
                 | loop command NL { () }
                 ;
 
-        command: Unit = expr { run(List($expr)) } | QUIT { System.exit(0) };
+        command: Unit = expr { run(List($expr)) } | "QUIT" { System.exit(0) };
 
 
         expr: Expr =
@@ -342,12 +342,12 @@ object testAuto extends Test("--output=TEST-GENERATED  -Lsym -Lsyn")(
      %notation  Auto
      %package   auto.Auto
      %path      "auto"
-     %token ID(String) RETURN
+     %token ID(String)
      %rules
        expr: Expr =
-             ID '(' exprlist: (',' expr)* ')' { Apply($ID, $exprlist) }
-           |    '{' exprlist: (';' expr)+ '}' { Sequence($ID, $exprlist) }
-           | RETURN optexpr:  (expr)? ';'     { Return($optexpr) }
+             ID '(' exprlist: (',' expr)* ')'   { Apply($ID, $exprlist) }
+           |    '{' exprlist: (';' expr)+ '}'   { Sequence($ID, $exprlist) }
+           | "RETURN" optexpr:  (expr)? ';'     { Return($optexpr) }
   """)
 
 object testAutoMisc extends Test("--output=TEST-GENERATED  -Lsym -Lsyn")(
@@ -358,10 +358,11 @@ object testAutoMisc extends Test("--output=TEST-GENERATED  -Lsym -Lsyn")(
      %token ID(String) RETURN FOOTLE
      %rules
        expr: Expr =
-             ID '(' exprlist: (',' expr expr)* ')' { Apply($ID, $exprlist) }
-           |    '{' exprlist: (expr ';')+ '}' { Sequence($ID, $exprlist) }
-           |    RETURN optexpr:  ('->' expr )? ';'     { Return($optexpr) }
-           |    RETURN optexpr:  (expr '<-')? ';'      { Return($optexpr) }
+             ID '(' exprlist: (',' expr expr)* ')'      { Apply($ID, $exprlist) }
+           |    '{' exprlist: (expr ';')+ '}'           { Sequence($ID, $exprlist) }
+           |    RETURN optexpr:  ('->' expr )? ';'      { Return($optexpr) }
+           |    RETURN optexpr:  (',' expr '<-')? ';'   { Return($optexpr) }
+           |    RETURN optexpr:  (expr '<-')? ';'       { Return($optexpr) }
   """)
 
 object testInfer extends Test("--output=TEST-GENERATED  -Lsym -Lsyn")(

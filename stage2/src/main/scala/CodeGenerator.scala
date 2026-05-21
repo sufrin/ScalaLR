@@ -49,6 +49,11 @@ class CodeGenerator(notation: Notation, symbolTables: SymbolTables) {
     for {name <- declaredTerminalNames} out(s"// ${bisonToken(name)}\t${name} ")
 
     // TOKEN and PRIORITY SPECS
+    if (autoDeclaredTerminals.nonEmpty) {
+      val decl = s"%token ${autoDeclaredTerminals.map(_.theName).mkString(" ")} "
+      warn(s"Automatically declared ${decl}")
+      out(autoDeclaredTerminals.map(bisonTokenOf).mkString("%token ", " ", ""))
+    }
     for {spec: TokenSpec <- notation.theTokens.reverse if spec.terminals.nonEmpty} {
       val prefix = spec match {
         case _: Tokens => "%token "

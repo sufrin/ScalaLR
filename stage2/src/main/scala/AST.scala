@@ -108,6 +108,7 @@ object AST {
       unQuoted
     }
 
+
     override def equals(other: Any): Boolean = other match {
       case that: Name =>
         this.unQuoted == that.unQuoted && this.isQuoted == that.isQuoted  // ignore location

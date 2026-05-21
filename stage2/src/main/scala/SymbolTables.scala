@@ -18,7 +18,9 @@ class SymbolTables(notation: Notation) {
     case name: Name => TypedTerminal(name, NoType, SourceLocation(-1, -1))
   }
 
-  lazy val declaredTerminals: Seq[TypedTerminal] = notation.declaredTerminals // ++ quotedTerminals
+  lazy val autoDeclaredTerminals: Seq[TypedTerminal] = quotedTerminals.filterNot(notation.declaredTerminals.contains(_))
+
+  lazy val declaredTerminals: Seq[TypedTerminal] = notation.declaredTerminals ++ autoDeclaredTerminals
 
   lazy val declaredTerminalNames      = (declaredTerminals.map(_.theName)).distinct
   lazy val declaredNonterminalNames   = declaredNonterminals.map(_.theName).distinct

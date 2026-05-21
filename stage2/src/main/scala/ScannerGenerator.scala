@@ -47,4 +47,13 @@ class ScannerGenerator(notation: Notation, symbolTables: SymbolTables) extends S
   out("         ArrayMap(arr)")
   out("     }")
   out("}\n")
+
+  out("// MAP QUOTED SYMBOL NAMES TO TOKENS ")
+  out(s"val symbolToken: collection.immutable.Map[String, Token] =  collection.immutable.ListMap(")
+  for { name <- symbolTables.declaredTerminalNames if name.isQuoted }  out(s"    \"${name.unQuoted}\" -> $name")
+  out("    )")
+
+
+  out("}\n")
+
 }

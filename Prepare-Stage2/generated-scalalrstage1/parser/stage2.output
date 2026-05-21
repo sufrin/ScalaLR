@@ -62,44 +62,51 @@ Grammar
    35            | NamedField
    36            | NamedField NamedFields
 
-   37 NamedField: ID
-   38           | ID ":" ID
+   37 NamedField: FIELD
+   38           | ID ":" FIELD
 
-   39 Action: ε
-   40       | CODE
+   39 FIELD: ID
+   40      | "(" NamedFields ")" REPEAT
 
-   41 Precedence: ε
-   42           | "%prec" ID
+   41 REPEAT: "?"
+   42       | "*"
+   43       | "+"
 
-   43 Type: ID
-   44     | ID "[" Types "]"
-   45     | "(" Types ")"
-   46     | "(" ")"
+   44 Action: ε
+   45       | CODE
 
-   47 Types: Type
-   48      | Type "," Types
+   46 Precedence: ε
+   47           | "%prec" ID
+
+   48 Type: ID
+   49     | ID "[" Types "]"
+   50     | "(" Types ")"
+   51     | "(" ")"
+
+   52 Types: Type
+   53      | Type "," Types
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
     error (256)
-    ID (258) 3 4 5 6 12 13 14 21 22 23 29 30 37 38 42 43 44
+    ID (258) 3 4 5 6 12 13 14 21 22 23 29 30 38 39 47 48 49
     NUM (259)
-    CODE (260) 7 15 40
+    CODE (260) 7 15 45
     COMMENT (261)
     LEXICALERROR (262)
-    "[" (263) 44
-    "]" (264) 44
+    "[" (263) 49
+    "]" (264) 49
     ";" (265)
     "=" (266) 26
     "|" (267) 27 32
     ":" (268) 21 29 38
     "{" (269)
     "}" (270)
-    "(" (271) 22 45 46
-    ")" (272) 22 45 46
-    "," (273) 48
+    "(" (271) 22 40 50 51
+    ")" (272) 22 40 50 51
+    "," (273) 53
     SEPARATOR (274) 15 18 25
     "%path" (275) 5
     "%type" (276)
@@ -112,71 +119,80 @@ Terminals, with rules where they appear
     "%non" (283) 11
     "%rules" (284) 1
     "%include" (285) 7 15
-    "%prec" (286) 42
+    "%prec" (286) 47
     "%tables" (287) 6
     "%dialect" (288) 12
     "%scalalr" (289) 13
     "%signature" (290) 14
+    "?" (291) 41
+    "*" (292) 42
+    "+" (293) 43
 
 
 Nonterminals, with rules where they appear
 
-    $accept (36)
+    $accept (39)
         on left: 0
-    Notation (37)
+    Notation (40)
         on left: 1
         on right: 0
-    Prefix (38)
+    Prefix (41)
         on left: 2 3 4 5 6 7 8 9 10 11 12 13 14
         on right: 1 3 4 5 6 7 8 9 10 11 12 13 14
-    INCLUDE (39)
+    INCLUDE (42)
         on left: 15 16
         on right: 1
-    OPTNL (40)
+    OPTNL (43)
         on left: 17 18
         on right: 1
-    TypedTerminals (41)
+    TypedTerminals (44)
         on left: 19 20
         on right: 8 9 10 11 20
-    TypedTerminal (42)
+    TypedTerminal (45)
         on left: 21 22 23
         on right: 20
-    Rules (43)
+    Rules (46)
         on left: 24 25
         on right: 1 25
-    Rule (44)
+    Rule (47)
         on left: 26
         on right: 24 25
-    OptBar (45)
+    OptBar (48)
         on left: 27 28
         on right: 26
-    LHS (46)
+    LHS (49)
         on left: 29 30
         on right: 26
-    RHS (47)
+    RHS (50)
         on left: 31 32
         on right: 26 32
-    Production (48)
+    Production (51)
         on left: 33
         on right: 31 32
-    NamedFields (49)
+    NamedFields (52)
         on left: 34 35 36
-        on right: 33 36
-    NamedField (50)
+        on right: 33 36 40
+    NamedField (53)
         on left: 37 38
         on right: 35 36
-    Action (51)
+    FIELD (54)
         on left: 39 40
+        on right: 37 38
+    REPEAT (55)
+        on left: 41 42 43
+        on right: 40
+    Action (56)
+        on left: 44 45
         on right: 33
-    Precedence (52)
-        on left: 41 42
+    Precedence (57)
+        on left: 46 47
         on right: 33
-    Type (53)
-        on left: 43 44 45 46
-        on right: 21 22 29 47 48
-    Types (54)
-        on left: 47 48
-        on right: 44 45 48
+    Type (58)
+        on left: 48 49 50 51
+        on right: 21 22 29 52 53
+    Types (59)
+        on left: 52 53
+        on right: 49 50 53
 
 
 State 0
@@ -547,18 +563,18 @@ State 40
 
 State 41
 
-   43 Type: ID •
-   44     | ID • "[" Types "]"
+   48 Type: ID •
+   49     | ID • "[" Types "]"
 
     "["  shift, and go to state 50
 
-    $default  reduce using rule 43 (Type)
+    $default  reduce using rule 48 (Type)
 
 
 State 42
 
-   45 Type: "(" • Types ")"
-   46     | "(" • ")"
+   50 Type: "(" • Types ")"
+   51     | "(" • ")"
 
     ID      shift, and go to state 41
     "("  shift, and go to state 42
@@ -632,7 +648,7 @@ State 49
 
 State 50
 
-   44 Type: ID "[" • Types "]"
+   49 Type: ID "[" • Types "]"
 
     ID      shift, and go to state 41
     "("  shift, and go to state 42
@@ -643,24 +659,24 @@ State 50
 
 State 51
 
-   46 Type: "(" ")" •
+   51 Type: "(" ")" •
 
-    $default  reduce using rule 46 (Type)
+    $default  reduce using rule 51 (Type)
 
 
 State 52
 
-   47 Types: Type •
-   48      | Type • "," Types
+   52 Types: Type •
+   53      | Type • "," Types
 
     ","  shift, and go to state 60
 
-    $default  reduce using rule 47 (Types)
+    $default  reduce using rule 52 (Types)
 
 
 State 53
 
-   45 Type: "(" Types • ")"
+   50 Type: "(" Types • ")"
 
     ")"  shift, and go to state 61
 
@@ -698,187 +714,269 @@ State 58
    26 Rule: LHS "=" OptBar • RHS
 
     ID      shift, and go to state 62
-    "%empty"  shift, and go to state 63
+    "("  shift, and go to state 63
+    "%empty"  shift, and go to state 64
 
-    RHS          go to state 64
-    Production   go to state 65
-    NamedFields  go to state 66
-    NamedField   go to state 67
+    RHS          go to state 65
+    Production   go to state 66
+    NamedFields  go to state 67
+    NamedField   go to state 68
+    FIELD        go to state 69
 
 
 State 59
 
-   44 Type: ID "[" Types • "]"
+   49 Type: ID "[" Types • "]"
 
-    "]"  shift, and go to state 68
+    "]"  shift, and go to state 70
 
 
 State 60
 
-   48 Types: Type "," • Types
+   53 Types: Type "," • Types
 
     ID      shift, and go to state 41
     "("  shift, and go to state 42
 
     Type   go to state 52
-    Types  go to state 69
+    Types  go to state 71
 
 
 State 61
 
-   45 Type: "(" Types ")" •
+   50 Type: "(" Types ")" •
 
-    $default  reduce using rule 45 (Type)
+    $default  reduce using rule 50 (Type)
 
 
 State 62
 
-   37 NamedField: ID •
-   38           | ID • ":" ID
+   38 NamedField: ID • ":" FIELD
+   39 FIELD: ID •
 
-    ":"  shift, and go to state 70
+    ":"  shift, and go to state 72
 
-    $default  reduce using rule 37 (NamedField)
+    $default  reduce using rule 39 (FIELD)
 
 
 State 63
+
+   40 FIELD: "(" • NamedFields ")" REPEAT
+
+    ID      shift, and go to state 62
+    "("  shift, and go to state 63
+    "%empty"  shift, and go to state 64
+
+    NamedFields  go to state 73
+    NamedField   go to state 68
+    FIELD        go to state 69
+
+
+State 64
 
    34 NamedFields: "%empty" •
 
     $default  reduce using rule 34 (NamedFields)
 
 
-State 64
+State 65
 
    26 Rule: LHS "=" OptBar RHS •
 
     $default  reduce using rule 26 (Rule)
 
 
-State 65
+State 66
 
    31 RHS: Production •
    32    | Production • "|" RHS
 
-    "|"  shift, and go to state 71
+    "|"  shift, and go to state 74
 
     $default  reduce using rule 31 (RHS)
 
 
-State 66
+State 67
 
    33 Production: NamedFields • Action Precedence
 
-    CODE  shift, and go to state 72
+    CODE  shift, and go to state 75
 
-    $default  reduce using rule 39 (Action)
+    $default  reduce using rule 44 (Action)
 
-    Action  go to state 73
+    Action  go to state 76
 
 
-State 67
+State 68
 
    35 NamedFields: NamedField •
    36            | NamedField • NamedFields
 
     ID      shift, and go to state 62
-    "%empty"  shift, and go to state 63
+    "("  shift, and go to state 63
+    "%empty"  shift, and go to state 64
 
     $default  reduce using rule 35 (NamedFields)
 
-    NamedFields  go to state 74
-    NamedField   go to state 67
-
-
-State 68
-
-   44 Type: ID "[" Types "]" •
-
-    $default  reduce using rule 44 (Type)
+    NamedFields  go to state 77
+    NamedField   go to state 68
+    FIELD        go to state 69
 
 
 State 69
 
-   48 Types: Type "," Types •
+   37 NamedField: FIELD •
 
-    $default  reduce using rule 48 (Types)
+    $default  reduce using rule 37 (NamedField)
 
 
 State 70
 
-   38 NamedField: ID ":" • ID
+   49 Type: ID "[" Types "]" •
 
-    ID  shift, and go to state 75
+    $default  reduce using rule 49 (Type)
 
 
 State 71
 
-   32 RHS: Production "|" • RHS
+   53 Types: Type "," Types •
 
-    ID      shift, and go to state 62
-    "%empty"  shift, and go to state 63
-
-    RHS          go to state 76
-    Production   go to state 65
-    NamedFields  go to state 66
-    NamedField   go to state 67
+    $default  reduce using rule 53 (Types)
 
 
 State 72
 
-   40 Action: CODE •
+   38 NamedField: ID ":" • FIELD
 
-    $default  reduce using rule 40 (Action)
+    ID      shift, and go to state 78
+    "("  shift, and go to state 63
+
+    FIELD  go to state 79
 
 
 State 73
 
-   33 Production: NamedFields Action • Precedence
+   40 FIELD: "(" NamedFields • ")" REPEAT
 
-    "%prec"  shift, and go to state 77
-
-    $default  reduce using rule 41 (Precedence)
-
-    Precedence  go to state 78
+    ")"  shift, and go to state 80
 
 
 State 74
+
+   32 RHS: Production "|" • RHS
+
+    ID      shift, and go to state 62
+    "("  shift, and go to state 63
+    "%empty"  shift, and go to state 64
+
+    RHS          go to state 81
+    Production   go to state 66
+    NamedFields  go to state 67
+    NamedField   go to state 68
+    FIELD        go to state 69
+
+
+State 75
+
+   45 Action: CODE •
+
+    $default  reduce using rule 45 (Action)
+
+
+State 76
+
+   33 Production: NamedFields Action • Precedence
+
+    "%prec"  shift, and go to state 82
+
+    $default  reduce using rule 46 (Precedence)
+
+    Precedence  go to state 83
+
+
+State 77
 
    36 NamedFields: NamedField NamedFields •
 
     $default  reduce using rule 36 (NamedFields)
 
 
-State 75
+State 78
 
-   38 NamedField: ID ":" ID •
+   39 FIELD: ID •
+
+    $default  reduce using rule 39 (FIELD)
+
+
+State 79
+
+   38 NamedField: ID ":" FIELD •
 
     $default  reduce using rule 38 (NamedField)
 
 
-State 76
+State 80
+
+   40 FIELD: "(" NamedFields ")" • REPEAT
+
+    "?"  shift, and go to state 84
+    "*"  shift, and go to state 85
+    "+"  shift, and go to state 86
+
+    REPEAT  go to state 87
+
+
+State 81
 
    32 RHS: Production "|" RHS •
 
     $default  reduce using rule 32 (RHS)
 
 
-State 77
+State 82
 
-   42 Precedence: "%prec" • ID
+   47 Precedence: "%prec" • ID
 
-    ID  shift, and go to state 79
+    ID  shift, and go to state 88
 
 
-State 78
+State 83
 
    33 Production: NamedFields Action Precedence •
 
     $default  reduce using rule 33 (Production)
 
 
-State 79
+State 84
 
-   42 Precedence: "%prec" ID •
+   41 REPEAT: "?" •
 
-    $default  reduce using rule 42 (Precedence)
+    $default  reduce using rule 41 (REPEAT)
+
+
+State 85
+
+   42 REPEAT: "*" •
+
+    $default  reduce using rule 42 (REPEAT)
+
+
+State 86
+
+   43 REPEAT: "+" •
+
+    $default  reduce using rule 43 (REPEAT)
+
+
+State 87
+
+   40 FIELD: "(" NamedFields ")" REPEAT •
+
+    $default  reduce using rule 40 (FIELD)
+
+
+State 88
+
+   47 Precedence: "%prec" ID •
+
+    $default  reduce using rule 47 (Precedence)

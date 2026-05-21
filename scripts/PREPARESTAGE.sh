@@ -8,17 +8,19 @@ SCRIPTS=$ROOT/scripts
 #
 #GEN=scalalrboot                    the generator to be used
 #STAGE=1                            the number or name of the stage
+#MODULE=$STAGE
 #NOTATION=stage1-notation.scalalr   the notation desciption file
 #SCALA=stage$STAGE.scala            the name of the scala driver file
 #
-echo Making parser components for stage $STAGE with $GEN"($NOTATION)"
+MOD=${MODULE-$STAGE}
+echo Making parser components for stage $STAGE with stage$MOD source $GEN"($NOTATION)"
 $SCRIPTS/$GEN --output=generated-$GEN $NOTATION
 sync=n; read -p "Install the generated components in the stage$STAGE source code? [ENTER for yes]" sync
 [ "$sync" = "" ] && rm -rf $ROOT/stage$STAGE/src/main/scala/generated/ && rsync -av generated-$GEN $ROOT/stage$STAGE/src/main/scala/generated/
 if [ "$sync" = "" ]
 then
-  sync=n; read -p "Rebuild the stage$STAGE module incrementally with sbt [ENTER for yes]? " sync
-  [ "$sync" = "" ] && ( cd $ROOT ; sbt "stage$STAGE / clean; stage$STAGE / package")
+  sync=n; read -p "Rebuild the stage$MOD module incrementally with sbt [ENTER for yes]? " sync
+  [ "$sync" = "" ] && ( cd $ROOT ; sbt "stage$MOD / clean; stage$MOD / package")
   if [ "$sync" = "" ]
   then
    read -p "Make the binary stage$STAGE? [ENTER for yes]" sync

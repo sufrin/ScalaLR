@@ -124,6 +124,11 @@ object AST {
     def theTypeName: String = theType.toString
     def theScalaTypeName: String = theType.scalaTypeName
     def sourceTypeName: String = theTypeName
+    override def equals(other: Any): Boolean = other match {
+      case that: TypedTerminal =>
+        this.theName == that.theName
+      case _ => false
+    }
   }
 
   case class TypedNonterminal(theName: Name, theType: SymbolType=NoType, location: SourceLocation) extends Symbol {

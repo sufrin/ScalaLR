@@ -9,6 +9,7 @@
 %notation  stage2
 %package   scalalr.stage2
 %path      "parser"
+%tables lr
 
 
 %dialect   "scalalr stage2 notation"
@@ -30,6 +31,9 @@
   `%left`       `%right`    `%non`      `%rules`
   `%include`    `%prec`     `%tables`   `%dialect`      `%scalalr` `%signature`
   `*`           `?`         `+`
+
+  %left SEPARATOR
+  %left HIGH
 
 %rules
 
@@ -104,15 +108,11 @@ Prefix: Notation =   %empty                                     { Notation() }
                      | p: Prefix `%scalalr`   ID                { $p.withSignature($ID.unQuoted) }
                      | p: Prefix `%signature` ID                { $p.withSignature($ID.unQuoted) }
 
-INCLUDE:    String  = `%include` CODE SEPARATOR { $CODE } | %empty {""}
+INCLUDE:    String  = `%include` CODE SEPARATOR { $CODE }
+                    | %empty {""}
 
-// OPTNL:      Unit    = (SEPARATOR)?
-
- // %empty {()} | SEPARATOR {()}
-
-TypedTerminals:(List[TypedTerminal]) =
-      |  %empty                         { Nil }
-      |  TypedTerminal TypedTerminals   { $TypedTerminal :: $TypedTerminals }
+TypedTerminals:(List[TypedTerminal]) =  `%empty`                       { Nil }
+                                     |  TypedTerminal TypedTerminals   { $TypedTerminal :: $TypedTerminals }
 
 
 TypedTerminal:(TypedTerminal) = ID ':' Type      {  TypedTerminal($ID, $Type, $START)   }
@@ -120,17 +120,20 @@ TypedTerminal:(TypedTerminal) = ID ':' Type      {  TypedTerminal($ID, $Type, $S
                               | ID               {  TypedTerminal($ID, NoType, $START) }
 
 
-Rules:(List[Rule]) = Rule                  { List($Rule) }
-                   | Rules SEPARATOR Rule  { $Rule :: $Rules }
+Rules:(List[Rule]) =  Rule                  { List($Rule) }
+                   |  Rules SEPARATOR Rule  { $Rule :: $Rules }
 
-Rule: Rule = LHS '=' OptBar RHS { Rule($LHS, $RHS, $START) }
 
-OptBar: Unit = ('|')?
 
-// '|' {()} | %empty {()}
+// (SEPARATOR Rule)+ doesn't work! // TODO: investigate
 
-LHS: TypedNonterminal  = ID ':' Type {  (TypedNonterminal($ID.warnQuoted, $Type, $START)) }
-                       | ID          {  (TypedNonterminal($ID.warnQuoted, TypeVariable($ID), $START)) }
+
+
+
+Rule: Rule = LHS ('|')? RHS { Rule($LHS, $RHS, $START) }
+
+LHS: TypedNonterminal  = ID ':' Type '=' {  (TypedNonterminal($ID.warnQuoted, $Type, $START)) }
+                       | ID          '=' {  (TypedNonterminal($ID.warnQuoted, TypeVariable($ID), $START)) }
 
 
 RHS:(List[Production]) =

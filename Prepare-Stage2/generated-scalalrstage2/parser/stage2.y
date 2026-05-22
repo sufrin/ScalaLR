@@ -53,6 +53,7 @@ T-041: T-041 T-025 T-044 // Prefix = p: Prefix `%token` TypedTerminals
 T-041: T-041 T-026 T-044 // Prefix = p: Prefix `%left` TypedTerminals
 T-041: T-041 T-027 T-044 // Prefix = p: Prefix `%right` TypedTerminals
 T-041: T-041 T-028 T-044 // Prefix = p: Prefix `%non` TypedTerminals
+T-041: T-041 T-031 T-044 // Prefix = p: Prefix `%prec` TypedTerminals
 T-041: T-041 T-033 T-003 // Prefix = p: Prefix `%dialect` ID
 T-041: T-041 T-034 T-003 // Prefix = p: Prefix `%scalalr` ID
 T-041: T-041 T-035 T-003 // Prefix = p: Prefix `%signature` ID

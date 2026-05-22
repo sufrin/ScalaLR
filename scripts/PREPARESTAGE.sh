@@ -14,7 +14,7 @@ SCRIPTS=$ROOT/scripts
 #
 MOD=${MODULE-$STAGE}
 echo Making parser components for stage $STAGE with stage$MOD source $GEN"($NOTATION)"
-$SCRIPTS/$GEN -c --output=generated-$GEN $NOTATION
+$SCRIPTS/$GEN --output=generated-$GEN $NOTATION
 sync=n; read -p "Install the generated components in the stage$STAGE source code? [ENTER for yes]" sync
 [ "$sync" = "" ] && rm -rf $ROOT/stage$STAGE/src/main/scala/generated/ && rsync -av generated-$GEN $ROOT/stage$STAGE/src/main/scala/generated/
 if [ "$sync" = "" ]

@@ -6,8 +6,9 @@ SCRIPTS=/Users/sufrin/GitHomes/ScalaLR/scripts
 #
 GEN=scalalrstage1
 STAGE=2
+export MODULE=2
 NOTATION=stage2-notation.scalalr
-SCALA=stage$STAGE.scala
+SCALA=stage2.scala
 
 
 source $SCRIPTS/PREPARESTAGE.sh

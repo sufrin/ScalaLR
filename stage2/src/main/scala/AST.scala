@@ -163,7 +163,7 @@ object AST {
   case class Tokens(terminals:   Seq[TypedTerminal]) extends TokenSpec {
   }
 
-  case class Prec(terminals:   Seq[TypedTerminal]) extends TokenSpec {
+  case class Precedence(terminals:   Seq[TypedTerminal]) extends TokenSpec {
   }
 
   trait Repeat

@@ -42,7 +42,7 @@ as a sanity check.
     cd examples/Expr
     sh testexpr.sh
 
-~~## Small~~
+## Small
 Exercises the core scalalr code generator(s) and parsing automata on an even smaller
 notation than Expr. Useful during the initial bootstrapping
 as a sanity check.

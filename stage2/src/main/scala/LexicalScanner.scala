@@ -95,6 +95,7 @@ object LexicalScanner {
             case "scalalr"      => `%scalalr`
             case "tables"       => `%tables`
             case "signature"    => `%signature`
+            case "precedence"   => `%prec`
             case "prec"         => `%prec`
             case "rules"        =>
               enableSEPARATOR = true

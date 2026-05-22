@@ -131,9 +131,41 @@ object test5 extends Test()(
      Rule3: T = T3 U3 V3;
      Rule2: V = T3 U3 V3 {xxx}
               | T4 T5
-
-
      """)
+
+object test6 extends Test()(
+  """
+%tables    ielr
+%notation  stage2test
+%package   scalalr.stage2test
+%path      "parser"
+
+
+%include { This is the inclusion }
+
+%token A B C(D) E: F[G,H] Rule3
+%token I J K
+%left  '-'
+%right '+:' '-:'
+
+
+%rules
+
+%include { Rules inclusion }
+
+Rule1: Unit = S1 S2 S3 { Code }
+
+Rule2: Unit = a: S4 b: S5 { () }
+
+Rule3: Unit = Rule1 "+" Rule2 { "sum" } | Rule2 "-" Rule1 { () }
+
+Rule1: Unit = %empty
+
+'+':S = FOO
+
+/* Tail comment */
+
+  """)
 
 object textExpand extends Test("-Lsyn -html -Lsym -Lsyn")(
   """%notation  expand
@@ -337,12 +369,16 @@ object testTiny extends Test("-c")("""
        """
 )
 
+
 object testAuto extends Test("--output=TEST-GENERATED  -Lsym -Lsyn")(
   """
      %notation  Auto
      %package   auto.Auto
      %path      "auto"
      %token ID(String)
+     %include {
+
+     }
      %rules
        expr: Expr =
              ID '(' exprlist: (',' expr)* ')'   { Apply($ID, $exprlist) }

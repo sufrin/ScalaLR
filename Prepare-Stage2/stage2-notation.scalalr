@@ -106,6 +106,7 @@ Prefix: Notation =   %empty                                     { Notation() }
                      | p: Prefix `%left`     TypedTerminals     { $p.withTokenDeclaration(Left)($TypedTerminals) }
                      | p: Prefix `%right`    TypedTerminals     { $p.withTokenDeclaration(Right)($TypedTerminals) }
                      | p: Prefix `%non`      TypedTerminals     { $p.withTokenDeclaration(Nonassoc)($TypedTerminals) }
+                     | p: Prefix `%prec`     TypedTerminals     { $p.withTokenDeclaration(Precedence)($TypedTerminals) }
                      | p: Prefix `%dialect`   ID                { $p.withSignature($ID.unQuoted) }
                      | p: Prefix `%scalalr`   ID                { $p.withSignature($ID.unQuoted) }
                      | p: Prefix `%signature` ID                { $p.withSignature($ID.unQuoted) }

@@ -60,7 +60,7 @@ class CodeGenerator(notation: Notation, symbolTables: SymbolTables) {
         case _: Left => "%left "
         case _: Right => "%right "
         case _: Nonassoc => "%nonassoc "
-        case _: Prec => "%prec "
+        case _: Precedence => "%precedence "
         case _ => ""
       }
       val terms: Seq[TypedTerminal] = spec.terminals

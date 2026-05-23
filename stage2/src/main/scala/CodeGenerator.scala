@@ -80,6 +80,8 @@ class CodeGenerator(notation: Notation, symbolTables: SymbolTables) {
     writeToFile(s"$fileNamePath.y")(encodedForBison.toString)
     val output = new StringBuilder
 
+    output.append(s"Bison log for ScalaLR: ${notation.theName} at ${new java.util.Date}\n")
+
     def escapeHtml(s: String): String =
       s.replace("&", "&amp;")
         .replace("<", "&lt;")
@@ -100,7 +102,7 @@ class CodeGenerator(notation: Notation, symbolTables: SymbolTables) {
       lines += 1
       lines match {
         case 1 => println(s"Bison     $line")
-        case 2 =>    print("Bison     generating diagnostics ")
+        case 2 =>    print("Bison     additional diagnostics may take some time to generate ")
         case _ => if (lines%10==0) print(".")
       }
     }

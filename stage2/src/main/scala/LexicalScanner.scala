@@ -59,7 +59,7 @@ object LexicalScanner {
     def hasNext: Boolean = chars.hasCurrent
     def next(): Token = {
       val s = nnext()
-      //println(s)
+      // println(s)
       s
     }
     def nnext(): Token = if (hasChar) {

@@ -9,11 +9,10 @@
 %notation  stage2
 %package   scalalr.stage2
 %path      "parser"
-%tables lr
+%signature "stage3 dialect. Compatible with stage2 or stage3"
+%tables    lr
 
 
-%dialect   "scalalr stage2 notation"
-%scalalr   "components made by stage1 or stage2"
 
 %include {
   // Substantive lexical scanner is elsewhere
@@ -25,8 +24,8 @@
   CODE:(String)
   COMMENT:(String)
   LEXICALERROR:(String)
-  `[` `]` `;` `=` `|`  `:`  // Left here as a test of diagnostics
-  `{` `}` `(` `)` ',' SEPARATOR
+  `[` `]` `;` `=` `|`  `:`
+  `{` `}` `(` `)` ','
   `%path`       `%type`     `%empty`    `%notation`     `%package` `%token`
   `%left`       `%right`    `%non`      `%rules`
   `%include`    `%prec`     `%tables`   `%dialect`      `%scalalr` `%signature`
@@ -89,7 +88,7 @@ Notation: Notation =
     `%rules`
     INCLUDE
     Rules
-    (SEPARATOR)?
+    OPTSEPARATOR
     { $Prefix.copy(theRules = $Rules.reverse, theRulesInclude = $INCLUDE) }
 
 // A left fold that accumulates incremental changes to the initial default notation AST
@@ -104,6 +103,7 @@ Prefix: Notation =   %empty                                     { Notation() }
                      | p: Prefix `%left`     TypedTerminals     { $p.withTokenDeclaration(Left)($TypedTerminals) }
                      | p: Prefix `%right`    TypedTerminals     { $p.withTokenDeclaration(Right)($TypedTerminals) }
                      | p: Prefix `%non`      TypedTerminals     { $p.withTokenDeclaration(Nonassoc)($TypedTerminals) }
+                     | p: Prefix `%prec`     TypedTerminals     { $p.withTokenDeclaration(Precedence)($TypedTerminals) }
                      | p: Prefix `%dialect`   ID                { $p.withSignature($ID.unQuoted) }
                      | p: Prefix `%scalalr`   ID                { $p.withSignature($ID.unQuoted) }
                      | p: Prefix `%signature` ID                { $p.withSignature($ID.unQuoted) }
@@ -111,7 +111,9 @@ Prefix: Notation =   %empty                                     { Notation() }
 INCLUDE:    String  = `%include` CODE SEPARATOR { $CODE }
                     | %empty {""}
 
-TypedTerminals:(List[TypedTerminal]) =  `%empty`                       { Nil }
+OPTSEPARATOR: Unit = %empty {()} | SEPARATOR {()}
+
+TypedTerminals:(List[TypedTerminal]) =  %empty                         { Nil }
                                      |  TypedTerminal TypedTerminals   { $TypedTerminal :: $TypedTerminals }
 
 
@@ -140,15 +142,18 @@ RHS:(List[Production]) =
       Production         { List($Production)   }
     | Production '|' RHS { $Production :: $RHS }
 
-Production: Production = NamedFields Action Precedence { Production($NamedFields, $Action, $Precedence, $START) }
+Production: Production = Fields Action Precedence { Production($Fields, $Action, $Precedence, $START) }
 
-NamedFields:(List[NamedField]) = fields: (NamedField)+ { $fields }
+Fields:List[NamedField] = `%empty` { Nil }
+                        | fields: (NamedField)+ { $fields }
 
 /*
-      `%empty`               { Nil }
+Fields:(List[NamedField]) =
     | NamedField             { List($NamedField) }
-    | NamedField NamedFields { $NamedField :: $NamedFields }
+    | NamedField Fields { $NamedField :: $Fields }
 */
+
+// fields: (NamedField)+ { $fields }
 
 NamedField: NamedField = FIELD                               { NamedField(theFieldName = None, theField = $FIELD, $START) }
                        | theFieldName: ID ':' theName: FIELD { NamedField(theFieldName = Some($theFieldName.warnQuoted), $theName, $START) }
@@ -156,7 +161,7 @@ NamedField: NamedField = FIELD                               { NamedField(theFie
 // NB: Normalization.syntheticRuleName yields the name of a new rule, and appends to synthesisedRules,
 //     definitions of the one or more rules needed by its right hand side.
 FIELD: Name =   ID                            { $ID }
-            |   '(' NamedFields ')'  REPEAT   { syntheticRuleName($NamedFields, $REPEAT, $START, $END) }
+            |   '(' Fields ')'  REPEAT   { syntheticRuleName($Fields, $REPEAT, $START, $END) }
 
 REPEAT: Repeat  = '?'       { MaybeOne }
                 | '*'       { NoneOrMore }

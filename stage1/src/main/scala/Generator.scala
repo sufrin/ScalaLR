@@ -2,11 +2,11 @@ package org.sufrin.scalalr
 package stage1
 
 /**
- * First Language Atop Bootstrap
+ * Stage 1: First Language Atop Bootstrap
  *
- * Parser:     from flab-notation.scalalr
- * Tree:       flab.AST
- * Generator:  flab.AST => bootstrap.Parser.Parser.Notation => Scala
+ * Parser:     from stage1-notation.scalalr
+ * Tree:       stage1.AST
+ * Generator:  stage1.AST => bootstrap.Parser.Parser.Notation => Scala
  */
 
 import org.sufrin.utility.PrettyPrint.AnyPretty

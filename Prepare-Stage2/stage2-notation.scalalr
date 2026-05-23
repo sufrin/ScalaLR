@@ -17,10 +17,8 @@
 %notation  stage2
 %package   scalalr.stage2
 %path      "parser"
-
-
-%dialect   "scalalr stage2 notation"
-%scalalr   "components made by stage1 or stage2"
+%dialect   "scalalr stage2-notation"
+%scalalr   "compatible with stage1 or stage2"
 
 %include {
   // Substantive lexical scanner is elsewhere

@@ -25,6 +25,7 @@ object AST {
     def scalaTypeName: String
     def scalaParameterTypeName: String
     def sourceParameterTypeName: String
+    def isNoType: Boolean = false
   }
 
   case class Type(name: String, parameters: Seq[SymbolType], location: SourceLocation)  extends SymbolType {
@@ -32,15 +33,17 @@ object AST {
     def scalaTypeName: String = if (parameters.isEmpty) name else  parameters.map(_.scalaParameterTypeName).mkString(s"$name[", ",", "]")
     def scalaParameterTypeName: String = s"$scalaTypeName @unchecked"
     def sourceTypeName: String = if (parameters.isEmpty) name else  parameters.map(_.sourceParameterTypeName).mkString(s"$name[", ",", "]")
-    def sourceParameterTypeName: String = s"$sourceTypeName"
+    def sourceParameterTypeName: String = s"$scalaTypeName"
   }
 
   case object NoType extends SymbolType {
     def isUntyped: Boolean = false
-    def scalaTypeName: String = "_"
-    def scalaParameterTypeName: String = "_"
-    def sourceTypeName: String = "NoType"
-    def sourceParameterTypeName: String = "_"
+    def scalaTypeName: String = "Unit"
+    def scalaParameterTypeName: String = "Unit @unchecked"
+    def sourceTypeName: String = "Unit"
+    def sourceParameterTypeName: String = "Unit"
+    override def isNoType: Boolean = true
+
   }
 
   case class TypeVariable(forName: Name) extends SymbolType {

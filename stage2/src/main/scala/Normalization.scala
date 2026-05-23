@@ -22,7 +22,7 @@ object Normalization {
     Type("List", List(symbolType), START)
 
   /**
-   * Generate (and yield) a synthetic rule for a production that recognises othe specified repeat
+   * Generate (and yield) a synthetic rule for a production that recognises the specified repeat
    * of the given `fields`.
    */
   def syntheticRuleName(fields: List[NamedField], repeatType: Repeat, START: SourceLocation, END: SourceLocation): Name = {
@@ -47,10 +47,11 @@ object Normalization {
           case None => field.theField
           case Some(other) => other
         }
+        val theSomething = if (theType.isNoType) "Some(())" else s"Some($$$theFieldName)"
         val lhs = TypedNonterminal(theName, OptionType(theType, START), START)
         val rhs = List(
           Production(Nil, Some(Expression("None")), None, START),
-          Production(fields, Some(Expression(s"Some($$$theFieldName)")), None, START)
+          Production(fields, Some(Expression(theSomething)), None, START)
         )
         List(Rule(lhs, rhs, START))
 

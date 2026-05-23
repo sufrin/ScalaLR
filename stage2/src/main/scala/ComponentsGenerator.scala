@@ -12,7 +12,8 @@ class ComponentsGenerator(notation: Notation) extends SourceCode {
          |package $thePackage
          |
          |object NotationInformation {
-         |  val signature: String  = "${notation.theSignature}"
+         |  val generated: String  = "${new java.util.Date()}"
+         |  val signature: String  = "${notation.theSignature.trim}"
          |  val name: String       = "${notation.theName}"
          |}
          |

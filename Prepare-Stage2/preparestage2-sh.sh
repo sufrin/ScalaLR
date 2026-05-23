@@ -4,12 +4,14 @@
 SCRIPTS=/Users/sufrin/GitHomes/ScalaLR/scripts
 #
 #
-GEN=scalalrstage2-sh
-STAGE=4
+GEN=scalalrstage2
+STAGE=2
 export MODULE=2
-NOTATION=stage3-notation.scalalr
+NOTATION=stage2-notation.scalalr
 SCALA=stage2.scala
 
-export SUFFIX=-2xsh
+export SUFFIX=-sh
+
+echo STAGE2 SELF-HOSTED
 
 source $SCRIPTS/PREPARESTAGE.sh

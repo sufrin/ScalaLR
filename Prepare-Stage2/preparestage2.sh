@@ -10,6 +10,7 @@ export MODULE=2
 NOTATION=stage2-notation.scalalr
 SCALA=stage2.scala
 
+export SUFFIX=""
 
 source $SCRIPTS/PREPARESTAGE.sh
 

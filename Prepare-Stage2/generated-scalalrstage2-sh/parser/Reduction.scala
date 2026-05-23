@@ -49,7 +49,7 @@ object Reduction {
 
 
 def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufrin.scalalr.SourceLocation, n: Int): PartialFunction[List[Any], Any] = n match {
- /* Notation: Notation = Prefix `%rules` INCLUDE Rules OPTNL { $Prefix.copy(theRules = $Rules.reverse, theRulesInclude = $INCLUDE) }  */
+ /* Notation: Notation = Prefix `%rules` INCLUDE Rules OPTSEPARATOR { $Prefix.copy(theRules = $Rules.reverse, theRulesInclude = $INCLUDE) }  */
  case 1 => 
   { case List(dol$Prefix: Notation, _, dol$INCLUDE: String, dol$Rules: List[Rule @unchecked], _) => 
         dol$Prefix.copy(theRules = dol$Rules.reverse, theRulesInclude = dol$INCLUDE)
@@ -128,10 +128,10 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
  /* INCLUDE: String =  { "" }  */
  case 17 => 
   { case List() =>  "" } 
- /* OPTNL: Unit =  { () }  */
+ /* OPTSEPARATOR: Unit =  { () }  */
  case 18 => 
   { case List() =>  () } 
- /* OPTNL: Unit = SEPARATOR { () }  */
+ /* OPTSEPARATOR: Unit = SEPARATOR { () }  */
  case 19 => 
   { case List(_) =>  () } 
  /* TypedTerminals: List[TypedTerminal] =  { Nil }  */
@@ -165,116 +165,131 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
   { case List(dol$Rules: List[Rule @unchecked], _, dol$Rule: Rule) => 
         dol$Rule :: dol$Rules
   }
- /* Rule: Rule = LHS `=` OptBar RHS { Rule($LHS, $RHS, $START) }  */
+ /* Rule: Rule = LHS S_1 RHS { Rule($LHS, $RHS, $START) }  */
  case 27 => 
-  { case List(dol$LHS: TypedNonterminal, _, _, dol$RHS: List[Production @unchecked]) => 
+  { case List(dol$LHS: TypedNonterminal, dol$S_1: Option[Unit @unchecked], dol$RHS: List[Production @unchecked]) => 
         Rule(dol$LHS, dol$RHS, dol$START)
   }
- /* OptBar: Unit = `|` { () }  */
+ /* LHS: TypedNonterminal = ID `:` Type `=` { (TypedNonterminal($ID.warnQuoted, $Type, $START)) }  */
  case 28 => 
-  { case List(_) =>  () } 
- /* OptBar: Unit =  { () }  */
- case 29 => 
-  { case List() =>  () } 
- /* LHS: TypedNonterminal = ID `:` Type { (TypedNonterminal($ID.warnQuoted, $Type, $START)) }  */
- case 30 => 
-  { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name, _, dol$Type: SymbolType) => 
+  { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name, _, dol$Type: SymbolType, _) => 
         (TypedNonterminal(dol$ID.warnQuoted, dol$Type, dol$START))
   }
- /* LHS: TypedNonterminal = ID { (TypedNonterminal($ID.warnQuoted, TypeVariable($ID), $START)) }  */
- case 31 => 
-  { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
+ /* LHS: TypedNonterminal = ID `=` { (TypedNonterminal($ID.warnQuoted, TypeVariable($ID), $START)) }  */
+ case 29 => 
+  { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name, _) => 
         (TypedNonterminal(dol$ID.warnQuoted, TypeVariable(dol$ID), dol$START))
   }
  /* RHS: List[Production] = Production { List($Production) }  */
- case 32 => 
+ case 30 => 
   { case List(dol$Production: Production) =>  List(dol$Production) } 
  /* RHS: List[Production] = Production `|` RHS { $Production :: $RHS }  */
- case 33 => 
+ case 31 => 
   { case List(dol$Production: Production, _, dol$RHS: List[Production @unchecked]) => 
         dol$Production :: dol$RHS
   }
- /* Production: Production = NamedFields Action Precedence { Production($NamedFields, $Action, $Precedence, $START) }  */
- case 34 => 
-  { case List(dol$NamedFields: List[NamedField @unchecked], dol$Action: Option[Expression @unchecked], dol$Precedence: Option[Name @unchecked]) => 
-        Production(dol$NamedFields, dol$Action, dol$Precedence, dol$START)
+ /* Production: Production = Fields Action Precedence { Production($Fields, $Action, $Precedence, $START) }  */
+ case 32 => 
+  { case List(dol$Fields: List[NamedField @unchecked], dol$Action: Option[Expression @unchecked], dol$Precedence: Option[Name @unchecked]) => 
+        Production(dol$Fields, dol$Action, dol$Precedence, dol$START)
   }
- /* NamedFields: List[NamedField] = `%empty` { Nil }  */
- case 35 => 
+ /* Fields: List[NamedField] = `%empty` { Nil }  */
+ case 33 => 
   { case List(_) =>  Nil } 
- /* NamedFields: List[NamedField] = NamedField { List($NamedField) }  */
- case 36 => 
-  { case List(dol$NamedField: NamedField) =>  List(dol$NamedField) } 
- /* NamedFields: List[NamedField] = NamedField NamedFields { $NamedField :: $NamedFields }  */
- case 37 => 
-  { case List(dol$NamedField: NamedField, dol$NamedFields: List[NamedField @unchecked]) => 
-        dol$NamedField :: dol$NamedFields
-  }
+ /* Fields: List[NamedField] = fields: S_2 { $fields }  */
+ case 34 => 
+  { case List(dol$fields: List[NamedField @unchecked]) =>  dol$fields } 
  /* NamedField: NamedField = FIELD { NamedField(theFieldName = None, theField = $FIELD, $START) }  */
- case 38 => 
+ case 35 => 
   { case List(dol$FIELD: Name) => 
         NamedField(theFieldName = None, theField = dol$FIELD, dol$START)
   }
  /* NamedField: NamedField = theFieldName: ID `:` theName: FIELD { NamedField(theFieldName = Some($theFieldName.warnQuoted), $theName, $START) }  */
- case 39 => 
+ case 36 => 
   { case List(dol$theFieldName: org.sufrin.scalalr.stage2.AST.Name, _, dol$theName: Name) => 
         NamedField(theFieldName = Some(dol$theFieldName.warnQuoted), dol$theName, dol$START)
   }
  /* FIELD: Name = ID { $ID }  */
- case 40 => 
+ case 37 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) =>  dol$ID } 
- /* FIELD: Name = `(` NamedFields `)` REPEAT { syntheticRuleName($NamedFields, $REPEAT, $START, $END) }  */
- case 41 => 
-  { case List(_, dol$NamedFields: List[NamedField @unchecked], _, dol$REPEAT: Repeat) => 
-        syntheticRuleName(dol$NamedFields, dol$REPEAT, dol$START, dol$END)
+ /* FIELD: Name = `(` Fields `)` REPEAT { syntheticRuleName($Fields, $REPEAT, $START, $END) }  */
+ case 38 => 
+  { case List(_, dol$Fields: List[NamedField @unchecked], _, dol$REPEAT: Repeat) => 
+        syntheticRuleName(dol$Fields, dol$REPEAT, dol$START, dol$END)
   }
  /* REPEAT: Repeat = `?` { MaybeOne }  */
- case 42 => 
+ case 39 => 
   { case List(_) =>  MaybeOne } 
  /* REPEAT: Repeat = `*` { NoneOrMore }  */
- case 43 => 
+ case 40 => 
   { case List(_) =>  NoneOrMore } 
  /* REPEAT: Repeat = `+` { OneOrMore }  */
- case 44 => 
+ case 41 => 
   { case List(_) =>  OneOrMore } 
  /* Action: Option[Expression] =  { None }  */
- case 45 => 
+ case 42 => 
   { case List() =>  None } 
  /* Action: Option[Expression] = CODE { Some(Expression($CODE)) }  */
- case 46 => 
+ case 43 => 
   { case List(dol$CODE: String) =>  Some(Expression(dol$CODE)) } 
- /* Precedence: Option[Name] =  { None }  */
- case 47 => 
-  { case List() =>  None } 
- /* Precedence: Option[Name] = `%prec` ID { Some($ID) }  */
- case 48 => 
-  { case List(_, dol$ID: org.sufrin.scalalr.stage2.AST.Name) =>  Some(dol$ID) } 
+ /* Precedence: Option[Name] = S_3 { $S_3 }  */
+ case 44 => 
+  { case List(dol$S_3: Option[org.sufrin.scalalr.stage2.AST.Name @unchecked]) =>  dol$S_3 } 
  /* Type: SymbolType = ID { Type($ID.withoutQuotes, Nil, $START) }  */
- case 49 => 
+ case 45 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
         Type(dol$ID.withoutQuotes, Nil, dol$START)
   }
  /* Type: SymbolType = ID `[` Types `]` { Type($ID.withoutQuotes, $Types, $START) }  */
- case 50 => 
+ case 46 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name, _, dol$Types: List[Type @unchecked], _) => 
         Type(dol$ID.withoutQuotes, dol$Types, dol$START)
   }
  /* Type: SymbolType = `(` Types `)` { makeTupleType($Types, $START) }  */
- case 51 => 
+ case 47 => 
   { case List(_, dol$Types: List[Type @unchecked], _) => 
         makeTupleType(dol$Types, dol$START)
   }
  /* Type: SymbolType = `(` `)` { Type("Unit", Nil, $START) }  */
- case 52 => 
+ case 48 => 
   { case List(_, _) =>  Type("Unit", Nil, dol$START) } 
- /* Types: List[Type] = Type { List($Type) }  */
+ /* Types: List[Type] = S_4 { $S_4 }  */
+ case 49 => 
+  { case List(dol$S_4: List[SymbolType @unchecked]) =>  dol$S_4 } 
+ /* S_1: Option[Unit] =  { None }  */
+ case 50 => 
+  { case List() =>  None } 
+ /* S_1: Option[Unit] = `|` { Some(()) }  */
+ case 51 => 
+  { case List(_) =>  Some(()) } 
+ /* S_2_L: List[NamedField] = NamedField { List($NamedField) }  */
+ case 52 => 
+  { case List(dol$NamedField: NamedField) =>  List(dol$NamedField) } 
+ /* S_2_L: List[NamedField] = S_2_L NamedField { $NamedField :: $S_2_L }  */
  case 53 => 
-  { case List(dol$Type: SymbolType) =>  List(dol$Type) } 
- /* Types: List[Type] = Type `,` Types { $Type :: $Types }  */
- case 54 => 
-  { case List(dol$Type: SymbolType, _, dol$Types: List[Type @unchecked]) => 
-        dol$Type :: dol$Types
+  { case List(dol$S_2_L: List[NamedField @unchecked], dol$NamedField: NamedField) => 
+        dol$NamedField :: dol$S_2_L
   }
+ /* S_2: List[NamedField] = S_2_L { $S_2_L.reverse }  */
+ case 54 => 
+  { case List(dol$S_2_L: List[NamedField @unchecked]) =>  dol$S_2_L.reverse } 
+ /* S_3: Option[org.sufrin.scalalr.stage2.AST.Name] =  { None }  */
+ case 55 => 
+  { case List() =>  None } 
+ /* S_3: Option[org.sufrin.scalalr.stage2.AST.Name] = `%prec` ID { Some($ID) }  */
+ case 56 => 
+  { case List(_, dol$ID: org.sufrin.scalalr.stage2.AST.Name) =>  Some(dol$ID) } 
+ /* S_4_L: List[SymbolType] = Type { List($Type) }  */
+ case 57 => 
+  { case List(dol$Type: SymbolType) =>  List(dol$Type) } 
+ /* S_4_L: List[SymbolType] = S_4_L `,` Type { $Type :: $S_4_L }  */
+ case 58 => 
+  { case List(dol$S_4_L: List[SymbolType @unchecked], _, dol$Type: SymbolType) => 
+        dol$Type :: dol$S_4_L
+  }
+ /* S_4: List[SymbolType] = S_4_L { $S_4_L.reverse }  */
+ case 59 => 
+  { case List(dol$S_4_L: List[SymbolType @unchecked]) =>  dol$S_4_L.reverse } 
 
  }
 

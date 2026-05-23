@@ -22,11 +22,8 @@ package stage2
 
 object main {
   def printHelp(): Unit = {
-    val signature = {
-      import scalalr.stage2.DialectInformation._
-      s"Notation \"$name\" (for $notation) $scalalr"
-    }
-    println(s"""$signature""")
+    //import NotationInformation._
+    //println(s"ScalaLR of $date.")
   }
   def main(args: Array[String]): Unit = {
     try {

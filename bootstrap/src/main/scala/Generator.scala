@@ -295,24 +295,46 @@ class Generator(val notation: Notation, prefix: String="") {
   case class StateEntry(number: Int, transitions: Seq[(Int,Action)], reductions: Seq[(Int, Action)], gotos: Seq[(Int, Action)], conflicts: Int)
 
 
+  def toSource(s: String, html: Boolean = false): String = {
+    var report = s
+    for {(name, num) <- tokenMap if name.isQuoted}
+      report = report.replace(s"TOK-$num", name)
+    report
+  }
+
   def makeBisonTables(name: String): Boolean = {
     import scala.sys.process._
     writeBisonSource(name)
     val output = new StringBuilder
-    val logger = ProcessLogger(line => output.append(line + "\n"))
+
+
+    var lines = 0
+    def logLine(line: String): Unit = {
+      output.append(toSource(line) + "\n")
+      lines match {
+        case 0 =>
+        case 1 => println(s"Bison     $line")
+        case 2 =>    print("Bison     additional diagnostics may take some time to generate ")
+        case _ => if (lines%10==0) print(".")
+      }
+      lines += 1
+    }
+
+    val logger = ProcessLogger(logLine(_))
+    logLine(s"Bison log for Bootstrap ScalaLR: ${notation.theName} at ${new java.util.Date}\n")
 
     val exit = Process(Seq("bison", "-v", s"--html=$name.html", s"--xml=$name.xml", s"--output=$name.tab.c", s"-Wcounterexamples", s"$name.y")).!(logger)
     val rmExit = Process(Seq("rm", s"$name.tab.c")).!(logger)
 
 
     fine(s"Bison tables in ${name}.xml")
+
     if (output.nonEmpty) {
       var report = output.toString()
       for {(name, num) <- tokenMap if name.isQuoted} {
         report = report.replace(s"TOK-$num", name)
       }
       report = report.replace("[-Wcounterexamples]","").replace("[--Wconflicts-sr]","").replace("[--Wconflicts-rr]","")
-      warn(s"Bison Diagnostics (also placed in $name.log):\n${report}")
       Files.write(Path.of(s"$name.log"), report.getBytes(StandardCharsets.UTF_8))
     }
 
@@ -460,6 +482,11 @@ class Generator(val notation: Notation, prefix: String="") {
        |  val scalalr: String  = "${theScalalrDialect.unquoted}"
        |  val notation: String = "${theNotationDialect.unquoted}"
        |  val name: String     = "${theNotationName.unquoted}"
+       |}
+       |
+       |object NotationInformation {
+       |  val signature: String  = "${theScalalrDialect.unquoted} ${theNotationDialect.unquoted}"
+       |  val name: String       = "${theNotationName.unquoted}"
        |}
        |
        |object Components extends org.sufrin.scalalr.LRParserComponents {

@@ -70,45 +70,45 @@
     <option name="showLibraryContents" value="true" />
     <option name="showMembers" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.genconflicts.executor&quot;: &quot;Run&quot;,
-    &quot;Application.generatesmall.executor&quot;: &quot;Run&quot;,
-    &quot;Application.generatexpr.executor&quot;: &quot;Run&quot;,
-    &quot;Application.runexpr.executor&quot;: &quot;Run&quot;,
-    &quot;Application.runsmall.executor&quot;: &quot;Run&quot;,
-    &quot;Application.runtinyfun.executor&quot;: &quot;Run&quot;,
-    &quot;Application.test0.executor&quot;: &quot;Run&quot;,
-    &quot;Application.test1.executor&quot;: &quot;Run&quot;,
-    &quot;Application.test2.executor&quot;: &quot;Run&quot;,
-    &quot;Application.test2a.executor&quot;: &quot;Run&quot;,
-    &quot;Application.test3.executor&quot;: &quot;Run&quot;,
-    &quot;Application.test4.executor&quot;: &quot;Run&quot;,
-    &quot;Application.test5.executor&quot;: &quot;Run&quot;,
-    &quot;Application.test6.executor&quot;: &quot;Run&quot;,
-    &quot;Application.testAuto.executor&quot;: &quot;Run&quot;,
-    &quot;Application.testAutoMisc.executor&quot;: &quot;Run&quot;,
-    &quot;Application.testAutoWarn.executor&quot;: &quot;Run&quot;,
-    &quot;Application.testConflict.executor&quot;: &quot;Run&quot;,
-    &quot;Application.testConflictIFTHEN.executor&quot;: &quot;Run&quot;,
-    &quot;Application.testConflictSAB.executor&quot;: &quot;Run&quot;,
-    &quot;Application.testInfer.executor&quot;: &quot;Run&quot;,
-    &quot;Application.testPrecedence.executor&quot;: &quot;Run&quot;,
-    &quot;Application.testRegex.executor&quot;: &quot;Run&quot;,
-    &quot;Application.testSelf.executor&quot;: &quot;Run&quot;,
-    &quot;Application.testSmall.executor&quot;: &quot;Run&quot;,
-    &quot;Application.testTiny.executor&quot;: &quot;Run&quot;,
-    &quot;Application.textExpand.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/sufrin/GitHomes/ScalaLR&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.37201804&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.genconflicts.executor": "Run",
+    "Application.generatesmall.executor": "Run",
+    "Application.generatexpr.executor": "Run",
+    "Application.runexpr.executor": "Run",
+    "Application.runsmall.executor": "Run",
+    "Application.runtinyfun.executor": "Run",
+    "Application.test0.executor": "Run",
+    "Application.test1.executor": "Run",
+    "Application.test2.executor": "Run",
+    "Application.test2a.executor": "Run",
+    "Application.test3.executor": "Run",
+    "Application.test4.executor": "Run",
+    "Application.test5.executor": "Run",
+    "Application.test6.executor": "Run",
+    "Application.testAuto.executor": "Run",
+    "Application.testAutoMisc.executor": "Run",
+    "Application.testAutoWarn.executor": "Run",
+    "Application.testConflict.executor": "Run",
+    "Application.testConflictIFTHEN.executor": "Run",
+    "Application.testConflictSAB.executor": "Run",
+    "Application.testInfer.executor": "Run",
+    "Application.testPrecedence.executor": "Run",
+    "Application.testRegex.executor": "Run",
+    "Application.testSelf.executor": "Run",
+    "Application.testSmall.executor": "Run",
+    "Application.testTiny.executor": "Run",
+    "Application.textExpand.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/sufrin/GitHomes/ScalaLR/utilities/src/main/scala",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.37201804",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/Prepare-Stage1" />

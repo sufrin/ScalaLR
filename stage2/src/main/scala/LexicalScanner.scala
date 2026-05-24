@@ -25,8 +25,14 @@ object LexicalScanner {
     @inline def nextChar(): Unit = chars.next()
     @inline def afterNextChar(t: Token): Token = { nextChar(); t }
 
-    def makeID(unQuoted: String, isQuoted: Boolean, location: SourceLocation): ID =
+    def makeID(unQuoted: String, isQuoted: Boolean, location: SourceLocation): ID = {
+        if (unQuoted.contains(' ') || unQuoted.contains('\n') || unQuoted.length>40) {
+          Generator.warn(s"An unlikely-looking ID (too long, or containing whitespace) at $location")
+          ID(AST.Name(unQuoted, isQuoted, location))
+        }
+      else
         ID(AST.Name(unQuoted, isQuoted, location))
+    }
 
     /**
      * True after the %rules directive has been seen for the first time

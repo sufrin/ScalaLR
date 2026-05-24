@@ -116,51 +116,53 @@ object Normalization {
         }
     }
 
-    if (rule.rhs.forall(_.reduction.isDefined)) rule else {
-      val newRHS =
-        for { production <- rule.rhs } yield
-          production.symbols.length match {
+    def inferredProduction(production: Production): Production = {
+      if (production.reduction.isDefined) production else
+      production.symbols.length match {
+        case 0 =>
+          warn(s"""\n Using universal default reduction expression value \"()\" for the production at: ${production.location}
+                  | this is because the production is empty.
+                  | Recommended remedy: specify the reduction expression explicitly.
+                  | """.stripMargin)
+          production.copy(reduction = Some(Expression(" ()) ")))
+        case 1 =>
+          val field = production.symbols.head
+          val result: Name  =
+            field.theFieldName match {
+              case Some(name) => name
+              case None       => field.theField
+            }
+          production.copy(reduction = Some(Expression(s"$$$result")))
+        case n =>
+          val searchOrdered = production.symbols.filterNot(hasNoType)
+          searchOrdered.length match {
             case 0 =>
               warn(s"""\n Using universal default reduction expression value \"()\" for the production at: ${production.location}
-                      | this is because the production is empty.
-                      | Recommended remedy: specify the reduction expression explicitly.
-                      | """.stripMargin)
-              production.copy(reduction = Some(Expression(" ()) ")))
+                      | this is because the production has no value-carrying symbols.
+                      | Recommended remedy: specify the reduction expression explicitly.""".stripMargin)
+              production.copy(reduction = Some(Expression(" () ")))
             case 1 =>
-              val field = production.symbols.head
+              val field = searchOrdered.head
               val result: Name  =
                 field.theFieldName match {
                   case Some(name) => name
                   case None       => field.theField
                 }
-                production.copy(reduction = Some(Expression(s"$$$result")))
+              production.copy(reduction = Some(Expression(s"$$$result")))
             case n =>
-              val searchOrdered = production.symbols.filterNot(hasNoType)
-              searchOrdered.length match {
-                case 0 =>
-                  warn(s"""\n Using universal default reduction expression value \"()\" for the production at: ${production.location}
-                          | this is because the production has no value-carrying symbols.
-                          | Recommended remedy: specify the reduction expression explicitly.""".stripMargin)
-                  production.copy(reduction = Some(Expression(" () ")))
-                case 1 =>
-                  val field = searchOrdered.head
-                  val result: Name  =
-                    field.theFieldName match {
-                      case Some(name) => name
-                      case None       => field.theField
-                    }
-                  production.copy(reduction = Some(Expression(s"$$$result")))
-                case n =>
-                  warn(
-                    s"""\n Using universal default reduction expression value \"()\" for the production $production at: ${production.location}
-                       | This is because the production's intended value cannot be determined (there is more than one value-carrying symbol).
-                       | Recommended remedy: specify the reduction expression explicitly.
-                       |""".stripMargin)
-                  production.copy(reduction =  Some(Expression(" () ")))
-              }
-
-
+              warn(
+                s"""\n Using universal default reduction expression value \"()\" for the production $production at: ${production.location}
+                   | This is because the production's intended value cannot be determined (there is more than one value-carrying symbol).
+                   | Recommended remedy: specify the reduction expression explicitly.
+                   |""".stripMargin)
+              production.copy(reduction =  Some(Expression(" () ")))
           }
+      }
+
+    }
+
+    if (rule.rhs.forall(_.reduction.isDefined)) rule else {
+      val newRHS = for { production <- rule.rhs } yield inferredProduction(production)
       rule.copy(rhs=newRHS)
     }
   }

@@ -121,7 +121,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.generatesmall">
+  <component name="RunManager" selected="Application.testTiny">
     <configuration name="generatesmall" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.bootstrap.generatesmall" />
       <module name="scalalr.bootstrap" />
@@ -142,21 +142,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="test6" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.test6" />
-      <module name="scalalr.stage2" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.sufrin.scalalr.stage2.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="testPrecedence" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testPrecedence" />
+    <configuration name="testAutoMisc" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testAutoMisc" />
       <module name="scalalr.stage2" />
       <extension name="coverage">
         <pattern>
@@ -170,6 +157,19 @@
     </configuration>
     <configuration name="testSmall" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testSmall" />
+      <module name="scalalr.stage2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.sufrin.scalalr.stage2.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="testTiny" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testTiny" />
       <module name="scalalr.stage2" />
       <extension name="coverage">
         <pattern>
@@ -196,11 +196,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.testTiny" />
+        <item itemvalue="Application.testAutoMisc" />
         <item itemvalue="Application.generatesmall" />
         <item itemvalue="Application.testSmall" />
         <item itemvalue="Application.runtinyfun" />
-        <item itemvalue="Application.testPrecedence" />
-        <item itemvalue="Application.test6" />
       </list>
     </recent_temporary>
   </component>
@@ -251,17 +251,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="scala-line">
           <url>file://$PROJECT_DIR$/stage2/src/test/scala/GeneratorTests.scala</url>
-          <line>372</line>
+          <line>374</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="scala-line">
           <url>file://$PROJECT_DIR$/stage2/src/test/scala/GeneratorTests.scala</url>
-          <line>398</line>
+          <line>400</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="scala-line">
           <url>file://$PROJECT_DIR$/stage2/src/test/scala/GeneratorTests.scala</url>
-          <line>388</line>
+          <line>390</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="scala-line">

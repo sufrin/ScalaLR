@@ -250,10 +250,11 @@ ids:(List[String]) = (';' ID)+;
 
   """)
 
-object testTiny extends Test("-c")("""
+object testTiny extends Test("-c -Lsyn")("""
         %notation TinyFun
         %package  tinyfun
         %path     "tinyfun"
+        %tables   "ielr"
 
         %include {
            import org.sufrin.scalalr.SourceLocation
@@ -315,8 +316,8 @@ object testTiny extends Test("-c")("""
 
         %right `=`
         %left `+` `-`
-        %left "HIGH"
         %left `*` `/`
+        %prec HIGH
 
 
 
@@ -345,18 +346,19 @@ object testTiny extends Test("-c")("""
         command: Unit = expr { run(List($expr)) } | "QUIT" { System.exit(0) };
 
 
-        expr: Expr =
-                  ID                  { Id($ID, $START) }
-                | number              { $number }
-                | ID `=` expr         { Assign($ID, $expr, $START) }
-                //| l:expr  r:expr      { Binop("*", $l, $r, $START) } %prec HIGH
-                | l:expr `*` r:expr   { Binop("*", $l, $r, $START) }
-                | l:expr `+` r:expr   { Binop("+", $l, $r, $START) }
-                | l:expr `/` r:expr   { Binop("/", $l, $r, $START) }
-                | l:expr `-` r:expr   { Binop("-", $l, $r, $START) }
-                | "(" expr ")"        { $expr }
-                | ID `(` exprs `)`    { Apply($ID, $exprs, $START) }
-               ;
+        expr: Expr  = prim                //{ $prim }
+                    | ID `=` expr         { Assign($ID, $expr, $START) }
+                    | l:prim  r:prim      { Binop("*", $l, $r, $START) } %prec HIGH
+                    | l:expr `*` r:expr   { Binop("*", $l, $r, $START) }
+                    | l:expr `+` r:expr   { Binop("+", $l, $r, $START) }
+                    | l:expr `/` r:expr   { Binop("/", $l, $r, $START) }
+                    | l:expr `-` r:expr   { Binop("-", $l, $r, $START) }
+                    | "(" expr ")"        { $expr }
+
+         prim: Expr = ID               { Id($ID, $START) }
+                    |number            { $number }
+                    | ID `[` exprs `]` { Apply($ID, $exprs, $START) }
+
 
         exprs: (List[Expr]) =
                     expr            { List($expr) }

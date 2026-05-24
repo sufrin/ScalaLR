@@ -121,13 +121,13 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.testTiny">
-    <configuration name="generatesmall" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.bootstrap.generatesmall" />
-      <module name="scalalr.bootstrap" />
+  <component name="RunManager" selected="Application.testSmall">
+    <configuration name="test1" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.test1" />
+      <module name="scalalr.stage2" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.sufrin.scalalr.bootstrap.*" />
+          <option name="PATTERN" value="org.sufrin.scalalr.stage2.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -135,15 +135,34 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="runtinyfun" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="runtinyfun" />
-      <module name="scalalr.testbed" />
+    <configuration name="test3" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.test3" />
+      <module name="scalalr.stage2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.sufrin.scalalr.stage2.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="testAutoMisc" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testAutoMisc" />
+    <configuration name="test4" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.test4" />
+      <module name="scalalr.stage2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.sufrin.scalalr.stage2.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test5" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.test5" />
       <module name="scalalr.stage2" />
       <extension name="coverage">
         <pattern>
@@ -157,19 +176,6 @@
     </configuration>
     <configuration name="testSmall" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testSmall" />
-      <module name="scalalr.stage2" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.sufrin.scalalr.stage2.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="testTiny" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testTiny" />
       <module name="scalalr.stage2" />
       <extension name="coverage">
         <pattern>
@@ -196,11 +202,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.testTiny" />
-        <item itemvalue="Application.testAutoMisc" />
-        <item itemvalue="Application.generatesmall" />
         <item itemvalue="Application.testSmall" />
-        <item itemvalue="Application.runtinyfun" />
+        <item itemvalue="Application.test5" />
+        <item itemvalue="Application.test4" />
+        <item itemvalue="Application.test3" />
+        <item itemvalue="Application.test1" />
       </list>
     </recent_temporary>
   </component>

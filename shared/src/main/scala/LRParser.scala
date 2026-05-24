@@ -35,7 +35,7 @@ object LRParser {
   sealed trait ParseState
   case object RUNNING extends ParseState
   case object NEXTSTEP extends ParseState
-  case class  ERRONEOUS(diagnosis: String) extends ParseState
+  case class  ERRONEOUS(diagnosis: String) extends Throwable with ParseState
   case class  ACCEPTED(values: Any) extends ParseState // state of the value stack
 
   /**
@@ -169,8 +169,7 @@ object LRParser {
               //println(s"error SHIFT($newState)")
               parseState = NEXTSTEP
             } else  {
-              // if (logState) parseState = ERRONEOUS(diagnosis(input, currentState))
-              throw new Error (cause)
+              parseState = ERRONEOUS(diagnosis(input, currentState))
             }
 
 
@@ -288,8 +287,7 @@ object LRParser {
               //println(s"error SHIFT($newState)")
               parseState = NEXTSTEP
             } else  {
-              // if (logState) parseState = ERRONEOUS(diagnosis(input, currentState))
-              throw new Error (cause)
+              parseState = ERRONEOUS(diagnosis(input, currentState))
             }
 
           case REDUCE(lhsSymbol, production, size) =>

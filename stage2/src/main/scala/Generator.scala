@@ -60,6 +60,7 @@ object Generator extends org.sufrin.logging.SourceLoggable {
     parser.logState = logParse
     parser.run(scanner.next) match {
       case ACCEPTED(notation: Notation) => generateCode(Normalization.normalize(notation))
+      case ERRONEOUS(why) => error(why)
       case other =>
     }
   }

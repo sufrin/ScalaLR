@@ -169,12 +169,26 @@ grammar rules give rise to LR parsing conflicts.
       -pp        prettyprint only
       -log       log the input source parse
       -html      output grammar report in html form
-      -c         generate detailed conflict report
+      -c         generate detailed conflict report (with "counterexample"
+                 derivations -- these can take a long time to generate, and
+                 timeouts operate)
       
       LOGGING OPTIONS
-      -Lsym      inventory the symbols
-```` 
+      -Lsym      show an inventory of the symbols, their types, and their definitions
+      -Lsyn      show the rules after code synthesis for repeated constructions```` 
 
+      OUTPUTPATH is set by one of
+      -p         OUTPUTPATH
+      -o         OUTPUTPATH
+      --output=OUTPUTPATH
+      --prefix=OUTPUTPATH
+      
+      LITERAL SOURCE (reserved for programmatic testing) a notation may be defined directly in an argument
+      -#         INT     first SOURCE line number
+      -##        INT     first SOURCE column number
+      -s         SOURCE
+
+````
 
 ### Generated files
 
@@ -232,14 +246,60 @@ These files are generated in four phases:
 4. The `.log` file  output by Bison may contain detailed diagnostic messages that help explain 
    conflicts.  
 
-## Improvements since the Bootstrap
-Experience with using earlier versions of scalalr
-demonstrated a rather high incidence of noisy errors with a single
-trivial cause: the accidental omission of  semicolons
-between rule definitions.
+## Repetition Notations
+The *stage2* and subsequent processors include the repetition modifiers `*`, `+` and `?` 
+that make it straightforward to express repeated and optional constructs "in-situ" rather
+than having to write the grammar rules for them explicity. 
 
-This has been corrected in later versions of the  host notation 
-and has been retrofitted to the bootstrap and stage1 processors.
+````
+      (A)*     means zero or more A and yields the List[A] of their values 
+      (A)+     means one or more A  and yields the List[A] of their values 
+      (A)?     means zero or one A and yields the appropriate Option[A]
+````
+When `B` is not a value-carrying symbol, the repetition constructs denote "punctuated" 
+sequences and yield the  List[A] of the value-carrying symbol
+````
+      (`B` A)*   means zero or more A separated by `B` 
+      (`B` A)+   means one or more A separated by `B`
+      (A `B`)*   means zero or more A separated by `B`
+      (A `B`)+   means one or more A separated by  `B`
+````
+
+For example
+````  
+     ...
+     %rules
+       expr: Expr = ID '(' exprlist: (',' expr)* ')' { Apply($ID, $exprlist) }
+                  |    '{' exprlist: (';' expr)+ '}' { Sequence($ID, $exprlist) }
+                  |     RETURN optexpr:  (expr)? ';' { Return($optexpr) }
+````
+will be transformed into invocations of additional, mechanically-derived,
+rules (with mechanically generated names)
+````
+001   expr: Expr         = ID `(` exprlist: S_1 `)`   { Apply($ID, $exprlist) } 
+002   expr: Expr         =    `{` exprlist: S_2 `}`   { Sequence($ID, $exprlist) } 
+003   expr: Expr         =    RETURN optexpr: S_3 `;` { Return($optexpr) } 
+004   S_1_L: List[Expr]  = expr { List($expr) } 
+005   S_1_L: List[Expr]  = S_1_L `,` expr { $expr :: $S_1_L } 
+006   S_1: List[Expr]    = S_1_L { $S_1_L.reverse } 
+007   S_1: List[Expr]    = %empty { Nil } 
+008   S_2_L: List[Expr]  = expr { List($expr) } 
+009   S_2_L: List[Expr]  = S_2_L `;` expr { $expr :: $S_2_L } 
+010   S_2: List[Expr]    = S_2_L { $S_2_L.reverse } 
+011   S_3: Option[Expr]  = %empty { None } 
+012   S_3: Option[Expr]  = expr { Some($expr) } 
+````
+Notice the left-recursive productions for list-yielding constructs. These
+conserve parse-stack space and list-construction time at the cost
+of accumulating their result lists in reverse order, then reversing them at
+the point of use. 
+
+Notice that in general it is appropriate to provide a name for the result of a repeated
+construct, so that it can be embodied in the result expression of its "host" production.
+
+**NB:** The repetition constructs are for convenience in simple cases: if
+one needs more than just straightforward "punctuated list" expansions 
+in a production it is better  to hand-code the additional rule(s)
 
 ## Further Reading 
 1. The best-documented simple examples of programs that 
@@ -290,6 +350,7 @@ Here's the classic "dangling else" ambiguity, and a full diagnosis
         
      TEST-GENERATED/conflicts/IfThenElse/IfThenElse.y: warning: 3 shift/reduce conflicts [-Wconflicts-sr]
      TEST-GENERATED/conflicts/IfThenElse/IfThenElse.y: warning: shift/reduce conflict on token `+`
+     
      Example: IF expr THEN expr • `+` ID
      Shift derivation
        expr
@@ -300,27 +361,27 @@ Here's the classic "dangling else" ambiguity, and a full diagnosis
        ↳ 2: expr                          `+` ID
             ↳ 3: IF expr THEN expr •
    
-   TEST-GENERATED/conflicts/IfThenElse/IfThenElse.y: warning: shift/reduce conflict on token ELSE
-     Example: IF expr THEN IF expr THEN expr • ELSE expr
-     Shift derivation
-       expr
-       ↳ 3: IF expr THEN expr
-                              ↳ 4: IF expr THEN expr • ELSE expr
-     Reduce derivation
-       expr
-       ↳ 4: IF expr THEN expr                          ELSE expr
-                              ↳ 3: IF expr THEN expr •
-                              
-   TEST-GENERATED/conflicts/IfThenElse/IfThenElse.y: warning: shift/reduce conflict on token `+`
-     Example: IF expr THEN expr ELSE expr • `+` ID
-     Shift derivation
-       expr
-       ↳ 4: IF expr THEN expr ELSE expr
-                                          ↳ 2: expr • `+` ID
-     Reduce derivation
-       expr
-       ↳ 2: expr                                      `+` ID
-            ↳ 4: IF expr THEN expr ELSE expr •
+      TEST-GENERATED/conflicts/IfThenElse/IfThenElse.y: warning: shift/reduce conflict on token ELSE
+        Example: IF expr THEN IF expr THEN expr • ELSE expr
+        Shift derivation
+          expr
+          ↳ 3: IF expr THEN expr
+                                 ↳ 4: IF expr THEN expr • ELSE expr
+        Reduce derivation
+          expr
+          ↳ 4: IF expr THEN expr                          ELSE expr
+                                 ↳ 3: IF expr THEN expr •
+                                 
+      TEST-GENERATED/conflicts/IfThenElse/IfThenElse.y: warning: shift/reduce conflict on token `+`
+        Example: IF expr THEN expr ELSE expr • `+` ID
+        Shift derivation
+          expr
+          ↳ 4: IF expr THEN expr ELSE expr
+                                             ↳ 2: expr • `+` ID
+        Reduce derivation
+          expr
+          ↳ 2: expr                                      `+` ID
+               ↳ 4: IF expr THEN expr ELSE expr •
 ````
 
 ## Gotchas
@@ -369,34 +430,7 @@ here in no particular order.
 
 3. **[DONE May '26]** Implement higher-level constructs for use in-situ in productions to denote 
    repetitions and options 
-   that would normally have to be "hand-coded". For example
-````  
-     ...
-     %rules
-       expr: Expr = ID '(' exprlist: (',' expr)* ')' { Apply($ID, $exprlist) }
-                  |    '{' exprlist: (';' expr)+ '}' { Sequence($ID, $exprlist) }
-                  |     RETURN optexpr:  (expr)? ';' { Return($optexpr) }
-````
-will be transformed into invocations of additional, mechanically-derived, 
-rules (with mechanically generated names)
-````
-001   expr: Expr         = ID `(` exprlist: S_1 `)` { Apply($ID, $exprlist) } 
-002   expr: Expr         =    `{` exprlist: S_2 `}` { Sequence($ID, $exprlist) } 
-003   expr: Expr         =    RETURN optexpr: S_3 `;` { Return($optexpr) } 
-004   S_1_L: List[Expr]  = expr { List($expr) } 
-005   S_1_L: List[Expr]  = S_1_L `,` expr { $expr :: $S_1_L } 
-006   S_1: List[Expr]    = S_1_L { $S_1_L.reverse } 
-007   S_1: List[Expr]    = %empty { Nil } 
-008   S_2_L: List[Expr]  = expr { List($expr) } 
-009   S_2_L: List[Expr]  = S_2_L `;` expr { $expr :: $S_2_L } 
-010   S_2: List[Expr]    = S_2_L { $S_2_L.reverse } 
-011   S_3: Option[Expr]  = %empty { None } 
-012   S_3: Option[Expr]  = expr { Some($expr) } 
-````
-Notice the left-recursive productions for list-yielding constructs. These
-conserve parse-stack space, and list-construction time, at the cost
-of accumulating their result lists in reverse order, then reversing them at
-the point of use
+   that would normally have to be "hand-coded". 
 
 4. Additional higher level constructs that support "say it once"
 specification of notation and abstract syntax, as well as

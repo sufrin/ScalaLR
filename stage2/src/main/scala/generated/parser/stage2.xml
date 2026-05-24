@@ -2,468 +2,468 @@
 
 <bison-xml-report version="3.8.2" bug-report="bug-bison@gnu.org" url="https://www.gnu.org/software/bison/">
 
-  <filename>generated-scalalrstage1/parser/stage2.y</filename>
+  <filename>generated-scalalrstage2/parser/stage2.y</filename>
 
   <grammar>
     <rules>
       <rule number="0" usefulness="useful">
         <lhs>$accept</lhs>
         <rhs>
-          <symbol>Notation</symbol>
+          <symbol>T-040</symbol>
           <symbol>$end</symbol>
         </rhs>
       </rule>
       <rule number="1" usefulness="useful">
-        <lhs>Notation</lhs>
+        <lhs>T-040</lhs>
         <rhs>
-          <symbol>Prefix</symbol>
-          <symbol>TOK-29</symbol>
-          <symbol>INCLUDE</symbol>
-          <symbol>Rules</symbol>
-          <symbol>OPTNL</symbol>
+          <symbol>T-041</symbol>
+          <symbol>T-029</symbol>
+          <symbol>T-042</symbol>
+          <symbol>T-046</symbol>
+          <symbol>T-043</symbol>
         </rhs>
       </rule>
       <rule number="2" usefulness="useful">
-        <lhs>Prefix</lhs>
+        <lhs>T-041</lhs>
         <rhs>
           <empty/>
         </rhs>
       </rule>
       <rule number="3" usefulness="useful">
-        <lhs>Prefix</lhs>
+        <lhs>T-041</lhs>
         <rhs>
-          <symbol>Prefix</symbol>
-          <symbol>TOK-23</symbol>
-          <symbol>ID</symbol>
+          <symbol>T-041</symbol>
+          <symbol>T-023</symbol>
+          <symbol>T-003</symbol>
         </rhs>
       </rule>
       <rule number="4" usefulness="useful">
-        <lhs>Prefix</lhs>
+        <lhs>T-041</lhs>
         <rhs>
-          <symbol>Prefix</symbol>
-          <symbol>TOK-24</symbol>
-          <symbol>ID</symbol>
+          <symbol>T-041</symbol>
+          <symbol>T-024</symbol>
+          <symbol>T-003</symbol>
         </rhs>
       </rule>
       <rule number="5" usefulness="useful">
-        <lhs>Prefix</lhs>
+        <lhs>T-041</lhs>
         <rhs>
-          <symbol>Prefix</symbol>
-          <symbol>TOK-20</symbol>
-          <symbol>ID</symbol>
+          <symbol>T-041</symbol>
+          <symbol>T-020</symbol>
+          <symbol>T-003</symbol>
         </rhs>
       </rule>
       <rule number="6" usefulness="useful">
-        <lhs>Prefix</lhs>
+        <lhs>T-041</lhs>
         <rhs>
-          <symbol>Prefix</symbol>
-          <symbol>TOK-32</symbol>
-          <symbol>ID</symbol>
+          <symbol>T-041</symbol>
+          <symbol>T-032</symbol>
+          <symbol>T-003</symbol>
         </rhs>
       </rule>
       <rule number="7" usefulness="useful">
-        <lhs>Prefix</lhs>
+        <lhs>T-041</lhs>
         <rhs>
-          <symbol>Prefix</symbol>
-          <symbol>TOK-30</symbol>
-          <symbol>CODE</symbol>
+          <symbol>T-041</symbol>
+          <symbol>T-030</symbol>
+          <symbol>T-005</symbol>
         </rhs>
       </rule>
       <rule number="8" usefulness="useful">
-        <lhs>Prefix</lhs>
+        <lhs>T-041</lhs>
         <rhs>
-          <symbol>Prefix</symbol>
-          <symbol>TOK-25</symbol>
-          <symbol>TypedTerminals</symbol>
+          <symbol>T-041</symbol>
+          <symbol>T-025</symbol>
+          <symbol>T-044</symbol>
         </rhs>
       </rule>
       <rule number="9" usefulness="useful">
-        <lhs>Prefix</lhs>
+        <lhs>T-041</lhs>
         <rhs>
-          <symbol>Prefix</symbol>
-          <symbol>TOK-26</symbol>
-          <symbol>TypedTerminals</symbol>
+          <symbol>T-041</symbol>
+          <symbol>T-026</symbol>
+          <symbol>T-044</symbol>
         </rhs>
       </rule>
       <rule number="10" usefulness="useful">
-        <lhs>Prefix</lhs>
+        <lhs>T-041</lhs>
         <rhs>
-          <symbol>Prefix</symbol>
-          <symbol>TOK-27</symbol>
-          <symbol>TypedTerminals</symbol>
+          <symbol>T-041</symbol>
+          <symbol>T-027</symbol>
+          <symbol>T-044</symbol>
         </rhs>
       </rule>
       <rule number="11" usefulness="useful">
-        <lhs>Prefix</lhs>
+        <lhs>T-041</lhs>
         <rhs>
-          <symbol>Prefix</symbol>
-          <symbol>TOK-28</symbol>
-          <symbol>TypedTerminals</symbol>
+          <symbol>T-041</symbol>
+          <symbol>T-028</symbol>
+          <symbol>T-044</symbol>
         </rhs>
       </rule>
       <rule number="12" usefulness="useful">
-        <lhs>Prefix</lhs>
+        <lhs>T-041</lhs>
         <rhs>
-          <symbol>Prefix</symbol>
-          <symbol>TOK-31</symbol>
-          <symbol>TypedTerminals</symbol>
+          <symbol>T-041</symbol>
+          <symbol>T-031</symbol>
+          <symbol>T-044</symbol>
         </rhs>
       </rule>
       <rule number="13" usefulness="useful">
-        <lhs>Prefix</lhs>
+        <lhs>T-041</lhs>
         <rhs>
-          <symbol>Prefix</symbol>
-          <symbol>TOK-33</symbol>
-          <symbol>ID</symbol>
+          <symbol>T-041</symbol>
+          <symbol>T-033</symbol>
+          <symbol>T-003</symbol>
         </rhs>
       </rule>
       <rule number="14" usefulness="useful">
-        <lhs>Prefix</lhs>
+        <lhs>T-041</lhs>
         <rhs>
-          <symbol>Prefix</symbol>
-          <symbol>TOK-34</symbol>
-          <symbol>ID</symbol>
+          <symbol>T-041</symbol>
+          <symbol>T-034</symbol>
+          <symbol>T-003</symbol>
         </rhs>
       </rule>
       <rule number="15" usefulness="useful">
-        <lhs>Prefix</lhs>
+        <lhs>T-041</lhs>
         <rhs>
-          <symbol>Prefix</symbol>
-          <symbol>TOK-35</symbol>
-          <symbol>ID</symbol>
+          <symbol>T-041</symbol>
+          <symbol>T-035</symbol>
+          <symbol>T-003</symbol>
         </rhs>
       </rule>
       <rule number="16" usefulness="useful">
-        <lhs>INCLUDE</lhs>
+        <lhs>T-042</lhs>
         <rhs>
-          <symbol>TOK-30</symbol>
-          <symbol>CODE</symbol>
-          <symbol>SEPARATOR</symbol>
+          <symbol>T-030</symbol>
+          <symbol>T-005</symbol>
+          <symbol>T-019</symbol>
         </rhs>
       </rule>
       <rule number="17" usefulness="useful">
-        <lhs>INCLUDE</lhs>
+        <lhs>T-042</lhs>
         <rhs>
           <empty/>
         </rhs>
       </rule>
       <rule number="18" usefulness="useful">
-        <lhs>OPTNL</lhs>
+        <lhs>T-043</lhs>
         <rhs>
           <empty/>
         </rhs>
       </rule>
       <rule number="19" usefulness="useful">
-        <lhs>OPTNL</lhs>
+        <lhs>T-043</lhs>
         <rhs>
-          <symbol>SEPARATOR</symbol>
+          <symbol>T-019</symbol>
         </rhs>
       </rule>
       <rule number="20" usefulness="useful">
-        <lhs>TypedTerminals</lhs>
+        <lhs>T-044</lhs>
         <rhs>
           <empty/>
         </rhs>
       </rule>
       <rule number="21" usefulness="useful">
-        <lhs>TypedTerminals</lhs>
+        <lhs>T-044</lhs>
         <rhs>
-          <symbol>TypedTerminal</symbol>
-          <symbol>TypedTerminals</symbol>
+          <symbol>T-045</symbol>
+          <symbol>T-044</symbol>
         </rhs>
       </rule>
       <rule number="22" usefulness="useful">
-        <lhs>TypedTerminal</lhs>
+        <lhs>T-045</lhs>
         <rhs>
-          <symbol>ID</symbol>
-          <symbol>TOK-13</symbol>
-          <symbol>Type</symbol>
+          <symbol>T-003</symbol>
+          <symbol>T-013</symbol>
+          <symbol>T-058</symbol>
         </rhs>
       </rule>
       <rule number="23" usefulness="useful">
-        <lhs>TypedTerminal</lhs>
+        <lhs>T-045</lhs>
         <rhs>
-          <symbol>ID</symbol>
-          <symbol>TOK-16</symbol>
-          <symbol>Type</symbol>
-          <symbol>TOK-17</symbol>
+          <symbol>T-003</symbol>
+          <symbol>T-016</symbol>
+          <symbol>T-058</symbol>
+          <symbol>T-017</symbol>
         </rhs>
       </rule>
       <rule number="24" usefulness="useful">
-        <lhs>TypedTerminal</lhs>
+        <lhs>T-045</lhs>
         <rhs>
-          <symbol>ID</symbol>
+          <symbol>T-003</symbol>
         </rhs>
       </rule>
       <rule number="25" usefulness="useful">
-        <lhs>Rules</lhs>
+        <lhs>T-046</lhs>
         <rhs>
-          <symbol>Rule</symbol>
+          <symbol>T-047</symbol>
         </rhs>
       </rule>
       <rule number="26" usefulness="useful">
-        <lhs>Rules</lhs>
+        <lhs>T-046</lhs>
         <rhs>
-          <symbol>Rules</symbol>
-          <symbol>SEPARATOR</symbol>
-          <symbol>Rule</symbol>
+          <symbol>T-046</symbol>
+          <symbol>T-019</symbol>
+          <symbol>T-047</symbol>
         </rhs>
       </rule>
       <rule number="27" usefulness="useful">
-        <lhs>Rule</lhs>
+        <lhs>T-047</lhs>
         <rhs>
-          <symbol>LHS</symbol>
-          <symbol>TOK-11</symbol>
-          <symbol>OptBar</symbol>
-          <symbol>RHS</symbol>
+          <symbol>T-049</symbol>
+          <symbol>T-011</symbol>
+          <symbol>T-048</symbol>
+          <symbol>T-050</symbol>
         </rhs>
       </rule>
       <rule number="28" usefulness="useful">
-        <lhs>OptBar</lhs>
+        <lhs>T-048</lhs>
         <rhs>
-          <symbol>TOK-12</symbol>
+          <symbol>T-012</symbol>
         </rhs>
       </rule>
       <rule number="29" usefulness="useful">
-        <lhs>OptBar</lhs>
+        <lhs>T-048</lhs>
         <rhs>
           <empty/>
         </rhs>
       </rule>
       <rule number="30" usefulness="useful">
-        <lhs>LHS</lhs>
+        <lhs>T-049</lhs>
         <rhs>
-          <symbol>ID</symbol>
-          <symbol>TOK-13</symbol>
-          <symbol>Type</symbol>
+          <symbol>T-003</symbol>
+          <symbol>T-013</symbol>
+          <symbol>T-058</symbol>
         </rhs>
       </rule>
       <rule number="31" usefulness="useful">
-        <lhs>LHS</lhs>
+        <lhs>T-049</lhs>
         <rhs>
-          <symbol>ID</symbol>
+          <symbol>T-003</symbol>
         </rhs>
       </rule>
       <rule number="32" usefulness="useful">
-        <lhs>RHS</lhs>
+        <lhs>T-050</lhs>
         <rhs>
-          <symbol>Production</symbol>
+          <symbol>T-051</symbol>
         </rhs>
       </rule>
       <rule number="33" usefulness="useful">
-        <lhs>RHS</lhs>
+        <lhs>T-050</lhs>
         <rhs>
-          <symbol>Production</symbol>
-          <symbol>TOK-12</symbol>
-          <symbol>RHS</symbol>
+          <symbol>T-051</symbol>
+          <symbol>T-012</symbol>
+          <symbol>T-050</symbol>
         </rhs>
       </rule>
       <rule number="34" usefulness="useful">
-        <lhs>Production</lhs>
+        <lhs>T-051</lhs>
         <rhs>
-          <symbol>NamedFields</symbol>
-          <symbol>Action</symbol>
-          <symbol>Precedence</symbol>
+          <symbol>T-052</symbol>
+          <symbol>T-056</symbol>
+          <symbol>T-057</symbol>
         </rhs>
       </rule>
       <rule number="35" usefulness="useful">
-        <lhs>NamedFields</lhs>
+        <lhs>T-052</lhs>
         <rhs>
-          <symbol>TOK-22</symbol>
+          <symbol>T-022</symbol>
         </rhs>
       </rule>
       <rule number="36" usefulness="useful">
-        <lhs>NamedFields</lhs>
+        <lhs>T-052</lhs>
         <rhs>
-          <symbol>NamedField</symbol>
+          <symbol>T-053</symbol>
         </rhs>
       </rule>
       <rule number="37" usefulness="useful">
-        <lhs>NamedFields</lhs>
+        <lhs>T-052</lhs>
         <rhs>
-          <symbol>NamedField</symbol>
-          <symbol>NamedFields</symbol>
+          <symbol>T-053</symbol>
+          <symbol>T-052</symbol>
         </rhs>
       </rule>
       <rule number="38" usefulness="useful">
-        <lhs>NamedField</lhs>
+        <lhs>T-053</lhs>
         <rhs>
-          <symbol>FIELD</symbol>
+          <symbol>T-054</symbol>
         </rhs>
       </rule>
       <rule number="39" usefulness="useful">
-        <lhs>NamedField</lhs>
+        <lhs>T-053</lhs>
         <rhs>
-          <symbol>ID</symbol>
-          <symbol>TOK-13</symbol>
-          <symbol>FIELD</symbol>
+          <symbol>T-003</symbol>
+          <symbol>T-013</symbol>
+          <symbol>T-054</symbol>
         </rhs>
       </rule>
       <rule number="40" usefulness="useful">
-        <lhs>FIELD</lhs>
+        <lhs>T-054</lhs>
         <rhs>
-          <symbol>ID</symbol>
+          <symbol>T-003</symbol>
         </rhs>
       </rule>
       <rule number="41" usefulness="useful">
-        <lhs>FIELD</lhs>
+        <lhs>T-054</lhs>
         <rhs>
-          <symbol>TOK-16</symbol>
-          <symbol>NamedFields</symbol>
-          <symbol>TOK-17</symbol>
-          <symbol>REPEAT</symbol>
+          <symbol>T-016</symbol>
+          <symbol>T-052</symbol>
+          <symbol>T-017</symbol>
+          <symbol>T-055</symbol>
         </rhs>
       </rule>
       <rule number="42" usefulness="useful">
-        <lhs>REPEAT</lhs>
+        <lhs>T-055</lhs>
         <rhs>
-          <symbol>TOK-36</symbol>
+          <symbol>T-036</symbol>
         </rhs>
       </rule>
       <rule number="43" usefulness="useful">
-        <lhs>REPEAT</lhs>
+        <lhs>T-055</lhs>
         <rhs>
-          <symbol>TOK-37</symbol>
+          <symbol>T-037</symbol>
         </rhs>
       </rule>
       <rule number="44" usefulness="useful">
-        <lhs>REPEAT</lhs>
+        <lhs>T-055</lhs>
         <rhs>
-          <symbol>TOK-38</symbol>
+          <symbol>T-038</symbol>
         </rhs>
       </rule>
       <rule number="45" usefulness="useful">
-        <lhs>Action</lhs>
+        <lhs>T-056</lhs>
         <rhs>
           <empty/>
         </rhs>
       </rule>
       <rule number="46" usefulness="useful">
-        <lhs>Action</lhs>
+        <lhs>T-056</lhs>
         <rhs>
-          <symbol>CODE</symbol>
+          <symbol>T-005</symbol>
         </rhs>
       </rule>
       <rule number="47" usefulness="useful">
-        <lhs>Precedence</lhs>
+        <lhs>T-057</lhs>
         <rhs>
           <empty/>
         </rhs>
       </rule>
       <rule number="48" usefulness="useful">
-        <lhs>Precedence</lhs>
+        <lhs>T-057</lhs>
         <rhs>
-          <symbol>TOK-31</symbol>
-          <symbol>ID</symbol>
+          <symbol>T-031</symbol>
+          <symbol>T-003</symbol>
         </rhs>
       </rule>
       <rule number="49" usefulness="useful">
-        <lhs>Type</lhs>
+        <lhs>T-058</lhs>
         <rhs>
-          <symbol>ID</symbol>
+          <symbol>T-003</symbol>
         </rhs>
       </rule>
       <rule number="50" usefulness="useful">
-        <lhs>Type</lhs>
+        <lhs>T-058</lhs>
         <rhs>
-          <symbol>ID</symbol>
-          <symbol>TOK-8</symbol>
-          <symbol>Types</symbol>
-          <symbol>TOK-9</symbol>
+          <symbol>T-003</symbol>
+          <symbol>T-008</symbol>
+          <symbol>T-059</symbol>
+          <symbol>T-009</symbol>
         </rhs>
       </rule>
       <rule number="51" usefulness="useful">
-        <lhs>Type</lhs>
+        <lhs>T-058</lhs>
         <rhs>
-          <symbol>TOK-16</symbol>
-          <symbol>Types</symbol>
-          <symbol>TOK-17</symbol>
+          <symbol>T-016</symbol>
+          <symbol>T-059</symbol>
+          <symbol>T-017</symbol>
         </rhs>
       </rule>
       <rule number="52" usefulness="useful">
-        <lhs>Type</lhs>
+        <lhs>T-058</lhs>
         <rhs>
-          <symbol>TOK-16</symbol>
-          <symbol>TOK-17</symbol>
+          <symbol>T-016</symbol>
+          <symbol>T-017</symbol>
         </rhs>
       </rule>
       <rule number="53" usefulness="useful">
-        <lhs>Types</lhs>
+        <lhs>T-059</lhs>
         <rhs>
-          <symbol>Type</symbol>
+          <symbol>T-058</symbol>
         </rhs>
       </rule>
       <rule number="54" usefulness="useful">
-        <lhs>Types</lhs>
+        <lhs>T-059</lhs>
         <rhs>
-          <symbol>Type</symbol>
-          <symbol>TOK-18</symbol>
-          <symbol>Types</symbol>
+          <symbol>T-058</symbol>
+          <symbol>T-018</symbol>
+          <symbol>T-059</symbol>
         </rhs>
       </rule>
     </rules>
     <terminals>
       <terminal symbol-number="0" token-number="0" name="$end" type="" usefulness="useful"/>
       <terminal symbol-number="1" token-number="256" name="error" type="" usefulness="useful"/>
-      <terminal symbol-number="3" token-number="258" name="ID" type="" usefulness="useful"/>
-      <terminal symbol-number="4" token-number="259" name="NUM" type="" usefulness="unused-in-grammar"/>
-      <terminal symbol-number="5" token-number="260" name="CODE" type="" usefulness="useful"/>
-      <terminal symbol-number="6" token-number="261" name="COMMENT" type="" usefulness="unused-in-grammar"/>
-      <terminal symbol-number="7" token-number="262" name="LEXICALERROR" type="" usefulness="unused-in-grammar"/>
-      <terminal symbol-number="8" token-number="263" name="TOK-8" type="" usefulness="useful"/>
-      <terminal symbol-number="9" token-number="264" name="TOK-9" type="" usefulness="useful"/>
-      <terminal symbol-number="10" token-number="265" name="TOK-10" type="" usefulness="unused-in-grammar"/>
-      <terminal symbol-number="11" token-number="266" name="TOK-11" type="" usefulness="useful"/>
-      <terminal symbol-number="12" token-number="267" name="TOK-12" type="" usefulness="useful"/>
-      <terminal symbol-number="13" token-number="268" name="TOK-13" type="" usefulness="useful"/>
-      <terminal symbol-number="14" token-number="269" name="TOK-14" type="" usefulness="unused-in-grammar"/>
-      <terminal symbol-number="15" token-number="270" name="TOK-15" type="" usefulness="unused-in-grammar"/>
-      <terminal symbol-number="16" token-number="271" name="TOK-16" type="" usefulness="useful"/>
-      <terminal symbol-number="17" token-number="272" name="TOK-17" type="" usefulness="useful"/>
-      <terminal symbol-number="18" token-number="273" name="TOK-18" type="" usefulness="useful"/>
-      <terminal symbol-number="19" token-number="274" name="SEPARATOR" type="" usefulness="useful"/>
-      <terminal symbol-number="20" token-number="275" name="TOK-20" type="" usefulness="useful"/>
-      <terminal symbol-number="21" token-number="276" name="TOK-21" type="" usefulness="unused-in-grammar"/>
-      <terminal symbol-number="22" token-number="277" name="TOK-22" type="" usefulness="useful"/>
-      <terminal symbol-number="23" token-number="278" name="TOK-23" type="" usefulness="useful"/>
-      <terminal symbol-number="24" token-number="279" name="TOK-24" type="" usefulness="useful"/>
-      <terminal symbol-number="25" token-number="280" name="TOK-25" type="" usefulness="useful"/>
-      <terminal symbol-number="26" token-number="281" name="TOK-26" type="" usefulness="useful"/>
-      <terminal symbol-number="27" token-number="282" name="TOK-27" type="" usefulness="useful"/>
-      <terminal symbol-number="28" token-number="283" name="TOK-28" type="" usefulness="useful"/>
-      <terminal symbol-number="29" token-number="284" name="TOK-29" type="" usefulness="useful"/>
-      <terminal symbol-number="30" token-number="285" name="TOK-30" type="" usefulness="useful"/>
-      <terminal symbol-number="31" token-number="286" name="TOK-31" type="" usefulness="useful"/>
-      <terminal symbol-number="32" token-number="287" name="TOK-32" type="" usefulness="useful"/>
-      <terminal symbol-number="33" token-number="288" name="TOK-33" type="" usefulness="useful"/>
-      <terminal symbol-number="34" token-number="289" name="TOK-34" type="" usefulness="useful"/>
-      <terminal symbol-number="35" token-number="290" name="TOK-35" type="" usefulness="useful"/>
-      <terminal symbol-number="36" token-number="291" name="TOK-36" type="" usefulness="useful"/>
-      <terminal symbol-number="37" token-number="292" name="TOK-37" type="" usefulness="useful"/>
-      <terminal symbol-number="38" token-number="293" name="TOK-38" type="" usefulness="useful"/>
+      <terminal symbol-number="3" token-number="258" name="T-036" type="" usefulness="useful"/>
+      <terminal symbol-number="4" token-number="259" name="T-037" type="" usefulness="useful"/>
+      <terminal symbol-number="5" token-number="260" name="T-038" type="" usefulness="useful"/>
+      <terminal symbol-number="6" token-number="261" name="T-003" type="" usefulness="useful"/>
+      <terminal symbol-number="7" token-number="262" name="T-004" type="" usefulness="unused-in-grammar"/>
+      <terminal symbol-number="8" token-number="263" name="T-005" type="" usefulness="useful"/>
+      <terminal symbol-number="9" token-number="264" name="T-006" type="" usefulness="unused-in-grammar"/>
+      <terminal symbol-number="10" token-number="265" name="T-007" type="" usefulness="unused-in-grammar"/>
+      <terminal symbol-number="11" token-number="266" name="T-008" type="" usefulness="useful"/>
+      <terminal symbol-number="12" token-number="267" name="T-009" type="" usefulness="useful"/>
+      <terminal symbol-number="13" token-number="268" name="T-010" type="" usefulness="unused-in-grammar"/>
+      <terminal symbol-number="14" token-number="269" name="T-011" type="" usefulness="useful"/>
+      <terminal symbol-number="15" token-number="270" name="T-012" type="" usefulness="useful"/>
+      <terminal symbol-number="16" token-number="271" name="T-013" type="" usefulness="useful"/>
+      <terminal symbol-number="17" token-number="272" name="T-014" type="" usefulness="unused-in-grammar"/>
+      <terminal symbol-number="18" token-number="273" name="T-015" type="" usefulness="unused-in-grammar"/>
+      <terminal symbol-number="19" token-number="274" name="T-016" type="" usefulness="useful"/>
+      <terminal symbol-number="20" token-number="275" name="T-017" type="" usefulness="useful"/>
+      <terminal symbol-number="21" token-number="276" name="T-018" type="" usefulness="useful"/>
+      <terminal symbol-number="22" token-number="277" name="T-019" type="" usefulness="useful"/>
+      <terminal symbol-number="23" token-number="278" name="T-020" type="" usefulness="useful"/>
+      <terminal symbol-number="24" token-number="279" name="T-021" type="" usefulness="unused-in-grammar"/>
+      <terminal symbol-number="25" token-number="280" name="T-022" type="" usefulness="useful"/>
+      <terminal symbol-number="26" token-number="281" name="T-023" type="" usefulness="useful"/>
+      <terminal symbol-number="27" token-number="282" name="T-024" type="" usefulness="useful"/>
+      <terminal symbol-number="28" token-number="283" name="T-025" type="" usefulness="useful"/>
+      <terminal symbol-number="29" token-number="284" name="T-026" type="" usefulness="useful"/>
+      <terminal symbol-number="30" token-number="285" name="T-027" type="" usefulness="useful"/>
+      <terminal symbol-number="31" token-number="286" name="T-028" type="" usefulness="useful"/>
+      <terminal symbol-number="32" token-number="287" name="T-029" type="" usefulness="useful"/>
+      <terminal symbol-number="33" token-number="288" name="T-030" type="" usefulness="useful"/>
+      <terminal symbol-number="34" token-number="289" name="T-031" type="" usefulness="useful"/>
+      <terminal symbol-number="35" token-number="290" name="T-032" type="" usefulness="useful"/>
+      <terminal symbol-number="36" token-number="291" name="T-033" type="" usefulness="useful"/>
+      <terminal symbol-number="37" token-number="292" name="T-034" type="" usefulness="useful"/>
+      <terminal symbol-number="38" token-number="293" name="T-035" type="" usefulness="useful"/>
     </terminals>
     <nonterminals>
       <nonterminal symbol-number="39" name="$accept" type="" usefulness="useful"/>
-      <nonterminal symbol-number="40" name="Notation" type="" usefulness="useful"/>
-      <nonterminal symbol-number="41" name="Prefix" type="" usefulness="useful"/>
-      <nonterminal symbol-number="42" name="INCLUDE" type="" usefulness="useful"/>
-      <nonterminal symbol-number="43" name="OPTNL" type="" usefulness="useful"/>
-      <nonterminal symbol-number="44" name="TypedTerminals" type="" usefulness="useful"/>
-      <nonterminal symbol-number="45" name="TypedTerminal" type="" usefulness="useful"/>
-      <nonterminal symbol-number="46" name="Rules" type="" usefulness="useful"/>
-      <nonterminal symbol-number="47" name="Rule" type="" usefulness="useful"/>
-      <nonterminal symbol-number="48" name="OptBar" type="" usefulness="useful"/>
-      <nonterminal symbol-number="49" name="LHS" type="" usefulness="useful"/>
-      <nonterminal symbol-number="50" name="RHS" type="" usefulness="useful"/>
-      <nonterminal symbol-number="51" name="Production" type="" usefulness="useful"/>
-      <nonterminal symbol-number="52" name="NamedFields" type="" usefulness="useful"/>
-      <nonterminal symbol-number="53" name="NamedField" type="" usefulness="useful"/>
-      <nonterminal symbol-number="54" name="FIELD" type="" usefulness="useful"/>
-      <nonterminal symbol-number="55" name="REPEAT" type="" usefulness="useful"/>
-      <nonterminal symbol-number="56" name="Action" type="" usefulness="useful"/>
-      <nonterminal symbol-number="57" name="Precedence" type="" usefulness="useful"/>
-      <nonterminal symbol-number="58" name="Type" type="" usefulness="useful"/>
-      <nonterminal symbol-number="59" name="Types" type="" usefulness="useful"/>
+      <nonterminal symbol-number="40" name="T-040" type="" usefulness="useful"/>
+      <nonterminal symbol-number="41" name="T-041" type="" usefulness="useful"/>
+      <nonterminal symbol-number="42" name="T-042" type="" usefulness="useful"/>
+      <nonterminal symbol-number="43" name="T-043" type="" usefulness="useful"/>
+      <nonterminal symbol-number="44" name="T-044" type="" usefulness="useful"/>
+      <nonterminal symbol-number="45" name="T-045" type="" usefulness="useful"/>
+      <nonterminal symbol-number="46" name="T-046" type="" usefulness="useful"/>
+      <nonterminal symbol-number="47" name="T-047" type="" usefulness="useful"/>
+      <nonterminal symbol-number="48" name="T-048" type="" usefulness="useful"/>
+      <nonterminal symbol-number="49" name="T-049" type="" usefulness="useful"/>
+      <nonterminal symbol-number="50" name="T-050" type="" usefulness="useful"/>
+      <nonterminal symbol-number="51" name="T-051" type="" usefulness="useful"/>
+      <nonterminal symbol-number="52" name="T-052" type="" usefulness="useful"/>
+      <nonterminal symbol-number="53" name="T-053" type="" usefulness="useful"/>
+      <nonterminal symbol-number="54" name="T-054" type="" usefulness="useful"/>
+      <nonterminal symbol-number="55" name="T-055" type="" usefulness="useful"/>
+      <nonterminal symbol-number="56" name="T-056" type="" usefulness="useful"/>
+      <nonterminal symbol-number="57" name="T-057" type="" usefulness="useful"/>
+      <nonterminal symbol-number="58" name="T-058" type="" usefulness="useful"/>
+      <nonterminal symbol-number="59" name="T-059" type="" usefulness="useful"/>
     </nonterminals>
   </grammar>
 
@@ -490,8 +490,8 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="goto" symbol="Notation" state="1"/>
-          <transition type="goto" symbol="Prefix" state="2"/>
+          <transition type="goto" symbol="T-040" state="1"/>
+          <transition type="goto" symbol="T-041" state="2"/>
         </transitions>
         <errors/>
         <reductions>
@@ -534,20 +534,20 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="TOK-20" state="4"/>
-          <transition type="shift" symbol="TOK-23" state="5"/>
-          <transition type="shift" symbol="TOK-24" state="6"/>
-          <transition type="shift" symbol="TOK-25" state="7"/>
-          <transition type="shift" symbol="TOK-26" state="8"/>
-          <transition type="shift" symbol="TOK-27" state="9"/>
-          <transition type="shift" symbol="TOK-28" state="10"/>
-          <transition type="shift" symbol="TOK-29" state="11"/>
-          <transition type="shift" symbol="TOK-30" state="12"/>
-          <transition type="shift" symbol="TOK-31" state="13"/>
-          <transition type="shift" symbol="TOK-32" state="14"/>
-          <transition type="shift" symbol="TOK-33" state="15"/>
-          <transition type="shift" symbol="TOK-34" state="16"/>
-          <transition type="shift" symbol="TOK-35" state="17"/>
+          <transition type="shift" symbol="T-020" state="4"/>
+          <transition type="shift" symbol="T-023" state="5"/>
+          <transition type="shift" symbol="T-024" state="6"/>
+          <transition type="shift" symbol="T-025" state="7"/>
+          <transition type="shift" symbol="T-026" state="8"/>
+          <transition type="shift" symbol="T-027" state="9"/>
+          <transition type="shift" symbol="T-028" state="10"/>
+          <transition type="shift" symbol="T-029" state="11"/>
+          <transition type="shift" symbol="T-030" state="12"/>
+          <transition type="shift" symbol="T-031" state="13"/>
+          <transition type="shift" symbol="T-032" state="14"/>
+          <transition type="shift" symbol="T-033" state="15"/>
+          <transition type="shift" symbol="T-034" state="16"/>
+          <transition type="shift" symbol="T-035" state="17"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -575,7 +575,7 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="18"/>
+          <transition type="shift" symbol="T-003" state="18"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -589,7 +589,7 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="19"/>
+          <transition type="shift" symbol="T-003" state="19"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -603,7 +603,7 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="20"/>
+          <transition type="shift" symbol="T-003" state="20"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -616,20 +616,20 @@
         <item rule-number="8" dot="2"/>
         <item rule-number="20" dot="0">
           <lookaheads>
-            <symbol>TOK-20</symbol>
-            <symbol>TOK-23</symbol>
-            <symbol>TOK-24</symbol>
-            <symbol>TOK-25</symbol>
-            <symbol>TOK-26</symbol>
-            <symbol>TOK-27</symbol>
-            <symbol>TOK-28</symbol>
-            <symbol>TOK-29</symbol>
-            <symbol>TOK-30</symbol>
-            <symbol>TOK-31</symbol>
-            <symbol>TOK-32</symbol>
-            <symbol>TOK-33</symbol>
-            <symbol>TOK-34</symbol>
-            <symbol>TOK-35</symbol>
+            <symbol>T-020</symbol>
+            <symbol>T-023</symbol>
+            <symbol>T-024</symbol>
+            <symbol>T-025</symbol>
+            <symbol>T-026</symbol>
+            <symbol>T-027</symbol>
+            <symbol>T-028</symbol>
+            <symbol>T-029</symbol>
+            <symbol>T-030</symbol>
+            <symbol>T-031</symbol>
+            <symbol>T-032</symbol>
+            <symbol>T-033</symbol>
+            <symbol>T-034</symbol>
+            <symbol>T-035</symbol>
           </lookaheads>
         </item>
         <item rule-number="21" dot="0"/>
@@ -639,9 +639,9 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="21"/>
-          <transition type="goto" symbol="TypedTerminals" state="22"/>
-          <transition type="goto" symbol="TypedTerminal" state="23"/>
+          <transition type="shift" symbol="T-003" state="21"/>
+          <transition type="goto" symbol="T-044" state="22"/>
+          <transition type="goto" symbol="T-045" state="23"/>
         </transitions>
         <errors/>
         <reductions>
@@ -656,20 +656,20 @@
         <item rule-number="9" dot="2"/>
         <item rule-number="20" dot="0">
           <lookaheads>
-            <symbol>TOK-20</symbol>
-            <symbol>TOK-23</symbol>
-            <symbol>TOK-24</symbol>
-            <symbol>TOK-25</symbol>
-            <symbol>TOK-26</symbol>
-            <symbol>TOK-27</symbol>
-            <symbol>TOK-28</symbol>
-            <symbol>TOK-29</symbol>
-            <symbol>TOK-30</symbol>
-            <symbol>TOK-31</symbol>
-            <symbol>TOK-32</symbol>
-            <symbol>TOK-33</symbol>
-            <symbol>TOK-34</symbol>
-            <symbol>TOK-35</symbol>
+            <symbol>T-020</symbol>
+            <symbol>T-023</symbol>
+            <symbol>T-024</symbol>
+            <symbol>T-025</symbol>
+            <symbol>T-026</symbol>
+            <symbol>T-027</symbol>
+            <symbol>T-028</symbol>
+            <symbol>T-029</symbol>
+            <symbol>T-030</symbol>
+            <symbol>T-031</symbol>
+            <symbol>T-032</symbol>
+            <symbol>T-033</symbol>
+            <symbol>T-034</symbol>
+            <symbol>T-035</symbol>
           </lookaheads>
         </item>
         <item rule-number="21" dot="0"/>
@@ -679,9 +679,9 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="21"/>
-          <transition type="goto" symbol="TypedTerminals" state="24"/>
-          <transition type="goto" symbol="TypedTerminal" state="23"/>
+          <transition type="shift" symbol="T-003" state="21"/>
+          <transition type="goto" symbol="T-044" state="24"/>
+          <transition type="goto" symbol="T-045" state="23"/>
         </transitions>
         <errors/>
         <reductions>
@@ -696,20 +696,20 @@
         <item rule-number="10" dot="2"/>
         <item rule-number="20" dot="0">
           <lookaheads>
-            <symbol>TOK-20</symbol>
-            <symbol>TOK-23</symbol>
-            <symbol>TOK-24</symbol>
-            <symbol>TOK-25</symbol>
-            <symbol>TOK-26</symbol>
-            <symbol>TOK-27</symbol>
-            <symbol>TOK-28</symbol>
-            <symbol>TOK-29</symbol>
-            <symbol>TOK-30</symbol>
-            <symbol>TOK-31</symbol>
-            <symbol>TOK-32</symbol>
-            <symbol>TOK-33</symbol>
-            <symbol>TOK-34</symbol>
-            <symbol>TOK-35</symbol>
+            <symbol>T-020</symbol>
+            <symbol>T-023</symbol>
+            <symbol>T-024</symbol>
+            <symbol>T-025</symbol>
+            <symbol>T-026</symbol>
+            <symbol>T-027</symbol>
+            <symbol>T-028</symbol>
+            <symbol>T-029</symbol>
+            <symbol>T-030</symbol>
+            <symbol>T-031</symbol>
+            <symbol>T-032</symbol>
+            <symbol>T-033</symbol>
+            <symbol>T-034</symbol>
+            <symbol>T-035</symbol>
           </lookaheads>
         </item>
         <item rule-number="21" dot="0"/>
@@ -719,9 +719,9 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="21"/>
-          <transition type="goto" symbol="TypedTerminals" state="25"/>
-          <transition type="goto" symbol="TypedTerminal" state="23"/>
+          <transition type="shift" symbol="T-003" state="21"/>
+          <transition type="goto" symbol="T-044" state="25"/>
+          <transition type="goto" symbol="T-045" state="23"/>
         </transitions>
         <errors/>
         <reductions>
@@ -736,20 +736,20 @@
         <item rule-number="11" dot="2"/>
         <item rule-number="20" dot="0">
           <lookaheads>
-            <symbol>TOK-20</symbol>
-            <symbol>TOK-23</symbol>
-            <symbol>TOK-24</symbol>
-            <symbol>TOK-25</symbol>
-            <symbol>TOK-26</symbol>
-            <symbol>TOK-27</symbol>
-            <symbol>TOK-28</symbol>
-            <symbol>TOK-29</symbol>
-            <symbol>TOK-30</symbol>
-            <symbol>TOK-31</symbol>
-            <symbol>TOK-32</symbol>
-            <symbol>TOK-33</symbol>
-            <symbol>TOK-34</symbol>
-            <symbol>TOK-35</symbol>
+            <symbol>T-020</symbol>
+            <symbol>T-023</symbol>
+            <symbol>T-024</symbol>
+            <symbol>T-025</symbol>
+            <symbol>T-026</symbol>
+            <symbol>T-027</symbol>
+            <symbol>T-028</symbol>
+            <symbol>T-029</symbol>
+            <symbol>T-030</symbol>
+            <symbol>T-031</symbol>
+            <symbol>T-032</symbol>
+            <symbol>T-033</symbol>
+            <symbol>T-034</symbol>
+            <symbol>T-035</symbol>
           </lookaheads>
         </item>
         <item rule-number="21" dot="0"/>
@@ -759,9 +759,9 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="21"/>
-          <transition type="goto" symbol="TypedTerminals" state="26"/>
-          <transition type="goto" symbol="TypedTerminal" state="23"/>
+          <transition type="shift" symbol="T-003" state="21"/>
+          <transition type="goto" symbol="T-044" state="26"/>
+          <transition type="goto" symbol="T-045" state="23"/>
         </transitions>
         <errors/>
         <reductions>
@@ -777,14 +777,14 @@
         <item rule-number="16" dot="0"/>
         <item rule-number="17" dot="0">
           <lookaheads>
-            <symbol>ID</symbol>
+            <symbol>T-003</symbol>
           </lookaheads>
         </item>
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="TOK-30" state="27"/>
-          <transition type="goto" symbol="INCLUDE" state="28"/>
+          <transition type="shift" symbol="T-030" state="27"/>
+          <transition type="goto" symbol="T-042" state="28"/>
         </transitions>
         <errors/>
         <reductions>
@@ -800,7 +800,7 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="CODE" state="29"/>
+          <transition type="shift" symbol="T-005" state="29"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -813,20 +813,20 @@
         <item rule-number="12" dot="2"/>
         <item rule-number="20" dot="0">
           <lookaheads>
-            <symbol>TOK-20</symbol>
-            <symbol>TOK-23</symbol>
-            <symbol>TOK-24</symbol>
-            <symbol>TOK-25</symbol>
-            <symbol>TOK-26</symbol>
-            <symbol>TOK-27</symbol>
-            <symbol>TOK-28</symbol>
-            <symbol>TOK-29</symbol>
-            <symbol>TOK-30</symbol>
-            <symbol>TOK-31</symbol>
-            <symbol>TOK-32</symbol>
-            <symbol>TOK-33</symbol>
-            <symbol>TOK-34</symbol>
-            <symbol>TOK-35</symbol>
+            <symbol>T-020</symbol>
+            <symbol>T-023</symbol>
+            <symbol>T-024</symbol>
+            <symbol>T-025</symbol>
+            <symbol>T-026</symbol>
+            <symbol>T-027</symbol>
+            <symbol>T-028</symbol>
+            <symbol>T-029</symbol>
+            <symbol>T-030</symbol>
+            <symbol>T-031</symbol>
+            <symbol>T-032</symbol>
+            <symbol>T-033</symbol>
+            <symbol>T-034</symbol>
+            <symbol>T-035</symbol>
           </lookaheads>
         </item>
         <item rule-number="21" dot="0"/>
@@ -836,9 +836,9 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="21"/>
-          <transition type="goto" symbol="TypedTerminals" state="30"/>
-          <transition type="goto" symbol="TypedTerminal" state="23"/>
+          <transition type="shift" symbol="T-003" state="21"/>
+          <transition type="goto" symbol="T-044" state="30"/>
+          <transition type="goto" symbol="T-045" state="23"/>
         </transitions>
         <errors/>
         <reductions>
@@ -854,7 +854,7 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="31"/>
+          <transition type="shift" symbol="T-003" state="31"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -868,7 +868,7 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="32"/>
+          <transition type="shift" symbol="T-003" state="32"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -882,7 +882,7 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="33"/>
+          <transition type="shift" symbol="T-003" state="33"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -896,7 +896,7 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="34"/>
+          <transition type="shift" symbol="T-003" state="34"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -952,28 +952,28 @@
         <item rule-number="23" dot="1"/>
         <item rule-number="24" dot="1">
           <lookaheads>
-            <symbol>ID</symbol>
-            <symbol>TOK-20</symbol>
-            <symbol>TOK-23</symbol>
-            <symbol>TOK-24</symbol>
-            <symbol>TOK-25</symbol>
-            <symbol>TOK-26</symbol>
-            <symbol>TOK-27</symbol>
-            <symbol>TOK-28</symbol>
-            <symbol>TOK-29</symbol>
-            <symbol>TOK-30</symbol>
-            <symbol>TOK-31</symbol>
-            <symbol>TOK-32</symbol>
-            <symbol>TOK-33</symbol>
-            <symbol>TOK-34</symbol>
-            <symbol>TOK-35</symbol>
+            <symbol>T-003</symbol>
+            <symbol>T-020</symbol>
+            <symbol>T-023</symbol>
+            <symbol>T-024</symbol>
+            <symbol>T-025</symbol>
+            <symbol>T-026</symbol>
+            <symbol>T-027</symbol>
+            <symbol>T-028</symbol>
+            <symbol>T-029</symbol>
+            <symbol>T-030</symbol>
+            <symbol>T-031</symbol>
+            <symbol>T-032</symbol>
+            <symbol>T-033</symbol>
+            <symbol>T-034</symbol>
+            <symbol>T-035</symbol>
           </lookaheads>
         </item>
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="TOK-13" state="35"/>
-          <transition type="shift" symbol="TOK-16" state="36"/>
+          <transition type="shift" symbol="T-013" state="35"/>
+          <transition type="shift" symbol="T-016" state="36"/>
         </transitions>
         <errors/>
         <reductions>
@@ -1001,20 +1001,20 @@
       <itemset>
         <item rule-number="20" dot="0">
           <lookaheads>
-            <symbol>TOK-20</symbol>
-            <symbol>TOK-23</symbol>
-            <symbol>TOK-24</symbol>
-            <symbol>TOK-25</symbol>
-            <symbol>TOK-26</symbol>
-            <symbol>TOK-27</symbol>
-            <symbol>TOK-28</symbol>
-            <symbol>TOK-29</symbol>
-            <symbol>TOK-30</symbol>
-            <symbol>TOK-31</symbol>
-            <symbol>TOK-32</symbol>
-            <symbol>TOK-33</symbol>
-            <symbol>TOK-34</symbol>
-            <symbol>TOK-35</symbol>
+            <symbol>T-020</symbol>
+            <symbol>T-023</symbol>
+            <symbol>T-024</symbol>
+            <symbol>T-025</symbol>
+            <symbol>T-026</symbol>
+            <symbol>T-027</symbol>
+            <symbol>T-028</symbol>
+            <symbol>T-029</symbol>
+            <symbol>T-030</symbol>
+            <symbol>T-031</symbol>
+            <symbol>T-032</symbol>
+            <symbol>T-033</symbol>
+            <symbol>T-034</symbol>
+            <symbol>T-035</symbol>
           </lookaheads>
         </item>
         <item rule-number="21" dot="0"/>
@@ -1025,9 +1025,9 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="21"/>
-          <transition type="goto" symbol="TypedTerminals" state="37"/>
-          <transition type="goto" symbol="TypedTerminal" state="23"/>
+          <transition type="shift" symbol="T-003" state="21"/>
+          <transition type="goto" symbol="T-044" state="37"/>
+          <transition type="goto" symbol="T-045" state="23"/>
         </transitions>
         <errors/>
         <reductions>
@@ -1085,7 +1085,7 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="CODE" state="38"/>
+          <transition type="shift" symbol="T-005" state="38"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -1104,10 +1104,10 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="39"/>
-          <transition type="goto" symbol="Rules" state="40"/>
-          <transition type="goto" symbol="Rule" state="41"/>
-          <transition type="goto" symbol="LHS" state="42"/>
+          <transition type="shift" symbol="T-003" state="39"/>
+          <transition type="goto" symbol="T-046" state="40"/>
+          <transition type="goto" symbol="T-047" state="41"/>
+          <transition type="goto" symbol="T-049" state="42"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -1209,9 +1209,9 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="43"/>
-          <transition type="shift" symbol="TOK-16" state="44"/>
-          <transition type="goto" symbol="Type" state="45"/>
+          <transition type="shift" symbol="T-003" state="43"/>
+          <transition type="shift" symbol="T-016" state="44"/>
+          <transition type="goto" symbol="T-058" state="45"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -1229,9 +1229,9 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="43"/>
-          <transition type="shift" symbol="TOK-16" state="44"/>
-          <transition type="goto" symbol="Type" state="46"/>
+          <transition type="shift" symbol="T-003" state="43"/>
+          <transition type="shift" symbol="T-016" state="44"/>
+          <transition type="goto" symbol="T-058" state="46"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -1259,7 +1259,7 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="SEPARATOR" state="47"/>
+          <transition type="shift" symbol="T-019" state="47"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -1272,13 +1272,13 @@
         <item rule-number="30" dot="1"/>
         <item rule-number="31" dot="1">
           <lookaheads>
-            <symbol>TOK-11</symbol>
+            <symbol>T-011</symbol>
           </lookaheads>
         </item>
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="TOK-13" state="48"/>
+          <transition type="shift" symbol="T-013" state="48"/>
         </transitions>
         <errors/>
         <reductions>
@@ -1301,8 +1301,8 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="SEPARATOR" state="49"/>
-          <transition type="goto" symbol="OPTNL" state="50"/>
+          <transition type="shift" symbol="T-019" state="49"/>
+          <transition type="goto" symbol="T-043" state="50"/>
         </transitions>
         <errors/>
         <reductions>
@@ -1332,7 +1332,7 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="TOK-11" state="51"/>
+          <transition type="shift" symbol="T-011" state="51"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -1344,32 +1344,32 @@
       <itemset>
         <item rule-number="49" dot="1">
           <lookaheads>
-            <symbol>ID</symbol>
-            <symbol>TOK-9</symbol>
-            <symbol>TOK-11</symbol>
-            <symbol>TOK-17</symbol>
-            <symbol>TOK-18</symbol>
-            <symbol>TOK-20</symbol>
-            <symbol>TOK-23</symbol>
-            <symbol>TOK-24</symbol>
-            <symbol>TOK-25</symbol>
-            <symbol>TOK-26</symbol>
-            <symbol>TOK-27</symbol>
-            <symbol>TOK-28</symbol>
-            <symbol>TOK-29</symbol>
-            <symbol>TOK-30</symbol>
-            <symbol>TOK-31</symbol>
-            <symbol>TOK-32</symbol>
-            <symbol>TOK-33</symbol>
-            <symbol>TOK-34</symbol>
-            <symbol>TOK-35</symbol>
+            <symbol>T-003</symbol>
+            <symbol>T-009</symbol>
+            <symbol>T-011</symbol>
+            <symbol>T-017</symbol>
+            <symbol>T-018</symbol>
+            <symbol>T-020</symbol>
+            <symbol>T-023</symbol>
+            <symbol>T-024</symbol>
+            <symbol>T-025</symbol>
+            <symbol>T-026</symbol>
+            <symbol>T-027</symbol>
+            <symbol>T-028</symbol>
+            <symbol>T-029</symbol>
+            <symbol>T-030</symbol>
+            <symbol>T-031</symbol>
+            <symbol>T-032</symbol>
+            <symbol>T-033</symbol>
+            <symbol>T-034</symbol>
+            <symbol>T-035</symbol>
           </lookaheads>
         </item>
         <item rule-number="50" dot="1"/>
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="TOK-8" state="52"/>
+          <transition type="shift" symbol="T-008" state="52"/>
         </transitions>
         <errors/>
         <reductions>
@@ -1392,11 +1392,11 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="43"/>
-          <transition type="shift" symbol="TOK-16" state="44"/>
-          <transition type="shift" symbol="TOK-17" state="53"/>
-          <transition type="goto" symbol="Type" state="54"/>
-          <transition type="goto" symbol="Types" state="55"/>
+          <transition type="shift" symbol="T-003" state="43"/>
+          <transition type="shift" symbol="T-016" state="44"/>
+          <transition type="shift" symbol="T-017" state="53"/>
+          <transition type="goto" symbol="T-058" state="54"/>
+          <transition type="goto" symbol="T-059" state="55"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -1424,7 +1424,7 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="TOK-17" state="56"/>
+          <transition type="shift" symbol="T-017" state="56"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -1456,9 +1456,9 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="43"/>
-          <transition type="shift" symbol="TOK-16" state="44"/>
-          <transition type="goto" symbol="Type" state="57"/>
+          <transition type="shift" symbol="T-003" state="43"/>
+          <transition type="shift" symbol="T-016" state="44"/>
+          <transition type="goto" symbol="T-058" state="57"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -1480,9 +1480,9 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="39"/>
-          <transition type="goto" symbol="Rule" state="58"/>
-          <transition type="goto" symbol="LHS" state="42"/>
+          <transition type="shift" symbol="T-003" state="39"/>
+          <transition type="goto" symbol="T-047" state="58"/>
+          <transition type="goto" symbol="T-049" state="42"/>
         </transitions>
         <errors/>
         <reductions>
@@ -1512,16 +1512,16 @@
         <item rule-number="28" dot="0"/>
         <item rule-number="29" dot="0">
           <lookaheads>
-            <symbol>ID</symbol>
-            <symbol>TOK-16</symbol>
-            <symbol>TOK-22</symbol>
+            <symbol>T-003</symbol>
+            <symbol>T-016</symbol>
+            <symbol>T-022</symbol>
           </lookaheads>
         </item>
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="TOK-12" state="59"/>
-          <transition type="goto" symbol="OptBar" state="60"/>
+          <transition type="shift" symbol="T-012" state="59"/>
+          <transition type="goto" symbol="T-048" state="60"/>
         </transitions>
         <errors/>
         <reductions>
@@ -1543,10 +1543,10 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="43"/>
-          <transition type="shift" symbol="TOK-16" state="44"/>
-          <transition type="goto" symbol="Type" state="54"/>
-          <transition type="goto" symbol="Types" state="61"/>
+          <transition type="shift" symbol="T-003" state="43"/>
+          <transition type="shift" symbol="T-016" state="44"/>
+          <transition type="goto" symbol="T-058" state="54"/>
+          <transition type="goto" symbol="T-059" state="61"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -1572,15 +1572,15 @@
       <itemset>
         <item rule-number="53" dot="1">
           <lookaheads>
-            <symbol>TOK-9</symbol>
-            <symbol>TOK-17</symbol>
+            <symbol>T-009</symbol>
+            <symbol>T-017</symbol>
           </lookaheads>
         </item>
         <item rule-number="54" dot="1"/>
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="TOK-18" state="62"/>
+          <transition type="shift" symbol="T-018" state="62"/>
         </transitions>
         <errors/>
         <reductions>
@@ -1596,7 +1596,7 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="TOK-17" state="63"/>
+          <transition type="shift" symbol="T-017" state="63"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -1676,14 +1676,14 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="64"/>
-          <transition type="shift" symbol="TOK-16" state="65"/>
-          <transition type="shift" symbol="TOK-22" state="66"/>
-          <transition type="goto" symbol="RHS" state="67"/>
-          <transition type="goto" symbol="Production" state="68"/>
-          <transition type="goto" symbol="NamedFields" state="69"/>
-          <transition type="goto" symbol="NamedField" state="70"/>
-          <transition type="goto" symbol="FIELD" state="71"/>
+          <transition type="shift" symbol="T-003" state="64"/>
+          <transition type="shift" symbol="T-016" state="65"/>
+          <transition type="shift" symbol="T-022" state="66"/>
+          <transition type="goto" symbol="T-050" state="67"/>
+          <transition type="goto" symbol="T-051" state="68"/>
+          <transition type="goto" symbol="T-052" state="69"/>
+          <transition type="goto" symbol="T-053" state="70"/>
+          <transition type="goto" symbol="T-054" state="71"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -1697,7 +1697,7 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="TOK-9" state="72"/>
+          <transition type="shift" symbol="T-009" state="72"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -1717,10 +1717,10 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="43"/>
-          <transition type="shift" symbol="TOK-16" state="44"/>
-          <transition type="goto" symbol="Type" state="54"/>
-          <transition type="goto" symbol="Types" state="73"/>
+          <transition type="shift" symbol="T-003" state="43"/>
+          <transition type="shift" symbol="T-016" state="44"/>
+          <transition type="goto" symbol="T-058" state="54"/>
+          <transition type="goto" symbol="T-059" state="73"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -1748,20 +1748,20 @@
         <item rule-number="40" dot="1">
           <lookaheads>
             <symbol>$end</symbol>
-            <symbol>ID</symbol>
-            <symbol>CODE</symbol>
-            <symbol>TOK-12</symbol>
-            <symbol>TOK-16</symbol>
-            <symbol>TOK-17</symbol>
-            <symbol>SEPARATOR</symbol>
-            <symbol>TOK-22</symbol>
-            <symbol>TOK-31</symbol>
+            <symbol>T-003</symbol>
+            <symbol>T-005</symbol>
+            <symbol>T-012</symbol>
+            <symbol>T-016</symbol>
+            <symbol>T-017</symbol>
+            <symbol>T-019</symbol>
+            <symbol>T-022</symbol>
+            <symbol>T-031</symbol>
           </lookaheads>
         </item>
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="TOK-13" state="74"/>
+          <transition type="shift" symbol="T-013" state="74"/>
         </transitions>
         <errors/>
         <reductions>
@@ -1784,12 +1784,12 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="64"/>
-          <transition type="shift" symbol="TOK-16" state="65"/>
-          <transition type="shift" symbol="TOK-22" state="66"/>
-          <transition type="goto" symbol="NamedFields" state="75"/>
-          <transition type="goto" symbol="NamedField" state="70"/>
-          <transition type="goto" symbol="FIELD" state="71"/>
+          <transition type="shift" symbol="T-003" state="64"/>
+          <transition type="shift" symbol="T-016" state="65"/>
+          <transition type="shift" symbol="T-022" state="66"/>
+          <transition type="goto" symbol="T-052" state="75"/>
+          <transition type="goto" symbol="T-053" state="70"/>
+          <transition type="goto" symbol="T-054" state="71"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -1830,14 +1830,14 @@
         <item rule-number="32" dot="1">
           <lookaheads>
             <symbol>$end</symbol>
-            <symbol>SEPARATOR</symbol>
+            <symbol>T-019</symbol>
           </lookaheads>
         </item>
         <item rule-number="33" dot="1"/>
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="TOK-12" state="76"/>
+          <transition type="shift" symbol="T-012" state="76"/>
         </transitions>
         <errors/>
         <reductions>
@@ -1853,17 +1853,17 @@
         <item rule-number="45" dot="0">
           <lookaheads>
             <symbol>$end</symbol>
-            <symbol>TOK-12</symbol>
-            <symbol>SEPARATOR</symbol>
-            <symbol>TOK-31</symbol>
+            <symbol>T-012</symbol>
+            <symbol>T-019</symbol>
+            <symbol>T-031</symbol>
           </lookaheads>
         </item>
         <item rule-number="46" dot="0"/>
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="CODE" state="77"/>
-          <transition type="goto" symbol="Action" state="78"/>
+          <transition type="shift" symbol="T-005" state="77"/>
+          <transition type="goto" symbol="T-056" state="78"/>
         </transitions>
         <errors/>
         <reductions>
@@ -1880,11 +1880,11 @@
         <item rule-number="36" dot="1">
           <lookaheads>
             <symbol>$end</symbol>
-            <symbol>CODE</symbol>
-            <symbol>TOK-12</symbol>
-            <symbol>TOK-17</symbol>
-            <symbol>SEPARATOR</symbol>
-            <symbol>TOK-31</symbol>
+            <symbol>T-005</symbol>
+            <symbol>T-012</symbol>
+            <symbol>T-017</symbol>
+            <symbol>T-019</symbol>
+            <symbol>T-031</symbol>
           </lookaheads>
         </item>
         <item rule-number="37" dot="0"/>
@@ -1896,12 +1896,12 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="64"/>
-          <transition type="shift" symbol="TOK-16" state="65"/>
-          <transition type="shift" symbol="TOK-22" state="66"/>
-          <transition type="goto" symbol="NamedFields" state="79"/>
-          <transition type="goto" symbol="NamedField" state="70"/>
-          <transition type="goto" symbol="FIELD" state="71"/>
+          <transition type="shift" symbol="T-003" state="64"/>
+          <transition type="shift" symbol="T-016" state="65"/>
+          <transition type="shift" symbol="T-022" state="66"/>
+          <transition type="goto" symbol="T-052" state="79"/>
+          <transition type="goto" symbol="T-053" state="70"/>
+          <transition type="goto" symbol="T-054" state="71"/>
         </transitions>
         <errors/>
         <reductions>
@@ -1961,9 +1961,9 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="80"/>
-          <transition type="shift" symbol="TOK-16" state="65"/>
-          <transition type="goto" symbol="FIELD" state="81"/>
+          <transition type="shift" symbol="T-003" state="80"/>
+          <transition type="shift" symbol="T-016" state="65"/>
+          <transition type="goto" symbol="T-054" state="81"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -1977,7 +1977,7 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="TOK-17" state="82"/>
+          <transition type="shift" symbol="T-017" state="82"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -2001,14 +2001,14 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="64"/>
-          <transition type="shift" symbol="TOK-16" state="65"/>
-          <transition type="shift" symbol="TOK-22" state="66"/>
-          <transition type="goto" symbol="RHS" state="83"/>
-          <transition type="goto" symbol="Production" state="68"/>
-          <transition type="goto" symbol="NamedFields" state="69"/>
-          <transition type="goto" symbol="NamedField" state="70"/>
-          <transition type="goto" symbol="FIELD" state="71"/>
+          <transition type="shift" symbol="T-003" state="64"/>
+          <transition type="shift" symbol="T-016" state="65"/>
+          <transition type="shift" symbol="T-022" state="66"/>
+          <transition type="goto" symbol="T-050" state="83"/>
+          <transition type="goto" symbol="T-051" state="68"/>
+          <transition type="goto" symbol="T-052" state="69"/>
+          <transition type="goto" symbol="T-053" state="70"/>
+          <transition type="goto" symbol="T-054" state="71"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -2036,16 +2036,16 @@
         <item rule-number="47" dot="0">
           <lookaheads>
             <symbol>$end</symbol>
-            <symbol>TOK-12</symbol>
-            <symbol>SEPARATOR</symbol>
+            <symbol>T-012</symbol>
+            <symbol>T-019</symbol>
           </lookaheads>
         </item>
         <item rule-number="48" dot="0"/>
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="TOK-31" state="84"/>
-          <transition type="goto" symbol="Precedence" state="85"/>
+          <transition type="shift" symbol="T-031" state="84"/>
+          <transition type="goto" symbol="T-057" state="85"/>
         </transitions>
         <errors/>
         <reductions>
@@ -2106,10 +2106,10 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="TOK-36" state="86"/>
-          <transition type="shift" symbol="TOK-37" state="87"/>
-          <transition type="shift" symbol="TOK-38" state="88"/>
-          <transition type="goto" symbol="REPEAT" state="89"/>
+          <transition type="shift" symbol="T-036" state="86"/>
+          <transition type="shift" symbol="T-037" state="87"/>
+          <transition type="shift" symbol="T-038" state="88"/>
+          <transition type="goto" symbol="T-055" state="89"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -2137,7 +2137,7 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="ID" state="90"/>
+          <transition type="shift" symbol="T-003" state="90"/>
         </transitions>
         <errors/>
         <reductions/>

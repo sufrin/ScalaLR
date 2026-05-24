@@ -1,7 +1,7 @@
 
 package scalalr.stage2
 object Tables {
-val GOTOTABLE: Int => Int => Int = {
+val goto: Int => Int => Int = {
   case 0 => { case 40 => 1;  case 41 => 2;  }
   case 7 => { case 44 => 22;  case 45 => 23;  }
   case 8 => { case 44 => 24;  case 45 => 23;  }
@@ -32,7 +32,7 @@ val GOTOTABLE: Int => Int => Int = {
   }
 
 import org.sufrin.scalalr.Action._
-val ACTIONTABLE: Int => Int => Action = {
+val action: Int => Int => Action = {
   case 0 => { case _ => REDUCE(41,2,0);  }
   case 1 => { case 0 => SHIFT(3);  case _ => ERROR;  }
   case 2 => { case 20 => SHIFT(4);  case 23 => SHIFT(5);  case 24 => SHIFT(6);  case 25 => SHIFT(7);  case 26 => SHIFT(8);  case 27 => SHIFT(9);  case 28 => SHIFT(10);  case 29 => SHIFT(11);  case 30 => SHIFT(12);  case 31 => SHIFT(13);  case 32 => SHIFT(14);  case 33 => SHIFT(15);  case 34 => SHIFT(16);  case 35 => SHIFT(17);  case _ => ERROR;  }

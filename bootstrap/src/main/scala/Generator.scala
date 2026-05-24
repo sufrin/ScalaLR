@@ -485,6 +485,7 @@ class Generator(val notation: Notation, prefix: String="") {
        |}
        |
        |object NotationInformation {
+       |  val generated: String  = "${new java.util.Date()}"
        |  val signature: String  = "${theScalalrDialect.unquoted} ${theNotationDialect.unquoted}"
        |  val name: String       = "${theNotationName.unquoted}"
        |}

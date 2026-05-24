@@ -231,7 +231,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="scala-line">
           <url>file://$PROJECT_DIR$/bootstrap/src/main/scala/Generator.scala</url>
-          <line>526</line>
+          <line>527</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="scala-line">

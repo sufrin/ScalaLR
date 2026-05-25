@@ -11,6 +11,25 @@ to implement the target language parser. The former is designed for conventional
 "parse-to-completion" situations, the latter supports the engineering of incremental parsers 
 whose state and intermediate results can be inspected "in flight".
 
+## Getting started (users)
+
+The current version of the tool, together with all the runtime libraries
+a generated parser needs is packaged in a java-runnable jar in:
+
+         scalalr.jar
+
+Run it with
+
+         java -jar scalalr.jar [arguments]
+
+(or an equivalent script). The same jar should be on the classpath when compiling
+or running a generated parser. 
+
+**Requirement**: a `bison (GNU Bison) 3.8.2` (or a later consistent version) must be accessible
+on the current path. We use only the publicly documented features of Bison for generating
+tables.
+
+
 ## Host notation
 The host notation for grammar productions and priorities is reminiscent of
 Bison's notation; but there are important overall differences from Bison, as exemplified by

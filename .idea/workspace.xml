@@ -102,7 +102,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/sufrin/GitHomes/ScalaLR/utilities/src/main/scala",
+    "last_opened_file_path": "/Users/sufrin/GitHomes/ScalaLR",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.37201804",
@@ -111,6 +111,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/utilities/src/main/scala" />
       <recent name="$PROJECT_DIR$/Prepare-Stage1" />
       <recent name="$PROJECT_DIR$/Prepare-STAGE1a" />
     </key>

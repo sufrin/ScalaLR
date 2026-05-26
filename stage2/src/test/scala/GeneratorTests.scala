@@ -628,3 +628,113 @@ object testConflictIFTHEN extends Test("-c")(
     |     | IF expr THEN expr ELSE expr
     |
     |""".stripMargin)
+
+object testRedOx extends Test("-Lsyn")(
+  """
+%notation RedOx
+%package  org.redox
+%path     ""
+%tables   lr
+
+%include {
+   import org.sufrin.scalalr.SourceLocation
+   import org.sufrin.utility.SourceTextCursor
+
+    object Scanner {
+      def apply(chars: SourceTextCursor): Scanner = new Scanner(chars)
+    }
+
+    class Scanner(chars: SourceTextCursor) extends Iterator[Token] {
+      def sourceLocation(): SourceLocation = SourceLocation(chars.lines,  chars.chars)
+      @inline def hasChar: Boolean = chars.hasCurrent
+      @inline def theChar: Char = chars.current
+      @inline def nextChar(): Unit = chars.next()
+      @inline def afterNextChar(t: Token): Token = {
+        nextChar()
+        t
+      }
+
+      def hasNext: Boolean = chars.hasCurrent
+      def next(): Token = if (hasChar) {
+          chars.current match {
+            case '(' => afterNextChar(`(`)
+            case ')' => afterNextChar(`)`)
+            case '{' => afterNextChar(`{`)
+            case '}' => afterNextChar(`}`)
+            case '[' => afterNextChar(`[`)
+            case ']' => afterNextChar(`]`)
+            case '/' => afterNextChar(`/`)
+            case '-' => afterNextChar(`-`)
+            case '+' => afterNextChar(`+`)
+            case '*' => afterNextChar(`*`)
+            case '^' => afterNextChar(`^`)
+            case ',' => afterNextChar(`,`)
+            case ';' => afterNextChar(`;`)
+            case '=' => afterNextChar(`=`)
+            case '|' =>  afterNextChar(`|`)
+
+            case c if c.isLetter =>
+              val prefix = chars.takeWhile(_.isLetterOrDigit)
+              ID(prefix.mkString(""))
+
+            case c if c.isDigit =>
+              val prefix = chars.takeWhile(c=>c.isDigit||c=='.')
+              NUM((prefix).mkString(""))
+
+             case c if c.isWhitespace =>
+               while (hasChar && theChar.isWhitespace) nextChar()
+               if (hasChar) next() else $end
+
+             case other =>
+               LEXICALERROR(s"Unrecognised $other (at ${sourceLocation()}")
+
+          }
+      } else $end
+    }
+}
+
+%token NUM(String) ID(String)  `(` `)` `[` `]` `,`  NL LEXICALERROR(String)
+%right `|`
+%right `;`
+
+%right `=`
+%left `+` `-`
+%left `*` `/`
+%right `^`
+
+
+%rules
+
+%include {
+ import org.sufrin.scalalr.SourceLocation
+ import org.redox.AST._
+}
+
+proc: Proc =
+           prim
+           | l: proc `|` r: proc { Parallel(List($l,$r), $START, $END) }
+           | l: proc ';' r: proc { Sequence(List($l,$r), $START, $END) }
+
+
+prim: Proc = ID '=' expr  { Assign($ID, $expr, $START, $END) }
+           | `{` proc `}` { Block(Nil, $proc, $START, $END) }
+
+
+expr: Expr =
+          ID                  { Id($ID, $START, $END) }
+        | NUM                 { Num($NUM, $START, $END) }
+        | l:expr `^` r:expr   { Binop("^", $l, $r, $START, $END) }
+        | l:expr `*` r:expr   { Binop("*", $l, $r, $START, $END) }
+        | l:expr `+` r:expr   { Binop("+", $l, $r, $START, $END) }
+        | l:expr `/` r:expr   { Binop("/", $l, $r, $START, $END) }
+        | l:expr `-` r:expr   { Binop("-", $l, $r, $START, $END) }
+        | "(" expr ")"        { $expr }
+        ;
+        //| ID `(` exprs `)` { Apply($ID, $exprs.toList, $START, $END) }
+
+
+exprs: (List[Expr]) =
+            expr            { List($expr) }
+        |   exprs `,` expr  { $expr :: $exprs }
+
+  """)

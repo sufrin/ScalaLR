@@ -147,8 +147,10 @@ object PrettyPrint {
   }
 }
 
+/*
 object Test extends App {
   import PrettyPrint._
   case class Able(baker: Int, twitski: String)
   Able(43, "Foonly").prettyPrint()
 }
+*/

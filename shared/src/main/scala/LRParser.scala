@@ -4,7 +4,8 @@ package org.sufrin.scalalr
  * Symbols have `symbol` codes as well as (often ignorable) values
  */
 trait Lexeme { val value: Any ; val symbol: Int }
-case class SourceLocation(line: Int, col: Int) { override def toString: String = s"@$line.$col"}
+case class
+SourceLocation(line: Int, col: Int) { override def toString: String = s"@$line.$col"}
 case class ErroneousGoto(state: Int, symbol: Int) extends Throwable
 
 

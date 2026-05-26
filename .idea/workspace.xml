@@ -94,6 +94,7 @@
     "Application.testConflictSAB.executor": "Run",
     "Application.testInfer.executor": "Run",
     "Application.testPrecedence.executor": "Run",
+    "Application.testRedOx.executor": "Run",
     "Application.testRegex.executor": "Run",
     "Application.testSelf.executor": "Run",
     "Application.testSmall.executor": "Run",
@@ -122,20 +123,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.testSmall">
-    <configuration name="test1" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.test1" />
-      <module name="scalalr.stage2" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.sufrin.scalalr.stage2.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Application.testRedOx">
     <configuration name="test3" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.test3" />
       <module name="scalalr.stage2" />
@@ -175,6 +163,19 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="testRedOx" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testRedOx" />
+      <module name="scalalr.stage2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.sufrin.scalalr.stage2.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="testSmall" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testSmall" />
       <module name="scalalr.stage2" />
@@ -203,11 +204,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.testRedOx" />
         <item itemvalue="Application.testSmall" />
         <item itemvalue="Application.test5" />
         <item itemvalue="Application.test4" />
         <item itemvalue="Application.test3" />
-        <item itemvalue="Application.test1" />
       </list>
     </recent_temporary>
   </component>

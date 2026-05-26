@@ -36,3 +36,4 @@ class Test(args: String="")(source: String)(implicit loc: SourceLocation) extend
   Generator.main(effectiveArgs.toArray)
 }
 
+

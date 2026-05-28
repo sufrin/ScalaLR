@@ -2,7 +2,7 @@ package org.sufrin.utility
 
 import scala.collection._
 import CharSequenceOperations._
-
+import org.sufrin.utility.PrettyPrint.PrettyPrintable
 /**
  *   Represents a mutable finite mapping, {{{map: [Char] -> T}}}
  *
@@ -47,10 +47,24 @@ import CharSequenceOperations._
  */
 
 class   CharSequenceMap[T]
-  extends mutable.Map[CharSequence, T]
+  extends mutable.Map[CharSequence, T] with PrettyPrintable
 {
   private var suffixes: immutable.Map[Char, CharSequenceMap[T]] = immutable.Map.empty
   private var value:    Option[T]                         = None
+
+
+  def suffix(ch: Char): Option[CharSequenceMap[T]] = suffixes.get(ch)
+  def currentValue: Option[T] = value
+
+  /** Interface to PrettyPrinter for debugging use only VERY INEFFICIENT */
+  def arity: Int = suffixes.size
+  /** Interface to PrettyPrinter: inefficient */
+  def prefix: String = currentValue.getOrElse("").toString
+  /** Interface to PrettyPrinter: inefficient */
+  override def field(i: Int): (String, Any) = {
+    val (c, m) = suffixes.toSeq(i)
+    (s"'$c'", m)
+  }
 
   /**
    * @return `if (s in dom map) then Some(map(suffix)) else None``
@@ -110,6 +124,39 @@ class   CharSequenceMap[T]
     if ((node ne null) && node.value.nonEmpty) result = Some(node.value.get, edges)
     result
   }
+
+  /**
+   * Yield `Some(t, i)` where `t` is the value of the mapping at longest prefix trace of `it` that
+   * matches one of the mapping's domain elements, and `i` is the length
+   * of that prefix. If there is no such prefix, yield `None`.
+   *
+   * Suitable for use in table-driven lexical scanners reading input from cursors.
+   */
+  def longestPrefixMatch(it: Cursor[Char]): Option[(T, Int)] =
+  { // Inv: result is the most recent
+    //   result==Some(t, n) =>
+    //     n <= edges      &&
+    //     map(it take n toString)==t &&
+    //     there is no i st. n<i<edges && map(it take i toString)==t
+    //
+    var result: Option[(T, Int)] =  None
+
+    // if non-null, the node reached from the root by the path so far traversed
+    // namely `it take edges`.
+    var node:   CharSequenceMap[T]   = this
+
+    // the number of edges so far traversed
+    var edges                   = 0
+    while (it.hasCurrent && (node ne null)) {
+      if (node.value.nonEmpty) result = Some(node.value.get, edges)
+      node = node.suffixes.getOrElse(it.current, null)
+      edges += 1
+      if (node ne null) it.next()
+    }
+    if ((node ne null) && node.value.nonEmpty) result = Some(node.value.get, edges)
+    result
+  }
+
 
 
   /**

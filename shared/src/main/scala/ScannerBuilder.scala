@@ -9,7 +9,7 @@ import org.sufrin.utility.SourceTextCursor
  */
 trait Scanner[Token]  extends Iterator[Token] {
   def sourceLocation(): SourceLocation
-  def flush(): Unit
+  def prompt(): Unit
 }
 
 /**
@@ -57,6 +57,7 @@ abstract class ScannerBuilder[Token <: Lexeme](chars: SourceTextCursor) extends 
     this
   }
 
+  def prompt(): Unit = { print(chars.prompt); System.out.flush() }
 
   var lastLocation: SourceLocation = SourceLocation(chars.lines,  chars.chars)
   def sourceLocation(): SourceLocation = lastLocation
@@ -157,9 +158,15 @@ abstract class ScannerBuilder[Token <: Lexeme](chars: SourceTextCursor) extends 
                 tok
             }
         }
-
+        
       case '«' =>
         nextChar(); afterNextChar(mkString("«", "»", chars.takeNested2('«', '»')))
+      case '“' =>
+        nextChar(); afterNextChar(mkString("“", "“", chars.takeNested2('“', '“')))
+      case '"' =>
+        nextChar(); afterNextChar(mkString("\"", "\"", chars.takeWhile( c => c!='"')))
+      case '\'' =>
+        nextChar(); afterNextChar(mkString("'", "'", chars.takeWhile( c => c!='\'')))
 
       case c  =>
         tokenMap.longestPrefixMatch(chars) match {

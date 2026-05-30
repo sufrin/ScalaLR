@@ -3,25 +3,35 @@ package tinyfun
 object Scanner{
 
 
-   import org.sufrin.scalalr.{SourceLocation,ScannerBuilder,Scanner}
-   import org.sufrin.utility.SourceTextCursor
+  import org.sufrin.scalalr.{SourceLocation,ScannerBuilder,Scanner}
+  import org.sufrin.utility.SourceTextCursor
 
-      object Scanner {
-        def apply(chars: SourceTextCursor): Scanner[Token] = new ScannerBuilder[Token](chars) {
-           def mkString(openQuote: String, closeQuote: String, body: Seq[Char]): Token = mkERROR(body)
-           def mkHex(source: Seq[Char]):   Token = HEX(source.mkString)
-           def mkDec(source: Seq[Char]):   Token = DEC(source.mkString)
-           def mkReal(source: Seq[Char]):  Token = REAL(source.mkString)
-           def mkID(source: Seq[Char]):    Token = ID(source.mkString)
-           def mkERROR(source: Seq[Char]): Token = SCANERROR(source.mkString)
-           val ENDSTREAM: Token = $end
-           val NEWLINE:   Option[Token] = Some(NL)
-           def flush(): Unit = {
-               while (chars.hasCurrent && chars.current != '\n') chars.next()
-               print(chars.prompt); System.out.flush()
-           }
-        } withSymbolTokens(symbolToken)
-      }
+  /**
+     `Scanner(chars)` builds a lexical scanner using a `ScannerBuilder`. The implementations of
+     the `mkXXX` functions bridge the fixed lexical categories of the builder, and the `%token`
+     constructors declared here. The `withSymbolTokens(symbolToken)` clause initialises the
+     internal symbol and token tables of the resulting builder.
+  */
+  object Scanner {
+    def apply(chars: SourceTextCursor): Scanner[Token] = new ScannerBuilder[Token](chars) {
+       def mkString(openQuote: String, closeQuote: String, body: Seq[Char]): Token = STRING(s"$openQuote${body.mkString}$closeQuote")
+       def mkHex(source: Seq[Char]):   Token = HEX(source.mkString)
+       def mkDec(source: Seq[Char]):   Token = DEC(source.mkString)
+       def mkReal(source: Seq[Char]):  Token = REAL(source.mkString)
+       def mkID(source: Seq[Char]):    Token = ID(source.mkString)
+       def mkERROR(source: Seq[Char]): Token = SCANERROR(source.mkString)
+       val ENDSTREAM: Token = $end
+       val NEWLINE:   Option[Token] = Some(NL)
+       def flush(): Unit = {
+           while (chars.hasCurrent && chars.current != '\n') chars.next()
+           print(chars.prompt); System.out.flush()
+       }
+       locally {
+         TinyFun.prompt = chars.prompt
+       }
+    } withSymbolTokens(symbolToken)
+  }
+
 
 trait Token extends org.sufrin.scalalr.Lexeme { val value: Any ; val symbol: Int } 
 case object $end extends Token { val value = (); val symbol = 0 }
@@ -37,19 +47,20 @@ case object `[` extends Token { val value = (); val symbol = 9 }
 case object `]` extends Token { val value = (); val symbol = 10 }
 case object `,` extends Token { val value = (); val symbol = 11 }
 case class SCANERROR(value: Seq[Char @unchecked]) extends Token { val symbol = 12 }
-case object NL extends Token { val value = (); val symbol = 13 }
-case object `QUIT` extends Token { val value = (); val symbol = 14 }
-case object `=` extends Token { val value = (); val symbol = 15 }
-case object `+` extends Token { val value = (); val symbol = 16 }
-case object `-` extends Token { val value = (); val symbol = 17 }
-case object `*` extends Token { val value = (); val symbol = 18 }
-case object `/` extends Token { val value = (); val symbol = 19 }
-case object `^` extends Token { val value = (); val symbol = 20 }
-case object UNARY extends Token { val value = (); val symbol = 21 }
+case class STRING(value: Seq[Char @unchecked]) extends Token { val symbol = 13 }
+case object NL extends Token { val value = (); val symbol = 14 }
+case object `QUIT` extends Token { val value = (); val symbol = 15 }
+case object `=` extends Token { val value = (); val symbol = 16 }
+case object `+` extends Token { val value = (); val symbol = 17 }
+case object `-` extends Token { val value = (); val symbol = 18 }
+case object `*` extends Token { val value = (); val symbol = 19 }
+case object `/` extends Token { val value = (); val symbol = 20 }
+case object `^` extends Token { val value = (); val symbol = 21 }
+case object UNARY extends Token { val value = (); val symbol = 22 }
 // MAP SYMBOL NUMBERS TO NAMES
 val symbolName: collection.immutable.Map[Int, String] = {
      import org.sufrin.utility.ArrayMap
-    val arr = new Array[String](31)
+    val arr = new Array[String](32)
          locally {
           arr(0) = "$end"
           arr(1) = "error"
@@ -64,24 +75,25 @@ val symbolName: collection.immutable.Map[Int, String] = {
           arr(10) = "`]`"
           arr(11) = "`,`"
           arr(12) = "SCANERROR"
-          arr(13) = "NL"
-          arr(14) = "`QUIT`"
-          arr(15) = "`=`"
-          arr(16) = "`+`"
-          arr(17) = "`-`"
-          arr(18) = "`*`"
-          arr(19) = "`/`"
-          arr(20) = "`^`"
-          arr(21) = "UNARY"
-          arr(22) = "$accept"
-          arr(23) = "loop"
-          arr(24) = "command"
-          arr(25) = "expr"
-          arr(26) = "simple"
-          arr(27) = "expressions"
-          arr(28) = "exprs"
-          arr(29) = "NUM"
-          arr(30) = "NAME"
+          arr(13) = "STRING"
+          arr(14) = "NL"
+          arr(15) = "`QUIT`"
+          arr(16) = "`=`"
+          arr(17) = "`+`"
+          arr(18) = "`-`"
+          arr(19) = "`*`"
+          arr(20) = "`/`"
+          arr(21) = "`^`"
+          arr(22) = "UNARY"
+          arr(23) = "$accept"
+          arr(24) = "loop"
+          arr(25) = "command"
+          arr(26) = "expr"
+          arr(27) = "simple"
+          arr(28) = "expressions"
+          arr(29) = "exprs"
+          arr(30) = "NUM"
+          arr(31) = "NAME"
          } // locally
          ArrayMap(arr)
      }

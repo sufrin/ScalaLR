@@ -74,4 +74,42 @@ Options are:
     -l -- show the parsing automaton steps
     -p -- use the "push" automaton
 
+### Read-eval-print
+An important point of interest of TinyFun is the way the "read-eval-print" loop is
+implemented in the grammar itself.
+````scala
+  loop: Unit =  %empty          { () }
+             |  loop command NL { () }
 
+
+  command: Unit = expressions   { run($expressions, "> ")  }
+                | "QUIT"        { System.exit(0) }
+````
+
+The `command` production is a hook that is parsed by parsing an expr sequence, then
+reduced when the NL appears to its right (as the lookahead symbol in `loop`).
+It is at the reduction that the parsed list of expressions is run, its value is
+printed, and the user is re-prompted.
+
+### Top-level error-recovery
+The top-level "runner" method is designed to recover from parsing errors by
+abandoning the parse. For the moment this is the most expedient way of
+building an interactive interface. The variable store persists across
+such error reports.
+````scala
+      import LRParser._
+      var state: ParseState = RUNNING
+      while (state == RUNNING) {
+        val scanner = Scanner(SourceTextCursor(Paths.get(file)))
+        val parser = LRParser.Pull[Token](Components)(scanner.sourceLocation)
+        parser.logState = log
+        parser.attemptRecovery = recover
+        state = parser.run(scanner.next)
+        state match {
+          case ERRONEOUS(message) =>
+            println(message)
+            state = RUNNING
+          case _ => state = RUNNING
+        }
+      }
+````

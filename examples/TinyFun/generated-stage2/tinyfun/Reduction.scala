@@ -19,62 +19,60 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
  /* loop: Unit = loop command NL { () }  */
  case 2 => 
   { case List(_, _, _) =>  () } 
- /* command: Unit = expressions { run($expressions, "> ") }  */
+ /* command: Unit = expressions { run($expressions) }  */
  case 3 => 
-  { case List(dol$expressions: List[Expr @unchecked]) =>  run(dol$expressions, "> ") } 
- /* command: Unit = `QUIT` { System.exit(0) }  */
+  { case List(dol$expressions: List[Expr @unchecked]) =>  run(dol$expressions) } 
+ /* command: Unit = STRING { println($STRING) }  */
  case 4 => 
+  { case List(dol$STRING: Seq[Char @unchecked]) =>  println(dol$STRING) } 
+ /* command: Unit = `QUIT` { System.exit(0) }  */
+ case 5 => 
   { case List(_) =>  System.exit(0) } 
  /* expr: Expr = simple { $simple }  */
- case 5 => 
+ case 6 => 
   { case List(dol$simple: Expr) =>  dol$simple } 
  /* expr: Expr = `-` simple { Neg($simple, $START) }  */
- case 6 => 
+ case 7 => 
   { case List(_, dol$simple: Expr) =>  Neg(dol$simple, dol$START) } 
  /* expr: Expr = NAME `=` expr { Assign($NAME, $expr, $START) }  */
- case 7 => 
+ case 8 => 
   { case List(dol$NAME: String, _, dol$expr: Expr) => 
         Assign(dol$NAME, dol$expr, dol$START)
   }
  /* expr: Expr = l: expr `^` r: expr { Binop("^", $l, $r, $START) }  */
- case 8 => 
+ case 9 => 
   { case List(dol$l: Expr, _, dol$r: Expr) =>  Binop("^", dol$l, dol$r, dol$START) } 
  /* expr: Expr = l: expr `*` r: expr { Binop("*", $l, $r, $START) }  */
- case 9 => 
+ case 10 => 
   { case List(dol$l: Expr, _, dol$r: Expr) =>  Binop("*", dol$l, dol$r, dol$START) } 
  /* expr: Expr = l: expr `+` r: expr { Binop("+", $l, $r, $START) }  */
- case 10 => 
+ case 11 => 
   { case List(dol$l: Expr, _, dol$r: Expr) =>  Binop("+", dol$l, dol$r, dol$START) } 
  /* expr: Expr = l: expr `/` r: expr { Binop("/", $l, $r, $START) }  */
- case 11 => 
+ case 12 => 
   { case List(dol$l: Expr, _, dol$r: Expr) =>  Binop("/", dol$l, dol$r, dol$START) } 
  /* expr: Expr = l: expr `-` r: expr { Binop("-", $l, $r, $START) }  */
- case 12 => 
+ case 13 => 
   { case List(dol$l: Expr, _, dol$r: Expr) =>  Binop("-", dol$l, dol$r, dol$START) } 
  /* expr: Expr = NAME `(` expressions `)` { Apply($NAME, $expressions, $START) }  */
- case 13 => 
+ case 14 => 
   { case List(dol$NAME: String, _, dol$expressions: List[Expr @unchecked], _) => 
         Apply(dol$NAME, dol$expressions, dol$START)
   }
  /* expr: Expr = `*` `(` expressions `)` { Apply("*", $expressions, $START) }  */
- case 14 => 
+ case 15 => 
   { case List(_, _, dol$expressions: List[Expr @unchecked], _) => 
         Apply("*", dol$expressions, dol$START)
   }
  /* expr: Expr = `+` `(` expressions `)` { Apply("+", $expressions, $START) }  */
- case 15 => 
+ case 16 => 
   { case List(_, _, dol$expressions: List[Expr @unchecked], _) => 
         Apply("+", dol$expressions, dol$START)
   }
  /* expr: Expr = `/` `(` expressions `)` { Apply("/", $expressions, $START) }  */
- case 16 => 
-  { case List(_, _, dol$expressions: List[Expr @unchecked], _) => 
-        Apply("/", dol$expressions, dol$START)
-  }
- /* expr: Expr = `-` `(` expressions `)` { Apply("-", $expressions, $START) }  */
  case 17 => 
   { case List(_, _, dol$expressions: List[Expr @unchecked], _) => 
-        Apply("-", dol$expressions, dol$START)
+        Apply("/", dol$expressions, dol$START)
   }
  /* simple: Expr = NAME { Id($NAME, $START) }  */
  case 18 => 

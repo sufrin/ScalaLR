@@ -13,47 +13,48 @@
 // T-010	`]` 
 // T-011	`,` 
 // T-012	SCANERROR 
-// T-013	NL 
-// T-014	`QUIT` 
-// T-015	`=` 
-// T-016	`+` 
-// T-017	`-` 
-// T-018	`*` 
-// T-019	`/` 
-// T-020	`^` 
-// T-021	UNARY 
-%token T-003 T-004 T-005 T-006 T-007 T-008 T-009 T-010 T-011 T-012 T-013 T-014
-%right T-015
-%left T-016 T-017
-%left T-018 T-019
-%right T-020
-%precedence T-021
+// T-013	STRING 
+// T-014	NL 
+// T-015	`QUIT` 
+// T-016	`=` 
+// T-017	`+` 
+// T-018	`-` 
+// T-019	`*` 
+// T-020	`/` 
+// T-021	`^` 
+// T-022	UNARY 
+%token T-003 T-004 T-005 T-006 T-007 T-008 T-009 T-010 T-011 T-012 T-013 T-014 T-015
+%right T-016
+%left T-017 T-018
+%left T-019 T-020
+%right T-021
+%precedence T-022
 %%
-T-023:  // loop = 
-T-023: T-023 T-024 T-013 // loop = loop command NL
-T-024: T-027 // command = expressions
-T-024: T-014 // command = `QUIT`
-T-025: T-026 // expr = simple
-T-025: T-017 T-026 // expr = `-` simple
-T-025: T-030 T-015 T-025 // expr = NAME `=` expr
-T-025: T-025 T-020 T-025 // expr = l: expr `^` r: expr
-T-025: T-025 T-018 T-025 // expr = l: expr `*` r: expr
-T-025: T-025 T-016 T-025 // expr = l: expr `+` r: expr
-T-025: T-025 T-019 T-025 // expr = l: expr `/` r: expr
-T-025: T-025 T-017 T-025 // expr = l: expr `-` r: expr
-T-025: T-030 T-007 T-027 T-008 // expr = NAME `(` expressions `)`
-T-025: T-018 T-007 T-027 T-008 // expr = `*` `(` expressions `)`
-T-025: T-016 T-007 T-027 T-008 // expr = `+` `(` expressions `)`
-T-025: T-019 T-007 T-027 T-008 // expr = `/` `(` expressions `)`
-T-025: T-017 T-007 T-027 T-008 // expr = `-` `(` expressions `)`
-T-026: T-030 // simple = NAME
-T-026: T-029 // simple = NUM
-T-026: T-007 T-025 T-008 // simple = `(` expr `)`
-T-026: T-007 error T-008 // simple = `(` error `)`
-T-027: T-028 // expressions = exprs
-T-028: T-025 // exprs = expr
-T-028: T-028 T-011 T-025 // exprs = exprs `,` expr
-T-029: T-003 // NUM = HEX
-T-029: T-004 // NUM = DEC
-T-029: T-005 // NUM = REAL
-T-030: T-006 // NAME = ID
+T-024:  // loop = 
+T-024: T-024 T-025 T-014 // loop = loop command NL
+T-025: T-028 // command = expressions
+T-025: T-013 // command = STRING
+T-025: T-015 // command = `QUIT`
+T-026: T-027 // expr = simple
+T-026: T-018 T-027 // expr = `-` simple
+T-026: T-031 T-016 T-026 // expr = NAME `=` expr
+T-026: T-026 T-021 T-026 // expr = l: expr `^` r: expr
+T-026: T-026 T-019 T-026 // expr = l: expr `*` r: expr
+T-026: T-026 T-017 T-026 // expr = l: expr `+` r: expr
+T-026: T-026 T-020 T-026 // expr = l: expr `/` r: expr
+T-026: T-026 T-018 T-026 // expr = l: expr `-` r: expr
+T-026: T-031 T-007 T-028 T-008 // expr = NAME `(` expressions `)`
+T-026: T-019 T-007 T-028 T-008 // expr = `*` `(` expressions `)`
+T-026: T-017 T-007 T-028 T-008 // expr = `+` `(` expressions `)`
+T-026: T-020 T-007 T-028 T-008 // expr = `/` `(` expressions `)`
+T-027: T-031 // simple = NAME
+T-027: T-030 // simple = NUM
+T-027: T-007 T-026 T-008 // simple = `(` expr `)`
+T-027: T-007 error T-008 // simple = `(` error `)`
+T-028: T-029 // expressions = exprs
+T-029: T-026 // exprs = expr
+T-029: T-029 T-011 T-026 // exprs = exprs `,` expr
+T-030: T-003 // NUM = HEX
+T-030: T-004 // NUM = DEC
+T-030: T-005 // NUM = REAL
+T-031: T-006 // NAME = ID

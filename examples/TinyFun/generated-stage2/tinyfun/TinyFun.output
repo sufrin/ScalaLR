@@ -6,11 +6,6 @@ Terminals unused in grammar
     UNARY
 
 
-State 40 conflicts: 1 shift/reduce
-State 130 conflicts: 1 shift/reduce
-State 139 conflicts: 1 shift/reduce
-
-
 Grammar
 
     0 $accept: loop $end
@@ -19,21 +14,21 @@ Grammar
     2      | loop command NL
 
     3 command: expressions
-    4      | `QUIT`
+    4      | STRING
+    5      | `QUIT`
 
-    5 expr: simple
-    6      | `-` simple
-    7      | NAME `=` expr
-    8      | expr `^` expr
-    9      | expr `*` expr
-   10      | expr `+` expr
-   11      | expr `/` expr
-   12      | expr `-` expr
-   13      | NAME `(` expressions `)`
-   14      | `*` `(` expressions `)`
-   15      | `+` `(` expressions `)`
-   16      | `/` `(` expressions `)`
-   17      | `-` `(` expressions `)`
+    6 expr: simple
+    7      | `-` simple
+    8      | NAME `=` expr
+    9      | expr `^` expr
+   10      | expr `*` expr
+   11      | expr `+` expr
+   12      | expr `/` expr
+   13      | expr `-` expr
+   14      | NAME `(` expressions `)`
+   15      | `*` `(` expressions `)`
+   16      | `+` `(` expressions `)`
+   17      | `/` `(` expressions `)`
 
    18 simple: NAME
    19      | NUM
@@ -60,51 +55,52 @@ Terminals, with rules where they appear
     DEC (259) 26
     REAL (260) 27
     ID (261) 28
-    `(` (262) 13 14 15 16 17 20 21
-    `)` (263) 13 14 15 16 17 20 21
+    `(` (262) 14 15 16 17 20 21
+    `)` (263) 14 15 16 17 20 21
     `[` (264)
     `]` (265)
     `,` (266) 24
     SCANERROR (267)
-    NL (268) 2
-    `QUIT` (269) 4
-    `=` (270) 7
-    `+` (271) 10 15
-    `-` (272) 6 12 17
-    `*` (273) 9 14
-    `/` (274) 11 16
-    `^` (275) 8
-    UNARY (276)
+    STRING (268) 4
+    NL (269) 2
+    `QUIT` (270) 5
+    `=` (271) 8
+    `+` (272) 11 16
+    `-` (273) 7 13
+    `*` (274) 10 15
+    `/` (275) 12 17
+    `^` (276) 9
+    UNARY (277)
 
 
 Nonterminals, with rules where they appear
 
-    $accept (22)
+    $accept (23)
         on left: 0
-    loop (23)
+    loop (24)
         on left: 1 2
         on right: 0 2
-    command (24)
-        on left: 3 4
+    command (25)
+        on left: 3 4 5
         on right: 2
-    expr (25)
-        on left: 5 6 7 8 9 10 11 12 13 14 15 16 17
-        on right: 7 8 9 10 11 12 20 23 24
-    simple (26)
+    expr (26)
+        on left: 6 7 8 9 10 11 12 13 14 15 16 17
+        on right: 8 9 10 11 12 13 20 23 24
+    simple (27)
         on left: 18 19 20 21
-        on right: 5 6
-    expressions (27)
+        on right: 6 7
+    expressions (28)
         on left: 22
-        on right: 3 13 14 15 16 17
-    exprs (28)
+        on right: 3 14 15 16 17
+    exprs (29)
         on left: 23 24
         on right: 22 24
-    NUM (29)
+    NUM (30)
         on left: 25 26 27
         on right: 19
-    NAME (30)
+    NAME (31)
         on left: 28
-        on right: 7 13 18
+        on right: 8 14 18
 
 
 State 0
@@ -117,6 +113,7 @@ State 0
     REAL  reduce using rule 1 (loop)
     ID  reduce using rule 1 (loop)
     `(`  reduce using rule 1 (loop)
+    STRING  reduce using rule 1 (loop)
     `QUIT`  reduce using rule 1 (loop)
     `+`  reduce using rule 1 (loop)
     `-`  reduce using rule 1 (loop)
@@ -137,19 +134,20 @@ State 1
     REAL  shift, and go to state 5
     ID  shift, and go to state 6
     `(`  shift, and go to state 7
-    `QUIT`  shift, and go to state 8
-    `+`  shift, and go to state 9
-    `-`  shift, and go to state 10
-    `*`  shift, and go to state 11
-    `/`  shift, and go to state 12
+    STRING  shift, and go to state 8
+    `QUIT`  shift, and go to state 9
+    `+`  shift, and go to state 10
+    `-`  shift, and go to state 11
+    `*`  shift, and go to state 12
+    `/`  shift, and go to state 13
 
-    command  go to state 13
-    expr  go to state 14
-    simple  go to state 15
-    expressions  go to state 16
-    exprs  go to state 17
-    NUM  go to state 18
-    NAME  go to state 19
+    command  go to state 14
+    expr  go to state 15
+    simple  go to state 16
+    expressions  go to state 17
+    exprs  go to state 18
+    NUM  go to state 19
+    NAME  go to state 20
 
 
 State 2
@@ -218,81 +216,87 @@ State 7
    20 simple: `(` • expr `)`
    21      | `(` • error `)`
 
-    error  shift, and go to state 20
-    HEX  shift, and go to state 57
-    DEC  shift, and go to state 58
-    REAL  shift, and go to state 59
-    ID  shift, and go to state 60
-    `(`  shift, and go to state 61
-    `+`  shift, and go to state 62
-    `-`  shift, and go to state 63
-    `*`  shift, and go to state 64
-    `/`  shift, and go to state 65
+    error  shift, and go to state 21
+    HEX  shift, and go to state 54
+    DEC  shift, and go to state 55
+    REAL  shift, and go to state 56
+    ID  shift, and go to state 57
+    `(`  shift, and go to state 58
+    `+`  shift, and go to state 59
+    `-`  shift, and go to state 60
+    `*`  shift, and go to state 61
+    `/`  shift, and go to state 62
 
-    expr  go to state 21
-    simple  go to state 66
-    NUM  go to state 67
-    NAME  go to state 68
+    expr  go to state 22
+    simple  go to state 63
+    NUM  go to state 64
+    NAME  go to state 65
 
 
 State 8
 
-    4 command: `QUIT` •
+    4 command: STRING •
 
     NL  reduce using rule 4 (command)
 
 
 State 9
 
-   15 expr: `+` • `(` expressions `)`
+    5 command: `QUIT` •
 
-    `(`  shift, and go to state 22
+    NL  reduce using rule 5 (command)
 
 
 State 10
 
-    6 expr: `-` • simple
-   17      | `-` • `(` expressions `)`
+   16 expr: `+` • `(` expressions `)`
 
-    HEX  shift, and go to state 3
-    DEC  shift, and go to state 4
-    REAL  shift, and go to state 5
-    ID  shift, and go to state 69
     `(`  shift, and go to state 23
-
-    simple  go to state 24
-    NUM  go to state 18
-    NAME  go to state 25
 
 
 State 11
 
-   14 expr: `*` • `(` expressions `)`
+    7 expr: `-` • simple
 
-    `(`  shift, and go to state 26
+    HEX  shift, and go to state 3
+    DEC  shift, and go to state 4
+    REAL  shift, and go to state 5
+    ID  shift, and go to state 66
+    `(`  shift, and go to state 7
+
+    simple  go to state 24
+    NUM  go to state 19
+    NAME  go to state 25
 
 
 State 12
 
-   16 expr: `/` • `(` expressions `)`
+   15 expr: `*` • `(` expressions `)`
+
+    `(`  shift, and go to state 26
+
+
+State 13
+
+   17 expr: `/` • `(` expressions `)`
 
     `(`  shift, and go to state 27
 
 
-State 13
+State 14
 
     2 loop: loop command • NL
 
     NL  shift, and go to state 28
 
 
-State 14
+State 15
 
-    8 expr: expr • `^` expr
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   12      | expr • `-` expr
+    9 expr: expr • `^` expr
+   10      | expr • `*` expr
+   11      | expr • `+` expr
+   12      | expr • `/` expr
+   13      | expr • `-` expr
    23 exprs: expr •
 
     `+`  shift, and go to state 29
@@ -305,27 +309,27 @@ State 14
     NL  reduce using rule 23 (exprs)
 
 
-State 15
-
-    5 expr: simple •
-
-    `,`  reduce using rule 5 (expr)
-    NL  reduce using rule 5 (expr)
-    `+`  reduce using rule 5 (expr)
-    `-`  reduce using rule 5 (expr)
-    `*`  reduce using rule 5 (expr)
-    `/`  reduce using rule 5 (expr)
-    `^`  reduce using rule 5 (expr)
-
-
 State 16
+
+    6 expr: simple •
+
+    `,`  reduce using rule 6 (expr)
+    NL  reduce using rule 6 (expr)
+    `+`  reduce using rule 6 (expr)
+    `-`  reduce using rule 6 (expr)
+    `*`  reduce using rule 6 (expr)
+    `/`  reduce using rule 6 (expr)
+    `^`  reduce using rule 6 (expr)
+
+
+State 17
 
     3 command: expressions •
 
     NL  reduce using rule 3 (command)
 
 
-State 17
+State 18
 
    22 expressions: exprs •
    24 exprs: exprs • `,` expr
@@ -335,7 +339,7 @@ State 17
     NL  reduce using rule 22 (expressions)
 
 
-State 18
+State 19
 
    19 simple: NUM •
 
@@ -348,10 +352,10 @@ State 18
     `^`  reduce using rule 19 (simple)
 
 
-State 19
+State 20
 
-    7 expr: NAME • `=` expr
-   13      | NAME • `(` expressions `)`
+    8 expr: NAME • `=` expr
+   14      | NAME • `(` expressions `)`
    18 simple: NAME •
 
     `(`  shift, and go to state 35
@@ -366,88 +370,63 @@ State 19
     `^`  reduce using rule 18 (simple)
 
 
-State 20
+State 21
 
    21 simple: `(` error • `)`
 
     `)`  shift, and go to state 37
 
 
-State 21
+State 22
 
-    8 expr: expr • `^` expr
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   12      | expr • `-` expr
+    9 expr: expr • `^` expr
+   10      | expr • `*` expr
+   11      | expr • `+` expr
+   12      | expr • `/` expr
+   13      | expr • `-` expr
    20 simple: `(` expr • `)`
 
     `)`  shift, and go to state 38
-    `+`  shift, and go to state 70
-    `-`  shift, and go to state 71
-    `*`  shift, and go to state 72
-    `/`  shift, and go to state 73
-    `^`  shift, and go to state 74
-
-
-State 22
-
-   15 expr: `+` `(` • expressions `)`
-
-    HEX  shift, and go to state 75
-    DEC  shift, and go to state 76
-    REAL  shift, and go to state 77
-    ID  shift, and go to state 78
-    `(`  shift, and go to state 79
-    `+`  shift, and go to state 80
-    `-`  shift, and go to state 81
-    `*`  shift, and go to state 82
-    `/`  shift, and go to state 83
-
-    expr  go to state 84
-    simple  go to state 85
-    expressions  go to state 39
-    exprs  go to state 86
-    NUM  go to state 87
-    NAME  go to state 88
+    `+`  shift, and go to state 67
+    `-`  shift, and go to state 68
+    `*`  shift, and go to state 69
+    `/`  shift, and go to state 70
+    `^`  shift, and go to state 71
 
 
 State 23
 
-   17 expr: `-` `(` • expressions `)`
-   20 simple: `(` • expr `)`
-   21      | `(` • error `)`
+   16 expr: `+` `(` • expressions `)`
 
-    error  shift, and go to state 20
-    HEX  shift, and go to state 75
-    DEC  shift, and go to state 76
-    REAL  shift, and go to state 77
-    ID  shift, and go to state 78
-    `(`  shift, and go to state 79
-    `+`  shift, and go to state 80
-    `-`  shift, and go to state 81
-    `*`  shift, and go to state 82
-    `/`  shift, and go to state 83
+    HEX  shift, and go to state 72
+    DEC  shift, and go to state 73
+    REAL  shift, and go to state 74
+    ID  shift, and go to state 75
+    `(`  shift, and go to state 76
+    `+`  shift, and go to state 77
+    `-`  shift, and go to state 78
+    `*`  shift, and go to state 79
+    `/`  shift, and go to state 80
 
-    expr  go to state 40
-    simple  go to state 85
-    expressions  go to state 41
-    exprs  go to state 86
-    NUM  go to state 87
-    NAME  go to state 88
+    expr  go to state 81
+    simple  go to state 82
+    expressions  go to state 39
+    exprs  go to state 83
+    NUM  go to state 84
+    NAME  go to state 85
 
 
 State 24
 
-    6 expr: `-` simple •
+    7 expr: `-` simple •
 
-    `,`  reduce using rule 6 (expr)
-    NL  reduce using rule 6 (expr)
-    `+`  reduce using rule 6 (expr)
-    `-`  reduce using rule 6 (expr)
-    `*`  reduce using rule 6 (expr)
-    `/`  reduce using rule 6 (expr)
-    `^`  reduce using rule 6 (expr)
+    `,`  reduce using rule 7 (expr)
+    NL  reduce using rule 7 (expr)
+    `+`  reduce using rule 7 (expr)
+    `-`  reduce using rule 7 (expr)
+    `*`  reduce using rule 7 (expr)
+    `/`  reduce using rule 7 (expr)
+    `^`  reduce using rule 7 (expr)
 
 
 State 25
@@ -465,46 +444,46 @@ State 25
 
 State 26
 
-   14 expr: `*` `(` • expressions `)`
+   15 expr: `*` `(` • expressions `)`
 
-    HEX  shift, and go to state 75
-    DEC  shift, and go to state 76
-    REAL  shift, and go to state 77
-    ID  shift, and go to state 78
-    `(`  shift, and go to state 79
-    `+`  shift, and go to state 80
-    `-`  shift, and go to state 81
-    `*`  shift, and go to state 82
-    `/`  shift, and go to state 83
+    HEX  shift, and go to state 72
+    DEC  shift, and go to state 73
+    REAL  shift, and go to state 74
+    ID  shift, and go to state 75
+    `(`  shift, and go to state 76
+    `+`  shift, and go to state 77
+    `-`  shift, and go to state 78
+    `*`  shift, and go to state 79
+    `/`  shift, and go to state 80
 
-    expr  go to state 84
-    simple  go to state 85
-    expressions  go to state 42
-    exprs  go to state 86
-    NUM  go to state 87
-    NAME  go to state 88
+    expr  go to state 81
+    simple  go to state 82
+    expressions  go to state 40
+    exprs  go to state 83
+    NUM  go to state 84
+    NAME  go to state 85
 
 
 State 27
 
-   16 expr: `/` `(` • expressions `)`
+   17 expr: `/` `(` • expressions `)`
 
-    HEX  shift, and go to state 75
-    DEC  shift, and go to state 76
-    REAL  shift, and go to state 77
-    ID  shift, and go to state 78
-    `(`  shift, and go to state 79
-    `+`  shift, and go to state 80
-    `-`  shift, and go to state 81
-    `*`  shift, and go to state 82
-    `/`  shift, and go to state 83
+    HEX  shift, and go to state 72
+    DEC  shift, and go to state 73
+    REAL  shift, and go to state 74
+    ID  shift, and go to state 75
+    `(`  shift, and go to state 76
+    `+`  shift, and go to state 77
+    `-`  shift, and go to state 78
+    `*`  shift, and go to state 79
+    `/`  shift, and go to state 80
 
-    expr  go to state 84
-    simple  go to state 85
-    expressions  go to state 43
-    exprs  go to state 86
-    NUM  go to state 87
-    NAME  go to state 88
+    expr  go to state 81
+    simple  go to state 82
+    expressions  go to state 41
+    exprs  go to state 83
+    NUM  go to state 84
+    NAME  go to state 85
 
 
 State 28
@@ -517,6 +496,7 @@ State 28
     REAL  reduce using rule 2 (loop)
     ID  reduce using rule 2 (loop)
     `(`  reduce using rule 2 (loop)
+    STRING  reduce using rule 2 (loop)
     `QUIT`  reduce using rule 2 (loop)
     `+`  reduce using rule 2 (loop)
     `-`  reduce using rule 2 (loop)
@@ -526,102 +506,102 @@ State 28
 
 State 29
 
-   10 expr: expr `+` • expr
+   11 expr: expr `+` • expr
 
     HEX  shift, and go to state 3
     DEC  shift, and go to state 4
     REAL  shift, and go to state 5
     ID  shift, and go to state 6
     `(`  shift, and go to state 7
-    `+`  shift, and go to state 9
-    `-`  shift, and go to state 10
-    `*`  shift, and go to state 11
-    `/`  shift, and go to state 12
+    `+`  shift, and go to state 10
+    `-`  shift, and go to state 11
+    `*`  shift, and go to state 12
+    `/`  shift, and go to state 13
 
-    expr  go to state 44
-    simple  go to state 15
-    NUM  go to state 18
-    NAME  go to state 19
+    expr  go to state 42
+    simple  go to state 16
+    NUM  go to state 19
+    NAME  go to state 20
 
 
 State 30
 
-   12 expr: expr `-` • expr
+   13 expr: expr `-` • expr
 
     HEX  shift, and go to state 3
     DEC  shift, and go to state 4
     REAL  shift, and go to state 5
     ID  shift, and go to state 6
     `(`  shift, and go to state 7
-    `+`  shift, and go to state 9
-    `-`  shift, and go to state 10
-    `*`  shift, and go to state 11
-    `/`  shift, and go to state 12
+    `+`  shift, and go to state 10
+    `-`  shift, and go to state 11
+    `*`  shift, and go to state 12
+    `/`  shift, and go to state 13
 
-    expr  go to state 45
-    simple  go to state 15
-    NUM  go to state 18
-    NAME  go to state 19
+    expr  go to state 43
+    simple  go to state 16
+    NUM  go to state 19
+    NAME  go to state 20
 
 
 State 31
 
-    9 expr: expr `*` • expr
+   10 expr: expr `*` • expr
 
     HEX  shift, and go to state 3
     DEC  shift, and go to state 4
     REAL  shift, and go to state 5
     ID  shift, and go to state 6
     `(`  shift, and go to state 7
-    `+`  shift, and go to state 9
-    `-`  shift, and go to state 10
-    `*`  shift, and go to state 11
-    `/`  shift, and go to state 12
+    `+`  shift, and go to state 10
+    `-`  shift, and go to state 11
+    `*`  shift, and go to state 12
+    `/`  shift, and go to state 13
 
-    expr  go to state 46
-    simple  go to state 15
-    NUM  go to state 18
-    NAME  go to state 19
+    expr  go to state 44
+    simple  go to state 16
+    NUM  go to state 19
+    NAME  go to state 20
 
 
 State 32
 
-   11 expr: expr `/` • expr
+   12 expr: expr `/` • expr
 
     HEX  shift, and go to state 3
     DEC  shift, and go to state 4
     REAL  shift, and go to state 5
     ID  shift, and go to state 6
     `(`  shift, and go to state 7
-    `+`  shift, and go to state 9
-    `-`  shift, and go to state 10
-    `*`  shift, and go to state 11
-    `/`  shift, and go to state 12
+    `+`  shift, and go to state 10
+    `-`  shift, and go to state 11
+    `*`  shift, and go to state 12
+    `/`  shift, and go to state 13
 
-    expr  go to state 47
-    simple  go to state 15
-    NUM  go to state 18
-    NAME  go to state 19
+    expr  go to state 45
+    simple  go to state 16
+    NUM  go to state 19
+    NAME  go to state 20
 
 
 State 33
 
-    8 expr: expr `^` • expr
+    9 expr: expr `^` • expr
 
     HEX  shift, and go to state 3
     DEC  shift, and go to state 4
     REAL  shift, and go to state 5
     ID  shift, and go to state 6
     `(`  shift, and go to state 7
-    `+`  shift, and go to state 9
-    `-`  shift, and go to state 10
-    `*`  shift, and go to state 11
-    `/`  shift, and go to state 12
+    `+`  shift, and go to state 10
+    `-`  shift, and go to state 11
+    `*`  shift, and go to state 12
+    `/`  shift, and go to state 13
 
-    expr  go to state 48
-    simple  go to state 15
-    NUM  go to state 18
-    NAME  go to state 19
+    expr  go to state 46
+    simple  go to state 16
+    NUM  go to state 19
+    NAME  go to state 20
 
 
 State 34
@@ -633,57 +613,57 @@ State 34
     REAL  shift, and go to state 5
     ID  shift, and go to state 6
     `(`  shift, and go to state 7
-    `+`  shift, and go to state 9
-    `-`  shift, and go to state 10
-    `*`  shift, and go to state 11
-    `/`  shift, and go to state 12
+    `+`  shift, and go to state 10
+    `-`  shift, and go to state 11
+    `*`  shift, and go to state 12
+    `/`  shift, and go to state 13
 
-    expr  go to state 49
-    simple  go to state 15
-    NUM  go to state 18
-    NAME  go to state 19
+    expr  go to state 47
+    simple  go to state 16
+    NUM  go to state 19
+    NAME  go to state 20
 
 
 State 35
 
-   13 expr: NAME `(` • expressions `)`
+   14 expr: NAME `(` • expressions `)`
 
-    HEX  shift, and go to state 75
-    DEC  shift, and go to state 76
-    REAL  shift, and go to state 77
-    ID  shift, and go to state 78
-    `(`  shift, and go to state 79
-    `+`  shift, and go to state 80
-    `-`  shift, and go to state 81
-    `*`  shift, and go to state 82
-    `/`  shift, and go to state 83
+    HEX  shift, and go to state 72
+    DEC  shift, and go to state 73
+    REAL  shift, and go to state 74
+    ID  shift, and go to state 75
+    `(`  shift, and go to state 76
+    `+`  shift, and go to state 77
+    `-`  shift, and go to state 78
+    `*`  shift, and go to state 79
+    `/`  shift, and go to state 80
 
-    expr  go to state 84
-    simple  go to state 85
-    expressions  go to state 50
-    exprs  go to state 86
-    NUM  go to state 87
-    NAME  go to state 88
+    expr  go to state 81
+    simple  go to state 82
+    expressions  go to state 48
+    exprs  go to state 83
+    NUM  go to state 84
+    NAME  go to state 85
 
 
 State 36
 
-    7 expr: NAME `=` • expr
+    8 expr: NAME `=` • expr
 
     HEX  shift, and go to state 3
     DEC  shift, and go to state 4
     REAL  shift, and go to state 5
     ID  shift, and go to state 6
     `(`  shift, and go to state 7
-    `+`  shift, and go to state 9
-    `-`  shift, and go to state 10
-    `*`  shift, and go to state 11
-    `/`  shift, and go to state 12
+    `+`  shift, and go to state 10
+    `-`  shift, and go to state 11
+    `*`  shift, and go to state 12
+    `/`  shift, and go to state 13
 
-    expr  go to state 51
-    simple  go to state 15
-    NUM  go to state 18
-    NAME  go to state 19
+    expr  go to state 49
+    simple  go to state 16
+    NUM  go to state 19
+    NAME  go to state 20
 
 
 State 37
@@ -714,99 +694,109 @@ State 38
 
 State 39
 
-   15 expr: `+` `(` expressions • `)`
+   16 expr: `+` `(` expressions • `)`
 
-    `)`  shift, and go to state 52
+    `)`  shift, and go to state 50
 
 
 State 40
 
-    8 expr: expr • `^` expr
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   12      | expr • `-` expr
-   20 simple: `(` expr • `)`
-   23 exprs: expr •
+   15 expr: `*` `(` expressions • `)`
 
-    `)`  shift, and go to state 38
-    `+`  shift, and go to state 89
-    `-`  shift, and go to state 90
-    `*`  shift, and go to state 91
-    `/`  shift, and go to state 92
-    `^`  shift, and go to state 93
-
-    `)`  [reduce using rule 23 (exprs)]
-    `,`  reduce using rule 23 (exprs)
+    `)`  shift, and go to state 51
 
 
 State 41
 
-   17 expr: `-` `(` expressions • `)`
+   17 expr: `/` `(` expressions • `)`
 
-    `)`  shift, and go to state 53
+    `)`  shift, and go to state 52
 
 
 State 42
 
-   14 expr: `*` `(` expressions • `)`
+    9 expr: expr • `^` expr
+   10      | expr • `*` expr
+   11      | expr • `+` expr
+   11      | expr `+` expr •
+   12      | expr • `/` expr
+   13      | expr • `-` expr
 
-    `)`  shift, and go to state 54
+    `*`  shift, and go to state 31
+    `/`  shift, and go to state 32
+    `^`  shift, and go to state 33
+
+    `,`  reduce using rule 11 (expr)
+    NL  reduce using rule 11 (expr)
+    `+`  reduce using rule 11 (expr)
+    `-`  reduce using rule 11 (expr)
 
 
 State 43
 
-   16 expr: `/` `(` expressions • `)`
+    9 expr: expr • `^` expr
+   10      | expr • `*` expr
+   11      | expr • `+` expr
+   12      | expr • `/` expr
+   13      | expr • `-` expr
+   13      | expr `-` expr •
 
-    `)`  shift, and go to state 55
+    `*`  shift, and go to state 31
+    `/`  shift, and go to state 32
+    `^`  shift, and go to state 33
+
+    `,`  reduce using rule 13 (expr)
+    NL  reduce using rule 13 (expr)
+    `+`  reduce using rule 13 (expr)
+    `-`  reduce using rule 13 (expr)
 
 
 State 44
 
-    8 expr: expr • `^` expr
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   10      | expr `+` expr •
-   11      | expr • `/` expr
-   12      | expr • `-` expr
+    9 expr: expr • `^` expr
+   10      | expr • `*` expr
+   10      | expr `*` expr •
+   11      | expr • `+` expr
+   12      | expr • `/` expr
+   13      | expr • `-` expr
 
-    `*`  shift, and go to state 31
-    `/`  shift, and go to state 32
     `^`  shift, and go to state 33
 
     `,`  reduce using rule 10 (expr)
     NL  reduce using rule 10 (expr)
     `+`  reduce using rule 10 (expr)
     `-`  reduce using rule 10 (expr)
+    `*`  reduce using rule 10 (expr)
+    `/`  reduce using rule 10 (expr)
 
 
 State 45
 
-    8 expr: expr • `^` expr
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   12      | expr • `-` expr
-   12      | expr `-` expr •
+    9 expr: expr • `^` expr
+   10      | expr • `*` expr
+   11      | expr • `+` expr
+   12      | expr • `/` expr
+   12      | expr `/` expr •
+   13      | expr • `-` expr
 
-    `*`  shift, and go to state 31
-    `/`  shift, and go to state 32
     `^`  shift, and go to state 33
 
     `,`  reduce using rule 12 (expr)
     NL  reduce using rule 12 (expr)
     `+`  reduce using rule 12 (expr)
     `-`  reduce using rule 12 (expr)
+    `*`  reduce using rule 12 (expr)
+    `/`  reduce using rule 12 (expr)
 
 
 State 46
 
-    8 expr: expr • `^` expr
-    9      | expr • `*` expr
-    9      | expr `*` expr •
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   12      | expr • `-` expr
+    9 expr: expr • `^` expr
+    9      | expr `^` expr •
+   10      | expr • `*` expr
+   11      | expr • `+` expr
+   12      | expr • `/` expr
+   13      | expr • `-` expr
 
     `^`  shift, and go to state 33
 
@@ -820,49 +810,11 @@ State 46
 
 State 47
 
-    8 expr: expr • `^` expr
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   11      | expr `/` expr •
-   12      | expr • `-` expr
-
-    `^`  shift, and go to state 33
-
-    `,`  reduce using rule 11 (expr)
-    NL  reduce using rule 11 (expr)
-    `+`  reduce using rule 11 (expr)
-    `-`  reduce using rule 11 (expr)
-    `*`  reduce using rule 11 (expr)
-    `/`  reduce using rule 11 (expr)
-
-
-State 48
-
-    8 expr: expr • `^` expr
-    8      | expr `^` expr •
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   12      | expr • `-` expr
-
-    `^`  shift, and go to state 33
-
-    `,`  reduce using rule 8 (expr)
-    NL  reduce using rule 8 (expr)
-    `+`  reduce using rule 8 (expr)
-    `-`  reduce using rule 8 (expr)
-    `*`  reduce using rule 8 (expr)
-    `/`  reduce using rule 8 (expr)
-
-
-State 49
-
-    8 expr: expr • `^` expr
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   12      | expr • `-` expr
+    9 expr: expr • `^` expr
+   10      | expr • `*` expr
+   11      | expr • `+` expr
+   12      | expr • `/` expr
+   13      | expr • `-` expr
    24 exprs: exprs `,` expr •
 
     `+`  shift, and go to state 29
@@ -875,21 +827,21 @@ State 49
     NL  reduce using rule 24 (exprs)
 
 
-State 50
+State 48
 
-   13 expr: NAME `(` expressions • `)`
+   14 expr: NAME `(` expressions • `)`
 
-    `)`  shift, and go to state 56
+    `)`  shift, and go to state 53
 
 
-State 51
+State 49
 
-    7 expr: NAME `=` expr •
-    8      | expr • `^` expr
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   12      | expr • `-` expr
+    8 expr: NAME `=` expr •
+    9      | expr • `^` expr
+   10      | expr • `*` expr
+   11      | expr • `+` expr
+   12      | expr • `/` expr
+   13      | expr • `-` expr
 
     `+`  shift, and go to state 29
     `-`  shift, and go to state 30
@@ -897,52 +849,13 @@ State 51
     `/`  shift, and go to state 32
     `^`  shift, and go to state 33
 
-    `,`  reduce using rule 7 (expr)
-    NL  reduce using rule 7 (expr)
+    `,`  reduce using rule 8 (expr)
+    NL  reduce using rule 8 (expr)
 
 
-State 52
+State 50
 
-   15 expr: `+` `(` expressions `)` •
-
-    `,`  reduce using rule 15 (expr)
-    NL  reduce using rule 15 (expr)
-    `+`  reduce using rule 15 (expr)
-    `-`  reduce using rule 15 (expr)
-    `*`  reduce using rule 15 (expr)
-    `/`  reduce using rule 15 (expr)
-    `^`  reduce using rule 15 (expr)
-
-
-State 53
-
-   17 expr: `-` `(` expressions `)` •
-
-    `,`  reduce using rule 17 (expr)
-    NL  reduce using rule 17 (expr)
-    `+`  reduce using rule 17 (expr)
-    `-`  reduce using rule 17 (expr)
-    `*`  reduce using rule 17 (expr)
-    `/`  reduce using rule 17 (expr)
-    `^`  reduce using rule 17 (expr)
-
-
-State 54
-
-   14 expr: `*` `(` expressions `)` •
-
-    `,`  reduce using rule 14 (expr)
-    NL  reduce using rule 14 (expr)
-    `+`  reduce using rule 14 (expr)
-    `-`  reduce using rule 14 (expr)
-    `*`  reduce using rule 14 (expr)
-    `/`  reduce using rule 14 (expr)
-    `^`  reduce using rule 14 (expr)
-
-
-State 55
-
-   16 expr: `/` `(` expressions `)` •
+   16 expr: `+` `(` expressions `)` •
 
     `,`  reduce using rule 16 (expr)
     NL  reduce using rule 16 (expr)
@@ -953,20 +866,46 @@ State 55
     `^`  reduce using rule 16 (expr)
 
 
-State 56
+State 51
 
-   13 expr: NAME `(` expressions `)` •
+   15 expr: `*` `(` expressions `)` •
 
-    `,`  reduce using rule 13 (expr)
-    NL  reduce using rule 13 (expr)
-    `+`  reduce using rule 13 (expr)
-    `-`  reduce using rule 13 (expr)
-    `*`  reduce using rule 13 (expr)
-    `/`  reduce using rule 13 (expr)
-    `^`  reduce using rule 13 (expr)
+    `,`  reduce using rule 15 (expr)
+    NL  reduce using rule 15 (expr)
+    `+`  reduce using rule 15 (expr)
+    `-`  reduce using rule 15 (expr)
+    `*`  reduce using rule 15 (expr)
+    `/`  reduce using rule 15 (expr)
+    `^`  reduce using rule 15 (expr)
 
 
-State 57
+State 52
+
+   17 expr: `/` `(` expressions `)` •
+
+    `,`  reduce using rule 17 (expr)
+    NL  reduce using rule 17 (expr)
+    `+`  reduce using rule 17 (expr)
+    `-`  reduce using rule 17 (expr)
+    `*`  reduce using rule 17 (expr)
+    `/`  reduce using rule 17 (expr)
+    `^`  reduce using rule 17 (expr)
+
+
+State 53
+
+   14 expr: NAME `(` expressions `)` •
+
+    `,`  reduce using rule 14 (expr)
+    NL  reduce using rule 14 (expr)
+    `+`  reduce using rule 14 (expr)
+    `-`  reduce using rule 14 (expr)
+    `*`  reduce using rule 14 (expr)
+    `/`  reduce using rule 14 (expr)
+    `^`  reduce using rule 14 (expr)
+
+
+State 54
 
    25 NUM: HEX •
 
@@ -978,7 +917,7 @@ State 57
     `^`  reduce using rule 25 (NUM)
 
 
-State 58
+State 55
 
    26 NUM: DEC •
 
@@ -990,7 +929,7 @@ State 58
     `^`  reduce using rule 26 (NUM)
 
 
-State 59
+State 56
 
    27 NUM: REAL •
 
@@ -1002,7 +941,7 @@ State 59
     `^`  reduce using rule 27 (NUM)
 
 
-State 60
+State 57
 
    28 NAME: ID •
 
@@ -1016,78 +955,77 @@ State 60
     `^`  reduce using rule 28 (NAME)
 
 
-State 61
+State 58
 
    20 simple: `(` • expr `)`
    21      | `(` • error `)`
 
-    error  shift, and go to state 94
-    HEX  shift, and go to state 57
-    DEC  shift, and go to state 58
-    REAL  shift, and go to state 59
-    ID  shift, and go to state 60
-    `(`  shift, and go to state 61
-    `+`  shift, and go to state 62
-    `-`  shift, and go to state 63
-    `*`  shift, and go to state 64
-    `/`  shift, and go to state 65
+    error  shift, and go to state 86
+    HEX  shift, and go to state 54
+    DEC  shift, and go to state 55
+    REAL  shift, and go to state 56
+    ID  shift, and go to state 57
+    `(`  shift, and go to state 58
+    `+`  shift, and go to state 59
+    `-`  shift, and go to state 60
+    `*`  shift, and go to state 61
+    `/`  shift, and go to state 62
 
-    expr  go to state 95
-    simple  go to state 66
-    NUM  go to state 67
-    NAME  go to state 68
+    expr  go to state 87
+    simple  go to state 63
+    NUM  go to state 64
+    NAME  go to state 65
+
+
+State 59
+
+   16 expr: `+` • `(` expressions `)`
+
+    `(`  shift, and go to state 88
+
+
+State 60
+
+    7 expr: `-` • simple
+
+    HEX  shift, and go to state 54
+    DEC  shift, and go to state 55
+    REAL  shift, and go to state 56
+    ID  shift, and go to state 89
+    `(`  shift, and go to state 58
+
+    simple  go to state 90
+    NUM  go to state 64
+    NAME  go to state 91
+
+
+State 61
+
+   15 expr: `*` • `(` expressions `)`
+
+    `(`  shift, and go to state 92
 
 
 State 62
 
-   15 expr: `+` • `(` expressions `)`
+   17 expr: `/` • `(` expressions `)`
 
-    `(`  shift, and go to state 96
+    `(`  shift, and go to state 93
 
 
 State 63
 
-    6 expr: `-` • simple
-   17      | `-` • `(` expressions `)`
+    6 expr: simple •
 
-    HEX  shift, and go to state 57
-    DEC  shift, and go to state 58
-    REAL  shift, and go to state 59
-    ID  shift, and go to state 97
-    `(`  shift, and go to state 98
-
-    simple  go to state 99
-    NUM  go to state 67
-    NAME  go to state 100
+    `)`  reduce using rule 6 (expr)
+    `+`  reduce using rule 6 (expr)
+    `-`  reduce using rule 6 (expr)
+    `*`  reduce using rule 6 (expr)
+    `/`  reduce using rule 6 (expr)
+    `^`  reduce using rule 6 (expr)
 
 
 State 64
-
-   14 expr: `*` • `(` expressions `)`
-
-    `(`  shift, and go to state 101
-
-
-State 65
-
-   16 expr: `/` • `(` expressions `)`
-
-    `(`  shift, and go to state 102
-
-
-State 66
-
-    5 expr: simple •
-
-    `)`  reduce using rule 5 (expr)
-    `+`  reduce using rule 5 (expr)
-    `-`  reduce using rule 5 (expr)
-    `*`  reduce using rule 5 (expr)
-    `/`  reduce using rule 5 (expr)
-    `^`  reduce using rule 5 (expr)
-
-
-State 67
 
    19 simple: NUM •
 
@@ -1099,14 +1037,14 @@ State 67
     `^`  reduce using rule 19 (simple)
 
 
-State 68
+State 65
 
-    7 expr: NAME • `=` expr
-   13      | NAME • `(` expressions `)`
+    8 expr: NAME • `=` expr
+   14      | NAME • `(` expressions `)`
    18 simple: NAME •
 
-    `(`  shift, and go to state 103
-    `=`  shift, and go to state 104
+    `(`  shift, and go to state 94
+    `=`  shift, and go to state 95
 
     `)`  reduce using rule 18 (simple)
     `+`  reduce using rule 18 (simple)
@@ -1116,7 +1054,7 @@ State 68
     `^`  reduce using rule 18 (simple)
 
 
-State 69
+State 66
 
    28 NAME: ID •
 
@@ -1129,107 +1067,107 @@ State 69
     `^`  reduce using rule 28 (NAME)
 
 
+State 67
+
+   11 expr: expr `+` • expr
+
+    HEX  shift, and go to state 54
+    DEC  shift, and go to state 55
+    REAL  shift, and go to state 56
+    ID  shift, and go to state 57
+    `(`  shift, and go to state 58
+    `+`  shift, and go to state 59
+    `-`  shift, and go to state 60
+    `*`  shift, and go to state 61
+    `/`  shift, and go to state 62
+
+    expr  go to state 96
+    simple  go to state 63
+    NUM  go to state 64
+    NAME  go to state 65
+
+
+State 68
+
+   13 expr: expr `-` • expr
+
+    HEX  shift, and go to state 54
+    DEC  shift, and go to state 55
+    REAL  shift, and go to state 56
+    ID  shift, and go to state 57
+    `(`  shift, and go to state 58
+    `+`  shift, and go to state 59
+    `-`  shift, and go to state 60
+    `*`  shift, and go to state 61
+    `/`  shift, and go to state 62
+
+    expr  go to state 97
+    simple  go to state 63
+    NUM  go to state 64
+    NAME  go to state 65
+
+
+State 69
+
+   10 expr: expr `*` • expr
+
+    HEX  shift, and go to state 54
+    DEC  shift, and go to state 55
+    REAL  shift, and go to state 56
+    ID  shift, and go to state 57
+    `(`  shift, and go to state 58
+    `+`  shift, and go to state 59
+    `-`  shift, and go to state 60
+    `*`  shift, and go to state 61
+    `/`  shift, and go to state 62
+
+    expr  go to state 98
+    simple  go to state 63
+    NUM  go to state 64
+    NAME  go to state 65
+
+
 State 70
 
-   10 expr: expr `+` • expr
+   12 expr: expr `/` • expr
 
-    HEX  shift, and go to state 57
-    DEC  shift, and go to state 58
-    REAL  shift, and go to state 59
-    ID  shift, and go to state 60
-    `(`  shift, and go to state 61
-    `+`  shift, and go to state 62
-    `-`  shift, and go to state 63
-    `*`  shift, and go to state 64
-    `/`  shift, and go to state 65
+    HEX  shift, and go to state 54
+    DEC  shift, and go to state 55
+    REAL  shift, and go to state 56
+    ID  shift, and go to state 57
+    `(`  shift, and go to state 58
+    `+`  shift, and go to state 59
+    `-`  shift, and go to state 60
+    `*`  shift, and go to state 61
+    `/`  shift, and go to state 62
 
-    expr  go to state 105
-    simple  go to state 66
-    NUM  go to state 67
-    NAME  go to state 68
+    expr  go to state 99
+    simple  go to state 63
+    NUM  go to state 64
+    NAME  go to state 65
 
 
 State 71
 
-   12 expr: expr `-` • expr
+    9 expr: expr `^` • expr
 
-    HEX  shift, and go to state 57
-    DEC  shift, and go to state 58
-    REAL  shift, and go to state 59
-    ID  shift, and go to state 60
-    `(`  shift, and go to state 61
-    `+`  shift, and go to state 62
-    `-`  shift, and go to state 63
-    `*`  shift, and go to state 64
-    `/`  shift, and go to state 65
+    HEX  shift, and go to state 54
+    DEC  shift, and go to state 55
+    REAL  shift, and go to state 56
+    ID  shift, and go to state 57
+    `(`  shift, and go to state 58
+    `+`  shift, and go to state 59
+    `-`  shift, and go to state 60
+    `*`  shift, and go to state 61
+    `/`  shift, and go to state 62
 
-    expr  go to state 106
-    simple  go to state 66
-    NUM  go to state 67
-    NAME  go to state 68
+    expr  go to state 100
+    simple  go to state 63
+    NUM  go to state 64
+    NAME  go to state 65
 
 
 State 72
-
-    9 expr: expr `*` • expr
-
-    HEX  shift, and go to state 57
-    DEC  shift, and go to state 58
-    REAL  shift, and go to state 59
-    ID  shift, and go to state 60
-    `(`  shift, and go to state 61
-    `+`  shift, and go to state 62
-    `-`  shift, and go to state 63
-    `*`  shift, and go to state 64
-    `/`  shift, and go to state 65
-
-    expr  go to state 107
-    simple  go to state 66
-    NUM  go to state 67
-    NAME  go to state 68
-
-
-State 73
-
-   11 expr: expr `/` • expr
-
-    HEX  shift, and go to state 57
-    DEC  shift, and go to state 58
-    REAL  shift, and go to state 59
-    ID  shift, and go to state 60
-    `(`  shift, and go to state 61
-    `+`  shift, and go to state 62
-    `-`  shift, and go to state 63
-    `*`  shift, and go to state 64
-    `/`  shift, and go to state 65
-
-    expr  go to state 108
-    simple  go to state 66
-    NUM  go to state 67
-    NAME  go to state 68
-
-
-State 74
-
-    8 expr: expr `^` • expr
-
-    HEX  shift, and go to state 57
-    DEC  shift, and go to state 58
-    REAL  shift, and go to state 59
-    ID  shift, and go to state 60
-    `(`  shift, and go to state 61
-    `+`  shift, and go to state 62
-    `-`  shift, and go to state 63
-    `*`  shift, and go to state 64
-    `/`  shift, and go to state 65
-
-    expr  go to state 109
-    simple  go to state 66
-    NUM  go to state 67
-    NAME  go to state 68
-
-
-State 75
 
    25 NUM: HEX •
 
@@ -1242,7 +1180,7 @@ State 75
     `^`  reduce using rule 25 (NUM)
 
 
-State 76
+State 73
 
    26 NUM: DEC •
 
@@ -1255,7 +1193,7 @@ State 76
     `^`  reduce using rule 26 (NUM)
 
 
-State 77
+State 74
 
    27 NUM: REAL •
 
@@ -1268,7 +1206,7 @@ State 77
     `^`  reduce using rule 27 (NUM)
 
 
-State 78
+State 75
 
    28 NAME: ID •
 
@@ -1283,108 +1221,107 @@ State 78
     `^`  reduce using rule 28 (NAME)
 
 
-State 79
+State 76
 
    20 simple: `(` • expr `)`
    21      | `(` • error `)`
 
-    error  shift, and go to state 110
-    HEX  shift, and go to state 57
-    DEC  shift, and go to state 58
-    REAL  shift, and go to state 59
-    ID  shift, and go to state 60
-    `(`  shift, and go to state 61
-    `+`  shift, and go to state 62
-    `-`  shift, and go to state 63
-    `*`  shift, and go to state 64
-    `/`  shift, and go to state 65
+    error  shift, and go to state 101
+    HEX  shift, and go to state 54
+    DEC  shift, and go to state 55
+    REAL  shift, and go to state 56
+    ID  shift, and go to state 57
+    `(`  shift, and go to state 58
+    `+`  shift, and go to state 59
+    `-`  shift, and go to state 60
+    `*`  shift, and go to state 61
+    `/`  shift, and go to state 62
 
-    expr  go to state 111
-    simple  go to state 66
-    NUM  go to state 67
-    NAME  go to state 68
+    expr  go to state 102
+    simple  go to state 63
+    NUM  go to state 64
+    NAME  go to state 65
+
+
+State 77
+
+   16 expr: `+` • `(` expressions `)`
+
+    `(`  shift, and go to state 103
+
+
+State 78
+
+    7 expr: `-` • simple
+
+    HEX  shift, and go to state 72
+    DEC  shift, and go to state 73
+    REAL  shift, and go to state 74
+    ID  shift, and go to state 104
+    `(`  shift, and go to state 76
+
+    simple  go to state 105
+    NUM  go to state 84
+    NAME  go to state 106
+
+
+State 79
+
+   15 expr: `*` • `(` expressions `)`
+
+    `(`  shift, and go to state 107
 
 
 State 80
 
-   15 expr: `+` • `(` expressions `)`
+   17 expr: `/` • `(` expressions `)`
 
-    `(`  shift, and go to state 112
+    `(`  shift, and go to state 108
 
 
 State 81
 
-    6 expr: `-` • simple
-   17      | `-` • `(` expressions `)`
-
-    HEX  shift, and go to state 75
-    DEC  shift, and go to state 76
-    REAL  shift, and go to state 77
-    ID  shift, and go to state 113
-    `(`  shift, and go to state 114
-
-    simple  go to state 115
-    NUM  go to state 87
-    NAME  go to state 116
-
-
-State 82
-
-   14 expr: `*` • `(` expressions `)`
-
-    `(`  shift, and go to state 117
-
-
-State 83
-
-   16 expr: `/` • `(` expressions `)`
-
-    `(`  shift, and go to state 118
-
-
-State 84
-
-    8 expr: expr • `^` expr
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   12      | expr • `-` expr
+    9 expr: expr • `^` expr
+   10      | expr • `*` expr
+   11      | expr • `+` expr
+   12      | expr • `/` expr
+   13      | expr • `-` expr
    23 exprs: expr •
 
-    `+`  shift, and go to state 89
-    `-`  shift, and go to state 90
-    `*`  shift, and go to state 91
-    `/`  shift, and go to state 92
-    `^`  shift, and go to state 93
+    `+`  shift, and go to state 109
+    `-`  shift, and go to state 110
+    `*`  shift, and go to state 111
+    `/`  shift, and go to state 112
+    `^`  shift, and go to state 113
 
     `)`  reduce using rule 23 (exprs)
     `,`  reduce using rule 23 (exprs)
 
 
-State 85
+State 82
 
-    5 expr: simple •
+    6 expr: simple •
 
-    `)`  reduce using rule 5 (expr)
-    `,`  reduce using rule 5 (expr)
-    `+`  reduce using rule 5 (expr)
-    `-`  reduce using rule 5 (expr)
-    `*`  reduce using rule 5 (expr)
-    `/`  reduce using rule 5 (expr)
-    `^`  reduce using rule 5 (expr)
+    `)`  reduce using rule 6 (expr)
+    `,`  reduce using rule 6 (expr)
+    `+`  reduce using rule 6 (expr)
+    `-`  reduce using rule 6 (expr)
+    `*`  reduce using rule 6 (expr)
+    `/`  reduce using rule 6 (expr)
+    `^`  reduce using rule 6 (expr)
 
 
-State 86
+State 83
 
    22 expressions: exprs •
    24 exprs: exprs • `,` expr
 
-    `,`  shift, and go to state 119
+    `,`  shift, and go to state 114
 
     `)`  reduce using rule 22 (expressions)
 
 
-State 87
+State 84
 
    19 simple: NUM •
 
@@ -1397,14 +1334,14 @@ State 87
     `^`  reduce using rule 19 (simple)
 
 
-State 88
+State 85
 
-    7 expr: NAME • `=` expr
-   13      | NAME • `(` expressions `)`
+    8 expr: NAME • `=` expr
+   14      | NAME • `(` expressions `)`
    18 simple: NAME •
 
-    `(`  shift, and go to state 120
-    `=`  shift, and go to state 121
+    `(`  shift, and go to state 115
+    `=`  shift, and go to state 116
 
     `)`  reduce using rule 18 (simple)
     `,`  reduce using rule 18 (simple)
@@ -1415,153 +1352,53 @@ State 88
     `^`  reduce using rule 18 (simple)
 
 
-State 89
-
-   10 expr: expr `+` • expr
-
-    HEX  shift, and go to state 75
-    DEC  shift, and go to state 76
-    REAL  shift, and go to state 77
-    ID  shift, and go to state 78
-    `(`  shift, and go to state 79
-    `+`  shift, and go to state 80
-    `-`  shift, and go to state 81
-    `*`  shift, and go to state 82
-    `/`  shift, and go to state 83
-
-    expr  go to state 122
-    simple  go to state 85
-    NUM  go to state 87
-    NAME  go to state 88
-
-
-State 90
-
-   12 expr: expr `-` • expr
-
-    HEX  shift, and go to state 75
-    DEC  shift, and go to state 76
-    REAL  shift, and go to state 77
-    ID  shift, and go to state 78
-    `(`  shift, and go to state 79
-    `+`  shift, and go to state 80
-    `-`  shift, and go to state 81
-    `*`  shift, and go to state 82
-    `/`  shift, and go to state 83
-
-    expr  go to state 123
-    simple  go to state 85
-    NUM  go to state 87
-    NAME  go to state 88
-
-
-State 91
-
-    9 expr: expr `*` • expr
-
-    HEX  shift, and go to state 75
-    DEC  shift, and go to state 76
-    REAL  shift, and go to state 77
-    ID  shift, and go to state 78
-    `(`  shift, and go to state 79
-    `+`  shift, and go to state 80
-    `-`  shift, and go to state 81
-    `*`  shift, and go to state 82
-    `/`  shift, and go to state 83
-
-    expr  go to state 124
-    simple  go to state 85
-    NUM  go to state 87
-    NAME  go to state 88
-
-
-State 92
-
-   11 expr: expr `/` • expr
-
-    HEX  shift, and go to state 75
-    DEC  shift, and go to state 76
-    REAL  shift, and go to state 77
-    ID  shift, and go to state 78
-    `(`  shift, and go to state 79
-    `+`  shift, and go to state 80
-    `-`  shift, and go to state 81
-    `*`  shift, and go to state 82
-    `/`  shift, and go to state 83
-
-    expr  go to state 125
-    simple  go to state 85
-    NUM  go to state 87
-    NAME  go to state 88
-
-
-State 93
-
-    8 expr: expr `^` • expr
-
-    HEX  shift, and go to state 75
-    DEC  shift, and go to state 76
-    REAL  shift, and go to state 77
-    ID  shift, and go to state 78
-    `(`  shift, and go to state 79
-    `+`  shift, and go to state 80
-    `-`  shift, and go to state 81
-    `*`  shift, and go to state 82
-    `/`  shift, and go to state 83
-
-    expr  go to state 126
-    simple  go to state 85
-    NUM  go to state 87
-    NAME  go to state 88
-
-
-State 94
+State 86
 
    21 simple: `(` error • `)`
 
-    `)`  shift, and go to state 127
+    `)`  shift, and go to state 117
 
 
-State 95
+State 87
 
-    8 expr: expr • `^` expr
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   12      | expr • `-` expr
+    9 expr: expr • `^` expr
+   10      | expr • `*` expr
+   11      | expr • `+` expr
+   12      | expr • `/` expr
+   13      | expr • `-` expr
    20 simple: `(` expr • `)`
 
-    `)`  shift, and go to state 128
-    `+`  shift, and go to state 70
-    `-`  shift, and go to state 71
-    `*`  shift, and go to state 72
-    `/`  shift, and go to state 73
-    `^`  shift, and go to state 74
+    `)`  shift, and go to state 118
+    `+`  shift, and go to state 67
+    `-`  shift, and go to state 68
+    `*`  shift, and go to state 69
+    `/`  shift, and go to state 70
+    `^`  shift, and go to state 71
 
 
-State 96
+State 88
 
-   15 expr: `+` `(` • expressions `)`
+   16 expr: `+` `(` • expressions `)`
 
-    HEX  shift, and go to state 75
-    DEC  shift, and go to state 76
-    REAL  shift, and go to state 77
-    ID  shift, and go to state 78
-    `(`  shift, and go to state 79
-    `+`  shift, and go to state 80
-    `-`  shift, and go to state 81
-    `*`  shift, and go to state 82
-    `/`  shift, and go to state 83
+    HEX  shift, and go to state 72
+    DEC  shift, and go to state 73
+    REAL  shift, and go to state 74
+    ID  shift, and go to state 75
+    `(`  shift, and go to state 76
+    `+`  shift, and go to state 77
+    `-`  shift, and go to state 78
+    `*`  shift, and go to state 79
+    `/`  shift, and go to state 80
 
-    expr  go to state 84
-    simple  go to state 85
-    expressions  go to state 129
-    exprs  go to state 86
-    NUM  go to state 87
-    NAME  go to state 88
+    expr  go to state 81
+    simple  go to state 82
+    expressions  go to state 119
+    exprs  go to state 83
+    NUM  go to state 84
+    NAME  go to state 85
 
 
-State 97
+State 89
 
    28 NAME: ID •
 
@@ -1573,44 +1410,19 @@ State 97
     `^`  reduce using rule 28 (NAME)
 
 
-State 98
+State 90
 
-   17 expr: `-` `(` • expressions `)`
-   20 simple: `(` • expr `)`
-   21      | `(` • error `)`
+    7 expr: `-` simple •
 
-    error  shift, and go to state 94
-    HEX  shift, and go to state 75
-    DEC  shift, and go to state 76
-    REAL  shift, and go to state 77
-    ID  shift, and go to state 78
-    `(`  shift, and go to state 79
-    `+`  shift, and go to state 80
-    `-`  shift, and go to state 81
-    `*`  shift, and go to state 82
-    `/`  shift, and go to state 83
-
-    expr  go to state 130
-    simple  go to state 85
-    expressions  go to state 131
-    exprs  go to state 86
-    NUM  go to state 87
-    NAME  go to state 88
+    `)`  reduce using rule 7 (expr)
+    `+`  reduce using rule 7 (expr)
+    `-`  reduce using rule 7 (expr)
+    `*`  reduce using rule 7 (expr)
+    `/`  reduce using rule 7 (expr)
+    `^`  reduce using rule 7 (expr)
 
 
-State 99
-
-    6 expr: `-` simple •
-
-    `)`  reduce using rule 6 (expr)
-    `+`  reduce using rule 6 (expr)
-    `-`  reduce using rule 6 (expr)
-    `*`  reduce using rule 6 (expr)
-    `/`  reduce using rule 6 (expr)
-    `^`  reduce using rule 6 (expr)
-
-
-State 100
+State 91
 
    18 simple: NAME •
 
@@ -1622,138 +1434,174 @@ State 100
     `^`  reduce using rule 18 (simple)
 
 
-State 101
+State 92
 
-   14 expr: `*` `(` • expressions `)`
+   15 expr: `*` `(` • expressions `)`
 
-    HEX  shift, and go to state 75
-    DEC  shift, and go to state 76
-    REAL  shift, and go to state 77
-    ID  shift, and go to state 78
-    `(`  shift, and go to state 79
-    `+`  shift, and go to state 80
-    `-`  shift, and go to state 81
-    `*`  shift, and go to state 82
-    `/`  shift, and go to state 83
+    HEX  shift, and go to state 72
+    DEC  shift, and go to state 73
+    REAL  shift, and go to state 74
+    ID  shift, and go to state 75
+    `(`  shift, and go to state 76
+    `+`  shift, and go to state 77
+    `-`  shift, and go to state 78
+    `*`  shift, and go to state 79
+    `/`  shift, and go to state 80
 
-    expr  go to state 84
-    simple  go to state 85
-    expressions  go to state 132
-    exprs  go to state 86
-    NUM  go to state 87
-    NAME  go to state 88
-
-
-State 102
-
-   16 expr: `/` `(` • expressions `)`
-
-    HEX  shift, and go to state 75
-    DEC  shift, and go to state 76
-    REAL  shift, and go to state 77
-    ID  shift, and go to state 78
-    `(`  shift, and go to state 79
-    `+`  shift, and go to state 80
-    `-`  shift, and go to state 81
-    `*`  shift, and go to state 82
-    `/`  shift, and go to state 83
-
-    expr  go to state 84
-    simple  go to state 85
-    expressions  go to state 133
-    exprs  go to state 86
-    NUM  go to state 87
-    NAME  go to state 88
+    expr  go to state 81
+    simple  go to state 82
+    expressions  go to state 120
+    exprs  go to state 83
+    NUM  go to state 84
+    NAME  go to state 85
 
 
-State 103
+State 93
 
-   13 expr: NAME `(` • expressions `)`
+   17 expr: `/` `(` • expressions `)`
 
-    HEX  shift, and go to state 75
-    DEC  shift, and go to state 76
-    REAL  shift, and go to state 77
-    ID  shift, and go to state 78
-    `(`  shift, and go to state 79
-    `+`  shift, and go to state 80
-    `-`  shift, and go to state 81
-    `*`  shift, and go to state 82
-    `/`  shift, and go to state 83
+    HEX  shift, and go to state 72
+    DEC  shift, and go to state 73
+    REAL  shift, and go to state 74
+    ID  shift, and go to state 75
+    `(`  shift, and go to state 76
+    `+`  shift, and go to state 77
+    `-`  shift, and go to state 78
+    `*`  shift, and go to state 79
+    `/`  shift, and go to state 80
 
-    expr  go to state 84
-    simple  go to state 85
-    expressions  go to state 134
-    exprs  go to state 86
-    NUM  go to state 87
-    NAME  go to state 88
-
-
-State 104
-
-    7 expr: NAME `=` • expr
-
-    HEX  shift, and go to state 57
-    DEC  shift, and go to state 58
-    REAL  shift, and go to state 59
-    ID  shift, and go to state 60
-    `(`  shift, and go to state 61
-    `+`  shift, and go to state 62
-    `-`  shift, and go to state 63
-    `*`  shift, and go to state 64
-    `/`  shift, and go to state 65
-
-    expr  go to state 135
-    simple  go to state 66
-    NUM  go to state 67
-    NAME  go to state 68
+    expr  go to state 81
+    simple  go to state 82
+    expressions  go to state 121
+    exprs  go to state 83
+    NUM  go to state 84
+    NAME  go to state 85
 
 
-State 105
+State 94
 
-    8 expr: expr • `^` expr
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   10      | expr `+` expr •
-   11      | expr • `/` expr
-   12      | expr • `-` expr
+   14 expr: NAME `(` • expressions `)`
 
-    `*`  shift, and go to state 72
-    `/`  shift, and go to state 73
-    `^`  shift, and go to state 74
+    HEX  shift, and go to state 72
+    DEC  shift, and go to state 73
+    REAL  shift, and go to state 74
+    ID  shift, and go to state 75
+    `(`  shift, and go to state 76
+    `+`  shift, and go to state 77
+    `-`  shift, and go to state 78
+    `*`  shift, and go to state 79
+    `/`  shift, and go to state 80
+
+    expr  go to state 81
+    simple  go to state 82
+    expressions  go to state 122
+    exprs  go to state 83
+    NUM  go to state 84
+    NAME  go to state 85
+
+
+State 95
+
+    8 expr: NAME `=` • expr
+
+    HEX  shift, and go to state 54
+    DEC  shift, and go to state 55
+    REAL  shift, and go to state 56
+    ID  shift, and go to state 57
+    `(`  shift, and go to state 58
+    `+`  shift, and go to state 59
+    `-`  shift, and go to state 60
+    `*`  shift, and go to state 61
+    `/`  shift, and go to state 62
+
+    expr  go to state 123
+    simple  go to state 63
+    NUM  go to state 64
+    NAME  go to state 65
+
+
+State 96
+
+    9 expr: expr • `^` expr
+   10      | expr • `*` expr
+   11      | expr • `+` expr
+   11      | expr `+` expr •
+   12      | expr • `/` expr
+   13      | expr • `-` expr
+
+    `*`  shift, and go to state 69
+    `/`  shift, and go to state 70
+    `^`  shift, and go to state 71
+
+    `)`  reduce using rule 11 (expr)
+    `+`  reduce using rule 11 (expr)
+    `-`  reduce using rule 11 (expr)
+
+
+State 97
+
+    9 expr: expr • `^` expr
+   10      | expr • `*` expr
+   11      | expr • `+` expr
+   12      | expr • `/` expr
+   13      | expr • `-` expr
+   13      | expr `-` expr •
+
+    `*`  shift, and go to state 69
+    `/`  shift, and go to state 70
+    `^`  shift, and go to state 71
+
+    `)`  reduce using rule 13 (expr)
+    `+`  reduce using rule 13 (expr)
+    `-`  reduce using rule 13 (expr)
+
+
+State 98
+
+    9 expr: expr • `^` expr
+   10      | expr • `*` expr
+   10      | expr `*` expr •
+   11      | expr • `+` expr
+   12      | expr • `/` expr
+   13      | expr • `-` expr
+
+    `^`  shift, and go to state 71
 
     `)`  reduce using rule 10 (expr)
     `+`  reduce using rule 10 (expr)
     `-`  reduce using rule 10 (expr)
+    `*`  reduce using rule 10 (expr)
+    `/`  reduce using rule 10 (expr)
 
 
-State 106
+State 99
 
-    8 expr: expr • `^` expr
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   12      | expr • `-` expr
-   12      | expr `-` expr •
+    9 expr: expr • `^` expr
+   10      | expr • `*` expr
+   11      | expr • `+` expr
+   12      | expr • `/` expr
+   12      | expr `/` expr •
+   13      | expr • `-` expr
 
-    `*`  shift, and go to state 72
-    `/`  shift, and go to state 73
-    `^`  shift, and go to state 74
+    `^`  shift, and go to state 71
 
     `)`  reduce using rule 12 (expr)
     `+`  reduce using rule 12 (expr)
     `-`  reduce using rule 12 (expr)
+    `*`  reduce using rule 12 (expr)
+    `/`  reduce using rule 12 (expr)
 
 
-State 107
+State 100
 
-    8 expr: expr • `^` expr
-    9      | expr • `*` expr
-    9      | expr `*` expr •
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   12      | expr • `-` expr
+    9 expr: expr • `^` expr
+    9      | expr `^` expr •
+   10      | expr • `*` expr
+   11      | expr • `+` expr
+   12      | expr • `/` expr
+   13      | expr • `-` expr
 
-    `^`  shift, and go to state 74
+    `^`  shift, and go to state 71
 
     `)`  reduce using rule 9 (expr)
     `+`  reduce using rule 9 (expr)
@@ -1762,89 +1610,53 @@ State 107
     `/`  reduce using rule 9 (expr)
 
 
-State 108
-
-    8 expr: expr • `^` expr
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   11      | expr `/` expr •
-   12      | expr • `-` expr
-
-    `^`  shift, and go to state 74
-
-    `)`  reduce using rule 11 (expr)
-    `+`  reduce using rule 11 (expr)
-    `-`  reduce using rule 11 (expr)
-    `*`  reduce using rule 11 (expr)
-    `/`  reduce using rule 11 (expr)
-
-
-State 109
-
-    8 expr: expr • `^` expr
-    8      | expr `^` expr •
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   12      | expr • `-` expr
-
-    `^`  shift, and go to state 74
-
-    `)`  reduce using rule 8 (expr)
-    `+`  reduce using rule 8 (expr)
-    `-`  reduce using rule 8 (expr)
-    `*`  reduce using rule 8 (expr)
-    `/`  reduce using rule 8 (expr)
-
-
-State 110
+State 101
 
    21 simple: `(` error • `)`
 
-    `)`  shift, and go to state 136
+    `)`  shift, and go to state 124
 
 
-State 111
+State 102
 
-    8 expr: expr • `^` expr
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   12      | expr • `-` expr
+    9 expr: expr • `^` expr
+   10      | expr • `*` expr
+   11      | expr • `+` expr
+   12      | expr • `/` expr
+   13      | expr • `-` expr
    20 simple: `(` expr • `)`
 
-    `)`  shift, and go to state 137
-    `+`  shift, and go to state 70
-    `-`  shift, and go to state 71
-    `*`  shift, and go to state 72
-    `/`  shift, and go to state 73
-    `^`  shift, and go to state 74
+    `)`  shift, and go to state 125
+    `+`  shift, and go to state 67
+    `-`  shift, and go to state 68
+    `*`  shift, and go to state 69
+    `/`  shift, and go to state 70
+    `^`  shift, and go to state 71
 
 
-State 112
+State 103
 
-   15 expr: `+` `(` • expressions `)`
+   16 expr: `+` `(` • expressions `)`
 
-    HEX  shift, and go to state 75
-    DEC  shift, and go to state 76
-    REAL  shift, and go to state 77
-    ID  shift, and go to state 78
-    `(`  shift, and go to state 79
-    `+`  shift, and go to state 80
-    `-`  shift, and go to state 81
-    `*`  shift, and go to state 82
-    `/`  shift, and go to state 83
+    HEX  shift, and go to state 72
+    DEC  shift, and go to state 73
+    REAL  shift, and go to state 74
+    ID  shift, and go to state 75
+    `(`  shift, and go to state 76
+    `+`  shift, and go to state 77
+    `-`  shift, and go to state 78
+    `*`  shift, and go to state 79
+    `/`  shift, and go to state 80
 
-    expr  go to state 84
-    simple  go to state 85
-    expressions  go to state 138
-    exprs  go to state 86
-    NUM  go to state 87
-    NAME  go to state 88
+    expr  go to state 81
+    simple  go to state 82
+    expressions  go to state 126
+    exprs  go to state 83
+    NUM  go to state 84
+    NAME  go to state 85
 
 
-State 113
+State 104
 
    28 NAME: ID •
 
@@ -1857,45 +1669,20 @@ State 113
     `^`  reduce using rule 28 (NAME)
 
 
-State 114
+State 105
 
-   17 expr: `-` `(` • expressions `)`
-   20 simple: `(` • expr `)`
-   21      | `(` • error `)`
+    7 expr: `-` simple •
 
-    error  shift, and go to state 110
-    HEX  shift, and go to state 75
-    DEC  shift, and go to state 76
-    REAL  shift, and go to state 77
-    ID  shift, and go to state 78
-    `(`  shift, and go to state 79
-    `+`  shift, and go to state 80
-    `-`  shift, and go to state 81
-    `*`  shift, and go to state 82
-    `/`  shift, and go to state 83
-
-    expr  go to state 139
-    simple  go to state 85
-    expressions  go to state 140
-    exprs  go to state 86
-    NUM  go to state 87
-    NAME  go to state 88
+    `)`  reduce using rule 7 (expr)
+    `,`  reduce using rule 7 (expr)
+    `+`  reduce using rule 7 (expr)
+    `-`  reduce using rule 7 (expr)
+    `*`  reduce using rule 7 (expr)
+    `/`  reduce using rule 7 (expr)
+    `^`  reduce using rule 7 (expr)
 
 
-State 115
-
-    6 expr: `-` simple •
-
-    `)`  reduce using rule 6 (expr)
-    `,`  reduce using rule 6 (expr)
-    `+`  reduce using rule 6 (expr)
-    `-`  reduce using rule 6 (expr)
-    `*`  reduce using rule 6 (expr)
-    `/`  reduce using rule 6 (expr)
-    `^`  reduce using rule 6 (expr)
-
-
-State 116
+State 106
 
    18 simple: NAME •
 
@@ -1908,208 +1695,213 @@ State 116
     `^`  reduce using rule 18 (simple)
 
 
-State 117
+State 107
 
-   14 expr: `*` `(` • expressions `)`
+   15 expr: `*` `(` • expressions `)`
 
-    HEX  shift, and go to state 75
-    DEC  shift, and go to state 76
-    REAL  shift, and go to state 77
-    ID  shift, and go to state 78
-    `(`  shift, and go to state 79
-    `+`  shift, and go to state 80
-    `-`  shift, and go to state 81
-    `*`  shift, and go to state 82
-    `/`  shift, and go to state 83
+    HEX  shift, and go to state 72
+    DEC  shift, and go to state 73
+    REAL  shift, and go to state 74
+    ID  shift, and go to state 75
+    `(`  shift, and go to state 76
+    `+`  shift, and go to state 77
+    `-`  shift, and go to state 78
+    `*`  shift, and go to state 79
+    `/`  shift, and go to state 80
 
-    expr  go to state 84
-    simple  go to state 85
-    expressions  go to state 141
-    exprs  go to state 86
-    NUM  go to state 87
-    NAME  go to state 88
-
-
-State 118
-
-   16 expr: `/` `(` • expressions `)`
-
-    HEX  shift, and go to state 75
-    DEC  shift, and go to state 76
-    REAL  shift, and go to state 77
-    ID  shift, and go to state 78
-    `(`  shift, and go to state 79
-    `+`  shift, and go to state 80
-    `-`  shift, and go to state 81
-    `*`  shift, and go to state 82
-    `/`  shift, and go to state 83
-
-    expr  go to state 84
-    simple  go to state 85
-    expressions  go to state 142
-    exprs  go to state 86
-    NUM  go to state 87
-    NAME  go to state 88
+    expr  go to state 81
+    simple  go to state 82
+    expressions  go to state 127
+    exprs  go to state 83
+    NUM  go to state 84
+    NAME  go to state 85
 
 
-State 119
+State 108
+
+   17 expr: `/` `(` • expressions `)`
+
+    HEX  shift, and go to state 72
+    DEC  shift, and go to state 73
+    REAL  shift, and go to state 74
+    ID  shift, and go to state 75
+    `(`  shift, and go to state 76
+    `+`  shift, and go to state 77
+    `-`  shift, and go to state 78
+    `*`  shift, and go to state 79
+    `/`  shift, and go to state 80
+
+    expr  go to state 81
+    simple  go to state 82
+    expressions  go to state 128
+    exprs  go to state 83
+    NUM  go to state 84
+    NAME  go to state 85
+
+
+State 109
+
+   11 expr: expr `+` • expr
+
+    HEX  shift, and go to state 72
+    DEC  shift, and go to state 73
+    REAL  shift, and go to state 74
+    ID  shift, and go to state 75
+    `(`  shift, and go to state 76
+    `+`  shift, and go to state 77
+    `-`  shift, and go to state 78
+    `*`  shift, and go to state 79
+    `/`  shift, and go to state 80
+
+    expr  go to state 129
+    simple  go to state 82
+    NUM  go to state 84
+    NAME  go to state 85
+
+
+State 110
+
+   13 expr: expr `-` • expr
+
+    HEX  shift, and go to state 72
+    DEC  shift, and go to state 73
+    REAL  shift, and go to state 74
+    ID  shift, and go to state 75
+    `(`  shift, and go to state 76
+    `+`  shift, and go to state 77
+    `-`  shift, and go to state 78
+    `*`  shift, and go to state 79
+    `/`  shift, and go to state 80
+
+    expr  go to state 130
+    simple  go to state 82
+    NUM  go to state 84
+    NAME  go to state 85
+
+
+State 111
+
+   10 expr: expr `*` • expr
+
+    HEX  shift, and go to state 72
+    DEC  shift, and go to state 73
+    REAL  shift, and go to state 74
+    ID  shift, and go to state 75
+    `(`  shift, and go to state 76
+    `+`  shift, and go to state 77
+    `-`  shift, and go to state 78
+    `*`  shift, and go to state 79
+    `/`  shift, and go to state 80
+
+    expr  go to state 131
+    simple  go to state 82
+    NUM  go to state 84
+    NAME  go to state 85
+
+
+State 112
+
+   12 expr: expr `/` • expr
+
+    HEX  shift, and go to state 72
+    DEC  shift, and go to state 73
+    REAL  shift, and go to state 74
+    ID  shift, and go to state 75
+    `(`  shift, and go to state 76
+    `+`  shift, and go to state 77
+    `-`  shift, and go to state 78
+    `*`  shift, and go to state 79
+    `/`  shift, and go to state 80
+
+    expr  go to state 132
+    simple  go to state 82
+    NUM  go to state 84
+    NAME  go to state 85
+
+
+State 113
+
+    9 expr: expr `^` • expr
+
+    HEX  shift, and go to state 72
+    DEC  shift, and go to state 73
+    REAL  shift, and go to state 74
+    ID  shift, and go to state 75
+    `(`  shift, and go to state 76
+    `+`  shift, and go to state 77
+    `-`  shift, and go to state 78
+    `*`  shift, and go to state 79
+    `/`  shift, and go to state 80
+
+    expr  go to state 133
+    simple  go to state 82
+    NUM  go to state 84
+    NAME  go to state 85
+
+
+State 114
 
    24 exprs: exprs `,` • expr
 
-    HEX  shift, and go to state 75
-    DEC  shift, and go to state 76
-    REAL  shift, and go to state 77
-    ID  shift, and go to state 78
-    `(`  shift, and go to state 79
-    `+`  shift, and go to state 80
-    `-`  shift, and go to state 81
-    `*`  shift, and go to state 82
-    `/`  shift, and go to state 83
+    HEX  shift, and go to state 72
+    DEC  shift, and go to state 73
+    REAL  shift, and go to state 74
+    ID  shift, and go to state 75
+    `(`  shift, and go to state 76
+    `+`  shift, and go to state 77
+    `-`  shift, and go to state 78
+    `*`  shift, and go to state 79
+    `/`  shift, and go to state 80
 
-    expr  go to state 143
-    simple  go to state 85
-    NUM  go to state 87
-    NAME  go to state 88
-
-
-State 120
-
-   13 expr: NAME `(` • expressions `)`
-
-    HEX  shift, and go to state 75
-    DEC  shift, and go to state 76
-    REAL  shift, and go to state 77
-    ID  shift, and go to state 78
-    `(`  shift, and go to state 79
-    `+`  shift, and go to state 80
-    `-`  shift, and go to state 81
-    `*`  shift, and go to state 82
-    `/`  shift, and go to state 83
-
-    expr  go to state 84
-    simple  go to state 85
-    expressions  go to state 144
-    exprs  go to state 86
-    NUM  go to state 87
-    NAME  go to state 88
+    expr  go to state 134
+    simple  go to state 82
+    NUM  go to state 84
+    NAME  go to state 85
 
 
-State 121
+State 115
 
-    7 expr: NAME `=` • expr
+   14 expr: NAME `(` • expressions `)`
 
-    HEX  shift, and go to state 75
-    DEC  shift, and go to state 76
-    REAL  shift, and go to state 77
-    ID  shift, and go to state 78
-    `(`  shift, and go to state 79
-    `+`  shift, and go to state 80
-    `-`  shift, and go to state 81
-    `*`  shift, and go to state 82
-    `/`  shift, and go to state 83
+    HEX  shift, and go to state 72
+    DEC  shift, and go to state 73
+    REAL  shift, and go to state 74
+    ID  shift, and go to state 75
+    `(`  shift, and go to state 76
+    `+`  shift, and go to state 77
+    `-`  shift, and go to state 78
+    `*`  shift, and go to state 79
+    `/`  shift, and go to state 80
 
-    expr  go to state 145
-    simple  go to state 85
-    NUM  go to state 87
-    NAME  go to state 88
-
-
-State 122
-
-    8 expr: expr • `^` expr
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   10      | expr `+` expr •
-   11      | expr • `/` expr
-   12      | expr • `-` expr
-
-    `*`  shift, and go to state 91
-    `/`  shift, and go to state 92
-    `^`  shift, and go to state 93
-
-    `)`  reduce using rule 10 (expr)
-    `,`  reduce using rule 10 (expr)
-    `+`  reduce using rule 10 (expr)
-    `-`  reduce using rule 10 (expr)
+    expr  go to state 81
+    simple  go to state 82
+    expressions  go to state 135
+    exprs  go to state 83
+    NUM  go to state 84
+    NAME  go to state 85
 
 
-State 123
+State 116
 
-    8 expr: expr • `^` expr
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   12      | expr • `-` expr
-   12      | expr `-` expr •
+    8 expr: NAME `=` • expr
 
-    `*`  shift, and go to state 91
-    `/`  shift, and go to state 92
-    `^`  shift, and go to state 93
+    HEX  shift, and go to state 72
+    DEC  shift, and go to state 73
+    REAL  shift, and go to state 74
+    ID  shift, and go to state 75
+    `(`  shift, and go to state 76
+    `+`  shift, and go to state 77
+    `-`  shift, and go to state 78
+    `*`  shift, and go to state 79
+    `/`  shift, and go to state 80
 
-    `)`  reduce using rule 12 (expr)
-    `,`  reduce using rule 12 (expr)
-    `+`  reduce using rule 12 (expr)
-    `-`  reduce using rule 12 (expr)
-
-
-State 124
-
-    8 expr: expr • `^` expr
-    9      | expr • `*` expr
-    9      | expr `*` expr •
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   12      | expr • `-` expr
-
-    `^`  shift, and go to state 93
-
-    `)`  reduce using rule 9 (expr)
-    `,`  reduce using rule 9 (expr)
-    `+`  reduce using rule 9 (expr)
-    `-`  reduce using rule 9 (expr)
-    `*`  reduce using rule 9 (expr)
-    `/`  reduce using rule 9 (expr)
+    expr  go to state 136
+    simple  go to state 82
+    NUM  go to state 84
+    NAME  go to state 85
 
 
-State 125
-
-    8 expr: expr • `^` expr
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   11      | expr `/` expr •
-   12      | expr • `-` expr
-
-    `^`  shift, and go to state 93
-
-    `)`  reduce using rule 11 (expr)
-    `,`  reduce using rule 11 (expr)
-    `+`  reduce using rule 11 (expr)
-    `-`  reduce using rule 11 (expr)
-    `*`  reduce using rule 11 (expr)
-    `/`  reduce using rule 11 (expr)
-
-
-State 126
-
-    8 expr: expr • `^` expr
-    8      | expr `^` expr •
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   12      | expr • `-` expr
-
-    `^`  shift, and go to state 93
-
-    `)`  reduce using rule 8 (expr)
-    `,`  reduce using rule 8 (expr)
-    `+`  reduce using rule 8 (expr)
-    `-`  reduce using rule 8 (expr)
-    `*`  reduce using rule 8 (expr)
-    `/`  reduce using rule 8 (expr)
-
-
-State 127
+State 117
 
    21 simple: `(` error `)` •
 
@@ -2121,7 +1913,7 @@ State 127
     `^`  reduce using rule 21 (simple)
 
 
-State 128
+State 118
 
    20 simple: `(` expr `)` •
 
@@ -2133,81 +1925,53 @@ State 128
     `^`  reduce using rule 20 (simple)
 
 
-State 129
+State 119
 
-   15 expr: `+` `(` expressions • `)`
+   16 expr: `+` `(` expressions • `)`
 
-    `)`  shift, and go to state 146
-
-
-State 130
-
-    8 expr: expr • `^` expr
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   12      | expr • `-` expr
-   20 simple: `(` expr • `)`
-   23 exprs: expr •
-
-    `)`  shift, and go to state 128
-    `+`  shift, and go to state 89
-    `-`  shift, and go to state 90
-    `*`  shift, and go to state 91
-    `/`  shift, and go to state 92
-    `^`  shift, and go to state 93
-
-    `)`  [reduce using rule 23 (exprs)]
-    `,`  reduce using rule 23 (exprs)
+    `)`  shift, and go to state 137
 
 
-State 131
+State 120
 
-   17 expr: `-` `(` expressions • `)`
+   15 expr: `*` `(` expressions • `)`
 
-    `)`  shift, and go to state 147
-
-
-State 132
-
-   14 expr: `*` `(` expressions • `)`
-
-    `)`  shift, and go to state 148
+    `)`  shift, and go to state 138
 
 
-State 133
+State 121
 
-   16 expr: `/` `(` expressions • `)`
+   17 expr: `/` `(` expressions • `)`
 
-    `)`  shift, and go to state 149
-
-
-State 134
-
-   13 expr: NAME `(` expressions • `)`
-
-    `)`  shift, and go to state 150
+    `)`  shift, and go to state 139
 
 
-State 135
+State 122
 
-    7 expr: NAME `=` expr •
-    8      | expr • `^` expr
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   12      | expr • `-` expr
+   14 expr: NAME `(` expressions • `)`
 
-    `+`  shift, and go to state 70
-    `-`  shift, and go to state 71
-    `*`  shift, and go to state 72
-    `/`  shift, and go to state 73
-    `^`  shift, and go to state 74
-
-    `)`  reduce using rule 7 (expr)
+    `)`  shift, and go to state 140
 
 
-State 136
+State 123
+
+    8 expr: NAME `=` expr •
+    9      | expr • `^` expr
+   10      | expr • `*` expr
+   11      | expr • `+` expr
+   12      | expr • `/` expr
+   13      | expr • `-` expr
+
+    `+`  shift, and go to state 67
+    `-`  shift, and go to state 68
+    `*`  shift, and go to state 69
+    `/`  shift, and go to state 70
+    `^`  shift, and go to state 71
+
+    `)`  reduce using rule 8 (expr)
+
+
+State 124
 
    21 simple: `(` error `)` •
 
@@ -2220,7 +1984,7 @@ State 136
     `^`  reduce using rule 21 (simple)
 
 
-State 137
+State 125
 
    20 simple: `(` expr `)` •
 
@@ -2233,139 +1997,170 @@ State 137
     `^`  reduce using rule 20 (simple)
 
 
-State 138
+State 126
 
-   15 expr: `+` `(` expressions • `)`
+   16 expr: `+` `(` expressions • `)`
 
-    `)`  shift, and go to state 151
-
-
-State 139
-
-    8 expr: expr • `^` expr
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   12      | expr • `-` expr
-   20 simple: `(` expr • `)`
-   23 exprs: expr •
-
-    `)`  shift, and go to state 137
-    `+`  shift, and go to state 89
-    `-`  shift, and go to state 90
-    `*`  shift, and go to state 91
-    `/`  shift, and go to state 92
-    `^`  shift, and go to state 93
-
-    `)`  [reduce using rule 23 (exprs)]
-    `,`  reduce using rule 23 (exprs)
+    `)`  shift, and go to state 141
 
 
-State 140
+State 127
 
-   17 expr: `-` `(` expressions • `)`
+   15 expr: `*` `(` expressions • `)`
 
-    `)`  shift, and go to state 152
-
-
-State 141
-
-   14 expr: `*` `(` expressions • `)`
-
-    `)`  shift, and go to state 153
+    `)`  shift, and go to state 142
 
 
-State 142
+State 128
 
-   16 expr: `/` `(` expressions • `)`
+   17 expr: `/` `(` expressions • `)`
 
-    `)`  shift, and go to state 154
+    `)`  shift, and go to state 143
 
 
-State 143
+State 129
 
-    8 expr: expr • `^` expr
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   12      | expr • `-` expr
+    9 expr: expr • `^` expr
+   10      | expr • `*` expr
+   11      | expr • `+` expr
+   11      | expr `+` expr •
+   12      | expr • `/` expr
+   13      | expr • `-` expr
+
+    `*`  shift, and go to state 111
+    `/`  shift, and go to state 112
+    `^`  shift, and go to state 113
+
+    `)`  reduce using rule 11 (expr)
+    `,`  reduce using rule 11 (expr)
+    `+`  reduce using rule 11 (expr)
+    `-`  reduce using rule 11 (expr)
+
+
+State 130
+
+    9 expr: expr • `^` expr
+   10      | expr • `*` expr
+   11      | expr • `+` expr
+   12      | expr • `/` expr
+   13      | expr • `-` expr
+   13      | expr `-` expr •
+
+    `*`  shift, and go to state 111
+    `/`  shift, and go to state 112
+    `^`  shift, and go to state 113
+
+    `)`  reduce using rule 13 (expr)
+    `,`  reduce using rule 13 (expr)
+    `+`  reduce using rule 13 (expr)
+    `-`  reduce using rule 13 (expr)
+
+
+State 131
+
+    9 expr: expr • `^` expr
+   10      | expr • `*` expr
+   10      | expr `*` expr •
+   11      | expr • `+` expr
+   12      | expr • `/` expr
+   13      | expr • `-` expr
+
+    `^`  shift, and go to state 113
+
+    `)`  reduce using rule 10 (expr)
+    `,`  reduce using rule 10 (expr)
+    `+`  reduce using rule 10 (expr)
+    `-`  reduce using rule 10 (expr)
+    `*`  reduce using rule 10 (expr)
+    `/`  reduce using rule 10 (expr)
+
+
+State 132
+
+    9 expr: expr • `^` expr
+   10      | expr • `*` expr
+   11      | expr • `+` expr
+   12      | expr • `/` expr
+   12      | expr `/` expr •
+   13      | expr • `-` expr
+
+    `^`  shift, and go to state 113
+
+    `)`  reduce using rule 12 (expr)
+    `,`  reduce using rule 12 (expr)
+    `+`  reduce using rule 12 (expr)
+    `-`  reduce using rule 12 (expr)
+    `*`  reduce using rule 12 (expr)
+    `/`  reduce using rule 12 (expr)
+
+
+State 133
+
+    9 expr: expr • `^` expr
+    9      | expr `^` expr •
+   10      | expr • `*` expr
+   11      | expr • `+` expr
+   12      | expr • `/` expr
+   13      | expr • `-` expr
+
+    `^`  shift, and go to state 113
+
+    `)`  reduce using rule 9 (expr)
+    `,`  reduce using rule 9 (expr)
+    `+`  reduce using rule 9 (expr)
+    `-`  reduce using rule 9 (expr)
+    `*`  reduce using rule 9 (expr)
+    `/`  reduce using rule 9 (expr)
+
+
+State 134
+
+    9 expr: expr • `^` expr
+   10      | expr • `*` expr
+   11      | expr • `+` expr
+   12      | expr • `/` expr
+   13      | expr • `-` expr
    24 exprs: exprs `,` expr •
 
-    `+`  shift, and go to state 89
-    `-`  shift, and go to state 90
-    `*`  shift, and go to state 91
-    `/`  shift, and go to state 92
-    `^`  shift, and go to state 93
+    `+`  shift, and go to state 109
+    `-`  shift, and go to state 110
+    `*`  shift, and go to state 111
+    `/`  shift, and go to state 112
+    `^`  shift, and go to state 113
 
     `)`  reduce using rule 24 (exprs)
     `,`  reduce using rule 24 (exprs)
 
 
-State 144
+State 135
 
-   13 expr: NAME `(` expressions • `)`
+   14 expr: NAME `(` expressions • `)`
 
-    `)`  shift, and go to state 155
-
-
-State 145
-
-    7 expr: NAME `=` expr •
-    8      | expr • `^` expr
-    9      | expr • `*` expr
-   10      | expr • `+` expr
-   11      | expr • `/` expr
-   12      | expr • `-` expr
-
-    `+`  shift, and go to state 89
-    `-`  shift, and go to state 90
-    `*`  shift, and go to state 91
-    `/`  shift, and go to state 92
-    `^`  shift, and go to state 93
-
-    `)`  reduce using rule 7 (expr)
-    `,`  reduce using rule 7 (expr)
+    `)`  shift, and go to state 144
 
 
-State 146
+State 136
 
-   15 expr: `+` `(` expressions `)` •
+    8 expr: NAME `=` expr •
+    9      | expr • `^` expr
+   10      | expr • `*` expr
+   11      | expr • `+` expr
+   12      | expr • `/` expr
+   13      | expr • `-` expr
 
-    `)`  reduce using rule 15 (expr)
-    `+`  reduce using rule 15 (expr)
-    `-`  reduce using rule 15 (expr)
-    `*`  reduce using rule 15 (expr)
-    `/`  reduce using rule 15 (expr)
-    `^`  reduce using rule 15 (expr)
+    `+`  shift, and go to state 109
+    `-`  shift, and go to state 110
+    `*`  shift, and go to state 111
+    `/`  shift, and go to state 112
+    `^`  shift, and go to state 113
 
-
-State 147
-
-   17 expr: `-` `(` expressions `)` •
-
-    `)`  reduce using rule 17 (expr)
-    `+`  reduce using rule 17 (expr)
-    `-`  reduce using rule 17 (expr)
-    `*`  reduce using rule 17 (expr)
-    `/`  reduce using rule 17 (expr)
-    `^`  reduce using rule 17 (expr)
+    `)`  reduce using rule 8 (expr)
+    `,`  reduce using rule 8 (expr)
 
 
-State 148
+State 137
 
-   14 expr: `*` `(` expressions `)` •
-
-    `)`  reduce using rule 14 (expr)
-    `+`  reduce using rule 14 (expr)
-    `-`  reduce using rule 14 (expr)
-    `*`  reduce using rule 14 (expr)
-    `/`  reduce using rule 14 (expr)
-    `^`  reduce using rule 14 (expr)
-
-
-State 149
-
-   16 expr: `/` `(` expressions `)` •
+   16 expr: `+` `(` expressions `)` •
 
     `)`  reduce using rule 16 (expr)
     `+`  reduce using rule 16 (expr)
@@ -2375,24 +2170,11 @@ State 149
     `^`  reduce using rule 16 (expr)
 
 
-State 150
+State 138
 
-   13 expr: NAME `(` expressions `)` •
-
-    `)`  reduce using rule 13 (expr)
-    `+`  reduce using rule 13 (expr)
-    `-`  reduce using rule 13 (expr)
-    `*`  reduce using rule 13 (expr)
-    `/`  reduce using rule 13 (expr)
-    `^`  reduce using rule 13 (expr)
-
-
-State 151
-
-   15 expr: `+` `(` expressions `)` •
+   15 expr: `*` `(` expressions `)` •
 
     `)`  reduce using rule 15 (expr)
-    `,`  reduce using rule 15 (expr)
     `+`  reduce using rule 15 (expr)
     `-`  reduce using rule 15 (expr)
     `*`  reduce using rule 15 (expr)
@@ -2400,12 +2182,11 @@ State 151
     `^`  reduce using rule 15 (expr)
 
 
-State 152
+State 139
 
-   17 expr: `-` `(` expressions `)` •
+   17 expr: `/` `(` expressions `)` •
 
     `)`  reduce using rule 17 (expr)
-    `,`  reduce using rule 17 (expr)
     `+`  reduce using rule 17 (expr)
     `-`  reduce using rule 17 (expr)
     `*`  reduce using rule 17 (expr)
@@ -2413,12 +2194,11 @@ State 152
     `^`  reduce using rule 17 (expr)
 
 
-State 153
+State 140
 
-   14 expr: `*` `(` expressions `)` •
+   14 expr: NAME `(` expressions `)` •
 
     `)`  reduce using rule 14 (expr)
-    `,`  reduce using rule 14 (expr)
     `+`  reduce using rule 14 (expr)
     `-`  reduce using rule 14 (expr)
     `*`  reduce using rule 14 (expr)
@@ -2426,9 +2206,9 @@ State 153
     `^`  reduce using rule 14 (expr)
 
 
-State 154
+State 141
 
-   16 expr: `/` `(` expressions `)` •
+   16 expr: `+` `(` expressions `)` •
 
     `)`  reduce using rule 16 (expr)
     `,`  reduce using rule 16 (expr)
@@ -2439,14 +2219,40 @@ State 154
     `^`  reduce using rule 16 (expr)
 
 
-State 155
+State 142
 
-   13 expr: NAME `(` expressions `)` •
+   15 expr: `*` `(` expressions `)` •
 
-    `)`  reduce using rule 13 (expr)
-    `,`  reduce using rule 13 (expr)
-    `+`  reduce using rule 13 (expr)
-    `-`  reduce using rule 13 (expr)
-    `*`  reduce using rule 13 (expr)
-    `/`  reduce using rule 13 (expr)
-    `^`  reduce using rule 13 (expr)
+    `)`  reduce using rule 15 (expr)
+    `,`  reduce using rule 15 (expr)
+    `+`  reduce using rule 15 (expr)
+    `-`  reduce using rule 15 (expr)
+    `*`  reduce using rule 15 (expr)
+    `/`  reduce using rule 15 (expr)
+    `^`  reduce using rule 15 (expr)
+
+
+State 143
+
+   17 expr: `/` `(` expressions `)` •
+
+    `)`  reduce using rule 17 (expr)
+    `,`  reduce using rule 17 (expr)
+    `+`  reduce using rule 17 (expr)
+    `-`  reduce using rule 17 (expr)
+    `*`  reduce using rule 17 (expr)
+    `/`  reduce using rule 17 (expr)
+    `^`  reduce using rule 17 (expr)
+
+
+State 144
+
+   14 expr: NAME `(` expressions `)` •
+
+    `)`  reduce using rule 14 (expr)
+    `,`  reduce using rule 14 (expr)
+    `+`  reduce using rule 14 (expr)
+    `-`  reduce using rule 14 (expr)
+    `*`  reduce using rule 14 (expr)
+    `/`  reduce using rule 14 (expr)
+    `^`  reduce using rule 14 (expr)

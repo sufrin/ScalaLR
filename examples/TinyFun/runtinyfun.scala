@@ -7,6 +7,15 @@
 //> using dep org.scala-lang.modules::scala-xml::2.4.0
 
 
+/**
+ *  Top level read-eval-print interpreter for TinyFun.
+ *
+ *  Notice that the top-level parser(s) are reinitialised when a parse error is
+ *  encountered. This is the simplext way of recovering from such errors without
+ *  using the (immature) error-recovery features of the parser.
+ *
+ */
+
 object runtinyfun  {
 
   import java.nio.file.Paths
@@ -31,18 +40,29 @@ object runtinyfun  {
       scala.sys.exit()
     }
 
-    print("Welcome to TinyFun\n> ")
+    println("TinyFun")
     if (push) {
-      val scanner = Scanner(SourceTextCursor(Paths.get(file)))
-      val parser = LRParser.Push[Token](Components)(scanner.sourceLocation)
-      parser.logState = log
-      parser.attemptRecovery = recover
-      var state = parser.start()
-      while (state == LRParser.NEXTSTEP) {
-        //println(parser.mkString)
-        state = parser.step(scanner.next())
+      import LRParser._
+      var state: ParseState = RUNNING
+      while (state == RUNNING) {
+        val scanner = Scanner(SourceTextCursor(Paths.get(file)))
+        val parser = LRParser.Push[Token](Components)(scanner.sourceLocation)
+        parser.logState = log
+        parser.attemptRecovery = recover
+        state = parser.start()
+        scanner.prompt()
+        while (state == LRParser.NEXTSTEP) {
+          //println(parser.mkString)
+          state = parser.step(scanner.next())
+        }
+        state match {
+          case ERRONEOUS(message) =>
+            println(message)
+            state = RUNNING
+          case st: ACCEPTED =>
+          case _ => state = RUNNING
+        }
       }
-
     } else {
       import LRParser._
       var state: ParseState = RUNNING
@@ -51,13 +71,15 @@ object runtinyfun  {
         val parser = LRParser.Pull[Token](Components)(scanner.sourceLocation)
         parser.logState = log
         parser.attemptRecovery = recover
+        scanner.prompt()
         state = parser.run(scanner.next)
         state match {
           case ERRONEOUS(message) =>
             println(message)
-            scanner.flush()
             state = RUNNING
-          case _ => state = RUNNING
+          case st: ACCEPTED =>
+          case _ =>
+            state = RUNNING
         }
       }
     }

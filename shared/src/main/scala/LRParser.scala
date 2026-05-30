@@ -96,7 +96,7 @@ object LRParser {
     def diagnosis(currentInput: Lex, currentState: State): String = {
       val acceptable = for {(symbol, name) <- symbolName if action(currentState)(symbol) != ERROR } yield name
       val oneOf = if (acceptable.size>1) " one of: " else ": "
-      s"Parse error discovered at ${sourceLocation()} ${currentInput} when expecting$oneOf ${acceptable.mkString(" ")}"
+      s"Syntax error at ${sourceLocation()}. ${currentInput} is not$oneOf${acceptable.mkString(" ")}"
     }
 
     /**

@@ -5,28 +5,38 @@
 %tables   lr
 
 %include {
-   import org.sufrin.scalalr.{SourceLocation,ScannerBuilder,Scanner}
-   import org.sufrin.utility.SourceTextCursor
+  import org.sufrin.scalalr.{SourceLocation,ScannerBuilder,Scanner}
+  import org.sufrin.utility.SourceTextCursor
 
-      object Scanner {
-        def apply(chars: SourceTextCursor): Scanner[Token] = new ScannerBuilder[Token](chars) {
-           def mkString(openQuote: String, closeQuote: String, body: Seq[Char]): Token = mkERROR(body)
-           def mkHex(source: Seq[Char]):   Token = HEX(source.mkString)
-           def mkDec(source: Seq[Char]):   Token = DEC(source.mkString)
-           def mkReal(source: Seq[Char]):  Token = REAL(source.mkString)
-           def mkID(source: Seq[Char]):    Token = ID(source.mkString)
-           def mkERROR(source: Seq[Char]): Token = SCANERROR(source.mkString)
-           val ENDSTREAM: Token = $end
-           val NEWLINE:   Option[Token] = Some(NL)
-           def flush(): Unit = {
-               while (chars.hasCurrent && chars.current != '\n') chars.next()
-               print(chars.prompt); System.out.flush()
-           }
-        } withSymbolTokens(symbolToken)
-      }
+  /**
+     `Scanner(chars)` builds a lexical scanner using a `ScannerBuilder`. The implementations of
+     the `mkXXX` functions bridge the fixed lexical categories of the builder, and the `%token`
+     constructors declared here. The `withSymbolTokens(symbolToken)` clause initialises the
+     internal symbol and token tables of the resulting builder.
+  */
+  object Scanner {
+    def apply(chars: SourceTextCursor): Scanner[Token] = new ScannerBuilder[Token](chars) {
+       def mkString(openQuote: String, closeQuote: String, body: Seq[Char]): Token = STRING(s"$openQuote${body.mkString}$closeQuote")
+       def mkHex(source: Seq[Char]):   Token = HEX(source.mkString)
+       def mkDec(source: Seq[Char]):   Token = DEC(source.mkString)
+       def mkReal(source: Seq[Char]):  Token = REAL(source.mkString)
+       def mkID(source: Seq[Char]):    Token = ID(source.mkString)
+       def mkERROR(source: Seq[Char]): Token = SCANERROR(source.mkString)
+       val ENDSTREAM: Token = $end
+       val NEWLINE:   Option[Token] = Some(NL)
+       def flush(): Unit = {
+           while (chars.hasCurrent && chars.current != '\n') chars.next()
+           print(chars.prompt); System.out.flush()
+       }
+       locally {
+         TinyFun.prompt = chars.prompt
+       }
+    } withSymbolTokens(symbolToken)
+  }
+
 }
 
-%token HEX(Seq[Char]) DEC(Seq[Char]) REAL(Seq[Char]) ID(Seq[Char])  `(` `)` `[` `]` `,` SCANERROR(Seq[Char]) NL "QUIT"
+%token HEX(Seq[Char]) DEC(Seq[Char]) REAL(Seq[Char]) ID(Seq[Char])  `(` `)` `[` `]` `,` SCANERROR(Seq[Char]) STRING(Seq[Char]) NL "QUIT"
 %right `=`
 %left `+` `-`
 %left `*` `/`
@@ -59,8 +69,9 @@ loop: Unit =
         | loop command NL { () }
 
 
-command: Unit = expressions   { run($expressions, "> ")  }
-              | "QUIT"        { System.exit(0) }
+command: Unit = expressions   { run($expressions)  }
+              | STRING        { println($STRING)   }
+              | "QUIT"        { System.exit(0)     }
 
 expr: Expr =
           simple                    { $simple }
@@ -75,7 +86,6 @@ expr: Expr =
         | `*`  `(` expressions `)`  { Apply("*", $expressions, $START) }
         | `+`  `(` expressions `)`  { Apply("+", $expressions, $START) }
         | `/`  `(` expressions `)`  { Apply("/", $expressions, $START) }
-        | `-`  `(` expressions `)`  { Apply("-", $expressions, $START) }
 
 simple: Expr =
           NAME                      { Id($NAME, $START) }

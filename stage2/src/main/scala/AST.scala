@@ -114,7 +114,7 @@ object AST {
 
     override def equals(other: Any): Boolean = other match {
       case that: Name =>
-        this.unQuoted == that.unQuoted && this.isQuoted == that.isQuoted  // ignore location
+        this.toString == that.toString // this.unQuoted == that.unQuoted && this.isQuoted == that.isQuoted  // ignore location
       case _ => false
     }
 
@@ -129,7 +129,7 @@ object AST {
     def sourceTypeName: String = theTypeName
     override def equals(other: Any): Boolean = other match {
       case that: TypedTerminal =>
-        this.theName == that.theName
+        this.theName equals that.theName
       case _ => false
     }
   }

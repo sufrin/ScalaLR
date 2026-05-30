@@ -39,7 +39,8 @@ class SymbolTables(notation: Notation) {
   val BISONACCEPT:  List[Name]     = List(Name("$accept", false)) // Injected by Bison as the first non-terminal symbol
   val ALLTERMINALS: List[Name]     = BISONPREDEFINES++declaredTerminalNames
   val ALLDECLARED:  Seq[Name]      = (ALLTERMINALS++BISONACCEPT++declaredNonterminalNames).distinct.toSeq
-  val ALLTYPEDTERMINAL: Seq[TypedTerminal] = declaredTerminals
+  val ALLTYPEDTERMINAL: Seq[TypedTerminal] = declaredTerminals.distinctBy(_.theName)
+
 
   /** Map Name to declared Type */
   val symbolType = mutable.LinkedHashMap[Name, SymbolType]()
@@ -87,7 +88,7 @@ class SymbolTables(notation: Notation) {
       }
     }
 
-    val ambiguousSymbols = declaredTerminalNames.intersect(declaredNonterminalNames).distinct
+    val ambiguousSymbols = declaredTerminalNames.intersect(declaredNonterminalNames)
 
 
     for  { symbol <- usedSymbolNames if !ALLDECLARED.contains(symbol)}
@@ -95,7 +96,8 @@ class SymbolTables(notation: Notation) {
             fatal(s"Undeclared quoted ${symbol.toFullString}") // TODO: autodeclare quoted symbols
          else
             fatal(s"Undeclared ${symbol.toFullString}")
-    for  {symbol <- ALLDECLARED if ambiguousSymbols.contains(symbol)}    warning(s"Ambiguously defined $symbol")
+    for  {symbol <- ALLDECLARED if ambiguousSymbols.contains(symbol)}
+      fatal(s"Ambiguous %token ${symbol.toFullString} is also defined as a nonterminal")
 
     if (logGeneration contains "sym") {
       println("\n// Symbols and their types in order of appearance")

@@ -46,7 +46,7 @@ class ReductionGenerator(notation: Notation, symbolTables: SymbolTables) extends
 
 
   /*
-   *  Suppress the match for duplicated symbols: they need naming
+   *  Suppress the match for duplicated symbols: they need naming to be used
    */
   val matchAll = Some("_")
 

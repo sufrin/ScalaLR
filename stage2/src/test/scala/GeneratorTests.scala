@@ -629,86 +629,32 @@ object testConflictIFTHEN extends Test("-c")(
     |
     |""".stripMargin)
 
-object testRedOx extends Test("-Lsyn")(
+/* Exercises various warning features of ScalaLR */
+
+object testRedOx extends Test("-Lsyn -Lsym")(
   """
 %notation RedOx
 %package  org.redox
 %path     ""
 %tables   lr
 
-%include {
-   import org.sufrin.scalalr.SourceLocation
-   import org.sufrin.utility.SourceTextCursor
+/* Exercise various warning features of ScalaLR */
 
-    object Scanner {
-      def apply(chars: SourceTextCursor): Scanner = new Scanner(chars)
-    }
-
-    class Scanner(chars: SourceTextCursor) extends Iterator[Token] {
-      def sourceLocation(): SourceLocation = SourceLocation(chars.lines,  chars.chars)
-      @inline def hasChar: Boolean = chars.hasCurrent
-      @inline def theChar: Char = chars.current
-      @inline def nextChar(): Unit = chars.next()
-      @inline def afterNextChar(t: Token): Token = {
-        nextChar()
-        t
-      }
-
-      def hasNext: Boolean = chars.hasCurrent
-      def next(): Token = if (hasChar) {
-          chars.current match {
-            case '(' => afterNextChar(`(`)
-            case ')' => afterNextChar(`)`)
-            case '{' => afterNextChar(`{`)
-            case '}' => afterNextChar(`}`)
-            case '[' => afterNextChar(`[`)
-            case ']' => afterNextChar(`]`)
-            case '/' => afterNextChar(`/`)
-            case '-' => afterNextChar(`-`)
-            case '+' => afterNextChar(`+`)
-            case '*' => afterNextChar(`*`)
-            case '^' => afterNextChar(`^`)
-            case ',' => afterNextChar(`,`)
-            case ';' => afterNextChar(`;`)
-            case '=' => afterNextChar(`=`)
-            case '|' =>  afterNextChar(`|`)
-
-            case c if c.isLetter =>
-              val prefix = chars.takeWhile(_.isLetterOrDigit)
-              ID(prefix.mkString(""))
-
-            case c if c.isDigit =>
-              val prefix = chars.takeWhile(c=>c.isDigit||c=='.')
-              NUM((prefix).mkString(""))
-
-             case c if c.isWhitespace =>
-               while (hasChar && theChar.isWhitespace) nextChar()
-               if (hasChar) next() else $end
-
-             case other =>
-               LEXICALERROR(s"Unrecognised $other (at ${sourceLocation()}")
-
-          }
-      } else $end
-    }
-}
-
-%token NUM(String) ID(String)  `(` `)` `[` `]` `,`  NL LEXICALERROR(String)
+%token NUM(String) ID(String)  `(` `)` `[` `]` `,`  NL LEXICALERROR(String) DOUBLE "DOUBLE" ";"
 %right `|`
 %right `;`
+%left `,`
 
 %right `=`
 %left `+` `-`
 %left `*` `/`
 %right `^`
+%non DOUBLE "DOUBLE"
 
 
 %rules
 
-%include {
- import org.sufrin.scalalr.SourceLocation
- import org.redox.AST._
-}
+DOUBLE: Proc = proc
 
 proc: Proc =
            prim
@@ -729,12 +675,11 @@ expr: Expr =
         | l:expr `/` r:expr   { Binop("/", $l, $r, $START, $END) }
         | l:expr `-` r:expr   { Binop("-", $l, $r, $START, $END) }
         | "(" expr ")"        { $expr }
-        ;
-        //| ID `(` exprs `)` { Apply($ID, $exprs.toList, $START, $END) }
+
 
 
 exprs: (List[Expr]) =
             expr            { List($expr) }
         |   exprs `,` expr  { $expr :: $exprs }
 
-  """)
+ """)

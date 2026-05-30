@@ -9,12 +9,19 @@ class SourceTextCursor(iterator: Iterator[Char]) extends Cursor[Char] {
   private var _lines = 1
   private var _chars = 0
   private var _lastChar: Char = 0 // Dummy
+  var prompt: String = ""
 
   def withStartLocation(atLine: Int, atCol: Int = 0): this.type = {
     _lines = atLine+1
     _chars = atCol
     this
   }
+
+  def withPrompt(thePrompt: String): this.type = {
+    prompt=thePrompt
+    this
+  }
+
 
   /** `(lines, chars)` are the coordinates of `current`  */
   def chars: Int = _chars
@@ -70,7 +77,7 @@ object SourceTextCursor {
           }
         }
       }
-      new SourceTextCursor(it)
+      new SourceTextCursor(it).withPrompt("> ")
     }
     else new SourceTextCursor(Files.readString(path).iterator)
 }

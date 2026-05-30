@@ -121,6 +121,7 @@ class   CharSequenceMap[T]
       node = node.suffixes.getOrElse(it.next(), null)
       edges += 1
     }
+    
     if ((node ne null) && node.value.nonEmpty) result = Some(node.value.get, edges)
     result
   }

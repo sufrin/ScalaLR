@@ -19,23 +19,24 @@ object runtinyfun  {
 
     val log = args.contains("-l")
     val push = args.contains("-p")
+    val recover = args.contains("-r")
     val file = (args.toList.filterNot(_.startsWith("-")) ++ List("/dev/tty")).head
     if (args.contains("-h")) {
       println(
         """Usage: runtinyfun [flags]
           |  -l log the parse
+          |  -r attempt parser recovery
           |  -p use the "push" parser automaton
           |""".stripMargin)
-
       scala.sys.exit()
     }
 
     print("Welcome to TinyFun\n> ")
-    val scanner = Scanner(SourceTextCursor(Paths.get(file)))
     if (push) {
+      val scanner = Scanner(SourceTextCursor(Paths.get(file)))
       val parser = LRParser.Push[Token](Components)(scanner.sourceLocation)
       parser.logState = log
-      parser.attemptRecovery = true
+      parser.attemptRecovery = recover
       var state = parser.start()
       while (state == LRParser.NEXTSTEP) {
         //println(parser.mkString)
@@ -43,10 +44,21 @@ object runtinyfun  {
       }
 
     } else {
-      val parser = LRParser.Pull[Token](Components)(scanner.sourceLocation)
-      parser.logState = log
-      try parser.run(scanner.next) catch {
-        case err: java.lang.Error => println(err)
+      import LRParser._
+      var state: ParseState = RUNNING
+      while (state == RUNNING) {
+        val scanner = Scanner(SourceTextCursor(Paths.get(file)))
+        val parser = LRParser.Pull[Token](Components)(scanner.sourceLocation)
+        parser.logState = log
+        parser.attemptRecovery = recover
+        state = parser.run(scanner.next)
+        state match {
+          case ERRONEOUS(message) =>
+            println(message)
+            scanner.flush()
+            state = RUNNING
+          case _ => state = RUNNING
+        }
       }
     }
   }

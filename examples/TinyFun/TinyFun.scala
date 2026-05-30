@@ -39,7 +39,12 @@ object TinyFun {
     }
   }
 
-  case class Apply(op: String, exprs: Seq[Expr], loc: SourceLocation) extends Expr {
+  case class Neg(expr: Expr, loc: SourceLocation) extends Expr {
+    def value: Double = - expr.value
+  }
+
+
+    case class Apply(op: String, exprs: Seq[Expr], loc: SourceLocation) extends Expr {
     def value: Double = {
       val values = exprs.map(_.value)
       op match {
@@ -50,17 +55,21 @@ object TinyFun {
         case "sin"  => (values map Math.sin).head
         case "cos"  => (values map Math.cos).head
         case "tan"  => (values map Math.tan).head
-        case _      => values.sum
+        case "*"    => values.foldLeft(1.0) ((l,r) => l*r)
+        case "+"    => values.foldLeft(0.0) ((l,r) => l+r)
+        case "/"    => values.foldLeft(1.0) ((l,r) => l/r)
+        case "-"    => values.foldLeft(0.0) ((l,r) => l-r)
+        case _      => 0.0/1.0
       }
     }
   }
 
 
 
-  def run(exprs: Seq[Expr]): Unit = {
-    println(exprs.map(_.value).mkString(" "));
-    print("> ")
-    System.console.flush
+  def run(exprs: Seq[Expr], prompt: String): Unit = {
+    println(exprs.map(_.value).mkString(" "))
+    print(prompt)
+    System.out.flush()
   }
 }
 

@@ -1,20 +1,43 @@
+package org.sufrin.scalalr
 
-import org.sufrin.scalalr.SourceLocation
 import org.sufrin.utility.SourceTextCursor
-import org.sufrin.scalalr.Lexeme
 
 /**
- * Builder for lexical scanners.
+ * A `Scanner` is a `Token` `Iterator` that supplies source locations.
+ * In general `sourceLocation()` yields the starting source location of the latest `Token` to be
+ * returned.
  */
+trait Scanner[Token]  extends Iterator[Token] {
+  def sourceLocation(): SourceLocation
+  def flush(): Unit
+}
 
-abstract class ScannerBuilder[Token <: Lexeme](chars: SourceTextCursor) extends Iterator[Token] {
+/**
+ * A builder for parameterisable lexical scanners.
+ */
+abstract class ScannerBuilder[Token <: Lexeme](chars: SourceTextCursor) extends Scanner[Token] {
   import org.sufrin.utility.CharSequenceMap
+
   import scala.collection.mutable
 
-  def NUM(radix: Int, value: Long): Token
-  def ID(name: String): Token
-  def LEXICALERROR(str: String): Token
-  case object ENDSTREAM extends Token { val value = (); val symbol = 0 }
+  /** Token from a "quoted" text, after processing any "escape" sequences in `body` */
+  def mkString(openQuote: String, closeQuote: String, body: Seq[Char]): Token
+  /** Token from a text of the form `0xhexit+` */
+  def mkHex(source: Seq[Char]):   Token
+  /** Token from a text of the form `digit+` */
+  def mkDec(source: Seq[Char]):   Token
+  /** Token from a text of the form `digit+.digit+(edigit+)?` */
+  def mkReal(source: Seq[Char]):  Token
+  /** Token from the text of an identifier */
+  def mkID(source: Seq[Char]):    Token
+  /** error message from an unrecognised character  */
+  def mkERROR(source: Seq[Char]): Token
+  /**
+   * None if a newline is just whitespace; else Some(tok) if a newline is to yield tok without reading ahead.
+   * This is a straightforward way of interpreting a newline from a terminal exactly when it appears.
+   */
+  val NEWLINE:                    Option[Token] // == NONE when NL is just whitespace
+  val ENDSTREAM:                  Token
 
   /** Trie mapping from (non-alphabetic) names to the tokens they denote  */
   val tokenMap: CharSequenceMap[Token] = new CharSequenceMap[Token]
@@ -27,7 +50,7 @@ abstract class ScannerBuilder[Token <: Lexeme](chars: SourceTextCursor) extends 
     for { (symbol, token) <- symbolToken if symbol.nonEmpty && symbol.forall(_.isLetterOrDigit)} symbolMap(symbol) = token
     for { (symbol, token) <- symbolToken if symbol.nonEmpty && symbol.forall { c => ! c.isLetterOrDigit}} tokenMap(symbol) = token
 
-    {
+    if (false) {
       import org.sufrin.utility.PrettyPrint._
       tokenMap.prettyPrint()
     }
@@ -35,33 +58,26 @@ abstract class ScannerBuilder[Token <: Lexeme](chars: SourceTextCursor) extends 
   }
 
 
-  def sourceLocation(): SourceLocation = SourceLocation(chars.lines,  chars.chars)
+  var lastLocation: SourceLocation = SourceLocation(chars.lines,  chars.chars)
+  def sourceLocation(): SourceLocation = lastLocation
+
+
   @inline def hasChar: Boolean = chars.hasCurrent
   @inline def theChar: Char = chars.current
   @inline def nextChar(): Unit = chars.next()
-  @inline def afterNextChar(t: Token): Token = {
-    nextChar()
-    t
-  }
+  @inline def afterNextChar(t: Token): Token = { nextChar(); t }
 
-  def hex(chars: Seq[Char]): Long  = chars.foldLeft(0L) { (acc, c) => acc * 16 + Character.digit(c, 16) }
-  def dec(chars: Seq[Char]): Long  = chars.foldLeft(0L) { (acc, c) => acc * 10 + Character.digit(c, 10) }
-
+  /** Non-nested comment */
   def eatComment(): Unit = {
     var level = 0
     var go = true
-    nextChar() // skip the *
+    nextChar()                      // skip the *
     while (go && hasChar) {
-      //print(theChar)
-      chars.dropWhile( c=>c!='*')
-      // theChar=='*' or !hasChar
-      //print(theChar)
+      chars.dropWhile( c=>c!='*')   // theChar=='*' or !hasChar
       nextChar()
-      //println(theChar)
       if (theChar=='/') go=false
     }
     nextChar()
-    eatWhitespace()
   }
 
   def eatWhitespace(): Unit = {
@@ -69,33 +85,61 @@ abstract class ScannerBuilder[Token <: Lexeme](chars: SourceTextCursor) extends 
   }
 
 
+  def nextNumber(intPart: Seq[Char]) : Token = {
+    theChar match {
+      case '.' =>
+        nextChar()
+        val fracPart = chars.takeWhile(c=>c.isDigit).prepended('.')// ddd.ddd
+        theChar.toLower match {
+          case 'e' =>
+            nextChar()
+            val expPart = chars.takeWhile(c=>c.isDigit).prepended('e')
+            mkReal(intPart ++ fracPart ++ expPart)
+          case _ =>
+            mkReal(intPart ++ fracPart)
+        }
+      case 'e' =>
+        nextChar()
+        val expPart = chars.takeWhile(c=>c.isDigit).prepended('e')
+        mkReal(intPart ++ expPart)
+      case _   =>
+        mkDec(intPart)
+    }
+  }
+
+
   def hasNext: Boolean = chars.hasCurrent
+
   def next(): Token = if (hasChar) {
+    lastLocation = SourceLocation(chars.lines,  chars.chars)
     theChar match {
       case c if c.isLetter =>
         val prefix = chars.takeWhile(_.isLetterOrDigit)
         val string = prefix.mkString("")
-        symbolMap.getOrElse(string, ID(string))
+        symbolMap.getOrElse(string, mkID(string))
 
       case '0' =>
         nextChar()
         theChar.toLower match {
           case 'x' =>
             nextChar()
-            val prefix = chars.takeWhile(c=>c.isDigit || ("abcdef" contains c.toLower))
-            NUM(16, hex(prefix))
+            mkHex(chars.takeWhile(c=>c.isDigit || ("abcdef" contains c.toLower)))
           case other =>
-            val prefix = chars.takeWhile(c=>c.isDigit)
-            NUM(10, dec(prefix))
+            nextNumber(chars.takeWhile(c=>c.isDigit).prepended('0'))
         }
-
       case c if c.isDigit =>
-        val prefix = chars.takeWhile(c=>c.isDigit)
-        NUM(10, dec(prefix))
+        val intPart = chars.takeWhile(c=>c.isDigit)
+        nextNumber(intPart)
+
+      // When a newline appears return NEWLINE (if it's defined) without actually reading ahead.
+      // and pretend that the read ahead got a space, so that the subsequent next() skips this space
+      case c if c=='\n'     =>
+        chars.current = ' '
+        if (NEWLINE.isDefined) NEWLINE.get else next()
 
       case c if c.isWhitespace =>
-        while (hasChar && theChar.isWhitespace) nextChar()
-        if (hasChar) next() else ENDSTREAM
+          while (hasChar && theChar.isWhitespace) nextChar()
+          if (hasChar) next() else ENDSTREAM
 
       case '/' =>
         nextChar()
@@ -105,18 +149,22 @@ abstract class ScannerBuilder[Token <: Lexeme](chars: SourceTextCursor) extends 
             next()
           case '/' =>
             chars.dropWhile( c=>c!='\n')
-            eatWhitespace()
             next()
           case other =>
             tokenMap.longestPrefixMatch(s"/$other") match {
-              case None => LEXICALERROR(s"at: /$other")
+              case None => mkERROR(s"at: /$other")
               case Some((tok, edges)) =>
                 tok
             }
         }
+
+      case '«' =>
+        nextChar(); afterNextChar(mkString("«", "»", chars.takeNested2('«', '»')))
+
       case c  =>
         tokenMap.longestPrefixMatch(chars) match {
-          case None => LEXICALERROR(s"at: $c")
+          case None =>
+            mkERROR(s"at: $c")
           case Some((tok, edges)) =>
             tok
         }

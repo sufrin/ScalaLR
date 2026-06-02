@@ -8,7 +8,7 @@ object Reduction {
  // after rules
 
 def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufrin.scalalr.SourceLocation, n: Int): PartialFunction[List[Any], Any] = n match {
- /* top = ids { $ids }  */
+ /* top: Unit = ids { $ids }  */
  case 1 => 
   { case List(dol$ids: List[String @unchecked]) =>  dol$ids } 
  /* ids: List[String] = idList { $idList.reverse }  */

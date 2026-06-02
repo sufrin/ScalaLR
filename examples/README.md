@@ -3,7 +3,7 @@
 
 
 #### Preparation for running examples:
-Each example, and much of the build process for `scalalr`, depends on the presence
+Each example, and much of the build process for `scalalr,` depends on the presence
 of `scala-cli`
 
 Ensure that the core libraries have been packaged, and the
@@ -33,6 +33,15 @@ package org.sufrin.scalalr
 object runexpr  { ... }
 
 ```
+
+or if you have acquired a distribution with `scalalr.jar` and `scalalrruntime.jar` in
+the `ROOT`
+````scala
+//> using scala 2.13
+//> using jar ROOT/scalalrruntime.jar
+//> using dep org.scala-lang.modules::scala-xml::2.4.0
+//> using options -deprecation -feature -unchecked
+````
 
 ## Expr
 Exercises the core scalalr code generator(s) and parsing automata on a tiny

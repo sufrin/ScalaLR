@@ -326,7 +326,8 @@ uses *scalalr*-generated parsing components are in
 directories under `examples/.`
 
 2. The file `Bootstrapping.md` provides an explanation of the
-self-hosting bootstrap stages.
+self-hosting bootstrap stages. It was written as an aide-memoire for me, and
+normal users (or even developers) don't really need to look at it.
 
 3. **Beware**: Some quick'n'dirty programs that were used in building and testing the initial bootstrap
    appear in `bootstrap/src/test.`  They generate(d) components

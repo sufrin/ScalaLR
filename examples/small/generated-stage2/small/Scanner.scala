@@ -66,4 +66,10 @@ val symbolName: collection.immutable.Map[Int, String] = {
          } // locally
          ArrayMap(arr)
      }
+
+
+// MAP QUOTED SYMBOL NAMES TO TOKENS 
+val symbolToken: collection.immutable.Map[String, Token] =  collection.immutable.ListMap(
+    ";" -> `;`,
+    ""->$end)
 }

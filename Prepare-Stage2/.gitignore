@@ -1,0 +1,8 @@
+
+# Ignore the binaries
+
+Prepare-Stage2/stage2
+Prepare-Stage2/stage2-sh
+Prepare-Stage2/stage2.ast
+Prepare-Stage2/stage4-2.xsh
+

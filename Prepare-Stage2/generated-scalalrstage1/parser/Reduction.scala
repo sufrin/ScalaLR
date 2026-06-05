@@ -229,54 +229,65 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
   { case List(_, dol$NamedFields: List[NamedField @unchecked], _, dol$REPEAT: Repeat) => 
           syntheticRuleName(dol$NamedFields, dol$REPEAT, dol$START, dol$END) 
   }
- /* REPEAT: Repeat = "?" {  MaybeOne } */
+ /* FIELD: Name = "(" NamedFields ")" "." "." "." {  syntheticRuleName($NamedFields, Ellipsis, $START, $END) } */
  case 42 => 
+  { case List(_, dol$NamedFields: List[NamedField @unchecked], _, _, _, _) => 
+          syntheticRuleName(dol$NamedFields, Ellipsis, dol$START, dol$END) 
+  }
+ /* REPEAT: Repeat = "?" {  MaybeOne } */
+ case 43 => 
   { case List(_) =>    MaybeOne  } 
  /* REPEAT: Repeat = "*" {  NoneOrMore } */
- case 43 => 
+ case 44 => 
   { case List(_) =>    NoneOrMore  } 
  /* REPEAT: Repeat = "+" {  OneOrMore } */
- case 44 => 
-  { case List(_) =>    OneOrMore  } 
- /* Action: Option[Expression] =  {  None } */
  case 45 => 
+  { case List(_) =>    OneOrMore  } 
+ /* REPEAT: Repeat = "*" "." "." {  RightNoneOrMore } */
+ case 46 => 
+  { case List(_, _, _) =>    RightNoneOrMore  } 
+ /* REPEAT: Repeat = "+" "." "." {  RightOneOrMore } */
+ case 47 => 
+  { case List(_, _, _) =>    RightOneOrMore  } 
+ /* Action: Option[Expression] =  {  None } */
+ case 48 => 
   { case List() =>    None  } 
  /* Action: Option[Expression] = CODE {  Some(Expression($CODE)) } */
- case 46 => 
+ case 49 => 
   { case List(dol$CODE: String) => 
           Some(Expression(dol$CODE)) 
   }
  /* Precedence: Option[Name] =  {  None } */
- case 47 => 
+ case 50 => 
   { case List() =>    None  } 
  /* Precedence: Option[Name] = "%prec" ID {  Some($ID)} */
- case 48 => 
+ case 51 => 
   { case List(_, dol$ID: org.sufrin.scalalr.stage2.AST.Name) =>    Some(dol$ID) } 
  /* Type: SymbolType = ID {  Type($ID.withoutQuotes, Nil, $START) } */
- case 49 => 
+ case 52 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
           Type(dol$ID.withoutQuotes, Nil, dol$START) 
   }
  /* Type: SymbolType = ID "[" Types "]" {  Type($ID.withoutQuotes, $Types, $START) } */
- case 50 => 
+ case 53 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name, _, dol$Types: List[Type @unchecked], _) => 
           Type(dol$ID.withoutQuotes, dol$Types, dol$START) 
   }
  /* Type: SymbolType = "(" Types ")" {  makeTupleType($Types, $START) } */
- case 51 => 
+ case 54 => 
   { case List(_, dol$Types: List[Type @unchecked], _) => 
           makeTupleType(dol$Types, dol$START) 
   }
  /* Type: SymbolType = "(" ")" {  Type("Unit", Nil, $START) } */
- case 52 => 
+ case 55 => 
   { case List(_, _) => 
           Type("Unit", Nil, dol$START) 
   }
  /* Types: List[Type] = Type {  List($Type) } */
- case 53 => 
+ case 56 => 
   { case List(dol$Type: SymbolType) =>    List(dol$Type)  } 
  /* Types: List[Type] = Type "," Types {  $Type :: $Types } */
- case 54 => 
+ case 57 => 
   { case List(dol$Type: SymbolType, _, dol$Types: List[Type @unchecked]) => 
           dol$Type :: dol$Types 
   }
@@ -367,31 +378,37 @@ def parsetreereduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  
  case 41 => 
   { case trees$trees => PARSETREE("""FIELD: Name = "(" NamedFields ")" REPEAT {  syntheticRuleName($NamedFields, $REPEAT, $START, $END) }""", 41, trees$trees ) }
  case 42 => 
-  { case trees$trees => PARSETREE("""REPEAT: Repeat = "?" {  MaybeOne }""", 42, trees$trees ) }
+  { case trees$trees => PARSETREE("""FIELD: Name = "(" NamedFields ")" "." "." "." {  syntheticRuleName($NamedFields, Ellipsis, $START, $END) }""", 42, trees$trees ) }
  case 43 => 
-  { case trees$trees => PARSETREE("""REPEAT: Repeat = "*" {  NoneOrMore }""", 43, trees$trees ) }
+  { case trees$trees => PARSETREE("""REPEAT: Repeat = "?" {  MaybeOne }""", 43, trees$trees ) }
  case 44 => 
-  { case trees$trees => PARSETREE("""REPEAT: Repeat = "+" {  OneOrMore }""", 44, trees$trees ) }
+  { case trees$trees => PARSETREE("""REPEAT: Repeat = "*" {  NoneOrMore }""", 44, trees$trees ) }
  case 45 => 
-  { case trees$trees => PARSETREE("""Action: Option[Expression] =  {  None }""", 45, trees$trees ) }
+  { case trees$trees => PARSETREE("""REPEAT: Repeat = "+" {  OneOrMore }""", 45, trees$trees ) }
  case 46 => 
-  { case trees$trees => PARSETREE("""Action: Option[Expression] = CODE {  Some(Expression($CODE)) }""", 46, trees$trees ) }
+  { case trees$trees => PARSETREE("""REPEAT: Repeat = "*" "." "." {  RightNoneOrMore }""", 46, trees$trees ) }
  case 47 => 
-  { case trees$trees => PARSETREE("""Precedence: Option[Name] =  {  None }""", 47, trees$trees ) }
+  { case trees$trees => PARSETREE("""REPEAT: Repeat = "+" "." "." {  RightOneOrMore }""", 47, trees$trees ) }
  case 48 => 
-  { case trees$trees => PARSETREE("""Precedence: Option[Name] = "%prec" ID {  Some($ID)}""", 48, trees$trees ) }
+  { case trees$trees => PARSETREE("""Action: Option[Expression] =  {  None }""", 48, trees$trees ) }
  case 49 => 
-  { case trees$trees => PARSETREE("""Type: SymbolType = ID {  Type($ID.withoutQuotes, Nil, $START) }""", 49, trees$trees ) }
+  { case trees$trees => PARSETREE("""Action: Option[Expression] = CODE {  Some(Expression($CODE)) }""", 49, trees$trees ) }
  case 50 => 
-  { case trees$trees => PARSETREE("""Type: SymbolType = ID "[" Types "]" {  Type($ID.withoutQuotes, $Types, $START) }""", 50, trees$trees ) }
+  { case trees$trees => PARSETREE("""Precedence: Option[Name] =  {  None }""", 50, trees$trees ) }
  case 51 => 
-  { case trees$trees => PARSETREE("""Type: SymbolType = "(" Types ")" {  makeTupleType($Types, $START) }""", 51, trees$trees ) }
+  { case trees$trees => PARSETREE("""Precedence: Option[Name] = "%prec" ID {  Some($ID)}""", 51, trees$trees ) }
  case 52 => 
-  { case trees$trees => PARSETREE("""Type: SymbolType = "(" ")" {  Type("Unit", Nil, $START) }""", 52, trees$trees ) }
+  { case trees$trees => PARSETREE("""Type: SymbolType = ID {  Type($ID.withoutQuotes, Nil, $START) }""", 52, trees$trees ) }
  case 53 => 
-  { case trees$trees => PARSETREE("""Types: List[Type] = Type {  List($Type) }""", 53, trees$trees ) }
+  { case trees$trees => PARSETREE("""Type: SymbolType = ID "[" Types "]" {  Type($ID.withoutQuotes, $Types, $START) }""", 53, trees$trees ) }
  case 54 => 
-  { case trees$trees => PARSETREE("""Types: List[Type] = Type "," Types {  $Type :: $Types }""", 54, trees$trees ) }
+  { case trees$trees => PARSETREE("""Type: SymbolType = "(" Types ")" {  makeTupleType($Types, $START) }""", 54, trees$trees ) }
+ case 55 => 
+  { case trees$trees => PARSETREE("""Type: SymbolType = "(" ")" {  Type("Unit", Nil, $START) }""", 55, trees$trees ) }
+ case 56 => 
+  { case trees$trees => PARSETREE("""Types: List[Type] = Type {  List($Type) }""", 56, trees$trees ) }
+ case 57 => 
+  { case trees$trees => PARSETREE("""Types: List[Type] = Type "," Types {  $Type :: $Types }""", 57, trees$trees ) }
  }
 
 }

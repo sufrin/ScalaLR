@@ -169,9 +169,12 @@ object AST {
   case class Precedence(terminals:   Seq[TypedTerminal]) extends TokenSpec {
   }
 
-  trait Repeat
-  case object MaybeOne   extends Repeat { override val toString: String = "?" }
-  case object OneOrMore  extends Repeat { override val toString: String = "+" }
-  case object NoneOrMore extends Repeat { override val toString: String = "*" }
+  sealed trait Repeat
+  case object MaybeOne          extends Repeat { override val toString: String = "?" }
+  case object OneOrMore         extends Repeat { override val toString: String = "+" }
+  case object Ellipsis          extends Repeat { override val toString: String = s"..." } // left-recursive implementation with  separator as optional terminator
+  case object NoneOrMore        extends Repeat { override val toString: String = "*" }
+  case object RightNoneOrMore   extends Repeat { override val toString: String = "*.." }  // right-recursive implementation
+  case object RightOneOrMore    extends Repeat { override val toString: String = "+.." }  // right-recursive implementation
 
 }

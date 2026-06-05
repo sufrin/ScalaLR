@@ -25,30 +25,31 @@ case object `}` extends Token { val value = (); val symbol = 15 }
 case object `(` extends Token { val value = (); val symbol = 16 }
 case object `)` extends Token { val value = (); val symbol = 17 }
 case object `,` extends Token { val value = (); val symbol = 18 }
-case object SEPARATOR extends Token { val value = (); val symbol = 19 }
-case object `%path` extends Token { val value = (); val symbol = 20 }
-case object `%type` extends Token { val value = (); val symbol = 21 }
-case object `%empty` extends Token { val value = (); val symbol = 22 }
-case object `%notation` extends Token { val value = (); val symbol = 23 }
-case object `%package` extends Token { val value = (); val symbol = 24 }
-case object `%token` extends Token { val value = (); val symbol = 25 }
-case object `%left` extends Token { val value = (); val symbol = 26 }
-case object `%right` extends Token { val value = (); val symbol = 27 }
-case object `%non` extends Token { val value = (); val symbol = 28 }
-case object `%rules` extends Token { val value = (); val symbol = 29 }
-case object `%include` extends Token { val value = (); val symbol = 30 }
-case object `%prec` extends Token { val value = (); val symbol = 31 }
-case object `%tables` extends Token { val value = (); val symbol = 32 }
-case object `%dialect` extends Token { val value = (); val symbol = 33 }
-case object `%scalalr` extends Token { val value = (); val symbol = 34 }
-case object `%signature` extends Token { val value = (); val symbol = 35 }
-case object `?` extends Token { val value = (); val symbol = 36 }
-case object `*` extends Token { val value = (); val symbol = 37 }
-case object `+` extends Token { val value = (); val symbol = 38 }
+case object `.` extends Token { val value = (); val symbol = 19 }
+case object `+` extends Token { val value = (); val symbol = 20 }
+case object `*` extends Token { val value = (); val symbol = 21 }
+case object `?` extends Token { val value = (); val symbol = 22 }
+case object SEPARATOR extends Token { val value = (); val symbol = 23 }
+case object `%path` extends Token { val value = (); val symbol = 24 }
+case object `%type` extends Token { val value = (); val symbol = 25 }
+case object `%empty` extends Token { val value = (); val symbol = 26 }
+case object `%notation` extends Token { val value = (); val symbol = 27 }
+case object `%package` extends Token { val value = (); val symbol = 28 }
+case object `%token` extends Token { val value = (); val symbol = 29 }
+case object `%left` extends Token { val value = (); val symbol = 30 }
+case object `%right` extends Token { val value = (); val symbol = 31 }
+case object `%non` extends Token { val value = (); val symbol = 32 }
+case object `%rules` extends Token { val value = (); val symbol = 33 }
+case object `%include` extends Token { val value = (); val symbol = 34 }
+case object `%prec` extends Token { val value = (); val symbol = 35 }
+case object `%tables` extends Token { val value = (); val symbol = 36 }
+case object `%dialect` extends Token { val value = (); val symbol = 37 }
+case object `%scalalr` extends Token { val value = (); val symbol = 38 }
+case object `%signature` extends Token { val value = (); val symbol = 39 }
 // MAP SYMBOL NUMBERS TO NAMES
 val symbolName: collection.immutable.Map[Int, String] = {
      import org.sufrin.utility.ArrayMap
-    val arr = new Array[String](60)
+    val arr = new Array[String](61)
          locally {
           arr(0) = "$end"
           arr(1) = "error"
@@ -69,47 +70,48 @@ val symbolName: collection.immutable.Map[Int, String] = {
           arr(16) = "`(`"
           arr(17) = "`)`"
           arr(18) = "`,`"
-          arr(19) = "SEPARATOR"
-          arr(20) = "`%path`"
-          arr(21) = "`%type`"
-          arr(22) = "`%empty`"
-          arr(23) = "`%notation`"
-          arr(24) = "`%package`"
-          arr(25) = "`%token`"
-          arr(26) = "`%left`"
-          arr(27) = "`%right`"
-          arr(28) = "`%non`"
-          arr(29) = "`%rules`"
-          arr(30) = "`%include`"
-          arr(31) = "`%prec`"
-          arr(32) = "`%tables`"
-          arr(33) = "`%dialect`"
-          arr(34) = "`%scalalr`"
-          arr(35) = "`%signature`"
-          arr(36) = "`?`"
-          arr(37) = "`*`"
-          arr(38) = "`+`"
-          arr(39) = "$accept"
-          arr(40) = "Notation"
-          arr(41) = "Prefix"
-          arr(42) = "INCLUDE"
-          arr(43) = "OPTNL"
-          arr(44) = "TypedTerminals"
-          arr(45) = "TypedTerminal"
-          arr(46) = "Rules"
-          arr(47) = "Rule"
-          arr(48) = "OptBar"
-          arr(49) = "LHS"
-          arr(50) = "RHS"
-          arr(51) = "Production"
-          arr(52) = "NamedFields"
-          arr(53) = "NamedField"
-          arr(54) = "FIELD"
-          arr(55) = "REPEAT"
-          arr(56) = "Action"
-          arr(57) = "Precedence"
-          arr(58) = "Type"
-          arr(59) = "Types"
+          arr(19) = "`.`"
+          arr(20) = "`+`"
+          arr(21) = "`*`"
+          arr(22) = "`?`"
+          arr(23) = "SEPARATOR"
+          arr(24) = "`%path`"
+          arr(25) = "`%type`"
+          arr(26) = "`%empty`"
+          arr(27) = "`%notation`"
+          arr(28) = "`%package`"
+          arr(29) = "`%token`"
+          arr(30) = "`%left`"
+          arr(31) = "`%right`"
+          arr(32) = "`%non`"
+          arr(33) = "`%rules`"
+          arr(34) = "`%include`"
+          arr(35) = "`%prec`"
+          arr(36) = "`%tables`"
+          arr(37) = "`%dialect`"
+          arr(38) = "`%scalalr`"
+          arr(39) = "`%signature`"
+          arr(40) = "$accept"
+          arr(41) = "Notation"
+          arr(42) = "Prefix"
+          arr(43) = "INCLUDE"
+          arr(44) = "OPTNL"
+          arr(45) = "TypedTerminals"
+          arr(46) = "TypedTerminal"
+          arr(47) = "Rules"
+          arr(48) = "Rule"
+          arr(49) = "OptBar"
+          arr(50) = "LHS"
+          arr(51) = "RHS"
+          arr(52) = "Production"
+          arr(53) = "NamedFields"
+          arr(54) = "NamedField"
+          arr(55) = "FIELD"
+          arr(56) = "REPEAT"
+          arr(57) = "Action"
+          arr(58) = "Precedence"
+          arr(59) = "Type"
+          arr(60) = "Types"
          } // locally
          ArrayMap(arr)
      }
@@ -128,6 +130,10 @@ val symbolToken: collection.immutable.Map[String, Token] =  collection.immutable
     "(" -> `(`,
     ")" -> `)`,
     "," -> `,`,
+    "." -> `.`,
+    "+" -> `+`,
+    "*" -> `*`,
+    "?" -> `?`,
     "%path" -> `%path`,
     "%type" -> `%type`,
     "%empty" -> `%empty`,
@@ -144,8 +150,5 @@ val symbolToken: collection.immutable.Map[String, Token] =  collection.immutable
     "%dialect" -> `%dialect`,
     "%scalalr" -> `%scalalr`,
     "%signature" -> `%signature`,
-    "?" -> `?`,
-    "*" -> `*`,
-    "+" -> `+`,
     ""->$end)
 }

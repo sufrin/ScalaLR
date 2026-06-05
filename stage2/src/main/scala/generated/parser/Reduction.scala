@@ -228,50 +228,61 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
   { case List(_, dol$NamedFields: List[NamedField @unchecked], _, dol$REPEAT: Repeat) => 
         syntheticRuleName(dol$NamedFields, dol$REPEAT, dol$START, dol$END)
   }
- /* REPEAT: Repeat = `?` { MaybeOne }  */
+ /* FIELD: Name = `(` NamedFields `)` `.` `.` `.` { syntheticRuleName($NamedFields, Ellipsis, $START, $END) }  */
  case 42 => 
+  { case List(_, dol$NamedFields: List[NamedField @unchecked], _, _, _, _) => 
+        syntheticRuleName(dol$NamedFields, Ellipsis, dol$START, dol$END)
+  }
+ /* REPEAT: Repeat = `?` { MaybeOne }  */
+ case 43 => 
   { case List(_) =>  MaybeOne } 
  /* REPEAT: Repeat = `*` { NoneOrMore }  */
- case 43 => 
+ case 44 => 
   { case List(_) =>  NoneOrMore } 
  /* REPEAT: Repeat = `+` { OneOrMore }  */
- case 44 => 
-  { case List(_) =>  OneOrMore } 
- /* Action: Option[Expression] =  { None }  */
  case 45 => 
+  { case List(_) =>  OneOrMore } 
+ /* REPEAT: Repeat = `*` `.` `.` { RightNoneOrMore }  */
+ case 46 => 
+  { case List(_, _, _) =>  RightNoneOrMore } 
+ /* REPEAT: Repeat = `+` `.` `.` { RightOneOrMore }  */
+ case 47 => 
+  { case List(_, _, _) =>  RightOneOrMore } 
+ /* Action: Option[Expression] =  { None }  */
+ case 48 => 
   { case List() =>  None } 
  /* Action: Option[Expression] = CODE { Some(Expression($CODE)) }  */
- case 46 => 
+ case 49 => 
   { case List(dol$CODE: String) =>  Some(Expression(dol$CODE)) } 
  /* Precedence: Option[Name] =  { None }  */
- case 47 => 
+ case 50 => 
   { case List() =>  None } 
  /* Precedence: Option[Name] = `%prec` ID { Some($ID) }  */
- case 48 => 
+ case 51 => 
   { case List(_, dol$ID: org.sufrin.scalalr.stage2.AST.Name) =>  Some(dol$ID) } 
  /* Type: SymbolType = ID { Type($ID.withoutQuotes, Nil, $START) }  */
- case 49 => 
+ case 52 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
         Type(dol$ID.withoutQuotes, Nil, dol$START)
   }
  /* Type: SymbolType = ID `[` Types `]` { Type($ID.withoutQuotes, $Types, $START) }  */
- case 50 => 
+ case 53 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name, _, dol$Types: List[Type @unchecked], _) => 
         Type(dol$ID.withoutQuotes, dol$Types, dol$START)
   }
  /* Type: SymbolType = `(` Types `)` { makeTupleType($Types, $START) }  */
- case 51 => 
+ case 54 => 
   { case List(_, dol$Types: List[Type @unchecked], _) => 
         makeTupleType(dol$Types, dol$START)
   }
  /* Type: SymbolType = `(` `)` { Type("Unit", Nil, $START) }  */
- case 52 => 
+ case 55 => 
   { case List(_, _) =>  Type("Unit", Nil, dol$START) } 
  /* Types: List[Type] = Type { List($Type) }  */
- case 53 => 
+ case 56 => 
   { case List(dol$Type: SymbolType) =>  List(dol$Type) } 
  /* Types: List[Type] = Type `,` Types { $Type :: $Types }  */
- case 54 => 
+ case 57 => 
   { case List(dol$Type: SymbolType, _, dol$Types: List[Type @unchecked]) => 
         dol$Type :: dol$Types
   }

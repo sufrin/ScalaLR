@@ -49,7 +49,10 @@ object Generator extends org.sufrin.logging.SourceLoggable {
     if (pretty) notation.prettyPrint()
     val symbolTables = new SymbolTables(notation)
     val generator    = new CodeGenerator(notation, symbolTables)
-    if (symbolTables.sanityCheck()) generator.generateScalaFiles() else println(s"${symbolTables.fatalErrors} (*) warnings -- no code generation")
+    if (symbolTables.sanityCheck()) generator.generateScalaFiles() else {
+      println(s"${symbolTables.fatalErrors} (*) warnings -- no code generation")
+      System.exit(1)
+    }
   }
 
   def processScalaLR(cursor: SourceTextCursor): Unit = {
@@ -59,8 +62,11 @@ object Generator extends org.sufrin.logging.SourceLoggable {
     val parser  = LRParser.Pull[LexicalScanner.Token](Components)(scanner.sourceLocation)
     parser.logState = logParse
     parser.run(scanner.next) match {
-      case ACCEPTED(notation: Notation) => generateCode(Normalization.normalize(notation))
-      case ERRONEOUS(why) => error(why)
+      case ACCEPTED(notation: Notation) =>
+        generateCode(Normalization.normalize(notation))
+      case ERRONEOUS(why) =>
+        error(why)
+        System.exit(1)
       case other =>
     }
   }
@@ -128,7 +134,13 @@ object Generator extends org.sufrin.logging.SourceLoggable {
         System.exit(0)
       }
       else if (arg.isEmpty) {}
-      else try { processScalaLR(SourceTextCursor(Paths.get(arg))) } catch { case exn: Throwable => exn.printStackTrace() }
+      else try {
+        processScalaLR(SourceTextCursor(Paths.get(arg)))
+      } catch {
+        case exn: Throwable =>
+          exn.printStackTrace()
+          System.exit(2)
+      }
     }
   }
 }

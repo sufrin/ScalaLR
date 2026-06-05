@@ -31,10 +31,11 @@
   COMMENT:(String)
   LEXICALERROR:(String)
   `[` `]` `;` `=` `|`  `:`  // Left here as a test of diagnostics
-  `{` `}` `(` `)` ',' SEPARATOR
+  `{` `}` `(` `)` ',' '.' '+' '*' '?' SEPARATOR
   `%path`       `%type`     `%empty`    `%notation`     `%package` `%token`
   `%left`       `%right`    `%non`      `%rules`
   `%include`    `%prec`     `%tables`   `%dialect`      `%scalalr` `%signature`
+
 
 %rules
 
@@ -151,12 +152,15 @@ NamedField: NamedField = FIELD                               { NamedField(theFie
 
 // NB: Normalization.syntheticRuleName yields the name of a new rule, and appends to synthesisedRules,
 //     definitions of the one or more rules needed by its right hand side.
-FIELD: Name =   ID                            { $ID }
-            |   '(' NamedFields ')'  REPEAT   { syntheticRuleName($NamedFields, $REPEAT, $START, $END) }
+FIELD: Name =   ID                                    { $ID }
+            |   '(' NamedFields ')'  REPEAT           { syntheticRuleName($NamedFields, $REPEAT, $START, $END) }
+            |   '(' NamedFields ')'  '.' '.' '.'      { syntheticRuleName($NamedFields, Ellipsis, $START, $END) }
 
-REPEAT: Repeat  = '?'       { MaybeOne }
-                | '*'       { NoneOrMore }
-                | '+'       { OneOrMore }
+REPEAT: Repeat  = '?'           { MaybeOne }
+                | '*'           { NoneOrMore }
+                | '+'           { OneOrMore }
+                | '*' '.' '.'   { RightNoneOrMore }
+                | '+' '.' '.'   { RightOneOrMore }
 
 Action:(Option[Expression]) = %empty { None } | CODE { Some(Expression($CODE)) }
 

@@ -268,20 +268,25 @@ These files are generated in four phases:
 ## Repetition Notations
 The *stage2* and subsequent processors include the repetition modifiers `*`, `+` and `?` 
 that make it straightforward to express repeated and optional constructs "in-situ" rather
-than having to write the grammar rules for them explicity. 
+than having to write the grammar rules for them explicitly. 
 
+### Implemented by left recursive productions (then reversed)
 ````
       (A)*     means zero or more A and yields the List[A] of their values 
       (A)+     means one or more A  and yields the List[A] of their values 
       (A)?     means zero or one A and yields the appropriate Option[A]
 ````
-When `B` is not a value-carrying symbol, the repetition constructs denote "punctuated" 
-sequences and yield the  List[A] of the value-carrying symbol
+When `B` is a punctuation symbol (ie not declared as a token with a substantive type), 
+the repetition constructs  denote "punctuated" sequences and yield the  List[A] of the 
+values of the value-carrying symbol
 ````
       (`B` A)*   means zero or more A separated by `B` 
       (`B` A)+   means one or more A separated by `B`
       (A `B`)*   means zero or more A separated by `B`
       (A `B`)+   means one or more A separated by  `B`
+      (A `B`)... means one or more A separated by  `B`, possibly terminated with `B`
+      (`B` A)... means one or more A separated by  `B`, possibly terminated with `B`
+           
 ````
 
 For example
@@ -313,12 +318,39 @@ conserve parse-stack space and list-construction time at the cost
 of accumulating their result lists in reverse order, then reversing them at
 the point of use. 
 
-Notice that in general it is appropriate to provide a name for the result of a repeated
+### Implemented by right-recursive productions
+
+````
+      (x y)*.. is a right-recursive implementation of (x y)*
+      (x y)+.. is a right-recursive implementation of (x y)*
+````
+
+### NB
+
+1. It is always necessary to provide a name for the result of a repeated
 construct, so that it can be embodied in the result expression of its "host" production.
 
-**NB:** The repetition constructs are for convenience in simple cases: if
-one needs more than just straightforward "punctuated list" expansions 
-in a production it is better  to hand-code the additional rule(s)
+2. The repetition constructs are for convenience in simple cases: if
+one needs something more sophisticated than possibly-punctuated sequences  
+in a production it is better to hand-code explicitly-named rules.
+
+3. The right-recursive forms are present  only for completeness. During parsing they use 
+parse-stack space proportional to the maximum depth of the recursion. 
+They *may* get you off the hook in the presence of certain kinds of shift-reduce conflict: 
+
+For example, the phrase
+````
+         '{' body: (command ';')+ (';')? '}' { $body }
+````
+  intended to parse a bracketed, punctuated and possibly-terminated sequence of `command` 
+may well result in a shift-reduce conflict at `';'` because the automaton cannot
+decide whether to shift or to reduce on the "last" `';'`
+Recoding it as
+````
+         '{' body: (command ';')+.. '}' { $body }
+````
+defers the decision until the appearance of the `'}'`.  In general in such cases it's 
+better to use the `(x y)...` form: it's what it was invented for.
 
 ## Further Reading 
 1. The best-documented simple examples of programs that 
@@ -449,10 +481,14 @@ here in no particular order.
    than the present hand-coded recursive descent parser. 
 
 3. **[DONE May '26]** Implement higher-level constructs for use in-situ in productions to denote 
-   repetitions and options 
-   that would normally have to be "hand-coded". 
+   repetitions and options that would normally have to be "hand-coded". 
 
-4. Additional higher level constructs that support "say it once"
+4. Checking the form of result expressions for plausibility so as to avoid discovering 
+certain kinds of Scala error after code-generation and during compilation phase.
+**[IN PROGRESS June '26]**
+
+The following is a "maybe sometime" aspiration.
+5. Additional higher level constructs that support "say it once"
 specification of notation and abstract syntax, as well as
 less "fragile" expressions of the AST results of productions. We have in mind
 doing this in two stages. The first exploits the fact that scala methods
@@ -498,8 +534,9 @@ run for its side effects and yielding `Unit` -- though this may not be common.*
    excuse for this beyond my having wanted to prioritise fast turnaround while I
    was first experimenting with my approach. Some might say that the fact that 
    it can **still** be  used in a near production environment is testimony to 
-   my cunning, but I couldn't possibly comment! 
+   my cunning, but I couldn't possibly comment! Still! Nobody needs it any more 
+   and one day I will delete it from the distribution.
 
-BS: April 29th, May 13th 2026
+BS: April 29th, May 13th 2026, June 5th 2026
 
 

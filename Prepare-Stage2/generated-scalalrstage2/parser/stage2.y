@@ -19,80 +19,83 @@
 // T-016	`(` 
 // T-017	`)` 
 // T-018	`,` 
-// T-019	SEPARATOR 
-// T-020	`%path` 
-// T-021	`%type` 
-// T-022	`%empty` 
-// T-023	`%notation` 
-// T-024	`%package` 
-// T-025	`%token` 
-// T-026	`%left` 
-// T-027	`%right` 
-// T-028	`%non` 
-// T-029	`%rules` 
-// T-030	`%include` 
-// T-031	`%prec` 
-// T-032	`%tables` 
-// T-033	`%dialect` 
-// T-034	`%scalalr` 
-// T-035	`%signature` 
-// T-036	`?` 
-// T-037	`*` 
-// T-038	`+` 
-%token T-036 T-037 T-038
-%token T-003 T-004 T-005 T-006 T-007 T-008 T-009 T-010 T-011 T-012 T-013 T-014 T-015 T-016 T-017 T-018 T-019 T-020 T-021 T-022 T-023 T-024 T-025 T-026 T-027 T-028 T-029 T-030 T-031 T-032 T-033 T-034 T-035
+// T-019	`.` 
+// T-020	`+` 
+// T-021	`*` 
+// T-022	`?` 
+// T-023	SEPARATOR 
+// T-024	`%path` 
+// T-025	`%type` 
+// T-026	`%empty` 
+// T-027	`%notation` 
+// T-028	`%package` 
+// T-029	`%token` 
+// T-030	`%left` 
+// T-031	`%right` 
+// T-032	`%non` 
+// T-033	`%rules` 
+// T-034	`%include` 
+// T-035	`%prec` 
+// T-036	`%tables` 
+// T-037	`%dialect` 
+// T-038	`%scalalr` 
+// T-039	`%signature` 
+%token T-003 T-004 T-005 T-006 T-007 T-008 T-009 T-010 T-011 T-012 T-013 T-014 T-015 T-016 T-017 T-018 T-019 T-020 T-021 T-022 T-023 T-024 T-025 T-026 T-027 T-028 T-029 T-030 T-031 T-032 T-033 T-034 T-035 T-036 T-037 T-038 T-039
 %%
-T-040: T-041 T-029 T-042 T-046 T-043 // Notation = Prefix `%rules` INCLUDE Rules OPTNL
-T-041:  // Prefix = 
-T-041: T-041 T-023 T-003 // Prefix = p: Prefix `%notation` ID
-T-041: T-041 T-024 T-003 // Prefix = p: Prefix `%package` ID
-T-041: T-041 T-020 T-003 // Prefix = p: Prefix `%path` ID
-T-041: T-041 T-032 T-003 // Prefix = p: Prefix `%tables` ID
-T-041: T-041 T-030 T-005 // Prefix = p: Prefix `%include` CODE
-T-041: T-041 T-025 T-044 // Prefix = p: Prefix `%token` TypedTerminals
-T-041: T-041 T-026 T-044 // Prefix = p: Prefix `%left` TypedTerminals
-T-041: T-041 T-027 T-044 // Prefix = p: Prefix `%right` TypedTerminals
-T-041: T-041 T-028 T-044 // Prefix = p: Prefix `%non` TypedTerminals
-T-041: T-041 T-031 T-044 // Prefix = p: Prefix `%prec` TypedTerminals
-T-041: T-041 T-033 T-003 // Prefix = p: Prefix `%dialect` ID
-T-041: T-041 T-034 T-003 // Prefix = p: Prefix `%scalalr` ID
-T-041: T-041 T-035 T-003 // Prefix = p: Prefix `%signature` ID
-T-042: T-030 T-005 T-019 // INCLUDE = `%include` CODE SEPARATOR
-T-042:  // INCLUDE = 
-T-043:  // OPTNL = 
-T-043: T-019 // OPTNL = SEPARATOR
-T-044:  // TypedTerminals = 
-T-044: T-045 T-044 // TypedTerminals = TypedTerminal TypedTerminals
-T-045: T-003 T-013 T-058 // TypedTerminal = ID `:` Type
-T-045: T-003 T-016 T-058 T-017 // TypedTerminal = ID `(` Type `)`
-T-045: T-003 // TypedTerminal = ID
-T-046: T-047 // Rules = Rule
-T-046: T-046 T-019 T-047 // Rules = Rules SEPARATOR Rule
-T-047: T-049 T-011 T-048 T-050 // Rule = LHS `=` OptBar RHS
-T-048: T-012 // OptBar = `|`
-T-048:  // OptBar = 
-T-049: T-003 T-013 T-058 // LHS = ID `:` Type
-T-049: T-003 // LHS = ID
-T-050: T-051 // RHS = Production
-T-050: T-051 T-012 T-050 // RHS = Production `|` RHS
-T-051: T-052 T-056 T-057 // Production = NamedFields Action Precedence
-T-052: T-022 // NamedFields = `%empty`
-T-052: T-053 // NamedFields = NamedField
-T-052: T-053 T-052 // NamedFields = NamedField NamedFields
-T-053: T-054 // NamedField = FIELD
-T-053: T-003 T-013 T-054 // NamedField = theFieldName: ID `:` theName: FIELD
-T-054: T-003 // FIELD = ID
-T-054: T-016 T-052 T-017 T-055 // FIELD = `(` NamedFields `)` REPEAT
-T-055: T-036 // REPEAT = `?`
-T-055: T-037 // REPEAT = `*`
-T-055: T-038 // REPEAT = `+`
-T-056:  // Action = 
-T-056: T-005 // Action = CODE
-T-057:  // Precedence = 
-T-057: T-031 T-003 // Precedence = `%prec` ID
-T-058: T-003 // Type = ID
-T-058: T-003 T-008 T-059 T-009 // Type = ID `[` Types `]`
-T-058: T-016 T-059 T-017 // Type = `(` Types `)`
-T-058: T-016 T-017 // Type = `(` `)`
-T-059: T-058 // Types = Type
-T-059: T-058 T-018 T-059 // Types = Type `,` Types
+T-041: T-042 T-033 T-043 T-047 T-044 // Notation = Prefix `%rules` INCLUDE Rules OPTNL
+T-042:  // Prefix = 
+T-042: T-042 T-027 T-003 // Prefix = p: Prefix `%notation` ID
+T-042: T-042 T-028 T-003 // Prefix = p: Prefix `%package` ID
+T-042: T-042 T-024 T-003 // Prefix = p: Prefix `%path` ID
+T-042: T-042 T-036 T-003 // Prefix = p: Prefix `%tables` ID
+T-042: T-042 T-034 T-005 // Prefix = p: Prefix `%include` CODE
+T-042: T-042 T-029 T-045 // Prefix = p: Prefix `%token` TypedTerminals
+T-042: T-042 T-030 T-045 // Prefix = p: Prefix `%left` TypedTerminals
+T-042: T-042 T-031 T-045 // Prefix = p: Prefix `%right` TypedTerminals
+T-042: T-042 T-032 T-045 // Prefix = p: Prefix `%non` TypedTerminals
+T-042: T-042 T-035 T-045 // Prefix = p: Prefix `%prec` TypedTerminals
+T-042: T-042 T-037 T-003 // Prefix = p: Prefix `%dialect` ID
+T-042: T-042 T-038 T-003 // Prefix = p: Prefix `%scalalr` ID
+T-042: T-042 T-039 T-003 // Prefix = p: Prefix `%signature` ID
+T-043: T-034 T-005 T-023 // INCLUDE = `%include` CODE SEPARATOR
+T-043:  // INCLUDE = 
+T-044:  // OPTNL = 
+T-044: T-023 // OPTNL = SEPARATOR
+T-045:  // TypedTerminals = 
+T-045: T-046 T-045 // TypedTerminals = TypedTerminal TypedTerminals
+T-046: T-003 T-013 T-059 // TypedTerminal = ID `:` Type
+T-046: T-003 T-016 T-059 T-017 // TypedTerminal = ID `(` Type `)`
+T-046: T-003 // TypedTerminal = ID
+T-047: T-048 // Rules = Rule
+T-047: T-047 T-023 T-048 // Rules = Rules SEPARATOR Rule
+T-048: T-050 T-011 T-049 T-051 // Rule = LHS `=` OptBar RHS
+T-049: T-012 // OptBar = `|`
+T-049:  // OptBar = 
+T-050: T-003 T-013 T-059 // LHS = ID `:` Type
+T-050: T-003 // LHS = ID
+T-051: T-052 // RHS = Production
+T-051: T-052 T-012 T-051 // RHS = Production `|` RHS
+T-052: T-053 T-057 T-058 // Production = NamedFields Action Precedence
+T-053: T-026 // NamedFields = `%empty`
+T-053: T-054 // NamedFields = NamedField
+T-053: T-054 T-053 // NamedFields = NamedField NamedFields
+T-054: T-055 // NamedField = FIELD
+T-054: T-003 T-013 T-055 // NamedField = theFieldName: ID `:` theName: FIELD
+T-055: T-003 // FIELD = ID
+T-055: T-016 T-053 T-017 T-056 // FIELD = `(` NamedFields `)` REPEAT
+T-055: T-016 T-053 T-017 T-019 T-019 T-019 // FIELD = `(` NamedFields `)` `.` `.` `.`
+T-056: T-022 // REPEAT = `?`
+T-056: T-021 // REPEAT = `*`
+T-056: T-020 // REPEAT = `+`
+T-056: T-021 T-019 T-019 // REPEAT = `*` `.` `.`
+T-056: T-020 T-019 T-019 // REPEAT = `+` `.` `.`
+T-057:  // Action = 
+T-057: T-005 // Action = CODE
+T-058:  // Precedence = 
+T-058: T-035 T-003 // Precedence = `%prec` ID
+T-059: T-003 // Type = ID
+T-059: T-003 T-008 T-060 T-009 // Type = ID `[` Types `]`
+T-059: T-016 T-060 T-017 // Type = `(` Types `)`
+T-059: T-016 T-017 // Type = `(` `)`
+T-060: T-059 // Types = Type
+T-060: T-059 T-018 T-060 // Types = Type `,` Types

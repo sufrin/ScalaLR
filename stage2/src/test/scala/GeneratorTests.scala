@@ -683,3 +683,66 @@ exprs: (List[Expr]) =
         |   exprs `,` expr  { $expr :: $exprs }
 
  """)
+
+object testEllipsis extends Test("-Lsym -Lsyn")(
+  """
+%notation Ell
+%package  org.ell
+%path     ""
+%tables   lr
+
+%token a: String b: String c: String ';'
+
+%rules
+
+letter: String = a | b | c
+
+ellipsis: List[String]  = ls: (letter ';')... '.' {$ls}
+
+foo: Option[String] = l: (letter)? {$l}
+
+ellipsis1 = ls: (letter ';')* '.' {$ls}
+
+ellipsis2 = ls: (';' letter)+..  '.' {$ls}
+
+ellipsis3 = first: (letter)?     { $first.toList }
+          | ls: (';' letter)+  { $ls}
+
+thing: List[String] = '{' ellipsis3 '}' { $ellipsis3 }
+
+  """)
+
+object testEllipsis2 extends Test("-Lsym -Lsyn")(
+  """
+%notation Ell
+%package  org.ell
+%path     ""
+%tables   lr
+
+%token a: String b: String c: String ';'
+
+%rules
+
+letter: String = a | b | c
+
+LetterSemiEllipsis: List[String]  = '{' ls: (letter ';')...  {$ls};
+
+LetterSemiStar: List[String]  = '{' ls: (letter ';')*  {$ls};
+
+LetterLetterStar: List[String]  = '{' ls: (letter letter)*  {$ls};
+
+LetterSemiPlus: List[String]  = '{' ls: (letter ';')+  {$ls};
+
+LetterSemiStarDot: List[String]  = '{' ls: (letter ';')*..  {$ls};
+
+LetterStarDot: List[String]  = '{' ls: (letter)*..  {$ls};
+
+LetterSemiPlusDot: List[String]  = '{' ls: (letter ';')+..  {$ls};
+
+
+
+ellipsos: List[String]  = '{' ls: (letter )...  {$ls}
+
+
+  """)
+

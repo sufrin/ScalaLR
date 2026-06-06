@@ -248,44 +248,95 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
  /* REPEAT: Repeat = `+` `.` `.` { RightOneOrMore }  */
  case 47 => 
   { case List(_, _, _) =>  RightOneOrMore } 
- /* Action: Option[Expression] =  { None }  */
+ /* Precedence: Option[Name] =  { None }  */
  case 48 => 
   { case List() =>  None } 
- /* Action: Option[Expression] = CODE { Some(Expression($CODE)) }  */
- case 49 => 
-  { case List(dol$CODE: String) =>  Some(Expression(dol$CODE)) } 
- /* Precedence: Option[Name] =  { None }  */
- case 50 => 
-  { case List() =>  None } 
  /* Precedence: Option[Name] = `%prec` ID { Some($ID) }  */
- case 51 => 
+ case 49 => 
   { case List(_, dol$ID: org.sufrin.scalalr.stage2.AST.Name) =>  Some(dol$ID) } 
  /* Type: SymbolType = ID { Type($ID.withoutQuotes, Nil, $START) }  */
- case 52 => 
+ case 50 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
         Type(dol$ID.withoutQuotes, Nil, dol$START)
   }
  /* Type: SymbolType = ID `[` Types `]` { Type($ID.withoutQuotes, $Types, $START) }  */
- case 53 => 
+ case 51 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name, _, dol$Types: List[Type @unchecked], _) => 
         Type(dol$ID.withoutQuotes, dol$Types, dol$START)
   }
  /* Type: SymbolType = `(` Types `)` { makeTupleType($Types, $START) }  */
- case 54 => 
+ case 52 => 
   { case List(_, dol$Types: List[Type @unchecked], _) => 
         makeTupleType(dol$Types, dol$START)
   }
  /* Type: SymbolType = `(` `)` { Type("Unit", Nil, $START) }  */
- case 55 => 
+ case 53 => 
   { case List(_, _) =>  Type("Unit", Nil, dol$START) } 
  /* Types: List[Type] = Type { List($Type) }  */
- case 56 => 
+ case 54 => 
   { case List(dol$Type: SymbolType) =>  List(dol$Type) } 
  /* Types: List[Type] = Type `,` Types { $Type :: $Types }  */
- case 57 => 
+ case 55 => 
   { case List(dol$Type: SymbolType, _, dol$Types: List[Type @unchecked]) => 
         dol$Type :: dol$Types
   }
+ /* Action: Option[Expression] =  { None }  */
+ case 56 => 
+  { case List() =>  None } 
+ /* Action: Option[Expression] = CODE { Some(CodeExpression($CODE)) }  */
+ case 57 => 
+  { case List(dol$CODE: String) =>  Some(CodeExpression(dol$CODE)) } 
+ /* Action: Option[Expression] = `=>` Scala { Some(ScalaExpression($Scala, $START)) }  */
+ case 58 => 
+  { case List(_, dol$Scala: Scala) =>  Some(ScalaExpression(dol$Scala, dol$START)) } 
+ /* Scala: Scala = ScalaAtom { $ScalaAtom }  */
+ case 59 => 
+  { case List(dol$ScalaAtom: Scala) =>  dol$ScalaAtom } 
+ /* Scala: Scala = fun: ScalaAtom `(` args: Scalas `)` { Apply($fun, $args) }  */
+ case 60 => 
+  { case List(dol$fun: Scala, _, dol$args: List[Scala @unchecked], _) => 
+        Apply(dol$fun, dol$args)
+  }
+ /* Scala: Scala = lhs: Scala `.` rhs: Scala { Dot($lhs, $rhs) }  */
+ case 61 => 
+  { case List(dol$lhs: Scala, _, dol$rhs: Scala) =>  Dot(dol$lhs, dol$rhs) } 
+ /* Scala: Scala = lhs: Scala `::` rhs: Scala { Infix("::", $lhs, $rhs) }  */
+ case 62 => 
+  { case List(dol$lhs: Scala, _, dol$rhs: Scala) =>  Infix("::", dol$lhs, dol$rhs) } 
+ /* Scala: Scala = lhs: Scala `+` rhs: Scala { Infix("+", $lhs, $rhs) }  */
+ case 63 => 
+  { case List(dol$lhs: Scala, _, dol$rhs: Scala) =>  Infix("+", dol$lhs, dol$rhs) } 
+ /* Scala: Scala = lhs: Scala `-` rhs: Scala { Infix("-", $lhs, $rhs) }  */
+ case 64 => 
+  { case List(dol$lhs: Scala, _, dol$rhs: Scala) =>  Infix("-", dol$lhs, dol$rhs) } 
+ /* Scalas: List[Scala] =  { Nil }  */
+ case 65 => 
+  { case List() =>  Nil } 
+ /* Scalas: List[Scala] = ScalaPlus { $ScalaPlus.reverse }  */
+ case 66 => 
+  { case List(dol$ScalaPlus: List[Scala @unchecked]) =>  dol$ScalaPlus.reverse } 
+ /* ScalaPlus: List[Scala] = Scala { List($Scala) }  */
+ case 67 => 
+  { case List(dol$Scala: Scala) =>  List(dol$Scala) } 
+ /* ScalaPlus: List[Scala] = ScalaPlus `,` Scala { $Scala :: $ScalaPlus }  */
+ case 68 => 
+  { case List(dol$ScalaPlus: List[Scala @unchecked], _, dol$Scala: Scala) => 
+        dol$Scala :: dol$ScalaPlus
+  }
+ /* ScalaAtom: Scala = ID { Id($ID, $START) }  */
+ case 69 => 
+  { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) =>  Id(dol$ID, dol$START) } 
+ /* ScalaAtom: Scala = `$` ID { Dollar(Id($ID, $START)) }  */
+ case 70 => 
+  { case List(_, dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
+        Dollar(Id(dol$ID, dol$START))
+  }
+ /* ScalaAtom: Scala = NUM { Num($NUM, $START) }  */
+ case 71 => 
+  { case List(dol$NUM: String) =>  Num(dol$NUM, dol$START) } 
+ /* ScalaAtom: Scala = `(` Scala `)` { Bra($Scala) }  */
+ case 72 => 
+  { case List(_, dol$Scala: Scala, _) =>  Bra(dol$Scala) } 
 
  }
 

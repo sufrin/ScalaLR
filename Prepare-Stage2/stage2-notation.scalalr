@@ -31,11 +31,15 @@
   COMMENT:(String)
   LEXICALERROR:(String)
   `[` `]` `;` `=` `|`  `:`  // Left here as a test of diagnostics
-  `{` `}` `(` `)` ',' '.' '+' '*' '?' SEPARATOR
+  `{` `}` `(` `)` ',' '*' '?' SEPARATOR
   `%path`       `%type`     `%empty`    `%notation`     `%package` `%token`
   `%left`       `%right`    `%non`      `%rules`
   `%include`    `%prec`     `%tables`   `%dialect`      `%scalalr` `%signature`
 
+
+%right '::'
+%left  '+' '-'
+%right '.'
 
 %rules
 
@@ -162,11 +166,11 @@ REPEAT: Repeat  = '?'           { MaybeOne }
                 | '*' '.' '.'   { RightNoneOrMore }
                 | '+' '.' '.'   { RightOneOrMore }
 
-Action:(Option[Expression]) = %empty { None } | CODE { Some(Expression($CODE)) }
 
-Precedence: (Option[Name])  = %empty { None } | `%prec` ID { Some($ID)}
+Precedence: (Option[Name])  = %empty { None } | `%prec` ID { Some($ID) }
 
-Type:(SymbolType) = ID               { Type($ID.withoutQuotes, Nil, $START) }
+Type:(SymbolType) =
+              ID               { Type($ID.withoutQuotes, Nil, $START) }
             | ID '[' Types ']' { Type($ID.withoutQuotes, $Types, $START) }
             | '('    Types ')' { makeTupleType($Types, $START) }
             | '(' ')'          { Type("Unit", Nil, $START) }
@@ -174,3 +178,28 @@ Type:(SymbolType) = ID               { Type($ID.withoutQuotes, Nil, $START) }
 
 Types:(List[Type]) = Type            { List($Type) }
                    | Type  ',' Types { $Type :: $Types }
+
+
+Action:(Option[Expression]) = %empty     { None }
+                            | CODE       { Some(CodeExpression($CODE)) }
+                            | '=>' Scala { Some(ScalaExpression($Scala, $START)) }
+
+// MicroScala notation (for actions)
+
+Scala: Scala = ScalaAtom
+             | fun: ScalaAtom '(' args: Scalas ')'   { Apply($fun, $args) }
+             | lhs: Scala '.' rhs: Scala             { Dot($lhs, $rhs) }
+             | lhs: Scala `::` rhs: Scala            { Infix("::", $lhs, $rhs) }
+             | lhs: Scala `+` rhs: Scala             { Infix("+", $lhs, $rhs) }
+             | lhs: Scala `-` rhs: Scala             { Infix("-", $lhs, $rhs) }
+
+Scalas: List[Scala] = %empty { Nil }
+                    | ScalaPlus { $ScalaPlus.reverse }
+
+ScalaPlus: List[Scala] = Scala               { List($Scala) }
+                       | ScalaPlus ',' Scala { $Scala :: $ScalaPlus }
+
+ScalaAtom: Scala = ID                                    { Id($ID, $START) }
+                 | '$' ID                                { Dollar(Id($ID, $START)) }
+                 | NUM                                   { Num($NUM, $START) }
+                 | '(' Scala ')'                         { Bra($Scala)}

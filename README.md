@@ -13,22 +13,27 @@ whose state and intermediate results can be inspected "in flight".
 
 ## Getting started (users)
 
-The current version of the tool, together with all the runtime libraries
-a generated parser needs is packaged in a java-runnable jar in:
+The current [June 2025] version of the tool is packaged in a 
+universally executable jar[*], and can be run by
 
-         scalalr.jar
+         scalalr [arguments]
 
-Run it with
+The runtime library needed  on the classpath when compiling
+or running a generated parser is
 
-         java -jar scalalr.jar [arguments]
-
-(or an equivalent script). The same jar should be on the classpath when compiling
-or running a generated parser. 
+         scalalrruntime.jar
 
 **Requirement**: a `bison (GNU Bison) 3.8.2` (or a later consistent version) must be accessible
 on the current path. We use only the publicly documented features of Bison for generating
 tables.
 
+**[*] Universally executable jars** are regular java jar files prefixed with all that
+is needed to run them directly on Linux or OS/X machines. For the moment running
+on a Windows machine requires
+
+         java -jar scalalr [arguments]
+
+All forms of invocation require the presence of a java implementation.
 
 ## Host notation
 The host notation for grammar productions and priorities is reminiscent of
@@ -95,13 +100,11 @@ expr: Expr = ID                  { Id($ID, $START) }                    // §4,
            
 ````
 
-
-
 3. Nonterminal symbols have types specified explicitly on the left hand side of
    their definition.
 
 4. The abstract syntax node (or other value) represented by each production is specified as a Scala block
-   expression at its end. Such expressions may refer to
+   expression at its end *whose Scala syntax is left unchecked until Scala compilation*. Such expressions may refer to
    the values of symbols (terminal or nonterminal) that appear in the production,
    by `$label` (for a symbol labelled in the production by prefixing it with `label:`),
    or by `$symbol` when that `symbol` appears unlabelled and uniquely.
@@ -143,6 +146,47 @@ Documentation is evolving but for the moment it should be sufficient for a knowl
 reader to inspect the source texts of the notation specifications and driver programs
 to be found within directories nested within `examples`.
 
+### Alternative Abstract Syntax Notation [June 2026]
+The abstract syntax node (or other value) represented by each production 
+can also be specified in a more rigorously checked subset of Scala
+expression notation. To do this replace the code-bracketed
+            
+      { abstract syntax expression in Scala }
+
+with 
+
+      => abstract syntax expression in Scala
+
+The example above can be rewritten this way
+````
+exprs: (List[Expr]) = expr            => List($expr)                    // §3, §4
+                  |   exprs `;` expr  => $expr::$exprs                  // §4
+                  
+
+expr: Expr = ID                  => Id($ID, $START)                     // §4, 
+           | l:expr `*` r:expr   => Binop("*", $l, $r, $START) 
+           | l:expr `+` r:expr   => Binop("+", $l, $r, $START) 
+           | "(" expr ")"        => Bra($expr, $START)                  //§5
+           | `[` expr `]`        => $expr 
+           
+````
+Our intention (see **Road Map**) is eventually to be able to dispense
+with the dollar notation in the arrow forms, whereafter (for example)
+ 
+         | l:expr `*` r:expr   => Binop("*", l, r)
+would be represented as the Scala partial function
+            
+         { List(l: Expr, _, r: Expr) => Binop("*", l, r) }
+
+whose bound variables are the names of the value-carrying (ie nontrivially typed) 
+terminal symbols in the production.
+
+At the moment the representarion is
+
+         { List(dol$l: Expr, _, dol$r: Expr) => Binop("*", dol$l, dol$r) }
+
+
+
 ## Implementations
 
 
@@ -153,30 +197,16 @@ the source notation, and to do any necessary detailed diagnostics on the
 grammar. 
 
 ### Production-quality Implementations
-There are (now: early May 2026) several stable production quality implementations of the
+There are (now: early June 2026) several stable production quality implementations of the
 program, bootstrapped from an original handwritten parser and
 a simple code generator.
 
-1. The `scalalrboot` program uses the original bootstrap handwritten parser and
-   the original bootstrap code generator. Guess why we called it
-   `scalalrboot`...
-
-````bash
-      Usage: scalalrboot [--output=<outputpath>] [ <file> ...]
-````
-
-2. The `scalalrstage1` program  has a notation-descripion language that is  lot like
-   the bootstrap generator.
+The main production release is the `scalalr` program described above. It is
+present in the project root. It generates fairly good error diagnostics: both
+when something is wrong with the notation description it is working on, and also when the
+grammar rules give rise to LR parsing conflicts.
 ````bash  
-  Usage: stage1 [--output=<outputpath> (default STAGE1OUTPUT) | -o <outputpath>] [ <file> ...]
-```` 
-
-2. The `scalalrstage2` program  has a very forgiving notation-descripion language, and many more 
-options than its predecessor. More importantly it generates fairly good error diagnostics: both
-when something is wrong with the notation description it is working on, and also when the 
-grammar rules give rise to LR parsing conflicts. 
-````bash  
-      Usage: scalalrstage2 OPTION ... PATH ...
+      Usage: scalalr OPTION... PATH...
       Treat (each) PATH as the  path in the filestore to scalalr SOURCE  and generate the
       scala files corresponding to the %notation it defines.
       
@@ -191,6 +221,10 @@ grammar rules give rise to LR parsing conflicts.
       -c         generate detailed conflict report (with "counterexample"
                  derivations -- these can take a long time to generate, and
                  timeouts operate)
+      -rose      generate a RoseTreeReduction.reduction that when
+                 used in place of the regular reduction component 
+                 generates a rose-tree that shows a useful history of
+                 the parse.
       
       LOGGING OPTIONS
       -Lsym      show an inventory of the symbols, their types, and their definitions
@@ -206,8 +240,31 @@ grammar rules give rise to LR parsing conflicts.
       -#         INT     first SOURCE line number
       -##        INT     first SOURCE column number
       -s         SOURCE
-
 ````
+
+Earlier releases, and experimental implementations are in the `scripts/` 
+directory 
+
+1. The `scalalrboot` program uses the original bootstrap handwritten parser and
+   the original bootstrap code generator. Guess why we called it
+   `scalalrboot`...
+
+````bash
+      Usage: scalalrboot [--output=<outputpath>] [ <file> ...]
+````
+
+2. The `scalalrstage1` program  has a notation-descripion language that is  lot like
+   the bootstrap generator.
+````bash  
+  Usage: scalalrstage1 [--output=<outputpath> (default STAGE1OUTPUT) | -o <outputpath>] [ <file> ...]
+```` 
+
+2. The `scalalrstage2` program  is now essentially the same as `scalalr`
+````bash  
+  Usage: scalalrstage2 OPTION... PATH...
+```` 
+
+
 
 ### Generated files
 
@@ -485,7 +542,7 @@ here in no particular order.
 
 4. Checking the form of result expressions for plausibility so as to avoid discovering 
 certain kinds of Scala error after code-generation and during compilation phase.
-**[IN PROGRESS June '26]**
+**[IN PROGRESS June '26]** 
 
 The following is a "maybe sometime" aspiration.
 5. Additional higher level constructs that support "say it once"
@@ -503,10 +560,10 @@ abstract syntax has been simplified:
 then a concise way of expressing `Expr` yielding productions would use a "result"
 arrow that would be translated into ordinary code sections, for example: 
 ````
-expr: Expr = name: ID              -> Id               
-           | l:expr op: `*` r:expr -> Binop
-           | l:expr op: `+` r:expr -> Binop 
-           | "(" expr ")"          -> Bra      
+expr: Expr = name: ID              => Id               
+           | l:expr op: `*` r:expr => Binop
+           | l:expr op: `+` r:expr => Binop 
+           | "(" expr ")"          => Bra      
            | `[` expr `]`          { $expr }
 ````
 and the generator could  turn this mechanically into

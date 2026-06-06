@@ -249,48 +249,115 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
  /* REPEAT: Repeat = "+" "." "." {  RightOneOrMore } */
  case 47 => 
   { case List(_, _, _) =>    RightOneOrMore  } 
- /* Action: Option[Expression] =  {  None } */
+ /* Precedence: Option[Name] =  {  None } */
  case 48 => 
   { case List() =>    None  } 
- /* Action: Option[Expression] = CODE {  Some(Expression($CODE)) } */
+ /* Precedence: Option[Name] = "%prec" ID {  Some($ID) } */
  case 49 => 
-  { case List(dol$CODE: String) => 
-          Some(Expression(dol$CODE)) 
-  }
- /* Precedence: Option[Name] =  {  None } */
- case 50 => 
-  { case List() =>    None  } 
- /* Precedence: Option[Name] = "%prec" ID {  Some($ID)} */
- case 51 => 
-  { case List(_, dol$ID: org.sufrin.scalalr.stage2.AST.Name) =>    Some(dol$ID) } 
+  { case List(_, dol$ID: org.sufrin.scalalr.stage2.AST.Name) =>    Some(dol$ID)  } 
  /* Type: SymbolType = ID {  Type($ID.withoutQuotes, Nil, $START) } */
- case 52 => 
+ case 50 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
           Type(dol$ID.withoutQuotes, Nil, dol$START) 
   }
  /* Type: SymbolType = ID "[" Types "]" {  Type($ID.withoutQuotes, $Types, $START) } */
- case 53 => 
+ case 51 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name, _, dol$Types: List[Type @unchecked], _) => 
           Type(dol$ID.withoutQuotes, dol$Types, dol$START) 
   }
  /* Type: SymbolType = "(" Types ")" {  makeTupleType($Types, $START) } */
- case 54 => 
+ case 52 => 
   { case List(_, dol$Types: List[Type @unchecked], _) => 
           makeTupleType(dol$Types, dol$START) 
   }
  /* Type: SymbolType = "(" ")" {  Type("Unit", Nil, $START) } */
- case 55 => 
+ case 53 => 
   { case List(_, _) => 
           Type("Unit", Nil, dol$START) 
   }
  /* Types: List[Type] = Type {  List($Type) } */
- case 56 => 
+ case 54 => 
   { case List(dol$Type: SymbolType) =>    List(dol$Type)  } 
  /* Types: List[Type] = Type "," Types {  $Type :: $Types } */
- case 57 => 
+ case 55 => 
   { case List(dol$Type: SymbolType, _, dol$Types: List[Type @unchecked]) => 
           dol$Type :: dol$Types 
   }
+ /* Action: Option[Expression] =  {  None } */
+ case 56 => 
+  { case List() =>    None  } 
+ /* Action: Option[Expression] = CODE {  Some(Expression($CODE)) } */
+ case 57 => 
+  { case List(dol$CODE: String) => 
+          Some(Expression(dol$CODE)) 
+  }
+ /* Action: Option[Expression] = "=>" Scala {  Some(Expression($Scala.forScala)) } */
+ case 58 => 
+  { case List(_, dol$Scala: Scala) => 
+          Some(Expression(dol$Scala.forScala)) 
+  }
+ /* Scala: Scala = ScalaAtom {} */
+ case 59 => 
+  { case List(dol$ScalaAtom: Scala) =>   } 
+ /* Scala: Scala = fun: ScalaAtom "(" args: Scalas ")" {  Apply($fun, $args) } */
+ case 60 => 
+  { case List(dol$fun: Scala, _, dol$args: List[Scala @unchecked], _) => 
+          Apply(dol$fun, dol$args) 
+  }
+ /* Scala: Scala = lhs: Scala "." rhs: Scala {  Dot($lhs, $rhs) } */
+ case 61 => 
+  { case List(dol$lhs: Scala, _, dol$rhs: Scala) => 
+          Dot(dol$lhs, dol$rhs) 
+  }
+ /* Scala: Scala = lhs: Scala "::" rhs: Scala {  Infix("::", $lhs, $rhs) } */
+ case 62 => 
+  { case List(dol$lhs: Scala, _, dol$rhs: Scala) => 
+          Infix("::", dol$lhs, dol$rhs) 
+  }
+ /* Scala: Scala = lhs: Scala "+" rhs: Scala {  Infix("+", $lhs, $rhs) } */
+ case 63 => 
+  { case List(dol$lhs: Scala, _, dol$rhs: Scala) => 
+          Infix("+", dol$lhs, dol$rhs) 
+  }
+ /* Scala: Scala = lhs: Scala "-" rhs: Scala {  Infix("-", $lhs, $rhs) } */
+ case 64 => 
+  { case List(dol$lhs: Scala, _, dol$rhs: Scala) => 
+          Infix("-", dol$lhs, dol$rhs) 
+  }
+ /* Scalas: List[Scala] =  {  Nil } */
+ case 65 => 
+  { case List() =>    Nil  } 
+ /* Scalas: List[Scala] = ScalaPlus {  $ScalaPlus.reverse } */
+ case 66 => 
+  { case List(dol$ScalaPlus: List[Scala @unchecked]) => 
+          dol$ScalaPlus.reverse 
+  }
+ /* ScalaPlus: List[Scala] = Scala {  List($Scala) } */
+ case 67 => 
+  { case List(dol$Scala: Scala) =>    List(dol$Scala)  } 
+ /* ScalaPlus: List[Scala] = ScalaPlus "," Scala {  $Scala :: $ScalaPlus } */
+ case 68 => 
+  { case List(dol$ScalaPlus: List[Scala @unchecked], _, dol$Scala: Scala) => 
+          dol$Scala :: dol$ScalaPlus 
+  }
+ /* ScalaAtom: Scala = ID {  Id($ID, $START) } */
+ case 69 => 
+  { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
+          Id(dol$ID, dol$START) 
+  }
+ /* ScalaAtom: Scala = "$" ID {  DollarId($ID, $START) } */
+ case 70 => 
+  { case List(_, dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
+          DollarId(dol$ID, dol$START) 
+  }
+ /* ScalaAtom: Scala = NUM {  Num($NUM, $START) } */
+ case 71 => 
+  { case List(dol$NUM: String) => 
+          Num(dol$NUM, dol$START) 
+  }
+ /* ScalaAtom: Scala = "(" Scala ")" {  Bra($Scala)} */
+ case 72 => 
+  { case List(_, dol$Scala: Scala, _) =>    Bra(dol$Scala) } 
  }
 
 case class PARSETREE(prod: String, rule: Int, trees:List[Any])
@@ -390,25 +457,55 @@ def parsetreereduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  
  case 47 => 
   { case trees$trees => PARSETREE("""REPEAT: Repeat = "+" "." "." {  RightOneOrMore }""", 47, trees$trees ) }
  case 48 => 
-  { case trees$trees => PARSETREE("""Action: Option[Expression] =  {  None }""", 48, trees$trees ) }
+  { case trees$trees => PARSETREE("""Precedence: Option[Name] =  {  None }""", 48, trees$trees ) }
  case 49 => 
-  { case trees$trees => PARSETREE("""Action: Option[Expression] = CODE {  Some(Expression($CODE)) }""", 49, trees$trees ) }
+  { case trees$trees => PARSETREE("""Precedence: Option[Name] = "%prec" ID {  Some($ID) }""", 49, trees$trees ) }
  case 50 => 
-  { case trees$trees => PARSETREE("""Precedence: Option[Name] =  {  None }""", 50, trees$trees ) }
+  { case trees$trees => PARSETREE("""Type: SymbolType = ID {  Type($ID.withoutQuotes, Nil, $START) }""", 50, trees$trees ) }
  case 51 => 
-  { case trees$trees => PARSETREE("""Precedence: Option[Name] = "%prec" ID {  Some($ID)}""", 51, trees$trees ) }
+  { case trees$trees => PARSETREE("""Type: SymbolType = ID "[" Types "]" {  Type($ID.withoutQuotes, $Types, $START) }""", 51, trees$trees ) }
  case 52 => 
-  { case trees$trees => PARSETREE("""Type: SymbolType = ID {  Type($ID.withoutQuotes, Nil, $START) }""", 52, trees$trees ) }
+  { case trees$trees => PARSETREE("""Type: SymbolType = "(" Types ")" {  makeTupleType($Types, $START) }""", 52, trees$trees ) }
  case 53 => 
-  { case trees$trees => PARSETREE("""Type: SymbolType = ID "[" Types "]" {  Type($ID.withoutQuotes, $Types, $START) }""", 53, trees$trees ) }
+  { case trees$trees => PARSETREE("""Type: SymbolType = "(" ")" {  Type("Unit", Nil, $START) }""", 53, trees$trees ) }
  case 54 => 
-  { case trees$trees => PARSETREE("""Type: SymbolType = "(" Types ")" {  makeTupleType($Types, $START) }""", 54, trees$trees ) }
+  { case trees$trees => PARSETREE("""Types: List[Type] = Type {  List($Type) }""", 54, trees$trees ) }
  case 55 => 
-  { case trees$trees => PARSETREE("""Type: SymbolType = "(" ")" {  Type("Unit", Nil, $START) }""", 55, trees$trees ) }
+  { case trees$trees => PARSETREE("""Types: List[Type] = Type "," Types {  $Type :: $Types }""", 55, trees$trees ) }
  case 56 => 
-  { case trees$trees => PARSETREE("""Types: List[Type] = Type {  List($Type) }""", 56, trees$trees ) }
+  { case trees$trees => PARSETREE("""Action: Option[Expression] =  {  None }""", 56, trees$trees ) }
  case 57 => 
-  { case trees$trees => PARSETREE("""Types: List[Type] = Type "," Types {  $Type :: $Types }""", 57, trees$trees ) }
+  { case trees$trees => PARSETREE("""Action: Option[Expression] = CODE {  Some(Expression($CODE)) }""", 57, trees$trees ) }
+ case 58 => 
+  { case trees$trees => PARSETREE("""Action: Option[Expression] = "=>" Scala {  Some(Expression($Scala.forScala)) }""", 58, trees$trees ) }
+ case 59 => 
+  { case trees$trees => PARSETREE("""Scala: Scala = ScalaAtom {}""", 59, trees$trees ) }
+ case 60 => 
+  { case trees$trees => PARSETREE("""Scala: Scala = fun: ScalaAtom "(" args: Scalas ")" {  Apply($fun, $args) }""", 60, trees$trees ) }
+ case 61 => 
+  { case trees$trees => PARSETREE("""Scala: Scala = lhs: Scala "." rhs: Scala {  Dot($lhs, $rhs) }""", 61, trees$trees ) }
+ case 62 => 
+  { case trees$trees => PARSETREE("""Scala: Scala = lhs: Scala "::" rhs: Scala {  Infix("::", $lhs, $rhs) }""", 62, trees$trees ) }
+ case 63 => 
+  { case trees$trees => PARSETREE("""Scala: Scala = lhs: Scala "+" rhs: Scala {  Infix("+", $lhs, $rhs) }""", 63, trees$trees ) }
+ case 64 => 
+  { case trees$trees => PARSETREE("""Scala: Scala = lhs: Scala "-" rhs: Scala {  Infix("-", $lhs, $rhs) }""", 64, trees$trees ) }
+ case 65 => 
+  { case trees$trees => PARSETREE("""Scalas: List[Scala] =  {  Nil }""", 65, trees$trees ) }
+ case 66 => 
+  { case trees$trees => PARSETREE("""Scalas: List[Scala] = ScalaPlus {  $ScalaPlus.reverse }""", 66, trees$trees ) }
+ case 67 => 
+  { case trees$trees => PARSETREE("""ScalaPlus: List[Scala] = Scala {  List($Scala) }""", 67, trees$trees ) }
+ case 68 => 
+  { case trees$trees => PARSETREE("""ScalaPlus: List[Scala] = ScalaPlus "," Scala {  $Scala :: $ScalaPlus }""", 68, trees$trees ) }
+ case 69 => 
+  { case trees$trees => PARSETREE("""ScalaAtom: Scala = ID {  Id($ID, $START) }""", 69, trees$trees ) }
+ case 70 => 
+  { case trees$trees => PARSETREE("""ScalaAtom: Scala = "$" ID {  DollarId($ID, $START) }""", 70, trees$trees ) }
+ case 71 => 
+  { case trees$trees => PARSETREE("""ScalaAtom: Scala = NUM {  Num($NUM, $START) }""", 71, trees$trees ) }
+ case 72 => 
+  { case trees$trees => PARSETREE("""ScalaAtom: Scala = "(" Scala ")" {  Bra($Scala)}""", 72, trees$trees ) }
  }
 
 }

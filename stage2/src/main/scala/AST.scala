@@ -11,10 +11,6 @@ object AST {
   def mangle(name: String): String = mangleDollar++name
   def mangle(name: Name): String   = mangleDollar++name.withoutQuotes // Design decision
 
-  case class Expression(val text: String)  {
-    override def toString: String = text.trim
-    def mangle: String = text.trim.replace("$", mangleDollar)
-  }
 
   class Terminal(val name: String)  {
     override def toString: String = name
@@ -64,7 +60,12 @@ object AST {
                         reduction:  Option[Expression],
                         precedence: Option[Name],
                         location:   SourceLocation) {
-    val code = if (reduction.isDefined) s" { ${reduction.get} } " else ""
+    val code = // if (reduction.isDefined) s" { ${reduction.get} } " else ""
+      reduction match {
+        case None => ""
+        case Some(CodeExpression(text))      => s" { ${text} } "
+        case Some(ScalaExpression(scala, _)) => s" => ${scala.forScala} "
+      }
     val prec = if (precedence.isDefined) s" %prec ${precedence.get}" else ""
 
     override def toString: String = s"${symbols.map(_.toString).mkString(" ")}$code$prec"
@@ -176,5 +177,75 @@ object AST {
   case object NoneOrMore        extends Repeat { override val toString: String = "*" }
   case object RightNoneOrMore   extends Repeat { override val toString: String = "*.." }  // right-recursive implementation
   case object RightOneOrMore    extends Repeat { override val toString: String = "+.." }  // right-recursive implementation
+
+
+  trait Expression {
+    def text: String
+    override def toString: String = text.trim
+    def mangle: String = text.trim.replace("$", mangleDollar)
+  }
+
+  case class CodeExpression(val text: String)  extends Expression {}
+
+  case class ScalaExpression(scala: Scala, START: SourceLocation)  extends Expression {
+    val text: String = scala.forScala
+  }
+
+  // MicroScala AST
+  trait Scala {
+    val forScala:  String
+    def free:      List[Name]
+    def decorated: List[Name]
+  }
+
+  case class Id(name: Name, START: SourceLocation) extends Scala {
+    val forScala = if (name.isQuoted) s""""${name.unQuoted}"""" else name.unQuoted
+    def free: List[Name] = List(name)
+    def decorated: List[Name] = Nil
+  }
+
+  case class Dollar(scala: Scala) extends Scala {
+    val forScala = s"$$${scala.forScala}"
+    def free: List[Name] = scala.free
+    override def decorated: List[Name] = scala.free
+  }
+
+  case class Num(forScala: String, START: SourceLocation) extends Scala {
+    def free: List[Name] = Nil
+    def decorated: List[Name] = Nil
+  }
+
+  case class Bra(scala: Scala) extends Scala {
+    val forScala = s"(${scala.forScala})"
+    def free: List[Name] = scala.free
+    def decorated: List[Name] = scala.decorated
+  }
+
+  case class Dot(l: Scala, r: Scala) extends Scala {
+    val forScala: String = s"${l.forScala}.${r.forScala}"
+    def free: List[Name] = l.free ++ r.free
+    def decorated: List[Name] = l.decorated++ r.decorated
+  }
+
+  case class Infix(op: String, l: Scala, r: Scala) extends Scala {
+    val forScala: String = s"${l.forScala}$op${r.forScala}"
+    def free: List[Name] = l.free ++ r.free
+    def decorated: List[Name] = l.decorated++ r.decorated
+
+  }
+
+  case class Apply(path: Scala, args: Seq[Scala]) extends Scala {
+    val forScala: String      = s"${path.forScala}(${args.map(_.forScala).mkString(", ")})"
+    def free: List[Name]      = {
+      path match {
+        case Id(name, _) => (if (name.unQuoted(0).isUpper) Nil else path.free) ++ args.flatMap(_.free)
+        case _ => path.free ++ args.flatMap(_.free)
+      }
+    }
+
+    def decorated: List[Name] = path.decorated ++ args.flatMap(_.decorated)
+
+  }
+
 
 }

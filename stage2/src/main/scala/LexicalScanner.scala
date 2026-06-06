@@ -60,7 +60,29 @@ object LexicalScanner {
       while (hasChar && theChar.isWhitespace) nextChar()
     }
 
-    def isBisonic(c: Char): Boolean = c.isLetterOrDigit || c=='.' || c=='_'
+    def nextNumber(intPart: Seq[Char]) : Token = {
+      theChar match {
+        case '.' =>
+          nextChar()
+          val fracPart = chars.takeWhile(c=>c.isDigit).prepended('.')// ddd.ddd
+          theChar.toLower match {
+            case 'e' =>
+              nextChar()
+              val expPart = chars.takeWhile(c=>c.isDigit).prepended('e')
+              NUM((intPart ++ fracPart ++ expPart).mkString)
+            case _ =>
+              NUM((intPart ++ fracPart).mkString)
+          }
+        case 'e' =>
+          nextChar()
+          val expPart = chars.takeWhile(c=>c.isDigit).prepended('e')
+          NUM((intPart ++ expPart).mkString)
+        case _   =>
+          NUM(intPart.mkString)
+      }
+    }
+
+    def isBisonic(c: Char): Boolean = c.isLetterOrDigit || c=='_' || c=='$' || (!enableSEPARATOR && c=='.')
 
     def hasNext: Boolean = chars.hasCurrent
     def next(): Token = {
@@ -76,13 +98,25 @@ object LexicalScanner {
         case '[' => afterNextChar(`[`)
         case ']' => afterNextChar(`]`)
         case '|' => afterNextChar(`|`)
-        case '=' => afterNextChar(`=`)
         case ',' => afterNextChar(`,`)
-        case ':' => afterNextChar(`:`)
         case '?' => afterNextChar(`?`)
         case '*' => afterNextChar(`*`)
         case '+' => afterNextChar(`+`)
         case '.' => afterNextChar(`.`)
+        case '$' => afterNextChar(`$`)
+        case ':' =>
+          nextChar()
+          theChar match {
+            case ':'   =>  afterNextChar(`::`)
+            case other => `:`
+          }
+        case '=' =>
+          nextChar()
+          theChar match {
+            case '>'   => afterNextChar(`=>`)
+            case other => `=`
+          }
+
 
         case '%' =>
           nextChar()
@@ -132,6 +166,19 @@ object LexicalScanner {
         case '"'  => nextChar(); afterNextChar(makeID(chars.takeWhile( c => c!='"').mkString(""), true, startLocation))
         case '\'' => nextChar(); afterNextChar(makeID(chars.takeWhile( c => c!='\'').mkString(""), true, startLocation))
         case '`'  => nextChar(); afterNextChar(makeID(chars.takeWhile( c => c!='`').mkString(""), true, startLocation))
+
+        case '0' =>
+          nextChar()
+          theChar.toLower match {
+            case 'x' =>
+              nextChar()
+              NUM(chars.takeWhile(c=>c.isDigit || ("abcdef" contains c.toLower)).mkString)
+            case other =>
+              nextNumber(chars.takeWhile(c=>c.isDigit).prepended('0'))
+          }
+        case c if c.isDigit =>
+          val intPart = chars.takeWhile(c=>c.isDigit)
+          nextNumber(intPart)
 
         case c if c.isLetter =>
           val prefix = chars.takeWhile(isBisonic)

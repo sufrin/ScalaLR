@@ -86,6 +86,7 @@
     "Application.test4.executor": "Run",
     "Application.test5.executor": "Run",
     "Application.test6.executor": "Run",
+    "Application.testArrow.executor": "Run",
     "Application.testAuto.executor": "Run",
     "Application.testAutoMisc.executor": "Run",
     "Application.testAutoWarn.executor": "Run",
@@ -126,7 +127,20 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.testEllipsis2">
+  <component name="RunManager" selected="Application.testArrow">
+    <configuration name="testArrow" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testArrow" />
+      <module name="scalalr.stage2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.sufrin.scalalr.stage2.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="testAuto" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testAuto" />
       <module name="scalalr.stage2" />
@@ -179,19 +193,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="testRedOx" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="org.sufrin.scalalr.stage2.testRedOx" />
-      <module name="scalalr.stage2" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.sufrin.scalalr.stage2.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration default="true" type="JetRunConfigurationType">
       <module name="scalalr_3679" />
       <method v="2">
@@ -207,11 +208,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.testEllipsis2" />
+        <item itemvalue="Application.testArrow" />
         <item itemvalue="Application.testAuto" />
+        <item itemvalue="Application.testEllipsis2" />
         <item itemvalue="Application.testEllipsis" />
         <item itemvalue="Application.testEllipsi2" />
-        <item itemvalue="Application.testRedOx" />
       </list>
     </recent_temporary>
   </component>
@@ -267,12 +268,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="scala-line">
           <url>file://$PROJECT_DIR$/stage2/src/test/scala/GeneratorTests.scala</url>
-          <line>400</line>
+          <line>418</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="scala-line">
           <url>file://$PROJECT_DIR$/stage2/src/test/scala/GeneratorTests.scala</url>
-          <line>390</line>
+          <line>408</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="scala-line">
@@ -297,8 +298,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="scala-line">
           <url>file://$PROJECT_DIR$/stage2/src/test/scala/GeneratorTests.scala</url>
-          <line>735</line>
+          <line>753</line>
           <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="scala-line">
+          <url>file://$PROJECT_DIR$/stage2/src/main/scala/Normalization.scala</url>
+          <line>216</line>
+          <option name="timeStamp" value="15" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -383,9 +383,27 @@ object testAuto extends Test("--output=TEST-GENERATED  -Lsym -Lsyn")(
      }
      %rules
        expr: Expr =
-             ID '(' exprlist: (',' expr)* ')'   { Apply($ID, $exprlist) }
-           |    '{' exprlist: (';' expr)+ '}'   { Sequence($ID, $exprlist) }
-           | "RETURN" optexpr:  (expr)? ';'     { Return($optexpr) }
+             ID '(' exprlist: (',' expr)* ')'   => Apply($exprlist, $expr)
+           |    '{' exprlist: (';' expr)+ '}'   => Sequence($ID, $exprlist)
+           |    "RETURN" optexpr:  (expr)? ';'  => Return($optexpr)
+  """)
+
+object testArrow extends Test("--output=TEST-GENERATED  -Lsym -Lsyn")(
+  """
+     %notation  Arrow
+     %package   arrow.Arrow
+     %path      "arrow"
+     %token ID(String)
+     %include {
+
+     }
+     %rules
+       expr: Expr =
+             ID '(' exprlist: (',' expr)* ')'   => Apply(exprlist, $expr)
+           |    '{' exprlist: (';' expr)+ '}'   => Sequence(ID, $exprlist.length + 4)
+           | "RETURN" optexpr:  (expr)? ';'     => Return($optexpr.get :: Nil)
+           | "RETURN" optexpr:  (expr)? ';'     => Return($optexpr.get :: Nil)
+           | l: expr '+' r: expr ';'     => Operate("+", $l, r)
   """)
 
 object testAutoMisc extends Test("--output=TEST-GENERATED  -Lsym -Lsyn")(

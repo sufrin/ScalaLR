@@ -44,10 +44,10 @@ object Normalization  {
     }
 
     def PROD(symbols: NamedField*)(reduction: String): Production =
-       Production(symbols, Some(Expression(reduction)), None, START)
+       Production(symbols, Some(CodeExpression(reduction)), None, START)
 
     def PRODUCTION(symbols: Iterable[NamedField], after: Name*)(reduction: String): Production =
-       Production(symbols.toList ++ after.map(name => NamedField(None, name, START)), Some(Expression(reduction)), None, START)
+       Production(symbols.toList ++ after.map(name => NamedField(None, name, START)), Some(CodeExpression(reduction)), None, START)
 
     def LIST(theType: SymbolType) = ListType(theType, START)
 
@@ -207,20 +207,20 @@ object Normalization  {
       symbolTable.symbolType.get(field.theField) match {
         case None =>
           warn(s"Named symbol $field has no type")
-          Expression(" () ")
+          CodeExpression(" () ")
         case Some(theType) =>
         val scalaType = theType.scalaTypeName
         field.theFieldName match {
           case Some(name) =>
             if (theType == NoType) {
               warn(s"Named symbol ${name}: ${Type} carries no value")
-              Expression(s"${mangle(name)}")
+              CodeExpression(s"${mangle(name)}")
             }
             else
-              Expression(s"${mangle(name)}")
+              CodeExpression(s"${mangle(name)}")
 
           case None =>
-            if (theType == NoType) Expression("None") else Expression(s"${mangle(field.theField)}")
+            if (theType == NoType) CodeExpression("None") else CodeExpression(s"${mangle(field.theField)}")
         }
     }
 
@@ -232,7 +232,7 @@ object Normalization  {
                   | this is because the production is empty.
                   | Recommended remedy: specify the reduction expression explicitly.
                   | """.stripMargin)
-          production.copy(reduction = Some(Expression(" ()) ")))
+          production.copy(reduction = Some(CodeExpression(" ()) ")))
         case 1 =>
           val field = production.symbols.head
           val result: Name  =
@@ -240,7 +240,7 @@ object Normalization  {
               case Some(name) => name
               case None       => field.theField
             }
-          production.copy(reduction = Some(Expression(s"$$$result")))
+          production.copy(reduction = Some(CodeExpression(s"$$$result")))
         case n =>
           val searchOrdered = production.symbols.filterNot(_.hasNoType)
           searchOrdered.length match {
@@ -248,7 +248,7 @@ object Normalization  {
               warn(s"""\n Using universal default reduction expression value \"()\" for the production at: ${production.location}
                       | this is because the production has no value-carrying symbols.
                       | Recommended remedy: specify the reduction expression explicitly.""".stripMargin)
-              production.copy(reduction = Some(Expression(" () ")))
+              production.copy(reduction = Some(CodeExpression(" () ")))
             case 1 =>
               val field = searchOrdered.head
               val result: Name  =
@@ -256,23 +256,46 @@ object Normalization  {
                   case Some(name) => name
                   case None       => field.theField
                 }
-              production.copy(reduction = Some(Expression(s"$$$result")))
+              production.copy(reduction = Some(CodeExpression(s"$$$result")))
             case n =>
               warn(
                 s"""\n Using universal default reduction expression value \"()\" for the production $production at: ${production.location}
                    | This is because the production's intended value cannot be determined (there is more than one value-carrying symbol).
                    | Recommended remedy: specify the reduction expression explicitly.
                    |""".stripMargin)
-              production.copy(reduction =  Some(Expression(" () ")))
+              production.copy(reduction =  Some(CodeExpression(" () ")))
           }
       }
 
     }
 
-    if (rule.rhs.forall(_.reduction.isDefined)) rule else {
-      val newRHS = for { production <- rule.rhs } yield inferredProduction(production)
-      rule.copy(rhs=newRHS)
+    def fieldNames(fields: Seq[NamedField]): Seq[Name] = {
+      (for { field <- fields } yield field.theFieldName.getOrElse(field.theField)).distinct
     }
+
+    implicit class ScalaScope(scala: Scala) {
+
+    }
+
+    def actionCheckedProduction(lhs: TypedNonterminal, production: Production): Production =
+      production.reduction match {
+        case None => production
+        case Some(CodeExpression(_)) => production
+        case Some(ScalaExpression(scala, start: SourceLocation)) =>
+          val inScope = fieldNames(production.symbols)
+          val used = scala.free
+          val hasDollar = scala.decorated
+          val unscoped = for { variable <- used if !inScope.contains(variable) } yield variable
+          val noDollar = for { variable <- used if inScope.contains(variable) && !hasDollar.contains(variable) } yield variable
+          if (unscoped.nonEmpty) warn(s"${start} undeclared: (${unscoped.mkString(" ")})  $lhs = $production  ")
+          if (noDollar.nonEmpty) warn(s"${start} un$$ollared: (${noDollar.mkString(" ")}) $lhs = $production  ")
+          production.copy(reduction = production.reduction)
+      }
+
+
+    val newRHS = for { production <- rule.rhs } yield inferredProduction(actionCheckedProduction(rule.lhs, production))
+    rule.copy(rhs=newRHS)
+
   }
 
   /**
@@ -293,7 +316,7 @@ object Normalization  {
 
       for {Rule(lhs, rhs, _) <- inferencedRules; prod <- rhs} {
         i += 1
-        println(f"$i%03d   ${lhs.toString} ${" " * (width - lhs.toString.size)} = $prod")
+        println(f"$i%04d   ${lhs.toString} ${" " * (width - lhs.toString.size)} = $prod")
       }
     }
     notation.copy(theRules = inferencedRules)

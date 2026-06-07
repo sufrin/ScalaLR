@@ -2,7 +2,7 @@ package org.sufrin.scalalr
 package stage2
 
 import AST.{Name, NoType, Notation, Production, SymbolType, TypedNonterminal, TypedTerminal}
-import Generator.{logGeneration, prefix, warning}
+import Generator.{logGeneration, prefix}
 
 import java.nio.file.Path
 import scala.collection.mutable
@@ -70,20 +70,17 @@ class SymbolTables(notation: Notation) {
       Path.of(prefix, notation.theExplicitPath)
   val theNotationName = Path.of(prefix,notation.theName.replace('/', '.').replace('.', '/')).getFileName.toString // Normalize
 
-  var fatalErrors: Int = 0
+
 
   def sanityCheck(): Boolean = {
-    def fatal(message: String): Unit = {
-      warning(s"(*) $message")
-      fatalErrors += 1
-    }
+
 
     val nonTerminalSymbol = mutable.LinkedHashMap[String, TypedNonterminal]()
     locally {
       for { newSymbol <- declaredNonterminals } nonTerminalSymbol.get(newSymbol.theName.toString) match {
         case None => nonTerminalSymbol(newSymbol.theName.toString) = newSymbol
         case Some(symbol) =>
-          warning(s"Redefining ${symbol.theName} ${symbol.location} by ${newSymbol.theName} ${newSymbol.location} ")
+          Messages.warning(s"Redefining ${symbol.theName} ${symbol.location} by ${newSymbol.theName} ${newSymbol.location} ")
           nonTerminalSymbol(symbol.theName.toString) = newSymbol
       }
     }
@@ -93,11 +90,11 @@ class SymbolTables(notation: Notation) {
 
     for  { symbol <- usedSymbolNames if !ALLDECLARED.contains(symbol)}
          if (symbol.isQuoted)
-            fatal(s"Undeclared quoted ${symbol.toFullString}") // TODO: autodeclare quoted symbols
+           Messages.fatal(s"Undeclared quoted ${symbol.toFullString}") // TODO: autodeclare quoted symbols
          else
-            fatal(s"Undeclared ${symbol.toFullString}")
+           Messages.fatal(s"Undeclared ${symbol.toFullString}")
     for  {symbol <- ALLDECLARED if ambiguousSymbols.contains(symbol)}
-      fatal(s"Ambiguous %token ${symbol.toFullString} is also defined as a nonterminal")
+      Messages.fatal(s"Ambiguous %token ${symbol.toFullString} is also defined as a nonterminal")
 
     if (logGeneration contains "sym") {
       println("\n// Symbols and their types in order of appearance")
@@ -113,7 +110,7 @@ class SymbolTables(notation: Notation) {
           }
     }
 
-    fatalErrors==0
+    Messages.noneFatal
   }
 
 }

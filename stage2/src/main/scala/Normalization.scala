@@ -8,7 +8,7 @@ package stage2
 
 object Normalization  {
   import org.sufrin.scalalr.stage2.AST._
-  import org.sufrin.scalalr.stage2.Generator.warn
+  import org.sufrin.scalalr.stage2.Messages
 
   var synthNumber:     Int = 0
   var syntheticRules:  List[DelayedRule] = Nil
@@ -29,7 +29,7 @@ object Normalization  {
     synthNumber += 1
     val theName = Name(s"S_$synthNumber", false, START)
     val delayedFields = fields take 2
-    if (delayedFields != fields) warn(s"Shortening (${fields.mkString(" ")})$repeatType at $START--$END to (${delayedFields.mkString(" ")})$repeatType ")
+    if (delayedFields != fields) Messages.warning(s"Shortening (${fields.mkString(" ")})$repeatType at $START--$END to (${delayedFields.mkString(" ")})$repeatType ")
 
     syntheticRules ::= DelayedRule(theName, delayedFields, repeatType, START, END)
     theName
@@ -95,13 +95,13 @@ object Normalization  {
               case List(l, r) if r.hasNoType && l.hasType  =>
                 fields
               case List(l, r) if l.hasNoType && r.hasType  =>
-                warn(s"Reordering ($l $r)$repeatType  at $START--$END to ($r $l)$repeatType for punctuation-guarded  right recursion")
+                Messages.warning(s"Reordering ($l $r)$repeatType  at $START--$END to ($r $l)$repeatType for punctuation-guarded  right recursion")
                 List(r, l)
               case List(_) =>
-                warn(s"(${fields.mkString(" ")})$repeatType  at $START--$END a right recursion is space-inefficient (use *)")
+                Messages.warning(s"(${fields.mkString(" ")})$repeatType  at $START--$END a right recursion is space-inefficient (use *)")
                 fields
               case _ =>
-                warn(s"(${fields.mkString(" ")})$repeatType  at $START--$END  has no punctuation-guarded right recursion")
+                Messages.warning(s"(${fields.mkString(" ")})$repeatType  at $START--$END  has no punctuation-guarded right recursion")
                 fields
             }
             List(
@@ -116,13 +116,13 @@ object Normalization  {
               case List(l, r) if r.hasNoType && l.hasType  =>
                 fields
               case List(l, r) if l.hasNoType && r.hasType  =>
-                warn(s"Reordering ($l $r)$repeatType  at $START--$END to ($r $l)$repeatType for punctuation-guarded  right recursion")
+                Messages.inform(s"Reordering for punctuation-guarded right recursion ($l $r)$repeatType  at $START--$END to ($r $l)$repeatType")
                 List(r, l)
               case List(_) =>
-                warn(s"(${fields.mkString(" ")})$repeatType  at $START--$END a right recursion is space-inefficient (use +)")
+                Messages.warning(s"Right recursive (${fields.mkString(" ")})$repeatType  at $START--$END is s space-inefficient (use +)")
                 fields
               case _ =>
-                warn(s"${fields.mkString(" ")}$repeatType  at $START--$END  has no punctuation-guarded right recursion")
+                Messages.inform(s"Reordering for  punctuation-guarded right recursion ${fields.mkString(" ")}$repeatType  at $START--$END  IS INFEASIBLE")
                 fields
             }
             val theListName = Name(theName.forScala++"_R", false, START)
@@ -141,18 +141,27 @@ object Normalization  {
           case Ellipsis =>
             val ordered = fields match {
               case List(l, r) if  l.hasNoType && r.hasType =>
-                Some((l, r))
+                List(l, r)
               case List(l, r) if  l.hasType && r.hasNoType  =>
-                warn(s"Reordering ($l $r)$repeatType  at $START--$END to ($r $l)$repeatType for punctuation-guarded left recursion")
-                Some((r, l))
+                Messages.inform(s"Reordering for punctuation-guarded left recursion ($l $r)$repeatType  at $START--$END to ($r $l)$repeatType ")
+                List(r, l)
               case _ =>
-                warn(s"(${fields.mkString(" ")})$repeatType means nothing at $START--$END $repeatType\n Use * or + instead")
-                None
+                Messages.warning(s"(${fields.mkString(" ")})$repeatType at $START--$END treated as (${fields.mkString(" ")})+")
+                fields
             }
             ordered match {
-              case None =>
+              case Nil =>
                 List()
-              case Some((punct: NamedField, info: NamedField)) =>
+              case List(info) =>
+                val theListName = Name(theName.forScala ++ "_E", false, START)
+                List(
+                  RULE(theListName, LIST(theType))(
+                    PROD(theListName.asField, info)(s"$$$theFieldName :: $$$theListName"),
+                    PRODUCTION(theField)(s"List($$$theFieldName)"),
+                  ),
+                  RULE(theName, LIST(theType))(PROD(theListName.asField)(s"$$$theListName.reverse"))
+                )
+              case List(punct: NamedField, info: NamedField) =>
                 val theListName = Name(theName.forScala ++ "_E", false, START)
                 List(
                   RULE(theListName, LIST(theType))(
@@ -170,10 +179,16 @@ object Normalization  {
               case List(l, r) if l.hasNoType && r.hasType  =>
                 fields
               case List(l, r) if l.hasType && r.hasNoType =>
-                warn(s"Reordering ($l $r)$repeatType  at $START--$END to ($r $l)$repeatType for punctuation-guarded left recursion")
+                Messages.inform(s"Reordering ($l $r)$repeatType  at $START--$END to ($r $l)$repeatType for punctuation-guarded left recursion")
                 List(r, l)
+              case List(l, r) if l.hasType && r.hasType =>
+                Messages.inform(s"Reordering ($l $r)$repeatType  at $START--$END INFEASIBLE for left recursion: both have nontrivial types")
+                fields
+              case List(l, r) if l.hasNoType && r.hasNoType =>
+                Messages.inform(s"Reordering ($l $r)$repeatType  at $START--$END INFEASIBLE for left recursion: both have trivial (punctuation) types")
+                fields
               case _ =>
-                warn(s"(${fields.mkString(" ")})$repeatType  at $START--$END  cannot be reordered for punctuation-guarded left recursion")
+                Messages.inform(s"Reordering (${fields.mkString(" ")})$repeatType  at $START--$END  INFEASIBLE for punctuation-guarded left recursion")
                 fields
             }
             val theListName = Name(theName.forScala++"_L", false, START)
@@ -206,14 +221,14 @@ object Normalization  {
     def toExpression(field: NamedField): Expression =
       symbolTable.symbolType.get(field.theField) match {
         case None =>
-          warn(s"Named symbol $field has no type")
+          Messages.warning(s"Named symbol $field has no type")
           CodeExpression(" () ")
         case Some(theType) =>
         val scalaType = theType.scalaTypeName
         field.theFieldName match {
           case Some(name) =>
             if (theType == NoType) {
-              warn(s"Named symbol ${name}: ${Type} carries no value")
+              Messages.warning(s"Named symbol ${name}: ${Type} carries no value")
               CodeExpression(s"${mangle(name)}")
             }
             else
@@ -228,7 +243,7 @@ object Normalization  {
       if (production.reduction.isDefined) production else
       production.symbols.length match {
         case 0 =>
-          warn(s"""\n Using universal default reduction expression value \"()\" for the production at: ${production.location}
+          Messages.inform(s"""\n Using universal default reduction expression value \"()\" for the production at: ${production.location}
                   | this is because the production is empty.
                   | Recommended remedy: specify the reduction expression explicitly.
                   | """.stripMargin)
@@ -245,7 +260,7 @@ object Normalization  {
           val searchOrdered = production.symbols.filterNot(_.hasNoType)
           searchOrdered.length match {
             case 0 =>
-              warn(s"""\n Using universal default reduction expression value \"()\" for the production at: ${production.location}
+              Messages.inform(s"""\n Using universal default reduction expression value \"()\" for the production at: ${production.location}
                       | this is because the production has no value-carrying symbols.
                       | Recommended remedy: specify the reduction expression explicitly.""".stripMargin)
               production.copy(reduction = Some(CodeExpression(" () ")))
@@ -258,7 +273,7 @@ object Normalization  {
                 }
               production.copy(reduction = Some(CodeExpression(s"$$$result")))
             case n =>
-              warn(
+              Messages.inform(
                 s"""\n Using universal default reduction expression value \"()\" for the production $production at: ${production.location}
                    | This is because the production's intended value cannot be determined (there is more than one value-carrying symbol).
                    | Recommended remedy: specify the reduction expression explicitly.
@@ -287,8 +302,8 @@ object Normalization  {
           val hasDollar = scala.decorated
           val unscoped = for { variable <- used if !inScope.contains(variable) } yield variable
           val noDollar = for { variable <- used if inScope.contains(variable) && !hasDollar.contains(variable) } yield variable
-          if (unscoped.nonEmpty) warn(s"${start} undeclared: (${unscoped.mkString(" ")})  $lhs = $production  ")
-          if (noDollar.nonEmpty) warn(s"${start} un$$ollared: (${noDollar.mkString(" ")}) $lhs = $production  ")
+          if (unscoped.nonEmpty) Messages.warning(s"${start} undeclared: (${unscoped.mkString(" ")})  $lhs = $production  ")
+          if (noDollar.nonEmpty) Messages.fatal(s"${start} un$$ollared: (${noDollar.mkString(" ")}) $lhs = $production  ")
           production.copy(reduction = production.reduction)
       }
 

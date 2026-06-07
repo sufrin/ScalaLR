@@ -383,8 +383,8 @@ object testAuto extends Test("--output=TEST-GENERATED  -Lsym -Lsyn")(
      }
      %rules
        expr: Expr =
-             ID '(' exprlist: (',' expr)* ')'   => Apply($exprlist, $expr)
-           |    '{' exprlist: (';' expr)+ '}'   => Sequence($ID, $exprlist)
+             ID '(' exprlist: (',' expr)* ')'   => Apply($exprlist, $expr)  // expr is not declared: it's part of the * expression
+           |    '{' exprlist: (';' expr)+ '}'   => Sequence($ID, $exprlist) // ID is not declared; expr is not declared: it's part of the * expression
            |    "RETURN" optexpr:  (expr)? ';'  => Return($optexpr)
   """)
 
@@ -404,6 +404,7 @@ object testArrow extends Test("--output=TEST-GENERATED  -Lsym -Lsyn")(
            | "RETURN" optexpr:  (expr)? ';'     => Return($optexpr.get :: Nil)
            | "RETURN" optexpr:  (expr)? ';'     => Return($optexpr.get :: Nil)
            | l: expr '+' r: expr ';'     => Operate("+", $l, r)
+           |  "RETURN" optexpr:  (expr)? ';'  => Return(optexpr.get)
   """)
 
 object testAutoMisc extends Test("--output=TEST-GENERATED  -Lsym -Lsyn")(
@@ -743,23 +744,27 @@ object testEllipsis2 extends Test("-Lsym -Lsyn")(
 
 letter: String = a | b | c
 
-LetterSemiEllipsis: List[String]  = '{' ls: (letter ';')...  {$ls};
+LetterSemiEllipsis: List[String]  = '{' ls: (letter ';')...  => $ls
 
-LetterSemiStar: List[String]  = '{' ls: (letter ';')*  {$ls};
+LetterSemiStar: List[String]  = '{' ls: (letter ';')*  => $ls
 
-LetterLetterStar: List[String]  = '{' ls: (letter letter)*  {$ls};
+LetterLetterStar: List[String]  = '{' ls: (letter letter)*  => $ls
 
-LetterSemiPlus: List[String]  = '{' ls: (letter ';')+  {$ls};
+PunctPunctStar: List[String]  = '{' ls: (';' '%')*  => $ls
 
-LetterSemiStarDot: List[String]  = '{' ls: (letter ';')*..  {$ls};
+LetterSemiPlus: List[String]  = '{' ls: (letter ';')+  => $ls
 
-LetterStarDot: List[String]  = '{' ls: (letter)*..  {$ls};
+LetterSemiStarDot: List[String]  = '{' ls: (letter ';')*..  => $ls
 
-LetterSemiPlusDot: List[String]  = '{' ls: (letter ';')+..  {$ls};
+LetterStarDot: List[String]  = '{' ls: (LetterSemiStarDot)*..  => $ls
+
+LetterSemiPlusDot: List[String]  = '{' ls: (letter ';')+..  => $ls
 
 
 
-ellipsos: List[String]  = '{' ls: (letter )...  {$ls}
+ellipsos: List[String]  = '{' ls: (letter )...  {$ls};
+
+ellipsas: List[String]  = '{' ls: (letter letter letter)...  {$ls}
 
 
   """)

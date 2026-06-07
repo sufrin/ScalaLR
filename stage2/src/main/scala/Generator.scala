@@ -42,16 +42,13 @@ object Generator extends org.sufrin.logging.SourceLoggable {
     case _ => f"T-${(num)}%03d"
   }
 
-  def warning(what: String): Unit = println(s"WARNING: $what")
-
 
   def generateCode(notation: Notation): Unit = {
     if (pretty) notation.prettyPrint()
     val symbolTables = new SymbolTables(notation)
     val generator    = new CodeGenerator(notation, symbolTables)
     if (symbolTables.sanityCheck()) generator.generateScalaFiles() else {
-      println(s"${symbolTables.fatalErrors} (*) warnings -- no code generation")
-      System.exit(1)
+      Messages.halt()
     }
   }
 

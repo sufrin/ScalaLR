@@ -7,6 +7,7 @@ object Reduction {
 
  import org.sufrin.scalalr.stage2.AST._
  import org.sufrin.scalalr.stage2.Normalization._
+ import org.sufrin.scalalr.stage2.LexicalScanner
  import scalalr.stage2.Scanner
  import org.sufrin.utility.SourceTextCursor
  import org.sufrin.scalalr.SourceLocation
@@ -49,80 +50,80 @@ object Reduction {
 
 
 def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufrin.scalalr.SourceLocation, n: Int): PartialFunction[List[Any], Any] = n match {
- /* Notation: Notation = Prefix `%rules` INCLUDE Rules OPTNL { $Prefix.copy(theRules = $Rules.reverse, theRulesInclude = $INCLUDE) }  */
+ /* Notation: Notation = Prefix `%rules` INCLUDE Rules OPTNL {  $Prefix.copy(theRules = $Rules.reverse, theRulesInclude = $INCLUDE)  }  */
  case 1 => 
   { case List(dol$Prefix: Notation, _, dol$INCLUDE: String, dol$Rules: List[Rule @unchecked], _) => 
         dol$Prefix.copy(theRules = dol$Rules.reverse, theRulesInclude = dol$INCLUDE)
   }
- /* Prefix: Notation =  { Notation() }  */
+ /* Prefix: Notation =  {  Notation()  }  */
  case 2 => 
   { case List() =>  Notation() } 
- /* Prefix: Notation = p: Prefix `%notation` ID { $p.copy(theName=$ID.toString) }  */
+ /* Prefix: Notation = p: Prefix `%notation` ID {  $p.copy(theName=$ID.toString)  }  */
  case 3 => 
   { case List(dol$p: Notation, _, dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
         dol$p.copy(theName=dol$ID.toString)
   }
- /* Prefix: Notation = p: Prefix `%package` ID { $p.copy(thePackage=$ID.toString) }  */
+ /* Prefix: Notation = p: Prefix `%package` ID {  $p.copy(thePackage=$ID.toString)  }  */
  case 4 => 
   { case List(dol$p: Notation, _, dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
         dol$p.copy(thePackage=dol$ID.toString)
   }
- /* Prefix: Notation = p: Prefix `%path` ID { $p.copy(theExplicitPath=$ID.asPath) }  */
+ /* Prefix: Notation = p: Prefix `%path` STRINGorID {  $p.copy(theExplicitPath=$STRINGorID.asPath)  }  */
  case 5 => 
-  { case List(dol$p: Notation, _, dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
-        dol$p.copy(theExplicitPath=dol$ID.asPath)
+  { case List(dol$p: Notation, _, dol$STRINGorID: Name) => 
+        dol$p.copy(theExplicitPath=dol$STRINGorID.asPath)
   }
- /* Prefix: Notation = p: Prefix `%tables` ID { $p.copy(tablesType=mkTableType($ID.unQuoted)) }  */
+ /* Prefix: Notation = p: Prefix `%tables` STRINGorID {  $p.copy(tablesType=mkTableType($STRINGorID.unQuoted))  }  */
  case 6 => 
-  { case List(dol$p: Notation, _, dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
-        dol$p.copy(tablesType=mkTableType(dol$ID.unQuoted))
+  { case List(dol$p: Notation, _, dol$STRINGorID: Name) => 
+        dol$p.copy(tablesType=mkTableType(dol$STRINGorID.unQuoted))
   }
- /* Prefix: Notation = p: Prefix `%include` CODE { $p.copy(theTokensInclude=$CODE) }  */
+ /* Prefix: Notation = p: Prefix `%include` CODE {  $p.copy(theTokensInclude=$CODE)  }  */
  case 7 => 
   { case List(dol$p: Notation, _, dol$CODE: String) => 
         dol$p.copy(theTokensInclude=dol$CODE)
   }
- /* Prefix: Notation = p: Prefix `%token` TypedTerminals { $p.withTokenDeclaration(Tokens)($TypedTerminals) }  */
+ /* Prefix: Notation = p: Prefix `%token` TypedTerminals {  $p.withTokenDeclaration(Tokens)($TypedTerminals)  }  */
  case 8 => 
   { case List(dol$p: Notation, _, dol$TypedTerminals: List[TypedTerminal @unchecked]) => 
         dol$p.withTokenDeclaration(Tokens)(dol$TypedTerminals)
   }
- /* Prefix: Notation = p: Prefix `%left` TypedTerminals { $p.withTokenDeclaration(Left)($TypedTerminals) }  */
+ /* Prefix: Notation = p: Prefix `%left` TypedTerminals {  $p.withTokenDeclaration(Left)($TypedTerminals)  }  */
  case 9 => 
   { case List(dol$p: Notation, _, dol$TypedTerminals: List[TypedTerminal @unchecked]) => 
         dol$p.withTokenDeclaration(Left)(dol$TypedTerminals)
   }
- /* Prefix: Notation = p: Prefix `%right` TypedTerminals { $p.withTokenDeclaration(Right)($TypedTerminals) }  */
+ /* Prefix: Notation = p: Prefix `%right` TypedTerminals {  $p.withTokenDeclaration(Right)($TypedTerminals)  }  */
  case 10 => 
   { case List(dol$p: Notation, _, dol$TypedTerminals: List[TypedTerminal @unchecked]) => 
         dol$p.withTokenDeclaration(Right)(dol$TypedTerminals)
   }
- /* Prefix: Notation = p: Prefix `%non` TypedTerminals { $p.withTokenDeclaration(Nonassoc)($TypedTerminals) }  */
+ /* Prefix: Notation = p: Prefix `%non` TypedTerminals {  $p.withTokenDeclaration(Nonassoc)($TypedTerminals)  }  */
  case 11 => 
   { case List(dol$p: Notation, _, dol$TypedTerminals: List[TypedTerminal @unchecked]) => 
         dol$p.withTokenDeclaration(Nonassoc)(dol$TypedTerminals)
   }
- /* Prefix: Notation = p: Prefix `%prec` TypedTerminals { $p.withTokenDeclaration(Precedence)($TypedTerminals) }  */
+ /* Prefix: Notation = p: Prefix `%prec` TypedTerminals {  $p.withTokenDeclaration(Precedence)($TypedTerminals)  }  */
  case 12 => 
   { case List(dol$p: Notation, _, dol$TypedTerminals: List[TypedTerminal @unchecked]) => 
         dol$p.withTokenDeclaration(Precedence)(dol$TypedTerminals)
   }
- /* Prefix: Notation = p: Prefix `%dialect` ID { $p.withSignature($ID.unQuoted) }  */
+ /* Prefix: Notation = p: Prefix `%dialect` STRINGorID {  $p.withSignature($STRINGorID.unQuoted)  }  */
  case 13 => 
-  { case List(dol$p: Notation, _, dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
-        dol$p.withSignature(dol$ID.unQuoted)
+  { case List(dol$p: Notation, _, dol$STRINGorID: Name) => 
+        dol$p.withSignature(dol$STRINGorID.unQuoted)
   }
- /* Prefix: Notation = p: Prefix `%scalalr` ID { $p.withSignature($ID.unQuoted) }  */
+ /* Prefix: Notation = p: Prefix `%scalalr` STRINGorID {  $p.withSignature($STRINGorID.unQuoted)  }  */
  case 14 => 
-  { case List(dol$p: Notation, _, dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
-        dol$p.withSignature(dol$ID.unQuoted)
+  { case List(dol$p: Notation, _, dol$STRINGorID: Name) => 
+        dol$p.withSignature(dol$STRINGorID.unQuoted)
   }
- /* Prefix: Notation = p: Prefix `%signature` ID { $p.withSignature($ID.unQuoted) }  */
+ /* Prefix: Notation = p: Prefix `%signature` STRINGorID {  $p.withSignature($STRINGorID.unQuoted)  }  */
  case 15 => 
-  { case List(dol$p: Notation, _, dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
-        dol$p.withSignature(dol$ID.unQuoted)
+  { case List(dol$p: Notation, _, dol$STRINGorID: Name) => 
+        dol$p.withSignature(dol$STRINGorID.unQuoted)
   }
- /* INCLUDE: String = `%include` CODE SEPARATOR { $CODE }  */
+ /* INCLUDE: String = `%include` CODE SEPARATOR {  $CODE  }  */
  case 16 => 
   { case List(_, dol$CODE: String, _) =>  dol$CODE } 
  /* INCLUDE: String =  { "" }  */
@@ -134,209 +135,230 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
  /* OPTNL: Unit = SEPARATOR { () }  */
  case 19 => 
   { case List(_) =>  () } 
- /* TypedTerminals: List[TypedTerminal] =  { Nil }  */
+ /* STRINGorID: Name = ID {  $ID  }  */
  case 20 => 
-  { case List() =>  Nil } 
- /* TypedTerminals: List[TypedTerminal] = TypedTerminal TypedTerminals { $TypedTerminal :: $TypedTerminals }  */
+  { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) =>  dol$ID } 
+ /* STRINGorID: Name = STRING {  $STRING  }  */
  case 21 => 
+  { case List(dol$STRING: org.sufrin.scalalr.stage2.AST.Name) =>  dol$STRING } 
+ /* TypedTerminals: List[TypedTerminal] =  {  Nil  }  */
+ case 22 => 
+  { case List() =>  Nil } 
+ /* TypedTerminals: List[TypedTerminal] = TypedTerminal TypedTerminals {  $TypedTerminal :: $TypedTerminals  }  */
+ case 23 => 
   { case List(dol$TypedTerminal: TypedTerminal, dol$TypedTerminals: List[TypedTerminal @unchecked]) => 
         dol$TypedTerminal :: dol$TypedTerminals
   }
- /* TypedTerminal: TypedTerminal = ID `:` Type { TypedTerminal($ID, $Type, $START) }  */
- case 22 => 
-  { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name, _, dol$Type: SymbolType) => 
-        TypedTerminal(dol$ID, dol$Type, dol$START)
-  }
- /* TypedTerminal: TypedTerminal = ID `(` Type `)` { TypedTerminal($ID, $Type, $START) }  */
- case 23 => 
-  { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name, _, dol$Type: SymbolType, _) => 
-        TypedTerminal(dol$ID, dol$Type, dol$START)
-  }
- /* TypedTerminal: TypedTerminal = ID { TypedTerminal($ID, NoType, $START) }  */
+ /* TypedTerminal: TypedTerminal = ID: STRINGorID `:` Type {   TypedTerminal($ID, $Type, $START)    }  */
  case 24 => 
-  { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
-        TypedTerminal(dol$ID, NoType, dol$START)
+  { case List(dol$ID: Name, _, dol$Type: SymbolType) => 
+        TypedTerminal(dol$ID, dol$Type, dol$START)
   }
- /* Rules: List[Rule] = Rule { List($Rule) }  */
+ /* TypedTerminal: TypedTerminal = ID: STRINGorID `(` Type `)` {   TypedTerminal($ID, $Type, $START)  }  */
  case 25 => 
-  { case List(dol$Rule: Rule) =>  List(dol$Rule) } 
- /* Rules: List[Rule] = Rules SEPARATOR Rule { $Rule :: $Rules }  */
+  { case List(dol$ID: Name, _, dol$Type: SymbolType, _) => 
+        TypedTerminal(dol$ID, dol$Type, dol$START)
+  }
+ /* TypedTerminal: TypedTerminal = ID: STRINGorID {   TypedTerminal($ID, NoType, $START)  }  */
  case 26 => 
+  { case List(dol$ID: Name) =>  TypedTerminal(dol$ID, NoType, dol$START) } 
+ /* Rules: List[Rule] = Rule {  List($Rule)  }  */
+ case 27 => 
+  { case List(dol$Rule: Rule) =>  List(dol$Rule) } 
+ /* Rules: List[Rule] = Rules SEPARATOR Rule {  $Rule :: $Rules  }  */
+ case 28 => 
   { case List(dol$Rules: List[Rule @unchecked], _, dol$Rule: Rule) => 
         dol$Rule :: dol$Rules
   }
- /* Rule: Rule = LHS `=` OptBar RHS { Rule($LHS, $RHS, $START) }  */
- case 27 => 
+ /* Rule: Rule = LHS `=` OptBar RHS {  Rule($LHS, $RHS, $START)  }  */
+ case 29 => 
   { case List(dol$LHS: TypedNonterminal, _, _, dol$RHS: List[Production @unchecked]) => 
         Rule(dol$LHS, dol$RHS, dol$START)
   }
  /* OptBar: Unit = `|` { () }  */
- case 28 => 
+ case 30 => 
   { case List(_) =>  () } 
  /* OptBar: Unit =  { () }  */
- case 29 => 
+ case 31 => 
   { case List() =>  () } 
- /* LHS: TypedNonterminal = ID `:` Type { (TypedNonterminal($ID.warnQuoted, $Type, $START)) }  */
- case 30 => 
+ /* LHS: TypedNonterminal = ID `:` Type {   (TypedNonterminal($ID.warnQuoted, $Type, $START))  }  */
+ case 32 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name, _, dol$Type: SymbolType) => 
         (TypedNonterminal(dol$ID.warnQuoted, dol$Type, dol$START))
   }
- /* LHS: TypedNonterminal = ID { (TypedNonterminal($ID.warnQuoted, TypeVariable($ID), $START)) }  */
- case 31 => 
+ /* LHS: TypedNonterminal = ID {   (TypedNonterminal($ID.warnQuoted, TypeVariable($ID), $START))  }  */
+ case 33 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
         (TypedNonterminal(dol$ID.warnQuoted, TypeVariable(dol$ID), dol$START))
   }
- /* RHS: List[Production] = Production { List($Production) }  */
- case 32 => 
+ /* RHS: List[Production] = Production {  List($Production)    }  */
+ case 34 => 
   { case List(dol$Production: Production) =>  List(dol$Production) } 
- /* RHS: List[Production] = Production `|` RHS { $Production :: $RHS }  */
- case 33 => 
+ /* RHS: List[Production] = Production `|` RHS {  $Production :: $RHS  }  */
+ case 35 => 
   { case List(dol$Production: Production, _, dol$RHS: List[Production @unchecked]) => 
         dol$Production :: dol$RHS
   }
- /* Production: Production = NamedFields Action Precedence { Production($NamedFields, $Action, $Precedence, $START) }  */
- case 34 => 
+ /* Production: Production = NamedFields Action Precedence {  Production($NamedFields, $Action, $Precedence, $START)  }  */
+ case 36 => 
   { case List(dol$NamedFields: List[NamedField @unchecked], dol$Action: Option[Expression @unchecked], dol$Precedence: Option[Name @unchecked]) => 
         Production(dol$NamedFields, dol$Action, dol$Precedence, dol$START)
   }
- /* NamedFields: List[NamedField] = `%empty` { Nil }  */
- case 35 => 
-  { case List(_) =>  Nil } 
- /* NamedFields: List[NamedField] = NamedField { List($NamedField) }  */
- case 36 => 
-  { case List(dol$NamedField: NamedField) =>  List(dol$NamedField) } 
- /* NamedFields: List[NamedField] = NamedField NamedFields { $NamedField :: $NamedFields }  */
+ /* NamedFields: List[NamedField] = `%empty` {  Nil  }  */
  case 37 => 
+  { case List(_) =>  Nil } 
+ /* NamedFields: List[NamedField] = NamedField {  List($NamedField)  }  */
+ case 38 => 
+  { case List(dol$NamedField: NamedField) =>  List(dol$NamedField) } 
+ /* NamedFields: List[NamedField] = NamedField NamedFields {  $NamedField :: $NamedFields  }  */
+ case 39 => 
   { case List(dol$NamedField: NamedField, dol$NamedFields: List[NamedField @unchecked]) => 
         dol$NamedField :: dol$NamedFields
   }
- /* NamedField: NamedField = FIELD { NamedField(theFieldName = None, theField = $FIELD, $START) }  */
- case 38 => 
+ /* NamedField: NamedField = FIELD {  NamedField(theFieldName = None, theField = $FIELD, $START)  }  */
+ case 40 => 
   { case List(dol$FIELD: Name) => 
         NamedField(theFieldName = None, theField = dol$FIELD, dol$START)
   }
- /* NamedField: NamedField = theFieldName: ID `:` theName: FIELD { NamedField(theFieldName = Some($theFieldName.warnQuoted), $theName, $START) }  */
- case 39 => 
+ /* NamedField: NamedField = theFieldName: ID `:` theName: FIELD {  NamedField(theFieldName = Some($theFieldName.warnQuoted), $theName, $START)  }  */
+ case 41 => 
   { case List(dol$theFieldName: org.sufrin.scalalr.stage2.AST.Name, _, dol$theName: Name) => 
         NamedField(theFieldName = Some(dol$theFieldName.warnQuoted), dol$theName, dol$START)
   }
- /* FIELD: Name = ID { $ID }  */
- case 40 => 
+ /* FIELD: Name = ID {  $ID  }  */
+ case 42 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) =>  dol$ID } 
- /* FIELD: Name = `(` NamedFields `)` REPEAT { syntheticRuleName($NamedFields, $REPEAT, $START, $END) }  */
- case 41 => 
+ /* FIELD: Name = STRING {  $STRING  }  */
+ case 43 => 
+  { case List(dol$STRING: org.sufrin.scalalr.stage2.AST.Name) =>  dol$STRING } 
+ /* FIELD: Name = `(` NamedFields `)` REPEAT {  syntheticRuleName($NamedFields, $REPEAT, $START, $END)  }  */
+ case 44 => 
   { case List(_, dol$NamedFields: List[NamedField @unchecked], _, dol$REPEAT: Repeat) => 
         syntheticRuleName(dol$NamedFields, dol$REPEAT, dol$START, dol$END)
   }
- /* FIELD: Name = `(` NamedFields `)` `.` `.` `.` { syntheticRuleName($NamedFields, Ellipsis, $START, $END) }  */
- case 42 => 
-  { case List(_, dol$NamedFields: List[NamedField @unchecked], _, _, _, _) => 
-        syntheticRuleName(dol$NamedFields, Ellipsis, dol$START, dol$END)
-  }
- /* REPEAT: Repeat = `?` { MaybeOne }  */
- case 43 => 
-  { case List(_) =>  MaybeOne } 
- /* REPEAT: Repeat = `*` { NoneOrMore }  */
- case 44 => 
-  { case List(_) =>  NoneOrMore } 
- /* REPEAT: Repeat = `+` { OneOrMore }  */
+ /* REPEAT: Repeat = `?` {  MaybeOne  }  */
  case 45 => 
-  { case List(_) =>  OneOrMore } 
- /* REPEAT: Repeat = `*` `.` `.` { RightNoneOrMore }  */
+  { case List(_) =>  MaybeOne } 
+ /* REPEAT: Repeat = `*` {  NoneOrMore  }  */
  case 46 => 
-  { case List(_, _, _) =>  RightNoneOrMore } 
- /* REPEAT: Repeat = `+` `.` `.` { RightOneOrMore }  */
+  { case List(_) =>  NoneOrMore } 
+ /* REPEAT: Repeat = `+` {  OneOrMore  }  */
  case 47 => 
-  { case List(_, _, _) =>  RightOneOrMore } 
- /* Precedence: Option[Name] =  { None }  */
+  { case List(_) =>  OneOrMore } 
+ /* REPEAT: Repeat = `*` `.` `.` {  RightNoneOrMore  }  */
  case 48 => 
-  { case List() =>  None } 
- /* Precedence: Option[Name] = `%prec` ID { Some($ID) }  */
+  { case List(_, _, _) =>  RightNoneOrMore } 
+ /* REPEAT: Repeat = `+` `.` `.` {  RightOneOrMore  }  */
  case 49 => 
-  { case List(_, dol$ID: org.sufrin.scalalr.stage2.AST.Name) =>  Some(dol$ID) } 
- /* Type: SymbolType = ID { Type($ID.withoutQuotes, Nil, $START) }  */
+  { case List(_, _, _) =>  RightOneOrMore } 
+ /* REPEAT: Repeat = `.` `.` `.` {  Ellipsis  }  */
  case 50 => 
+  { case List(_, _, _) =>  Ellipsis } 
+ /* Precedence: Option[Name] =  {  None  }  */
+ case 51 => 
+  { case List() =>  None } 
+ /* Precedence: Option[Name] = `%prec` ID {  Some($ID)  }  */
+ case 52 => 
+  { case List(_, dol$ID: org.sufrin.scalalr.stage2.AST.Name) =>  Some(dol$ID) } 
+ /* Type: SymbolType = ID {  Type($ID.withoutQuotes, Nil, $START)  }  */
+ case 53 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
         Type(dol$ID.withoutQuotes, Nil, dol$START)
   }
- /* Type: SymbolType = ID `[` Types `]` { Type($ID.withoutQuotes, $Types, $START) }  */
- case 51 => 
+ /* Type: SymbolType = ID `[` Types `]` {  Type($ID.withoutQuotes, $Types, $START)  }  */
+ case 54 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name, _, dol$Types: List[Type @unchecked], _) => 
         Type(dol$ID.withoutQuotes, dol$Types, dol$START)
   }
- /* Type: SymbolType = `(` Types `)` { makeTupleType($Types, $START) }  */
- case 52 => 
+ /* Type: SymbolType = `(` Types `)` {  makeTupleType($Types, $START)  }  */
+ case 55 => 
   { case List(_, dol$Types: List[Type @unchecked], _) => 
         makeTupleType(dol$Types, dol$START)
   }
- /* Type: SymbolType = `(` `)` { Type("Unit", Nil, $START) }  */
- case 53 => 
+ /* Type: SymbolType = `(` `)` {  Type("Unit", Nil, $START)  }  */
+ case 56 => 
   { case List(_, _) =>  Type("Unit", Nil, dol$START) } 
- /* Types: List[Type] = Type { List($Type) }  */
- case 54 => 
+ /* Types: List[Type] = Type {  List($Type)  }  */
+ case 57 => 
   { case List(dol$Type: SymbolType) =>  List(dol$Type) } 
- /* Types: List[Type] = Type `,` Types { $Type :: $Types }  */
- case 55 => 
+ /* Types: List[Type] = Type `,` Types {  $Type :: $Types  }  */
+ case 58 => 
   { case List(dol$Type: SymbolType, _, dol$Types: List[Type @unchecked]) => 
         dol$Type :: dol$Types
   }
- /* Action: Option[Expression] =  { None }  */
- case 56 => 
+ /* Action: Option[Expression] =  {  None  }  */
+ case 59 => 
   { case List() =>  None } 
- /* Action: Option[Expression] = CODE { Some(CodeExpression($CODE)) }  */
- case 57 => 
+ /* Action: Option[Expression] = CODE {  Some(CodeExpression($CODE))  }  */
+ case 60 => 
   { case List(dol$CODE: String) =>  Some(CodeExpression(dol$CODE)) } 
- /* Action: Option[Expression] = `=>` Scala { Some(ScalaExpression($Scala, $START)) }  */
- case 58 => 
+ /* Action: Option[Expression] = `=>` Scala {  Some(ScalaExpression($Scala, $START))  }  */
+ case 61 => 
   { case List(_, dol$Scala: Scala) =>  Some(ScalaExpression(dol$Scala, dol$START)) } 
  /* Scala: Scala = ScalaAtom { $ScalaAtom }  */
- case 59 => 
+ case 62 => 
   { case List(dol$ScalaAtom: Scala) =>  dol$ScalaAtom } 
- /* Scala: Scala = fun: ScalaAtom `(` args: Scalas `)` { Apply($fun, $args) }  */
- case 60 => 
+ /* Scala: Scala = fun: ScalaID `(` args: Scalas `)` {  Apply($fun, $args)  }  */
+ case 63 => 
   { case List(dol$fun: Scala, _, dol$args: List[Scala @unchecked], _) => 
         Apply(dol$fun, dol$args)
   }
- /* Scala: Scala = lhs: Scala `.` rhs: Scala { Dot($lhs, $rhs) }  */
- case 61 => 
-  { case List(dol$lhs: Scala, _, dol$rhs: Scala) =>  Dot(dol$lhs, dol$rhs) } 
- /* Scala: Scala = lhs: Scala `::` rhs: Scala { Infix("::", $lhs, $rhs) }  */
- case 62 => 
-  { case List(dol$lhs: Scala, _, dol$rhs: Scala) =>  Infix("::", dol$lhs, dol$rhs) } 
- /* Scala: Scala = lhs: Scala `+` rhs: Scala { Infix("+", $lhs, $rhs) }  */
- case 63 => 
-  { case List(dol$lhs: Scala, _, dol$rhs: Scala) =>  Infix("+", dol$lhs, dol$rhs) } 
- /* Scala: Scala = lhs: Scala `-` rhs: Scala { Infix("-", $lhs, $rhs) }  */
+ /* Scala: Scala = obj: ScalaID `.` feature: ScalaID `(` args: Scalas `)` {  MethodApply($obj, $feature, $args)  }  */
  case 64 => 
-  { case List(dol$lhs: Scala, _, dol$rhs: Scala) =>  Infix("-", dol$lhs, dol$rhs) } 
- /* Scalas: List[Scala] =  { Nil }  */
- case 65 => 
-  { case List() =>  Nil } 
- /* Scalas: List[Scala] = ScalaPlus { $ScalaPlus.reverse }  */
- case 66 => 
-  { case List(dol$ScalaPlus: List[Scala @unchecked]) =>  dol$ScalaPlus.reverse } 
- /* ScalaPlus: List[Scala] = Scala { List($Scala) }  */
- case 67 => 
-  { case List(dol$Scala: Scala) =>  List(dol$Scala) } 
- /* ScalaPlus: List[Scala] = ScalaPlus `,` Scala { $Scala :: $ScalaPlus }  */
- case 68 => 
-  { case List(dol$ScalaPlus: List[Scala @unchecked], _, dol$Scala: Scala) => 
-        dol$Scala :: dol$ScalaPlus
+  { case List(dol$obj: Scala, _, dol$feature: Scala, _, dol$args: List[Scala @unchecked], _) => 
+        MethodApply(dol$obj, dol$feature, dol$args)
   }
- /* ScalaAtom: Scala = ID { Id($ID, $START) }  */
+ /* Scala: Scala = obj: ScalaID `.` feature: ScalaID {  Dot($obj, $feature)  }  */
+ case 65 => 
+  { case List(dol$obj: Scala, _, dol$feature: Scala) =>  Dot(dol$obj, dol$feature) } 
+ /* Scala: Scala = lhs: Scala `::` rhs: Scala {  Infix("::", $lhs, $rhs)  }  */
+ case 66 => 
+  { case List(dol$lhs: Scala, _, dol$rhs: Scala) =>  Infix("::", dol$lhs, dol$rhs) } 
+ /* Scala: Scala = lhs: Scala `+` rhs: Scala {  Infix("+", $lhs, $rhs)  }  */
+ case 67 => 
+  { case List(dol$lhs: Scala, _, dol$rhs: Scala) =>  Infix("+", dol$lhs, dol$rhs) } 
+ /* Scala: Scala = lhs: Scala `-` rhs: Scala {  Infix("-", $lhs, $rhs)  }  */
+ case 68 => 
+  { case List(dol$lhs: Scala, _, dol$rhs: Scala) =>  Infix("-", dol$lhs, dol$rhs) } 
+ /* Scalas: List[Scala] = scalas: S_1 {  $scalas  }  */
  case 69 => 
-  { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) =>  Id(dol$ID, dol$START) } 
- /* ScalaAtom: Scala = `$` ID { Dollar(Id($ID, $START)) }  */
+  { case List(dol$scalas: List[Scala @unchecked]) =>  dol$scalas } 
+ /* ScalaAtom: Scala = ScalaID { $ScalaID }  */
  case 70 => 
+  { case List(dol$ScalaID: Scala) =>  dol$ScalaID } 
+ /* ScalaAtom: Scala = NUM {  Num($NUM, $START)  }  */
+ case 71 => 
+  { case List(dol$NUM: String) =>  Num(dol$NUM, dol$START) } 
+ /* ScalaAtom: Scala = STRING {  ScalaString($STRING.unQuoted, $START)  }  */
+ case 72 => 
+  { case List(dol$STRING: org.sufrin.scalalr.stage2.AST.Name) => 
+        ScalaString(dol$STRING.unQuoted, dol$START)
+  }
+ /* ScalaAtom: Scala = `(` Scalas `)` {  Bra($Scalas)  }  */
+ case 73 => 
+  { case List(_, dol$Scalas: List[Scala @unchecked], _) =>  Bra(dol$Scalas) } 
+ /* ScalaID: Scala = ID {  Id($ID, $START)  }  */
+ case 74 => 
+  { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) =>  Id(dol$ID, dol$START) } 
+ /* ScalaID: Scala = `$` ID {  Dollar(Id($ID, $START))  }  */
+ case 75 => 
   { case List(_, dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
         Dollar(Id(dol$ID, dol$START))
   }
- /* ScalaAtom: Scala = NUM { Num($NUM, $START) }  */
- case 71 => 
-  { case List(dol$NUM: String) =>  Num(dol$NUM, dol$START) } 
- /* ScalaAtom: Scala = `(` Scala `)` { Bra($Scala) }  */
- case 72 => 
-  { case List(_, dol$Scala: Scala, _) =>  Bra(dol$Scala) } 
+ /* S_1_L: List[Scala] = Scala { List($Scala) }  */
+ case 76 => 
+  { case List(dol$Scala: Scala) =>  List(dol$Scala) } 
+ /* S_1_L: List[Scala] = S_1_L `,` Scala { $Scala :: $S_1_L }  */
+ case 77 => 
+  { case List(dol$S_1_L: List[Scala @unchecked], _, dol$Scala: Scala) => 
+        dol$Scala :: dol$S_1_L
+  }
+ /* S_1: List[Scala] =  { Nil }  */
+ case 78 => 
+  { case List() =>  Nil } 
+ /* S_1: List[Scala] = S_1_L { $S_1_L.reverse }  */
+ case 79 => 
+  { case List(dol$S_1_L: List[Scala @unchecked]) =>  dol$S_1_L.reverse } 
 
  }
 

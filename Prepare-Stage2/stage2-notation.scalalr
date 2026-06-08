@@ -11,6 +11,10 @@
 
     The detail is implemented in `LexicalScanner.next()` as it scans "leading" whitespace in a symbol.
 
+    Extended (June 2026) to incorporate the result notation form `=> minScalaExpression` that
+    is straightforward to subject to consistency checks during notation normalisation phase.
+    THIS description does not use the new form.
+
 */
 
 
@@ -18,7 +22,7 @@
 %package   scalalr.stage2
 %path      "parser"
 %dialect   "scalalr stage2-notation"
-%scalalr   "compatible with stage1 or stage2"
+%scalalr   "compatible with stage1, stage2, and stage3"
 
 %include {
   // Substantive lexical scanner is elsewhere
@@ -28,10 +32,11 @@
   ID:(org.sufrin.scalalr.stage2.AST.Name)
   NUM:(String)
   CODE:(String)
+  STRING:(org.sufrin.scalalr.stage2.AST.Name)
   COMMENT:(String)
   LEXICALERROR:(String)
   `[` `]` `;` `=` `|`  `:`  // Left here as a test of diagnostics
-  `{` `}` `(` `)` ',' '*' '?' SEPARATOR
+  `{` `}` `(` `)` ',' '*' '?' SEPARATOR `=>`
   `%path`       `%type`     `%empty`    `%notation`     `%package` `%token`
   `%left`       `%right`    `%non`      `%rules`
   `%include`    `%prec`     `%tables`   `%dialect`      `%scalalr` `%signature`
@@ -46,6 +51,7 @@
 %include {
  import org.sufrin.scalalr.stage2.AST._
  import org.sufrin.scalalr.stage2.Normalization._
+ import org.sufrin.scalalr.stage2.LexicalScanner
  import scalalr.stage2.Scanner
  import org.sufrin.utility.SourceTextCursor
  import org.sufrin.scalalr.SourceLocation
@@ -102,31 +108,32 @@ Notation: Notation =
 Prefix: Notation =   %empty                                     { Notation() }
                      | p: Prefix `%notation` ID                 { $p.copy(theName=$ID.toString) }
                      | p: Prefix `%package`  ID                 { $p.copy(thePackage=$ID.toString) }
-                     | p: Prefix `%path`     ID                 { $p.copy(theExplicitPath=$ID.asPath) }
-                     | p: Prefix `%tables`   ID                 { $p.copy(tablesType=mkTableType($ID.unQuoted)) }
+                     | p: Prefix `%path`     STRINGorID         { $p.copy(theExplicitPath=$STRINGorID.asPath) }
+                     | p: Prefix `%tables`   STRINGorID         { $p.copy(tablesType=mkTableType($STRINGorID.unQuoted)) }
                      | p: Prefix `%include`  CODE               { $p.copy(theTokensInclude=$CODE) }
                      | p: Prefix `%token`    TypedTerminals     { $p.withTokenDeclaration(Tokens)($TypedTerminals) }
                      | p: Prefix `%left`     TypedTerminals     { $p.withTokenDeclaration(Left)($TypedTerminals) }
                      | p: Prefix `%right`    TypedTerminals     { $p.withTokenDeclaration(Right)($TypedTerminals) }
                      | p: Prefix `%non`      TypedTerminals     { $p.withTokenDeclaration(Nonassoc)($TypedTerminals) }
                      | p: Prefix `%prec`     TypedTerminals     { $p.withTokenDeclaration(Precedence)($TypedTerminals) }
-                     | p: Prefix `%dialect`   ID                { $p.withSignature($ID.unQuoted) }
-                     | p: Prefix `%scalalr`   ID                { $p.withSignature($ID.unQuoted) }
-                     | p: Prefix `%signature` ID                { $p.withSignature($ID.unQuoted) }
+                     | p: Prefix `%dialect`   STRINGorID        { $p.withSignature($STRINGorID.unQuoted) }
+                     | p: Prefix `%scalalr`   STRINGorID        { $p.withSignature($STRINGorID.unQuoted) }
+                     | p: Prefix `%signature` STRINGorID        { $p.withSignature($STRINGorID.unQuoted) }
 
 INCLUDE:    String  = `%include` CODE SEPARATOR { $CODE } | %empty {""}
 
 OPTNL:      Unit    = %empty {()} | SEPARATOR {()}
+
+STRINGorID: Name = ID { $ID } | STRING { $STRING }
 
 TypedTerminals:(List[TypedTerminal]) =
       |  %empty                         { Nil }
       |  TypedTerminal TypedTerminals   { $TypedTerminal :: $TypedTerminals }
 
 
-TypedTerminal:(TypedTerminal) = ID ':' Type      {  TypedTerminal($ID, $Type, $START)   }
-                              | ID '(' Type ')'  {  TypedTerminal($ID, $Type, $START) }   // for compatibility with boot notation
-                              | ID               {  TypedTerminal($ID, NoType, $START) }
-
+TypedTerminal:(TypedTerminal) = ID: STRINGorID ':' Type      {  TypedTerminal($ID, $Type, $START)   }
+                              | ID: STRINGorID '(' Type ')'  {  TypedTerminal($ID, $Type, $START) }   // for compatibility with boot notation
+                              | ID: STRINGorID               {  TypedTerminal($ID, NoType, $START) }
 
 Rules:(List[Rule]) = Rule                  { List($Rule) }
                    | Rules SEPARATOR Rule  { $Rule :: $Rules }
@@ -156,15 +163,16 @@ NamedField: NamedField = FIELD                               { NamedField(theFie
 
 // NB: Normalization.syntheticRuleName yields the name of a new rule, and appends to synthesisedRules,
 //     definitions of the one or more rules needed by its right hand side.
-FIELD: Name =   ID                                    { $ID }
-            |   '(' NamedFields ')'  REPEAT           { syntheticRuleName($NamedFields, $REPEAT, $START, $END) }
-            |   '(' NamedFields ')'  '.' '.' '.'      { syntheticRuleName($NamedFields, Ellipsis, $START, $END) }
+FIELD: Name =     ID                                    { $ID }
+                | STRING                                { $STRING }
+                |   '(' NamedFields ')'  REPEAT         { syntheticRuleName($NamedFields, $REPEAT, $START, $END) }
 
 REPEAT: Repeat  = '?'           { MaybeOne }
                 | '*'           { NoneOrMore }
                 | '+'           { OneOrMore }
                 | '*' '.' '.'   { RightNoneOrMore }
                 | '+' '.' '.'   { RightOneOrMore }
+                | '.' '.' '.'   { Ellipsis }
 
 
 Precedence: (Option[Name])  = %empty { None } | `%prec` ID { Some($ID) }
@@ -186,20 +194,23 @@ Action:(Option[Expression]) = %empty     { None }
 
 // MicroScala notation (for actions)
 
+// MicroScala notation (for actions)
+
 Scala: Scala = ScalaAtom
-             | fun: ScalaAtom '(' args: Scalas ')'   { Apply($fun, $args) }
-             | lhs: Scala '.' rhs: Scala             { Dot($lhs, $rhs) }
-             | lhs: Scala `::` rhs: Scala            { Infix("::", $lhs, $rhs) }
-             | lhs: Scala `+` rhs: Scala             { Infix("+", $lhs, $rhs) }
-             | lhs: Scala `-` rhs: Scala             { Infix("-", $lhs, $rhs) }
+             | fun: ScalaID '(' args: Scalas ')'   { Apply($fun, $args) }
+             | obj: ScalaID '.' feature: ScalaID  '(' args: Scalas ')'   { MethodApply($obj, $feature, $args) }
+             | obj: ScalaID '.' feature: ScalaID  { Dot($obj, $feature) }
+             | lhs: Scala `::` rhs: Scala         { Infix("::", $lhs, $rhs) }
+             | lhs: Scala `+`  rhs: Scala         { Infix("+", $lhs, $rhs) }
+             | lhs: Scala `-`  rhs: Scala         { Infix("-", $lhs, $rhs) }
 
-Scalas: List[Scala] = %empty { Nil }
-                    | ScalaPlus { $ScalaPlus.reverse }
+Scalas: List[Scala] = scalas: (',' Scala)* { $scalas }
 
-ScalaPlus: List[Scala] = Scala               { List($Scala) }
-                       | ScalaPlus ',' Scala { $Scala :: $ScalaPlus }
-
-ScalaAtom: Scala = ID                                    { Id($ID, $START) }
-                 | '$' ID                                { Dollar(Id($ID, $START)) }
+ScalaAtom: Scala = ScalaID
                  | NUM                                   { Num($NUM, $START) }
-                 | '(' Scala ')'                         { Bra($Scala)}
+                 | STRING                                { ScalaString($STRING.unQuoted, $START) }
+                 | '(' Scalas ')'                        { Bra($Scalas) }
+
+ScalaID: Scala = ID      { Id($ID, $START) }
+               | '$' ID  { Dollar(Id($ID, $START)) }
+

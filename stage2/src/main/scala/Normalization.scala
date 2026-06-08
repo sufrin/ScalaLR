@@ -145,9 +145,10 @@ object Normalization  {
               case List(l, r) if  l.hasType && r.hasNoType  =>
                 Messages.inform(s"Reordering for punctuation-guarded left recursion ($l $r)$repeatType  at $START--$END to ($r $l)$repeatType ")
                 List(r, l)
-              case _ =>
+              case List(_) =>
                 Messages.warning(s"(${fields.mkString(" ")})$repeatType at $START--$END treated as (${fields.mkString(" ")})+")
                 fields
+              case _ => fields
             }
             ordered match {
               case Nil =>
@@ -171,6 +172,7 @@ object Normalization  {
                   ),
                   RULE(theName, LIST(theType))(PROD(theListName.asField)(s"$$$theListName.reverse"))
                 )
+              case _: List[NamedField] => Nil
             }
 
           case _ =>

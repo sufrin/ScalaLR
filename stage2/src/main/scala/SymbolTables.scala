@@ -90,9 +90,9 @@ class SymbolTables(notation: Notation) {
 
     for  { symbol <- usedSymbolNames if !ALLDECLARED.contains(symbol)}
          if (symbol.isQuoted)
-           Messages.fatal(s"Undeclared quoted ${symbol.toFullString}") // TODO: autodeclare quoted symbols
+           Messages.fatal(s"${symbol.location} undeclared quoted token ${symbol}") // TODO: autodeclare quoted symbols
          else
-           Messages.fatal(s"Undeclared ${symbol.toFullString}")
+           Messages.fatal(s"${symbol.location} undeclared grammar symbol ${symbol}")
     for  {symbol <- ALLDECLARED if ambiguousSymbols.contains(symbol)}
       Messages.fatal(s"Ambiguous %token ${symbol.toFullString} is also defined as a nonterminal")
 

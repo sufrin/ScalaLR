@@ -286,15 +286,15 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
  /* Action: Option[Expression] =  {  None } */
  case 56 => 
   { case List() =>    None  } 
- /* Action: Option[Expression] = CODE {  Some(Expression($CODE)) } */
+ /* Action: Option[Expression] = CODE {  Some(CodeExpression($CODE)) } */
  case 57 => 
   { case List(dol$CODE: String) => 
-          Some(Expression(dol$CODE)) 
+          Some(CodeExpression(dol$CODE)) 
   }
- /* Action: Option[Expression] = "=>" Scala {  Some(Expression($Scala.forScala)) } */
+ /* Action: Option[Expression] = "=>" Scala {  Some(ScalaExpression($Scala, $START)) } */
  case 58 => 
   { case List(_, dol$Scala: Scala) => 
-          Some(Expression(dol$Scala.forScala)) 
+          Some(ScalaExpression(dol$Scala, dol$START)) 
   }
  /* Scala: Scala = ScalaAtom {} */
  case 59 => 
@@ -345,10 +345,10 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
           Id(dol$ID, dol$START) 
   }
- /* ScalaAtom: Scala = "$" ID {  DollarId($ID, $START) } */
+ /* ScalaAtom: Scala = "$" ID {  Dollar(Id($ID, $START)) } */
  case 70 => 
   { case List(_, dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
-          DollarId(dol$ID, dol$START) 
+          Dollar(Id(dol$ID, dol$START)) 
   }
  /* ScalaAtom: Scala = NUM {  Num($NUM, $START) } */
  case 71 => 
@@ -475,9 +475,9 @@ def parsetreereduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  
  case 56 => 
   { case trees$trees => PARSETREE("""Action: Option[Expression] =  {  None }""", 56, trees$trees ) }
  case 57 => 
-  { case trees$trees => PARSETREE("""Action: Option[Expression] = CODE {  Some(Expression($CODE)) }""", 57, trees$trees ) }
+  { case trees$trees => PARSETREE("""Action: Option[Expression] = CODE {  Some(CodeExpression($CODE)) }""", 57, trees$trees ) }
  case 58 => 
-  { case trees$trees => PARSETREE("""Action: Option[Expression] = "=>" Scala {  Some(Expression($Scala.forScala)) }""", 58, trees$trees ) }
+  { case trees$trees => PARSETREE("""Action: Option[Expression] = "=>" Scala {  Some(ScalaExpression($Scala, $START)) }""", 58, trees$trees ) }
  case 59 => 
   { case trees$trees => PARSETREE("""Scala: Scala = ScalaAtom {}""", 59, trees$trees ) }
  case 60 => 
@@ -501,7 +501,7 @@ def parsetreereduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  
  case 69 => 
   { case trees$trees => PARSETREE("""ScalaAtom: Scala = ID {  Id($ID, $START) }""", 69, trees$trees ) }
  case 70 => 
-  { case trees$trees => PARSETREE("""ScalaAtom: Scala = "$" ID {  DollarId($ID, $START) }""", 70, trees$trees ) }
+  { case trees$trees => PARSETREE("""ScalaAtom: Scala = "$" ID {  Dollar(Id($ID, $START)) }""", 70, trees$trees ) }
  case 71 => 
   { case trees$trees => PARSETREE("""ScalaAtom: Scala = NUM {  Num($NUM, $START) }""", 71, trees$trees ) }
  case 72 => 

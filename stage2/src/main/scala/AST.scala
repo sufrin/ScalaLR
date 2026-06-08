@@ -179,7 +179,7 @@ object AST {
   case object RightOneOrMore    extends Repeat { override val toString: String = "+.." }  // right-recursive implementation
 
 
-  trait Expression {
+  sealed trait Expression {
     def text: String
     override def toString: String = text.trim
     def mangle: String = text.trim.replace("$", mangleDollar)
@@ -215,16 +215,24 @@ object AST {
     def decorated: List[Name] = Nil
   }
 
-  case class Bra(scala: Scala) extends Scala {
-    val forScala = s"(${scala.forScala})"
-    def free: List[Name] = scala.free
-    def decorated: List[Name] = scala.decorated
+  case class ScalaString(string: String, START: SourceLocation) extends Scala {
+    val forScala = s""""$string""""
+    def free: List[Name] = Nil
+    def decorated: List[Name] = Nil
   }
 
-  case class Dot(l: Scala, r: Scala) extends Scala {
-    val forScala: String = s"${l.forScala}.${r.forScala}"
-    def free: List[Name] = l.free ++ r.free
-    def decorated: List[Name] = l.decorated++ r.decorated
+  case class Bra(scalas: List[Scala]) extends Scala {
+    val forScala = s"(${scalas.map(_.forScala).mkString(",")})"
+    def free: List[Name] = scalas.flatMap(_.free)
+    def decorated: List[Name] = scalas.flatMap(_.decorated)
+  }
+
+  case class Dot(obj: Scala, feature: Scala) extends Scala {
+    val forScala: String      = s"${obj.forScala}.${feature.forScala}"
+    def free: List[Name]      = obj.free
+
+    def decorated: List[Name] = obj.decorated
+
   }
 
   case class Infix(op: String, l: Scala, r: Scala) extends Scala {
@@ -235,15 +243,22 @@ object AST {
   }
 
   case class Apply(path: Scala, args: Seq[Scala]) extends Scala {
-    val forScala: String      = s"${path.forScala}(${args.map(_.forScala).mkString(", ")})"
-    def free: List[Name]      = {
+    val forScala: String = s"${path.forScala}(${args.map(_.forScala).mkString(", ")})"
+
+    def free: List[Name] = {
       path match {
         case Id(name, _) => (if (name.unQuoted(0).isUpper) Nil else path.free) ++ args.flatMap(_.free)
         case _ => path.free ++ args.flatMap(_.free)
       }
     }
-
     def decorated: List[Name] = path.decorated ++ args.flatMap(_.decorated)
+
+  }
+
+    case class MethodApply(obj: Scala, feature: Scala, args: Seq[Scala]) extends Scala {
+      val forScala: String      = s"${obj.forScala}.${feature.forScala}(${args.map(_.forScala).mkString(", ")})"
+      def free: List[Name]      =  obj.free ++ args.flatMap(_.free)
+      def decorated: List[Name] = obj.decorated ++ args.flatMap(_.decorated)
 
   }
 

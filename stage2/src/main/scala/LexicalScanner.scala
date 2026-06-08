@@ -17,6 +17,19 @@ object LexicalScanner {
 
   def apply(chars: SourceTextCursor): LexicalScanner = new LexicalScanner(chars)
 
+  def makeID(unQuoted: String, isQuoted: Boolean, location: SourceLocation): ID = {
+    if (unQuoted.contains('\n')) {
+      Generator.warn(s"An unlikely-looking ID (contains newline(s)) at $location")
+    }
+    ID(AST.Name(unQuoted, isQuoted, location))
+  }
+
+  def makeSTRING(unQuoted: String, isQuoted: Boolean, location: SourceLocation): STRING = {
+    if (unQuoted.contains('\n')) {
+      Generator.warn(s"An unlikely-looking ID (contains newline(s)) at $location")
+    }
+    STRING(AST.Name(unQuoted, isQuoted, location))
+  }
 
   class LexicalScanner(chars: SourceTextCursor) extends Iterator[Token] {
     def sourceLocation(): SourceLocation = SourceLocation(chars.lines,  chars.chars)
@@ -25,19 +38,12 @@ object LexicalScanner {
     @inline def nextChar(): Unit = chars.next()
     @inline def afterNextChar(t: Token): Token = { nextChar(); t }
 
-    def makeID(unQuoted: String, isQuoted: Boolean, location: SourceLocation): ID = {
-        if (unQuoted.contains('\n')) {
-          Generator.warn(s"An unlikely-looking ID (contains newline(s)) at $location")
-          ID(AST.Name(unQuoted, isQuoted, location))
-        }
-      else
-        ID(AST.Name(unQuoted, isQuoted, location))
-    }
+
 
     /**
      * True after the %rules directive has been seen for the first time
      */
-    var enableSEPARATOR = false
+    var inRulesSection = false
 
     def eatComment(): Unit = {
       var level = 0
@@ -82,7 +88,7 @@ object LexicalScanner {
       }
     }
 
-    def isBisonic(c: Char): Boolean = c.isLetterOrDigit || c=='_' || c=='$' || (!enableSEPARATOR && c=='.')
+    def isBisonic(c: Char): Boolean = c.isLetterOrDigit || c=='_' || c=='$' || (!inRulesSection && c=='.')
 
     def hasNext: Boolean = chars.hasCurrent
     def next(): Token = {
@@ -140,7 +146,7 @@ object LexicalScanner {
             case "precedence"   => `%prec`
             case "prec"         => `%prec`
             case "rules"        =>
-              enableSEPARATOR = true
+              inRulesSection = true
               eatWhitespace()
               `%rules`
             case _ => LEXICALERROR(s"Unknown directive %$directive (at ${startLocation})")
@@ -163,9 +169,10 @@ object LexicalScanner {
         case '«' => // » to balance the %include
           nextChar(); afterNextChar(CODE(chars.takeNested('«', '»')  .mkString("")))
 
-        case '"'  => nextChar(); afterNextChar(makeID(chars.takeWhile( c => c!='"').mkString(""), true, startLocation))
-        case '\'' => nextChar(); afterNextChar(makeID(chars.takeWhile( c => c!='\'').mkString(""), true, startLocation))
-        case '`'  => nextChar(); afterNextChar(makeID(chars.takeWhile( c => c!='`').mkString(""), true, startLocation))
+        case '"'  => nextChar(); afterNextChar(makeSTRING(chars.takeWhile( c => c!='"').mkString, true, startLocation))
+
+        case '\'' => nextChar(); afterNextChar(makeID(chars.takeWhile( c => c!='\'').mkString, true, startLocation))
+        case '`'  => nextChar(); afterNextChar(makeID(chars.takeWhile( c => c!='`').mkString, true, startLocation))
 
         case '0' =>
           nextChar()
@@ -195,7 +202,7 @@ object LexicalScanner {
             if (theChar=='\n') vertical += 1
             nextChar()
           }
-          if (enableSEPARATOR && vertical>1) SEPARATOR
+          if (inRulesSection && vertical>1) { SEPARATOR }
           else
             if (hasChar) nnext() else $end
         case other =>

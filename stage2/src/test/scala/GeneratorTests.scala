@@ -62,7 +62,6 @@ object test3 extends Test("-Lsym")(
  """ %tables    ielrx
      %notation  stage2test
      %package   scalalr.stage2test
-     %path      "parser"
 
 
      %include { This is the inclusion }
@@ -82,6 +81,21 @@ object test3 extends Test("-Lsym")(
 
      """)
 
+object testString extends Test("-Lsyn")(
+  """
+%notation  STRING
+%package   string.String
+%path      string
+
+%rules
+
+
+lhs3: String = `A STRING` `|` { "foo" }
+
+lhs4: String = "A STRING" `|` => "foo"
+
+
+""")
 
 object test4 extends Test()(
   """%tables    ielr
@@ -393,18 +407,33 @@ object testArrow extends Test("--output=TEST-GENERATED  -Lsym -Lsyn")(
      %notation  Arrow
      %package   arrow.Arrow
      %path      "arrow"
-     %token ID(String)
-     %include {
 
-     }
+     //%token     CODE(String)
+
      %rules
+
+     Prefix: Notation =   %empty                                     { Notation() }
+                     | p: Prefix `%notation` ID                 { $p.copy(theName=$ID.toString) }
+                     | p: Prefix `%package`  ID                 { $p.copy(thePackage=$ID.toString) }
+                     | p: Prefix `%path`     ID                 { $p.copy(theExplicitPath=$ID.asPath) }
+                     | p: Prefix `%tables`   ID                 { $p.copy(tablesType=mkTableType($ID.unQuoted)) }
+                     | p: Prefix `%include`  CODE               { $p.copy(theTokensInclude=$CODE) }
+                     | p: Prefix `%token`    TypedTerminals     { $p.withTokenDeclaration(Tokens)($TypedTerminals) }
+                     | p: Prefix `%left`     TypedTerminals     { $p.withTokenDeclaration(Left)($TypedTerminals) }
+                     | p: Prefix `%right`    TypedTerminals     { $p.withTokenDeclaration(Right)($TypedTerminals) }
+                     | p: Prefix `%non`      TypedTerminals     { $p.withTokenDeclaration(Nonassoc)($TypedTerminals) }
+                     | p: Prefix `%prec`     TypedTerminals     { $p.withTokenDeclaration(Precedence)($TypedTerminals) }
+                     | p: Prefix `%dialect`   ID                => $p.withSignature($ID.unQuoted)
+                     | p: Prefix `%scalalr`   ID                { $p.withSignature($ID.unQuoted) }
+                     | p: Prefix `%signature` ID                { $p.withSignature($ID.unQuoted) }
+
        expr: Expr =
              ID '(' exprlist: (',' expr)* ')'   => Apply(exprlist, $expr)
            |    '{' exprlist: (';' expr)+ '}'   => Sequence(ID, $exprlist.length + 4)
+           | `RETURN` optexpr:  (expr)? ';'     => Return($optexpr.get :: Nil)
            | "RETURN" optexpr:  (expr)? ';'     => Return($optexpr.get :: Nil)
-           | "RETURN" optexpr:  (expr)? ';'     => Return($optexpr.get :: Nil)
-           | l: expr '+' r: expr ';'     => Operate("+", $l, r)
-           |  "RETURN" optexpr:  (expr)? ';'  => Return(optexpr.get)
+           | l: expr '+' r: expr ';'            => Operate("+", $l, r)
+           |  "RETURN" optexpr:  (expr)? ';'    => Return(optexpr.get)
   """)
 
 object testAutoMisc extends Test("--output=TEST-GENERATED  -Lsym -Lsyn")(
@@ -677,8 +706,8 @@ DOUBLE: Proc = proc
 
 proc: Proc =
            prim
-           | l: proc `|` r: proc { Parallel(List($l,$r), $START, $END) }
-           | l: proc ';' r: proc { Sequence(List($l,$r), $START, $END) }
+           | l: proc `|` r: proc => Parallel(List($l,$r), $START, $END)
+           | l: proc ';' r: proc => Sequence(List($l,$r), $START, $END)
 
 
 prim: Proc = ID '=' expr  { Assign($ID, $expr, $START, $END) }

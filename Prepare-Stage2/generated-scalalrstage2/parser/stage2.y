@@ -6,119 +6,127 @@
 // T-003	ID 
 // T-004	NUM 
 // T-005	CODE 
-// T-006	COMMENT 
-// T-007	LEXICALERROR 
-// T-008	`[` 
-// T-009	`]` 
-// T-010	`;` 
-// T-011	`=` 
-// T-012	`|` 
-// T-013	`:` 
-// T-014	`{` 
-// T-015	`}` 
-// T-016	`(` 
-// T-017	`)` 
-// T-018	`,` 
-// T-019	`*` 
-// T-020	`?` 
-// T-021	SEPARATOR 
-// T-022	`%path` 
-// T-023	`%type` 
-// T-024	`%empty` 
-// T-025	`%notation` 
-// T-026	`%package` 
-// T-027	`%token` 
-// T-028	`%left` 
-// T-029	`%right` 
-// T-030	`%non` 
-// T-031	`%rules` 
-// T-032	`%include` 
-// T-033	`%prec` 
-// T-034	`%tables` 
-// T-035	`%dialect` 
-// T-036	`%scalalr` 
-// T-037	`%signature` 
-// T-038	`::` 
-// T-039	`+` 
-// T-040	`-` 
-// T-041	`.` 
-// T-042	`=>` 
-// T-043	`$` 
-%token T-042 T-043
-%token T-003 T-004 T-005 T-006 T-007 T-008 T-009 T-010 T-011 T-012 T-013 T-014 T-015 T-016 T-017 T-018 T-019 T-020 T-021 T-022 T-023 T-024 T-025 T-026 T-027 T-028 T-029 T-030 T-031 T-032 T-033 T-034 T-035 T-036 T-037
-%right T-038
-%left T-039 T-040
-%right T-041
+// T-006	STRING 
+// T-007	COMMENT 
+// T-008	LEXICALERROR 
+// T-009	`[` 
+// T-010	`]` 
+// T-011	`;` 
+// T-012	`=` 
+// T-013	`|` 
+// T-014	`:` 
+// T-015	`{` 
+// T-016	`}` 
+// T-017	`(` 
+// T-018	`)` 
+// T-019	`,` 
+// T-020	`*` 
+// T-021	`?` 
+// T-022	SEPARATOR 
+// T-023	`=>` 
+// T-024	`%path` 
+// T-025	`%type` 
+// T-026	`%empty` 
+// T-027	`%notation` 
+// T-028	`%package` 
+// T-029	`%token` 
+// T-030	`%left` 
+// T-031	`%right` 
+// T-032	`%non` 
+// T-033	`%rules` 
+// T-034	`%include` 
+// T-035	`%prec` 
+// T-036	`%tables` 
+// T-037	`%dialect` 
+// T-038	`%scalalr` 
+// T-039	`%signature` 
+// T-040	`::` 
+// T-041	`+` 
+// T-042	`-` 
+// T-043	`.` 
+// T-044	`$` 
+%token T-044
+%token T-003 T-004 T-005 T-006 T-007 T-008 T-009 T-010 T-011 T-012 T-013 T-014 T-015 T-016 T-017 T-018 T-019 T-020 T-021 T-022 T-023 T-024 T-025 T-026 T-027 T-028 T-029 T-030 T-031 T-032 T-033 T-034 T-035 T-036 T-037 T-038 T-039
+%right T-040
+%left T-041 T-042
+%right T-043
 %%
-T-045: T-046 T-031 T-047 T-051 T-048 // Notation = Prefix `%rules` INCLUDE Rules OPTNL
-T-046:  // Prefix = 
-T-046: T-046 T-025 T-003 // Prefix = p: Prefix `%notation` ID
-T-046: T-046 T-026 T-003 // Prefix = p: Prefix `%package` ID
-T-046: T-046 T-022 T-003 // Prefix = p: Prefix `%path` ID
-T-046: T-046 T-034 T-003 // Prefix = p: Prefix `%tables` ID
-T-046: T-046 T-032 T-005 // Prefix = p: Prefix `%include` CODE
-T-046: T-046 T-027 T-049 // Prefix = p: Prefix `%token` TypedTerminals
-T-046: T-046 T-028 T-049 // Prefix = p: Prefix `%left` TypedTerminals
-T-046: T-046 T-029 T-049 // Prefix = p: Prefix `%right` TypedTerminals
-T-046: T-046 T-030 T-049 // Prefix = p: Prefix `%non` TypedTerminals
-T-046: T-046 T-033 T-049 // Prefix = p: Prefix `%prec` TypedTerminals
-T-046: T-046 T-035 T-003 // Prefix = p: Prefix `%dialect` ID
-T-046: T-046 T-036 T-003 // Prefix = p: Prefix `%scalalr` ID
-T-046: T-046 T-037 T-003 // Prefix = p: Prefix `%signature` ID
-T-047: T-032 T-005 T-021 // INCLUDE = `%include` CODE SEPARATOR
-T-047:  // INCLUDE = 
-T-048:  // OPTNL = 
-T-048: T-021 // OPTNL = SEPARATOR
-T-049:  // TypedTerminals = 
-T-049: T-050 T-049 // TypedTerminals = TypedTerminal TypedTerminals
-T-050: T-003 T-013 T-062 // TypedTerminal = ID `:` Type
-T-050: T-003 T-016 T-062 T-017 // TypedTerminal = ID `(` Type `)`
-T-050: T-003 // TypedTerminal = ID
-T-051: T-052 // Rules = Rule
-T-051: T-051 T-021 T-052 // Rules = Rules SEPARATOR Rule
-T-052: T-054 T-011 T-053 T-055 // Rule = LHS `=` OptBar RHS
-T-053: T-012 // OptBar = `|`
-T-053:  // OptBar = 
-T-054: T-003 T-013 T-062 // LHS = ID `:` Type
-T-054: T-003 // LHS = ID
-T-055: T-056 // RHS = Production
-T-055: T-056 T-012 T-055 // RHS = Production `|` RHS
-T-056: T-057 T-064 T-061 // Production = NamedFields Action Precedence
-T-057: T-024 // NamedFields = `%empty`
-T-057: T-058 // NamedFields = NamedField
-T-057: T-058 T-057 // NamedFields = NamedField NamedFields
-T-058: T-059 // NamedField = FIELD
-T-058: T-003 T-013 T-059 // NamedField = theFieldName: ID `:` theName: FIELD
-T-059: T-003 // FIELD = ID
-T-059: T-016 T-057 T-017 T-060 // FIELD = `(` NamedFields `)` REPEAT
-T-059: T-016 T-057 T-017 T-041 T-041 T-041 // FIELD = `(` NamedFields `)` `.` `.` `.`
-T-060: T-020 // REPEAT = `?`
-T-060: T-019 // REPEAT = `*`
-T-060: T-039 // REPEAT = `+`
-T-060: T-019 T-041 T-041 // REPEAT = `*` `.` `.`
-T-060: T-039 T-041 T-041 // REPEAT = `+` `.` `.`
-T-061:  // Precedence = 
-T-061: T-033 T-003 // Precedence = `%prec` ID
-T-062: T-003 // Type = ID
-T-062: T-003 T-008 T-063 T-009 // Type = ID `[` Types `]`
-T-062: T-016 T-063 T-017 // Type = `(` Types `)`
-T-062: T-016 T-017 // Type = `(` `)`
-T-063: T-062 // Types = Type
-T-063: T-062 T-018 T-063 // Types = Type `,` Types
-T-064:  // Action = 
-T-064: T-005 // Action = CODE
-T-064: T-042 T-065 // Action = `=>` Scala
-T-065: T-068 // Scala = ScalaAtom
-T-065: T-068 T-016 T-066 T-017 // Scala = fun: ScalaAtom `(` args: Scalas `)`
-T-065: T-065 T-041 T-065 // Scala = lhs: Scala `.` rhs: Scala
-T-065: T-065 T-038 T-065 // Scala = lhs: Scala `::` rhs: Scala
-T-065: T-065 T-039 T-065 // Scala = lhs: Scala `+` rhs: Scala
-T-065: T-065 T-040 T-065 // Scala = lhs: Scala `-` rhs: Scala
-T-066:  // Scalas = 
-T-066: T-067 // Scalas = ScalaPlus
-T-067: T-065 // ScalaPlus = Scala
-T-067: T-067 T-018 T-065 // ScalaPlus = ScalaPlus `,` Scala
-T-068: T-003 // ScalaAtom = ID
-T-068: T-043 T-003 // ScalaAtom = `$` ID
-T-068: T-004 // ScalaAtom = NUM
-T-068: T-016 T-065 T-017 // ScalaAtom = `(` Scala `)`
+T-046: T-047 T-033 T-048 T-053 T-049 // Notation = Prefix `%rules` INCLUDE Rules OPTNL
+T-047:  // Prefix = 
+T-047: T-047 T-027 T-003 // Prefix = p: Prefix `%notation` ID
+T-047: T-047 T-028 T-003 // Prefix = p: Prefix `%package` ID
+T-047: T-047 T-024 T-050 // Prefix = p: Prefix `%path` STRINGorID
+T-047: T-047 T-036 T-050 // Prefix = p: Prefix `%tables` STRINGorID
+T-047: T-047 T-034 T-005 // Prefix = p: Prefix `%include` CODE
+T-047: T-047 T-029 T-051 // Prefix = p: Prefix `%token` TypedTerminals
+T-047: T-047 T-030 T-051 // Prefix = p: Prefix `%left` TypedTerminals
+T-047: T-047 T-031 T-051 // Prefix = p: Prefix `%right` TypedTerminals
+T-047: T-047 T-032 T-051 // Prefix = p: Prefix `%non` TypedTerminals
+T-047: T-047 T-035 T-051 // Prefix = p: Prefix `%prec` TypedTerminals
+T-047: T-047 T-037 T-050 // Prefix = p: Prefix `%dialect` STRINGorID
+T-047: T-047 T-038 T-050 // Prefix = p: Prefix `%scalalr` STRINGorID
+T-047: T-047 T-039 T-050 // Prefix = p: Prefix `%signature` STRINGorID
+T-048: T-034 T-005 T-022 // INCLUDE = `%include` CODE SEPARATOR
+T-048:  // INCLUDE = 
+T-049:  // OPTNL = 
+T-049: T-022 // OPTNL = SEPARATOR
+T-050: T-003 // STRINGorID = ID
+T-050: T-006 // STRINGorID = STRING
+T-051:  // TypedTerminals = 
+T-051: T-052 T-051 // TypedTerminals = TypedTerminal TypedTerminals
+T-052: T-050 T-014 T-064 // TypedTerminal = ID: STRINGorID `:` Type
+T-052: T-050 T-017 T-064 T-018 // TypedTerminal = ID: STRINGorID `(` Type `)`
+T-052: T-050 // TypedTerminal = ID: STRINGorID
+T-053: T-054 // Rules = Rule
+T-053: T-053 T-022 T-054 // Rules = Rules SEPARATOR Rule
+T-054: T-056 T-012 T-055 T-057 // Rule = LHS `=` OptBar RHS
+T-055: T-013 // OptBar = `|`
+T-055:  // OptBar = 
+T-056: T-003 T-014 T-064 // LHS = ID `:` Type
+T-056: T-003 // LHS = ID
+T-057: T-058 // RHS = Production
+T-057: T-058 T-013 T-057 // RHS = Production `|` RHS
+T-058: T-059 T-066 T-063 // Production = NamedFields Action Precedence
+T-059: T-026 // NamedFields = `%empty`
+T-059: T-060 // NamedFields = NamedField
+T-059: T-060 T-059 // NamedFields = NamedField NamedFields
+T-060: T-061 // NamedField = FIELD
+T-060: T-003 T-014 T-061 // NamedField = theFieldName: ID `:` theName: FIELD
+T-061: T-003 // FIELD = ID
+T-061: T-006 // FIELD = STRING
+T-061: T-017 T-059 T-018 T-062 // FIELD = `(` NamedFields `)` REPEAT
+T-062: T-021 // REPEAT = `?`
+T-062: T-020 // REPEAT = `*`
+T-062: T-041 // REPEAT = `+`
+T-062: T-020 T-043 T-043 // REPEAT = `*` `.` `.`
+T-062: T-041 T-043 T-043 // REPEAT = `+` `.` `.`
+T-062: T-043 T-043 T-043 // REPEAT = `.` `.` `.`
+T-063:  // Precedence = 
+T-063: T-035 T-003 // Precedence = `%prec` ID
+T-064: T-003 // Type = ID
+T-064: T-003 T-009 T-065 T-010 // Type = ID `[` Types `]`
+T-064: T-017 T-065 T-018 // Type = `(` Types `)`
+T-064: T-017 T-018 // Type = `(` `)`
+T-065: T-064 // Types = Type
+T-065: T-064 T-019 T-065 // Types = Type `,` Types
+T-066:  // Action = 
+T-066: T-005 // Action = CODE
+T-066: T-023 T-067 // Action = `=>` Scala
+T-067: T-069 // Scala = ScalaAtom
+T-067: T-070 T-017 T-068 T-018 // Scala = fun: ScalaID `(` args: Scalas `)`
+T-067: T-070 T-043 T-070 T-017 T-068 T-018 // Scala = obj: ScalaID `.` feature: ScalaID `(` args: Scalas `)`
+T-067: T-070 T-043 T-070 // Scala = obj: ScalaID `.` feature: ScalaID
+T-067: T-067 T-040 T-067 // Scala = lhs: Scala `::` rhs: Scala
+T-067: T-067 T-041 T-067 // Scala = lhs: Scala `+` rhs: Scala
+T-067: T-067 T-042 T-067 // Scala = lhs: Scala `-` rhs: Scala
+T-068: T-072 // Scalas = scalas: S_1
+T-069: T-070 // ScalaAtom = ScalaID
+T-069: T-004 // ScalaAtom = NUM
+T-069: T-006 // ScalaAtom = STRING
+T-069: T-017 T-068 T-018 // ScalaAtom = `(` Scalas `)`
+T-070: T-003 // ScalaID = ID
+T-070: T-044 T-003 // ScalaID = `$` ID
+T-071: T-067 // S_1_L = Scala
+T-071: T-071 T-019 T-067 // S_1_L = S_1_L `,` Scala
+T-072:  // S_1 = 
+T-072: T-071 // S_1 = S_1_L

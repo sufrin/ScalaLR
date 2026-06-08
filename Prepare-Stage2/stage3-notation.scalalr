@@ -1,8 +1,7 @@
 
 /**
-        Identical to stage2-notation, except that the
-        description uses * + ? decorated descriptions of repeated/optional
-        phrases
+        Identical to stage2-notation, except that the description uses * + ? decorated descriptions of repeated/optional
+        phrases, and (occasionally) the => notation for production result expressions.
 */
 
 
@@ -22,6 +21,7 @@
   ID:(org.sufrin.scalalr.stage2.AST.Name)
   NUM:(String)
   CODE:(String)
+  STRING:(org.sufrin.scalalr.stage2.AST.Name)
   COMMENT:(String)
   LEXICALERROR:(String)
   `[` `]` `;` `=` `|`  `:`
@@ -29,7 +29,11 @@
   `%path`       `%type`     `%empty`    `%notation`     `%package` `%token`
   `%left`       `%right`    `%non`      `%rules`
   `%include`    `%prec`     `%tables`   `%dialect`      `%scalalr` `%signature`
-  `*`           `?`         `+`
+  `*`           `?`         `+`         `=>`            `$`
+
+%right '::'
+%left  '+' '-'
+%right '.'
 
   %left SEPARATOR
   %left HIGH
@@ -93,43 +97,40 @@ Notation: Notation =
 
 // A left fold that accumulates incremental changes to the initial default notation AST
 
-Prefix: Notation =   %empty                                     { Notation() }
-                     | p: Prefix `%notation` ID                 { $p.copy(theName=$ID.toString) }
-                     | p: Prefix `%package`  ID                 { $p.copy(thePackage=$ID.toString) }
-                     | p: Prefix `%path`     ID                 { $p.copy(theExplicitPath=$ID.asPath) }
-                     | p: Prefix `%tables`   ID                 { $p.copy(tablesType=mkTableType($ID.unQuoted)) }
-                     | p: Prefix `%include`  CODE               { $p.copy(theTokensInclude=$CODE) }
-                     | p: Prefix `%token`    TypedTerminals     { $p.withTokenDeclaration(Tokens)($TypedTerminals) }
-                     | p: Prefix `%left`     TypedTerminals     { $p.withTokenDeclaration(Left)($TypedTerminals) }
-                     | p: Prefix `%right`    TypedTerminals     { $p.withTokenDeclaration(Right)($TypedTerminals) }
-                     | p: Prefix `%non`      TypedTerminals     { $p.withTokenDeclaration(Nonassoc)($TypedTerminals) }
-                     | p: Prefix `%prec`     TypedTerminals     { $p.withTokenDeclaration(Precedence)($TypedTerminals) }
-                     | p: Prefix `%dialect`   ID                { $p.withSignature($ID.unQuoted) }
-                     | p: Prefix `%scalalr`   ID                { $p.withSignature($ID.unQuoted) }
-                     | p: Prefix `%signature` ID                { $p.withSignature($ID.unQuoted) }
+Prefix: Notation =   %empty                                      => Notation()
+                      | p: Prefix `%notation` ID                 { $p.copy(theName=$ID.toString) }
+                      | p: Prefix `%package`  ID                 { $p.copy(thePackage=$ID.toString) }
+                      | p: Prefix `%path`     STRINGorID         { $p.copy(theExplicitPath=$STRINGorID.asPath) }
+                      | p: Prefix `%tables`   STRINGorID         { $p.copy(tablesType=mkTableType($STRINGorID.unQuoted)) }
+                      | p: Prefix `%include`  CODE               { $p.copy(theTokensInclude=$CODE) }
+                      | p: Prefix `%token`    TypedTerminals     { $p.withTokenDeclaration(Tokens)($TypedTerminals) }
+                      | p: Prefix `%left`     TypedTerminals     { $p.withTokenDeclaration(Left)($TypedTerminals) }
+                      | p: Prefix `%right`    TypedTerminals     { $p.withTokenDeclaration(Right)($TypedTerminals) }
+                      | p: Prefix `%non`      TypedTerminals     { $p.withTokenDeclaration(Nonassoc)($TypedTerminals) }
+                      | p: Prefix `%prec`     TypedTerminals     { $p.withTokenDeclaration(Precedence)($TypedTerminals) }
+                      | p: Prefix `%dialect`   STRINGorID        { $p.withSignature($STRINGorID.unQuoted) }
+                      | p: Prefix `%scalalr`   STRINGorID        { $p.withSignature($STRINGorID.unQuoted) }
+                      | p: Prefix `%signature` STRINGorID        => $p.withSignature($STRINGorID.unQuoted)
 
 INCLUDE:    String  = `%include` CODE SEPARATOR { $CODE }
                     | %empty {""}
 
 OPTSEPARATOR: Unit = %empty {()} | SEPARATOR {()}
 
+STRINGorID: Name = ID { $ID } | STRING { $STRING }
+
+
 TypedTerminals:(List[TypedTerminal]) =  %empty                         { Nil }
                                      |  TypedTerminal TypedTerminals   { $TypedTerminal :: $TypedTerminals }
 
 
-TypedTerminal:(TypedTerminal) = ID ':' Type      {  TypedTerminal($ID, $Type, $START)   }
-                              | ID '(' Type ')'  {  TypedTerminal($ID, $Type, $START) }   // for compatibility with boot notation
-                              | ID               {  TypedTerminal($ID, NoType, $START) }
+TypedTerminal:(TypedTerminal) = ID: STRINGorID ':' Type      {  TypedTerminal($ID, $Type, $START)   }
+                              | ID: STRINGorID '(' Type ')'  {  TypedTerminal($ID, $Type, $START) }   // for compatibility with boot notation
+                              | ID: STRINGorID               {  TypedTerminal($ID, NoType, $START) }
 
 
 Rules:(List[Rule]) =  Rule                  { List($Rule) }
                    |  Rules SEPARATOR Rule  { $Rule :: $Rules }
-
-
-
-// (SEPARATOR Rule)+ doesn't work! // TODO: investigate
-
-
 
 
 Rule: Rule = LHS ('|')? RHS { Rule($LHS, $RHS, $START) }
@@ -160,20 +161,18 @@ NamedField: NamedField = FIELD                               { NamedField(theFie
 
 // NB: Normalization.syntheticRuleName yields the name of a new rule, and appends to synthesisedRules,
 //     definitions of the one or more rules needed by its right hand side.
-FIELD: Name =   ID                            { $ID }
+FIELD: Name =   ID                       { $ID }
+            | STRING                     { $STRING }
             |   '(' Fields ')'  REPEAT   { syntheticRuleName($Fields, $REPEAT, $START, $END) }
 
-REPEAT: Repeat  = '?'       { MaybeOne }
-                | '*'       { NoneOrMore }
-                | '+'       { OneOrMore }
-
-Action:(Option[Expression]) = %empty { None } | CODE { Some(Expression($CODE)) }
+REPEAT: Repeat  = '?'           { MaybeOne }
+                | '*'           { NoneOrMore }
+                | '+'           { OneOrMore }
+                | '*' '.' '.'   { RightNoneOrMore }
+                | '+' '.' '.'   { RightOneOrMore }
+                | '.' '.' '.'   { Ellipsis }
 
 Precedence: (Option[Name])  = (`%prec` ID)?
-
-/*
-%empty { None } | `%prec` ID { Some($ID)}
-*/
 
 Type:(SymbolType) =
             | ID               { Type($ID.withoutQuotes, Nil, $START) }
@@ -184,7 +183,29 @@ Type:(SymbolType) =
 
 Types:(List[Type]) = (',' Type)+
 
-/*
-Type            { List($Type) }
-                   | Type  ',' Types { $Type :: $Types }
-*/
+Action:(Option[Expression]) = %empty     { None }
+                            | CODE       { Some(CodeExpression($CODE)) }
+                            | '=>' Scala { Some(ScalaExpression($Scala, $START)) }
+
+// MicroScala notation (for actions)
+
+Scala: Scala = ScalaAtom
+             | fun: ScalaID '(' args: Scalas ')'   { Apply($fun, $args) }
+             | obj: ScalaID '.' feature: ScalaID  '(' args: Scalas ')'   { MethodApply($obj, $feature, $args) }
+             | obj: ScalaID '.' feature: ScalaID  { Dot($obj, $feature) }
+             | lhs: Scala `::` rhs: Scala         { Infix("::", $lhs, $rhs) }
+             | lhs: Scala `+`  rhs: Scala         { Infix("+", $lhs, $rhs) }
+             | lhs: Scala `-`  rhs: Scala         { Infix("-", $lhs, $rhs) }
+
+Scalas: List[Scala] = scalas: (',' Scala)* { $scalas }
+
+ScalaAtom: Scala = ScalaID
+                 | NUM                                   { Num($NUM, $START) }
+                 | '(' Scalas ')'                        { Bra($Scalas) }
+                 | STRING                                { ScalaString($STRING.unQuoted, $START) }
+
+ScalaID: Scala = ID      { Id($ID, $START) }
+               | '$' ID  { Dollar(Id($ID, $START)) }
+
+
+

@@ -61,6 +61,7 @@ object Generator {
       else if (arg == "-log") log = true
       else if (arg == "-p") pretty = true
       else if (arg == "-o") {}
+      else if (arg == "-html") {}
       else if (arg.startsWith("-")) {
         println(
           """Usage: stage2 [--output=<outputpath] [-p | -l]* [<file> ...]

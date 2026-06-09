@@ -13,7 +13,8 @@ trait Scanner[Token]  extends Iterator[Token] {
 }
 
 /**
- * A builder for parameterisable lexical scanners.
+ * A builder for parameterisable lexical scanners. Simplicity is the
+ * watchword so as to keep the API simple.
  */
 abstract class ScannerBuilder[Token <: Lexeme](chars: SourceTextCursor) extends Scanner[Token] {
   import org.sufrin.utility.CharSequenceMap
@@ -22,15 +23,15 @@ abstract class ScannerBuilder[Token <: Lexeme](chars: SourceTextCursor) extends 
 
   /** Token from a "quoted" text, after processing any "escape" sequences in `body` */
   def mkString(openQuote: String, closeQuote: String, body: Seq[Char]): Token
-  /** Token from a text of the form `0xhexit+` */
+  /** Token from a text of the form `0x[hexit]+` */
   def mkHex(source: Seq[Char]):   Token
-  /** Token from a text of the form `digit+` */
+  /** Token from a text of the form `[digit]+` */
   def mkDec(source: Seq[Char]):   Token
-  /** Token from a text of the form `digit+.digit+(edigit+)?` */
+  /** Token from a text of the form `[digit]+.[digit]+(e[digit]+)?` */
   def mkReal(source: Seq[Char]):  Token
-  /** Token from the text of an identifier */
+  /** Token from the text of an identifier [letter][letterordigit]+ */
   def mkID(source: Seq[Char]):    Token
-  /** error message from an unrecognised character  */
+  /** error token from an unrecognised character, or if you really care, an extension point  */
   def mkERROR(source: Seq[Char]): Token
   /**
    * None if a newline is just whitespace; else Some(tok) if a newline is to yield tok without reading ahead.
@@ -45,15 +46,14 @@ abstract class ScannerBuilder[Token <: Lexeme](chars: SourceTextCursor) extends 
   /** Mapping from (alphabetic) names to the tokens they denote */
   val symbolMap: collection.mutable.Map[String,Token] = new mutable.LinkedHashMap[String,Token]
 
-  /** Initialize the token and symbol mappings using the mapping supplied by `ScalaLR` */
+  /** Initialize the token and symbol mappings using the mapping supplied by `ScalaLR` .
+   *  All symbols that will be seen as Letter LetterOrDigit* go into the symbol map.
+   *  All symbols (~LetterOrDigit)+ go into the token trie map.
+   *  Other symbols are ignored: ie there is no provision for hybrids.
+   */
   def withSymbolTokens(symbolToken: Map[String, Token]): this.type = {
     for { (symbol, token) <- symbolToken if symbol.nonEmpty && symbol.forall(_.isLetterOrDigit)} symbolMap(symbol) = token
     for { (symbol, token) <- symbolToken if symbol.nonEmpty && symbol.forall { c => ! c.isLetterOrDigit}} tokenMap(symbol) = token
-
-    if (false) {
-      import org.sufrin.utility.PrettyPrint._
-      tokenMap.prettyPrint()
-    }
     this
   }
 
@@ -68,16 +68,21 @@ abstract class ScannerBuilder[Token <: Lexeme](chars: SourceTextCursor) extends 
   @inline def nextChar(): Unit = chars.next()
   @inline def afterNextChar(t: Token): Token = { nextChar(); t }
 
-  /** Non-nested comment */
+  /** Nested comment */
   def eatComment(): Unit = {
-    var level = 0
-    var go = true
+    val loc = sourceLocation()
+    var level = 1
+    var lastChar = ' '
     nextChar()                      // skip the *
-    while (go && hasChar) {
-      chars.dropWhile( c=>c!='*')   // theChar=='*' or !hasChar
+    while (hasChar && level!=0) {
+      theChar match {
+        case '*' if lastChar == '/' => level += 1
+        case '/' if lastChar == '*' => level -= 1
+        case _                      => lastChar=theChar
+      }
       nextChar()
-      if (theChar=='/') go=false
     }
+    if (level!=0) System.err.println(s"WARNING: nested (level $level) comment unclosed $loc")
     nextChar()
   }
 

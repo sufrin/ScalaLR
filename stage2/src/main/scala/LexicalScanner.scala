@@ -45,21 +45,22 @@ object LexicalScanner {
      */
     var inRulesSection = false
 
+    /** Nested comment */
     def eatComment(): Unit = {
-      var level = 0
-      var go = true
-      nextChar() // skip the *
-      while (go && hasChar) {
-        //print(theChar)
-        chars.dropWhile( c=>c!='*')
-        // theChar=='*' or !hasChar
-        //print(theChar)
+      val loc = sourceLocation()
+      var level = 1
+      var lastChar = ' '
+      nextChar()                      // skip the *
+      while (hasChar && level!=0) {
+        theChar match {
+          case '*' if lastChar == '/' => level += 1
+          case '/' if lastChar == '*' => level -= 1
+          case _                      => lastChar=theChar
+        }
         nextChar()
-        //println(theChar)
-        if (theChar=='/') go=false
       }
+      if (level!=0) System.err.println(s"WARNING: nested (level $level) comment unclosed $loc")
       nextChar()
-      eatWhitespace()
     }
 
     def eatWhitespace(): Unit = {

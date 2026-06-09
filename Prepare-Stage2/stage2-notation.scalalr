@@ -204,7 +204,10 @@ Scala: Scala = ScalaAtom
              | lhs: Scala `+`  rhs: Scala         { Infix("+", $lhs, $rhs) }
              | lhs: Scala `-`  rhs: Scala         { Infix("-", $lhs, $rhs) }
 
-Scalas: List[Scala] = scalas: (',' Scala)* { $scalas }
+Scalas: List[Scala] = %empty { Nil } | ScalaPlus { $ScalaPlus.reverse }
+
+ScalaPlus: List[Scala] = ScalaPlus ',' Scala { $Scala::$ScalaPlus }
+                       | Scala               { List($Scala) }
 
 ScalaAtom: Scala = ScalaID
                  | NUM                                   { Num($NUM, $START) }

@@ -77,7 +77,7 @@ object test3 extends Test("-Lsym")(
 
      Rule2: Unit = a: S4 b: S5 { () }
 
-     /* Tail comment */
+     /* Tail comment /* nested */*/
 
      """)
 

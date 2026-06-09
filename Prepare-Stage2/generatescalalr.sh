@@ -1,7 +1,7 @@
 #/bin/bash
 
 sync=""; read -p "Build the components first? [y for yes]" sync
-[ "$sync" = "y" ] && sh preparestage2-sh.sh
+[ "$sync" = "y" ] && sh preparestage3-sh.sh
 
 SCALA=stage2.scala
 JAR=scalalr

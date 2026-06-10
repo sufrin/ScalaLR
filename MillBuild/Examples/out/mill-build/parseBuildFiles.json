@@ -1,0 +1,19 @@
+{
+    "value": {
+        "seenScripts": [
+            [
+                "/Users/sufrin/GitHomes/ScalaLR/MillBuild/Examples/ScalalrModule.mill",
+                "// package build\nimport mill.*, scalalib.*\n\n/**\n\n A Mill module to support the incremental build of a program\n that uses scalalr to generate perser component files\n\nExample use:\n{{{\n    package build\n    import mill.*, scalalib.*\n    object RedOx extends ScalalrModule {\n      def grammar     = Task.Source(\"stage3-notation.scalalr\")\n      def generator   = \"ParserGenerator/scalalr\"\n      def mainClass   = Some(\"org.redox.RedOx\")\n      def releasePath = \"bin/redox\" // relative to the module directory\n}\n}}}\n*/\n\ntrait ScalalrModule extends ScalaModule {\n  def scalaVersion = \"2.13.18\"\n  // module-specific\n  def grammar:               T[PathRef]\n  def parserGenerator:       T[PathRef] = Task.Source(\"ParserGenerator/scalalr\")\n  def unmanagedClasspathDir: T[PathRef] = Task.Source(\"lib\")\n  def generatorArgs: Seq[String]        = Seq(\"-html\")\n  def generatedDirName: String          = \"generated\"\n  def releasePath: String               = \"release\"\n  def releaseTarget: os.Path            = moduleDir / os.SubPath(releasePath)\n\n\n  // a classpath with all the jars on the unmanagedClassPathDir()\n  override def unmanagedClasspath = Task {\n    val dir = unmanagedClasspathDir().path\n    if (!os.exists(dir)) Seq.empty\n    else\n      Seq.from(\n        os.list(dir)\n          .filter(_.ext == \"jar\")\n          .map(PathRef(_))\n      )\n  }\n\n   // The parent directory of the generated files\n   override def generatedSources = Task {\n        val generated = Task.dest / generatedDirName\n        os.makeDir.all(generated)\n\n        val result = os.proc(\n           parserGenerator().path,\n          \"-html\",\n          \"-o\",\n          generated.toString,\n          grammar().path\n        ).call(\n          cwd = Task.dest,\n          check = false,\n          stdout = os.Inherit,\n          stderr = os.Inherit\n        )\n\n        if (result.exitCode != 0) {\n            Task.fail(s\"Parser generator failed:\\n${result.err.text()}\")\n        }\n\n        Seq(PathRef(generated))\n   }\n\n   def release() = Task.Command {\n         val target = releaseTarget\n         os.makeDir.all(target / os.up)\n\n         os.copy.over(\n           assembly().path,\n           target\n         )\n\n         os.proc(\"chmod\", \"+x\", target)\n         System.err.println(target)\n         PathRef(target)\n   }\n\n}"
+            ],
+            [
+                "/Users/sufrin/GitHomes/ScalaLR/MillBuild/Examples/build.mill",
+                "// package build\n\n/**\n *  Build (small) example programs that use the ScalaLR parser generator\n */\n\nimport mill.*, scalalib.*\n\ntrait ComponentModule extends ScalaModule {\n  def scalaVersion = \"2.13.18\"\n}\n\nobject TinyFun extends ScalalrModule {\n  override\n  def scalaVersion = \"2.13.18\"\n\n  def grammar     = Task.Source(\"tinyfun.scalalr\")\n  def mainClass   = Some(\"runtinyfun\")\n  def releasePath = \"tinyfun\"\n  override def parserGenerator: T[PathRef] = Task.Source(\"scalalr\")\n\n}"
+            ]
+        ]
+    },
+    "valueHash": 535161991,
+    "inputsHash": 784279262,
+    "millVersion": "1.1.6",
+    "millJvmVersion": "21.0.10",
+    "classLoaderSigHash": -1801306406
+}

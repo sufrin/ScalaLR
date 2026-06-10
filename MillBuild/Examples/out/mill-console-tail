@@ -1,0 +1,18 @@
+[33m./mill clean[39m[0K
+[0J[9999D[1A[34mbuild.mill-68] compile[39m[0K
+[34mbuild.mill-68][39m compiling 1 Scala source to out/mill-build/compile.dest/classes ...[0K
+[33m./mill clean[39m[0K
+[0J[9999D[1A67/73+] [33m./mill clean[39m[0K
+[0J[9999D[1A67/73+] [33m./mill clean[39m[0K
+build.mill-68] [33mcompile[39m[0K
+[0J[9999D[2A67/73+] [33m./mill clean[39m 1s[0K
+build.mill-68] [33mcompile[39m 1s[0K
+[0J[9999D[2A[34mbuild.mill-68][39m done compiling[0K
+67/73+] [33m./mill clean[39m 1s[0K
+build.mill-68] [33mcompile[39m 1s[0K
+[0J[9999D[2A73/73+] [33m./mill clean[39m 2s[0K
+[0J[9999D[1A0/1] [33m./mill clean[39m 2s[0K
+[0J[9999D[1A[34m1] clean[39m[0K
+0/1] [33m./mill clean[39m 2s[0K
+[0J[9999D[1A[0J[0J1/1, [32mSUCCESS[39m] ./mill clean 2s[0K
+[0J

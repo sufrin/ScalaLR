@@ -1,0 +1,12 @@
+{
+    "value": [
+        "ref:v0:4aacf885:/Users/sufrin/GitHomes/ScalaLR/MillBuild/Examples/ScalalrModule.mill",
+        "ref:v0:76047b77:/Users/sufrin/GitHomes/ScalaLR/MillBuild/Examples/build.mill",
+        "ref:v0:c984eca8:/Users/sufrin/GitHomes/ScalaLR/MillBuild/Examples/mill-build/src"
+    ],
+    "valueHash": -1451428003,
+    "inputsHash": 1951800186,
+    "millVersion": "1.1.6",
+    "millJvmVersion": "21.0.10",
+    "classLoaderSigHash": -1801306406
+}

@@ -1,0 +1,12 @@
+{
+    "value": [
+        "ref:v0:c984eca8:/Users/sufrin/GitHomes/ScalaLR/MillBuild/Examples/mill-build/resources",
+        "ref:v0:30791d3d:/Users/sufrin/GitHomes/ScalaLR/MillBuild/Examples/out/mill-build/generatedScriptSources.dest/resources",
+        "ref:v0:ecc9efbb:/Users/sufrin/GitHomes/ScalaLR/MillBuild/Examples/out/mill-build/compile.dest/transformed-classes"
+    ],
+    "valueHash": 1655867932,
+    "inputsHash": 1064484191,
+    "millVersion": "1.1.6",
+    "millJvmVersion": "21.0.10",
+    "classLoaderSigHash": -1801306406
+}

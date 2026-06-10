@@ -1,0 +1,58 @@
+package build
+
+
+/**
+    Build the ScalaLR ecosystem:
+    1. ./mill ScalaLR                   -- makes the parser generator
+    2. ./mill scalalrruntime.makejar    -- makes the runtime library
+    
+*/
+
+import mill.*, scalalib.*
+
+trait ComponentModule extends ScalaModule {
+  def scalaVersion = "2.13.18"
+}
+
+object ScalaLR extends ScalalrModule {
+  def grammar     = Task.Source("stage3-notation.scalalr")
+  def generator   = "ParserGenerator/scalalr"
+  def mainClass   = Some("org.sufrin.scalalr.stage2.Generator")
+  def releasePath = "bin/scalalr"
+
+  override def moduleDeps = Seq(Shared, Utility)
+
+  def mvnDeps = Seq(
+      mvn"org.scala-lang.modules::scala-xml:2.3.0"
+  )
+  
+}
+
+object Shared extends ComponentModule {
+  override def moduleDeps = Seq(Utility)
+}
+
+
+object Utility extends ComponentModule {
+}
+
+object scalalrruntime extends ComponentModule {
+   override def moduleDeps = Seq(Shared)
+
+
+   def makejar() = Task.Command {
+         def releasePath: String     = "scalalrruntime.jar"
+         def releaseTarget: os.Path  = moduleDir / os.SubPath(releasePath)
+
+         os.makeDir.all(releaseTarget / os.up)
+
+         os.copy.over(
+           assembly().path,
+           releaseTarget
+         )
+
+         os.proc("chmod", "+x", releaseTarget)
+         System.err.println(releaseTarget)
+         PathRef(releaseTarget)
+   }
+}

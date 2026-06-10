@@ -1,0 +1,214 @@
+
+package org.sufrin.scalalr
+package stage2
+
+/**
+ *  Straightforward lexer, except that the interpretation of ';' followed
+ *  by (visible) vertical spaces changes after the "%rules" directive
+ *  appears.
+ */
+
+
+object LexicalScanner {
+  import org.sufrin.utility.SourceTextCursor
+  import org.sufrin.scalalr.SourceLocation
+  import scalalr.stage2.Scanner._
+  type Token = scalalr.stage2.Scanner.Token
+
+  def apply(chars: SourceTextCursor): LexicalScanner = new LexicalScanner(chars)
+
+  def makeID(unQuoted: String, isQuoted: Boolean, location: SourceLocation): ID = {
+    if (unQuoted.contains('\n')) {
+      Generator.warn(s"An unlikely-looking ID (contains newline(s)) at $location")
+    }
+    ID(AST.Name(unQuoted, isQuoted, location))
+  }
+
+  def makeSTRING(unQuoted: String, isQuoted: Boolean, location: SourceLocation): STRING = {
+    if (unQuoted.contains('\n')) {
+      Generator.warn(s"An unlikely-looking ID (contains newline(s)) at $location")
+    }
+    STRING(AST.Name(unQuoted, isQuoted, location))
+  }
+
+  class LexicalScanner(chars: SourceTextCursor) extends Iterator[Token] {
+    def sourceLocation(): SourceLocation = SourceLocation(chars.lines,  chars.chars)
+    @inline def hasChar: Boolean = chars.hasCurrent
+    @inline def theChar: Char = chars.current
+    @inline def nextChar(): Unit = chars.next()
+    @inline def afterNextChar(t: Token): Token = { nextChar(); t }
+
+
+
+    /**
+     * True after the %rules directive has been seen for the first time
+     */
+    var inRulesSection = false
+
+    /** Nested comment */
+    def eatComment(): Unit = {
+      val loc = sourceLocation()
+      var level = 1
+      var lastChar = ' '
+      nextChar()                      // skip the *
+      while (hasChar && level!=0) {
+        theChar match {
+          case '*' if lastChar == '/' => level += 1
+          case '/' if lastChar == '*' => level -= 1
+          case _                      => lastChar=theChar
+        }
+        nextChar()
+      }
+      if (level!=0) System.err.println(s"WARNING: nested (level $level) comment unclosed $loc")
+      nextChar()
+    }
+
+    def eatWhitespace(): Unit = {
+      while (hasChar && theChar.isWhitespace) nextChar()
+    }
+
+    def nextNumber(intPart: Seq[Char]) : Token = {
+      theChar match {
+        case '.' =>
+          nextChar()
+          val fracPart = chars.takeWhile(c=>c.isDigit).prepended('.')// ddd.ddd
+          theChar.toLower match {
+            case 'e' =>
+              nextChar()
+              val expPart = chars.takeWhile(c=>c.isDigit).prepended('e')
+              NUM((intPart ++ fracPart ++ expPart).mkString)
+            case _ =>
+              NUM((intPart ++ fracPart).mkString)
+          }
+        case 'e' =>
+          nextChar()
+          val expPart = chars.takeWhile(c=>c.isDigit).prepended('e')
+          NUM((intPart ++ expPart).mkString)
+        case _   =>
+          NUM(intPart.mkString)
+      }
+    }
+
+    def isBisonic(c: Char): Boolean = c.isLetterOrDigit || c=='_' || c=='$' || (!inRulesSection && c=='.')
+
+    def hasNext: Boolean = chars.hasCurrent
+    def next(): Token = {
+      val s = nnext()
+      // println(s)
+      s
+    }
+    def nnext(): Token = if (hasChar) {
+      val startLocation = sourceLocation()
+      chars.current match {
+        case '(' => afterNextChar(`(`)
+        case ')' => afterNextChar(`)`)
+        case '[' => afterNextChar(`[`)
+        case ']' => afterNextChar(`]`)
+        case '|' => afterNextChar(`|`)
+        case ',' => afterNextChar(`,`)
+        case '?' => afterNextChar(`?`)
+        case '*' => afterNextChar(`*`)
+        case '+' => afterNextChar(`+`)
+        case '.' => afterNextChar(`.`)
+        case '$' => afterNextChar(`$`)
+        case ':' =>
+          nextChar()
+          theChar match {
+            case ':'   =>  afterNextChar(`::`)
+            case other => `:`
+          }
+        case '=' =>
+          nextChar()
+          theChar match {
+            case '>'   => afterNextChar(`=>`)
+            case other => `=`
+          }
+
+
+        case '%' =>
+          nextChar()
+          val startLocation = sourceLocation()
+          val directive = chars.takeWhile(_.isLetterOrDigit).mkString("")
+          directive.toLowerCase match {
+            case "type"         => `%type`
+            case "empty"        => `%empty`
+            case "notation"     => `%notation`
+            case "package"      => `%package`
+            case "token"        => `%token`
+            case "left"         => `%left`
+            case "right"        => `%right`
+            case "non"          => `%non`
+            case "include"      => `%include`
+            case "path"         => `%path`
+            case "dialect"      => `%dialect`
+            case "scalalr"      => `%scalalr`
+            case "tables"       => `%tables`
+            case "signature"    => `%signature`
+            case "precedence"   => `%prec`
+            case "prec"         => `%prec`
+            case "rules"        =>
+              inRulesSection = true
+              eatWhitespace()
+              `%rules`
+            case _ => LEXICALERROR(s"Unknown directive %$directive (at ${startLocation})")
+          }
+        case '/' =>
+          nextChar()
+          theChar match {
+            case '*' =>
+              eatComment()
+            case '/' =>
+              chars.dropWhile( c=>c!='\n')
+              eatWhitespace()
+            case other =>
+              //Syntax.Parser.warn(s"Malformed comment sentinel: \"/$other\" at $sourceLocation")
+              chars.dropWhile( c=>c!='\n')
+          }
+          nnext()
+        case '{' => // } to balance the %include
+          nextChar(); afterNextChar(CODE(chars.takeNested2('{', '}')  .mkString("")))
+        case '«' => // » to balance the %include
+          nextChar(); afterNextChar(CODE(chars.takeNested('«', '»')  .mkString("")))
+
+        case '"'  => nextChar(); afterNextChar(makeSTRING(chars.takeWhile( c => c!='"').mkString, true, startLocation))
+
+        case '\'' => nextChar(); afterNextChar(makeID(chars.takeWhile( c => c!='\'').mkString, true, startLocation))
+        case '`'  => nextChar(); afterNextChar(makeID(chars.takeWhile( c => c!='`').mkString, true, startLocation))
+
+        case '0' =>
+          nextChar()
+          theChar.toLower match {
+            case 'x' =>
+              nextChar()
+              NUM(chars.takeWhile(c=>c.isDigit || ("abcdef" contains c.toLower)).mkString)
+            case other =>
+              nextNumber(chars.takeWhile(c=>c.isDigit).prepended('0'))
+          }
+        case c if c.isDigit =>
+          val intPart = chars.takeWhile(c=>c.isDigit)
+          nextNumber(intPart)
+
+        case c if c.isLetter =>
+          val prefix = chars.takeWhile(isBisonic)
+          makeID((prefix).mkString(""), false, startLocation)
+
+        case ';' =>
+          nextChar()
+          eatWhitespace()
+          SEPARATOR
+
+        case c if c.isWhitespace =>
+          var vertical: Int =  0
+          while (hasChar && theChar.isWhitespace) {
+            if (theChar=='\n') vertical += 1
+            nextChar()
+          }
+          if (inRulesSection && vertical>1) { SEPARATOR }
+          else
+            if (hasChar) nnext() else $end
+        case other =>
+          LEXICALERROR(s"Unrecognised $other (at ${startLocation}")
+      }
+    } else $end
+  }
+}

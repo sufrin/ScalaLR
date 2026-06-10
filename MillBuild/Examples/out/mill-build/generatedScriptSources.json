@@ -1,0 +1,28 @@
+{
+    "value": {
+        "wrapped": [
+            "ref:v0:acdaf477:/Users/sufrin/GitHomes/ScalaLR/MillBuild/Examples/out/mill-build/generatedScriptSources.dest/wrapped"
+        ],
+        "support": [
+            "ref:v0:c984eca8:/Users/sufrin/GitHomes/ScalaLR/MillBuild/Examples/out/mill-build/generatedScriptSources.dest/support"
+        ],
+        "resources": [
+            "ref:v0:30791d3d:/Users/sufrin/GitHomes/ScalaLR/MillBuild/Examples/out/mill-build/generatedScriptSources.dest/resources"
+        ],
+        "mappings": [
+            {
+                "original": "ref:v0:4aacf885:/Users/sufrin/GitHomes/ScalaLR/MillBuild/Examples/ScalalrModule.mill",
+                "generated": "ref:v0:16c09d68:/Users/sufrin/GitHomes/ScalaLR/MillBuild/Examples/out/mill-build/generatedScriptSources.dest/wrapped/build_/ScalalrModule.mill"
+            },
+            {
+                "original": "ref:v0:76047b77:/Users/sufrin/GitHomes/ScalaLR/MillBuild/Examples/build.mill",
+                "generated": "ref:v0:6887f68a:/Users/sufrin/GitHomes/ScalaLR/MillBuild/Examples/out/mill-build/generatedScriptSources.dest/wrapped/build_/build.mill"
+            }
+        ]
+    },
+    "valueHash": 2140761448,
+    "inputsHash": -2019542143,
+    "millVersion": "1.1.6",
+    "millJvmVersion": "21.0.10",
+    "classLoaderSigHash": -1801306406
+}

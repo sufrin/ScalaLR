@@ -1,0 +1,10 @@
+{
+    "value": [
+        "ref:v0:c984eca8:/Users/sufrin/GitHomes/ScalaLR/MillBuild/Examples/mill-build/compile-resources"
+    ],
+    "valueHash": -2145765338,
+    "inputsHash": -1341939557,
+    "millVersion": "1.1.6",
+    "millJvmVersion": "21.0.10",
+    "classLoaderSigHash": -1801306406
+}

@@ -1,0 +1,27 @@
+{
+  "scriptSources": {
+    "parseBuildFiles": {
+      "generatedScriptSources": {
+        "compile": {
+          "codeSignatures": {},
+          "localRunClasspath": {
+            "localClasspath": {
+              "runClasspath": {}
+            }
+          }
+        },
+        "generatedSources": {},
+        "resources": {},
+        "wrappedSources": {}
+      },
+      "millBuildRootModuleResult": {}
+    },
+    "sources": {
+      "allSources": {
+        "allSourceFiles": {
+          "zincIncrementalCompilation": {}
+        }
+      }
+    }
+  }
+}

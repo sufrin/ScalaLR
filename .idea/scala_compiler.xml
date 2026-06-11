@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ScalaCompilerConfiguration">
-    <profile name="sbt 1" modules="scalalr_3679" />
-    <profile name="sbt 2" modules="scalalr,scalalr.bootstrap,scalalr.commandlinemodules,scalalr.flab,scalalr.loggingApi,scalalr.shared,scalalr.slab,scalalr.slab~1,scalalr.stage1,scalalr.stage1a,scalalr.stage2,scalalr.testbed,scalalr.utilities">
-      <option name="deprecationWarnings" value="true" />
-    </profile>
-  </component>
-</project>

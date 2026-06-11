@@ -66,8 +66,10 @@ object SourceTextCursor {
 
   def apply(path: Path): SourceTextCursor =
     if (path.toString=="/dev/tty") {
-      val console = System.console()
-      val reader = console.reader()
+      val reader = Option(System.console()) match {
+        case Some(console) => console.reader()
+        case None => new java.io.InputStreamReader(System.in)
+      }
       val it = new Iterator[Char] {
         def hasNext: Boolean =  true
         def next(): Char = {

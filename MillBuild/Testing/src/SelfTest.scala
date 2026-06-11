@@ -1,0 +1,217 @@
+package org.sufrin.scalalr
+package stage2
+
+object SelfTest extends TestLR("-Lsyn -Lsym -html")(
+"""
+/**
+        Identical to stage2-notation, except that the description uses * + ? decorated descriptions of repeated/optional
+        phrases, and (occasionally) the => notation for production result expressions.
+*/
+
+
+%notation  stage2
+%package   scalalr.stage2
+%path      "stage2"
+%signature "stage3 dialect. Compatible with stage2 or stage3"
+%tables    lr
+
+
+
+%include {
+  // Substantive lexical scanner is elsewhere
+}
+
+%token
+  ID:(org.sufrin.scalalr.stage2.AST.Name)
+  NUM:(String)
+  CODE:(String)
+  STRING:(org.sufrin.scalalr.stage2.AST.Name)
+  COMMENT:(String)
+  LEXICALERROR:(String)
+  `[` `]` `;` `=` `|`  `:`
+  `{` `}` `(` `)` ','
+  `%path`       `%type`     `%empty`    `%notation`     `%package` `%token`
+  `%left`       `%right`    `%non`      `%rules`
+  `%include`    `%prec`     `%tables`   `%dialect`      `%scalalr` `%signature`
+  `*`           `?`         `+`         `=>`            `$`
+
+%right '::'
+%left  '+' '-'
+%right '.'
+
+  %left SEPARATOR
+  %left HIGH
+
+%rules
+
+%include {
+ import org.sufrin.scalalr.stage2.AST._
+ import org.sufrin.scalalr.stage2.Normalization._
+ import scalalr.stage2.Scanner
+ import org.sufrin.utility.SourceTextCursor
+ import org.sufrin.scalalr.SourceLocation
+ import org.sufrin.utility.PrettyPrint._
+
+ def makeTupleType(types: Seq[Type], location: SourceLocation): Type =
+     types.size match {
+       case 1 => types(0)
+       case n => Type(s"Tuple$n", types, location)
+     }
+
+ def mkTableType(tableTypeName: String): String =
+     tableTypeName match {
+        case "lr"          => "canonical-lr"
+        case "canonical"   => "canonical-lr"
+        case "ielr"        => "ielr"
+        case "lalr"        => "lalr"
+        case _      => println(s"Warning: wrong %tables type $tableTypeName; canonical assumed");  "canonical-lr"
+     }
+
+ implicit class StringOps(val string: String) extends AnyVal {
+          def unQuoted: String = string  match {
+              case s"\"$unquoted\"" => unquoted
+              case unquoted => unquoted
+          }
+
+          def asPath: String = string.replace('/', '.').replace('.', '/') match {
+              case s"\"$unquoted\"" => unquoted
+              case unquoted => unquoted
+          }
+ }
+
+ implicit class NotationUtilities(val p: Notation) extends AnyVal {
+        def withTokenDeclaration(wrap: List[TypedTerminal] => TokenSpec)(terminals: List[TypedTerminal]): Notation =
+                p.copy(theTokens = wrap(terminals) :: p.theTokens)
+
+        def withSignature(signature: String): Notation =
+                 p.copy(theSignature = s"${p.theSignature} $signature")
+ }
+
+}
+
+//command: Unit = Notation { translate($Notation) }
+
+Notation: Notation =
+    Prefix
+    `%rules`
+    INCLUDE
+    Rules
+    OPTSEPARATOR
+    { $Prefix.copy(theRules = $Rules.reverse, theRulesInclude = $INCLUDE) }
+
+// A left fold that accumulates incremental changes to the initial default notation AST
+
+Prefix: Notation =   %empty                                      => Notation()
+                      | p: Prefix `%notation` ID                 { $p.copy(theName=$ID.toString) }
+                      | p: Prefix `%package`  ID                 { $p.copy(thePackage=$ID.toString) }
+                      | p: Prefix `%path`     STRINGorID         { $p.copy(theExplicitPath=$STRINGorID.asPath) }
+                      | p: Prefix `%tables`   STRINGorID         { $p.copy(tablesType=mkTableType($STRINGorID.unQuoted)) }
+                      | p: Prefix `%include`  CODE               { $p.copy(theTokensInclude=$CODE) }
+                      | p: Prefix `%token`    TypedTerminals     { $p.withTokenDeclaration(Tokens)($TypedTerminals) }
+                      | p: Prefix `%left`     TypedTerminals     { $p.withTokenDeclaration(Left)($TypedTerminals) }
+                      | p: Prefix `%right`    TypedTerminals     { $p.withTokenDeclaration(Right)($TypedTerminals) }
+                      | p: Prefix `%non`      TypedTerminals     { $p.withTokenDeclaration(Nonassoc)($TypedTerminals) }
+                      | p: Prefix `%prec`     TypedTerminals     { $p.withTokenDeclaration(Precedence)($TypedTerminals) }
+                      | p: Prefix `%dialect`   STRINGorID        { $p.withSignature($STRINGorID.unQuoted) }
+                      | p: Prefix `%scalalr`   STRINGorID        { $p.withSignature($STRINGorID.unQuoted) }
+                      | p: Prefix `%signature` STRINGorID        => $p.withSignature($STRINGorID.unQuoted)
+
+INCLUDE:    String  = `%include` CODE SEPARATOR { $CODE }
+                    | %empty {""}
+
+OPTSEPARATOR: Unit = %empty {()} | SEPARATOR {()}
+
+STRINGorID: Name = ID { $ID } | STRING { $STRING }
+
+
+TypedTerminals:(List[TypedTerminal]) =  %empty                         { Nil }
+                                     |  TypedTerminal TypedTerminals   { $TypedTerminal :: $TypedTerminals }
+
+
+TypedTerminal:(TypedTerminal) = ID: STRINGorID ':' Type      {  TypedTerminal($ID, $Type, $START)   }
+                              | ID: STRINGorID '(' Type ')'  {  TypedTerminal($ID, $Type, $START) }   // for compatibility with boot notation
+                              | ID: STRINGorID               {  TypedTerminal($ID, NoType, $START) }
+
+
+Rules:(List[Rule]) =  Rule                  { List($Rule) }
+                   |  Rules SEPARATOR Rule  { $Rule :: $Rules }
+
+
+Rule: Rule = LHS ('|')? RHS { Rule($LHS, $RHS, $START) }
+
+LHS: TypedNonterminal  = ID ':' Type '=' {  (TypedNonterminal($ID.warnQuoted, $Type, $START)) }
+                       | ID          '=' {  (TypedNonterminal($ID.warnQuoted, TypeVariable($ID), $START)) }
+
+
+RHS:(List[Production]) =
+      Production         { List($Production)   }
+    | Production '|' RHS { $Production :: $RHS }
+
+Production: Production = Fields Action Precedence { Production($Fields, $Action, $Precedence, $START) }
+
+Fields:List[NamedField] = `%empty` { Nil }
+                        | fields: (NamedField)+ { $fields }
+
+/*
+Fields:(List[NamedField]) =
+    | NamedField             { List($NamedField) }
+    | NamedField Fields { $NamedField :: $Fields }
+*/
+
+// fields: (NamedField)+ { $fields }
+
+NamedField: NamedField = FIELD                               { NamedField(theFieldName = None, theField = $FIELD, $START) }
+                       | theFieldName: ID ':' theName: FIELD { NamedField(theFieldName = Some($theFieldName.warnQuoted), $theName, $START) }
+
+// NB: Normalization.syntheticRuleName yields the name of a new rule, and appends to synthesisedRules,
+//     definitions of the one or more rules needed by its right hand side.
+FIELD: Name =   ID                       { $ID }
+            | STRING                     { $STRING }
+            |   '(' Fields ')'  REPEAT   { syntheticRuleName($Fields, $REPEAT, $START, $END) }
+
+REPEAT: Repeat  = '?'           { MaybeOne }
+                | '*'           { NoneOrMore }
+                | '+'           { OneOrMore }
+                | '*' '.' '.'   { RightNoneOrMore }
+                | '+' '.' '.'   { RightOneOrMore }
+                | '.' '.' '.'   { Ellipsis }
+
+Precedence: (Option[Name])  = (`%prec` ID)?
+
+Type:(SymbolType) =
+            | ID               { Type($ID.withoutQuotes, Nil, $START) }
+            | ID '[' Types ']' { Type($ID.withoutQuotes, $Types, $START) }
+            | '('    Types ')' { makeTupleType($Types, $START) }
+            | '(' ')'          { Type("Unit", Nil, $START) }
+
+
+Types:(List[Type]) = (',' Type)+
+
+Action:(Option[Expression]) = %empty     { None }
+                            | CODE       { Some(CodeExpression($CODE)) }
+                            | '=>' Scala { Some(ScalaExpression($Scala, $START)) }
+
+// MicroScala notation (for actions)
+
+Scala: Scala = ScalaAtom
+             | fun: ScalaID '(' args: Scalas ')'   { Apply($fun, $args) }
+             | obj: ScalaID '.' feature: ScalaID  '(' args: Scalas ')'   { MethodApply($obj, $feature, $args) }
+             | obj: ScalaID '.' feature: ScalaID  { Dot($obj, $feature) }
+             | lhs: Scala `::` rhs: Scala         { Infix("::", $lhs, $rhs) }
+             | lhs: Scala `+`  rhs: Scala         { Infix("+", $lhs, $rhs) }
+             | lhs: Scala `-`  rhs: Scala         { Infix("-", $lhs, $rhs) }
+
+Scalas: List[Scala] = scalas: (',' Scala)* { $scalas }
+
+ScalaAtom: Scala = ScalaID
+                 | NUM                                   { Num($NUM, $START) }
+                 | '(' Scalas ')'                        { Bra($Scalas) }
+                 | STRING                                { ScalaString($STRING.unQuoted, $START) }
+
+ScalaID: Scala = ID      { Id($ID, $START) }
+               | '$' ID  { Dollar(Id($ID, $START)) }
+
+
+
+
+""")

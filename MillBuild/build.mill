@@ -36,6 +36,10 @@ object Shared extends ComponentModule {
 object Utility extends ComponentModule {
 }
 
+object Testing extends ComponentModule {
+     override def moduleDeps = Seq(ScalaLR, Shared, Utility)
+}
+
 object scalalrruntime extends ComponentModule {
    override def moduleDeps = Seq(Shared)
 

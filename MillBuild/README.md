@@ -636,6 +636,8 @@ expr: Expr = name: ID              {Id(name=$name)}
            | "(" expr ")"          {Bra(expr=$expr)}      
            | `[` expr `]`          { $expr }
 ````
+We also have at the back of our mind the derivation of
+unparsers (linearisers) more or less directly from such descriptions.
 
 ## Working Assumption
 **ScalaLR** was designed on the assumption the components it generates will

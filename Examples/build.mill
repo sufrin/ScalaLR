@@ -1,0 +1,30 @@
+package build
+
+/**
+ *  Build (small) example programs that use the ScalaLR parser generator
+ */
+
+import mill.*, scalalib.*
+
+trait ComponentModule extends ScalaModule {
+  def scalaVersion = "2.13.18"
+}
+
+object TinyFun extends ScalalrModule {
+  override
+  def scalaVersion = "2.13.18"
+  def grammar     = Task.Source("tinyfun.scalalr")
+  def mainClass   = Some("runtinyfun")
+  def releasePath = "tinyfun"
+
+  override def parserGenerator: T[PathRef] = Task.Source {
+     (moduleDir / ".." / "Assets" / "scalalr")
+  }
+
+  override def unmanagedClasspath = Task.Input {
+     Seq(
+        PathRef(moduleDir / ".." / "Assets" / "scalalrruntime.jar")
+     )
+  }
+
+}

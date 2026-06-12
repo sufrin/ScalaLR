@@ -213,6 +213,12 @@ At the moment the representation is
          { List(dol$l: Expr, _, dol$r: Expr) => Binop("*", dol$l, dol$r) }
 
 
+#### Aside:
+Our use of the `=>` notation is intended to make visible the
+analogy between named rules and partial functions from text to 
+abstract syntax that are composed of the union of disjoint partial functions
+from text to abstract syntax. 
+
 
 ## Implementations
 
@@ -225,7 +231,7 @@ grammar.
 
 ### Production-quality Release
 There is (now: early June 2026) asingle production-quality release, namely
-the program `scalalr.`, and it is present in the project root. 
+the program `scalalr.` It is present in the `Assets/` directory in the project root. 
 
 It generates fairly good error diagnostics: both
 when something is wrong with the notation description it is working on, and also when the

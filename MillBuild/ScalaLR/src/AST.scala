@@ -151,7 +151,17 @@ object AST {
     def isQuoted: Boolean = s.matches("\".+\"")
   }
 
-  trait TokenSpec {
+  /**
+   * Declarations relating to types/associativity terminal symbols
+   * {{{
+   *     data TokenSpec = Left(Seq[TypedTerminal])
+   *                    | Right(Seq[TypedTerminal])
+   *                    | Nonassoc(Seq[TypedTerminal])
+   *                    | Tokens(Seq[TypedTerminal])
+   *                    | Precedence(Seq[TypedTerminal])
+   * }}}
+   * */
+  sealed trait TokenSpec {
     val terminals: Seq[TypedTerminal]
   }
   
@@ -170,6 +180,18 @@ object AST {
   case class Precedence(terminals:   Seq[TypedTerminal]) extends TokenSpec {
   }
 
+  /**
+   * Repeat factor for a repeated phrase
+   *
+   * {{{
+   *   data Repeat =
+   *      MaybeOne | OneOrMore | Ellipsis | NoneOrMore
+   *         ?          +           ...         *
+   *    | RightOneOrMore | RightNoneOrMore
+   *         +..               *..
+   *
+   * }}}
+   */
   sealed trait Repeat
   case object MaybeOne          extends Repeat { override val toString: String = "?" }
   case object OneOrMore         extends Repeat { override val toString: String = "+" }
@@ -179,22 +201,32 @@ object AST {
   case object RightOneOrMore    extends Repeat { override val toString: String = "+.." }  // right-recursive implementation
 
 
+  /**
+   * The result of a production
+   */
   sealed trait Expression {
     def text: String
     override def toString: String = text.trim
     def mangle: String = text.trim.replace("$", mangleDollar)
   }
 
+  /** A code literal represneted as text */
   case class CodeExpression(val text: String)  extends Expression {}
 
+  /** A code literal represented as a simple scala expression */
   case class ScalaExpression(scala: Scala, START: SourceLocation)  extends Expression {
     val text: String = scala.forScala
   }
 
-  // MicroScala AST
-  trait Scala {
+  /**
+   * Representation of a (stuctured and checkable) Scala expression
+   */
+  sealed trait Scala {
+    /** Text destined for Scala compilation */
     val forScala:  String
+    /** free variables of the expression */
     def free:      List[Name]
+    /** '$'-decorated variables of the expression */
     def decorated: List[Name]
   }
 
@@ -204,6 +236,7 @@ object AST {
     def decorated: List[Name] = Nil
   }
 
+  /** A `$`-decorated scala expression */
   case class Dollar(scala: Scala) extends Scala {
     val forScala = s"$$${scala.forScala}"
     def free: List[Name] = scala.free
@@ -221,12 +254,14 @@ object AST {
     def decorated: List[Name] = Nil
   }
 
+  /** an n-tuple */
   case class Bra(scalas: List[Scala]) extends Scala {
     val forScala = s"(${scalas.map(_.forScala).mkString(",")})"
     def free: List[Name] = scalas.flatMap(_.free)
     def decorated: List[Name] = scalas.flatMap(_.decorated)
   }
 
+  /** `obj.feature` with the `obj` as a source of free/decorated variables*/
   case class Dot(obj: Scala, feature: Scala) extends Scala {
     val forScala: String      = s"${obj.forScala}.${feature.forScala}"
     def free: List[Name]      = obj.free
@@ -238,7 +273,7 @@ object AST {
   case class Infix(op: String, l: Scala, r: Scala) extends Scala {
     val forScala: String = s"${l.forScala}$op${r.forScala}"
     def free: List[Name] = l.free ++ r.free
-    def decorated: List[Name] = l.decorated++ r.decorated
+    def decorated: List[Name] = l.decorated++r.decorated
 
   }
 
@@ -255,7 +290,8 @@ object AST {
 
   }
 
-    case class MethodApply(obj: Scala, feature: Scala, args: Seq[Scala]) extends Scala {
+  /** obj.feature(args...) with `obj` and `args` as sources of free/decorated variables */
+  case class MethodApply(obj: Scala, feature: Scala, args: Seq[Scala]) extends Scala {
       val forScala: String      = s"${obj.forScala}.${feature.forScala}(${args.map(_.forScala).mkString(", ")})"
       def free: List[Name]      =  obj.free ++ args.flatMap(_.free)
       def decorated: List[Name] = obj.decorated ++ args.flatMap(_.decorated)

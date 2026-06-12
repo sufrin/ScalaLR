@@ -64,7 +64,45 @@ object Err4 extends TestLR("-Lsyn -Lsym -html")(
 ListInt: List[Int] = list: (INT) ... => List($list.length * 2)
 """)
 
+object ErrConflict extends TestLR("-Lsyn -Lsym -html -c")("""
+                                %token a
+                                %rules
+                                S = A
+                                  | B;
+                                A = a;
+                                B = a;
+""")
 
+
+object DanglingElseLR extends TestLR("-c -html")(
+"""  %path  "danglingelselr"
+     %notation If
+     %tables lr
+     %token IF THEN ELSE ID '+'
+
+     %rules
+
+     expr: List[Any] = ID                                     { List("ID") }
+                     | expr '+' ID                            { List($expr, "+", "ID") }
+                     | IF g: expr THEN l: expr                { List("IF", $g, $l, Nil) }
+                     | IF g: expr THEN l: expr ELSE r: expr   { List("IF", $g, $l, $r) }
+
+""")
+
+object DanglingElseLALR extends TestLR("-c -html")(
+  """%path  "danglingelselalr"
+     %notation If
+     %tables   lalr
+     %token IF THEN ELSE ID '+'
+
+     %rules
+
+      expr = ID
+        | expr '+' ID
+        | IF expr THEN expr
+        | IF expr THEN expr ELSE expr
+
+""")
 
 
 

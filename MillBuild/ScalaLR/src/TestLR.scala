@@ -46,7 +46,7 @@ class TestLR(args: String="")(source: String)(implicit loc: SourceLocation) exte
  * @param args scalalr flags
  * @param definedPackage the name of the package the source notation defines
  * @param notationsource text of the notation description
- * @param testinput literal text of the input to the test program
+ * @param testinput literal text of the input to the test program, or "" if the input is to come from stdin or the console
  * @param loc IMPLICIT location of the Test in Scala source  (to get scalalr error reports correct)
  */
 class TestRUN(args: String="", definedPackage: String="")(testinput: String="")(notationsource: String)(implicit loc: SourceLocation) extends App {

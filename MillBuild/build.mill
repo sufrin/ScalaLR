@@ -60,3 +60,10 @@ object scalalrruntime extends ComponentModule {
          PathRef(releaseTarget)
    }
 }
+
+object ApiDocs extends ComponentModule with UnidocModule {
+  def moduleDeps = Seq(ScalaLR)       // or Seq(Shared, ScalaLR) if that is your public root
+  def unidocDocumentTitle = "ScalaLR API"
+  def unidocVersion = Some("0.1.0")
+  def unidocSourceUrl = Some("https://github.com/sufrin/ScalaLR/API")
+}

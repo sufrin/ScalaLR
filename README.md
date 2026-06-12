@@ -2,8 +2,8 @@
 
 **ScalaLR** is a straightforward LR(1)-parser generator for Scala that
 translates its own host notation (a description of a target notation) to the 
-essential components of a bottom-up parser for the target notation 
-expressed in Scala. 
+essential components of a bottom-up (LR(1), LALR(1), IELR(1)) parser for the 
+target notation expressed in Scala. 
 
 Its accompanying library provides implementations both of `Pull` and of `Push` 
 parsing automata that are used (with the parsing tables it generates)
@@ -13,27 +13,39 @@ whose state and intermediate results can be inspected "in flight".
 
 ## Getting started (users)
 
-The current [June 2025] version of the tool is packaged in a 
+The current [June 2026] version of the tool is packaged in a 
 universally executable jar[*], and can be run by
 
          scalalr [arguments]
 
 The runtime library needed  on the classpath when compiling
-or running a generated parser is
+or running the generated components of a parser is
 
          scalalrruntime.jar
 
-**Requirement**: a `bison (GNU Bison) 3.8.2` (or a later consistent version) must be accessible
-on the current path. We use only the publicly documented features of Bison for generating
-tables.
+
+### Requirement
+`Bison (GNU Bison) 3.8.2` (or a later consistent version) must be accessible
+on the current path. Bison is used to do the grammar calculations necessary to generate 
+parse-tables in Scala, and textual and html grammar reports.
 
 **[*] Universally executable jars** are regular java jar files prefixed with all that
 is needed to run them directly on Linux or OS/X machines. For the moment running
-on a Windows machine requires
+on a Windows machine (pobably) requires
 
          java -jar scalalr [arguments]
 
 All forms of invocation require the presence of a java implementation.
+
+### Workflow
+I think Scalalr is best utilised alongside `mill` and `IntelliJ`. The files `build.mill` with `ScalaLRModule.mill`
+is a reasonable model for a multi-module program that uses a `.scalalr` notation description. 
+
+I have found it convenient to outline a module structure in `mill.build` (without necessarily importing
+code into IntelliJ), then to generate the necessary `IntelliJ` (build-server protocol) files with
+
+   mill --bsp-install
+
 
 ## Host notation
 The host notation for grammar productions and priorities is reminiscent of
@@ -77,7 +89,7 @@ or as *IELR* tables.
 %include {
  import org.sufrin.scalalr.SourceLocation
  // Scala source to be included in a generated file 
- // that supports or implements the abstract syntax
+ // that imports or implements the abstract syntax
  // (or other values) specified as production values
  
  trait Expr { val loc: SourceLocation }                                 // §4
@@ -109,7 +121,10 @@ expr: Expr = ID                  { Id($ID, $START) }                    // §4,
    by `$label` (for a symbol labelled in the production by prefixing it with `label:`),
    or by `$symbol` when that `symbol` appears unlabelled and uniquely.
    They  may also refer to the start and end source location of the
-   text matched by the production using `$START` and `$END`.
+   text matched by the production using `$START` and `$END.` We often refer
+   to such expressions as *result expressions*, and in general the  result of
+   each production defining a nonterminal should have a type conformant with
+   the declared type of that nonterminal.
 
 5. Tokens enclosed in single quotes, double quotes
    or backticks are treated identically during code generation: they need not be declared
@@ -146,16 +161,20 @@ Documentation is evolving but for the moment it should be sufficient for a knowl
 reader to inspect the source texts of the notation specifications and driver programs
 to be found within directories nested within `examples`.
 
-### Alternative Abstract Syntax Notation [June 2026]
-The abstract syntax node (or other value) represented by each production 
-can also be specified in a more rigorously checked subset of Scala
-expression notation. To do this replace the code-bracketed
+### Alternative Result Notation [June 2026]
+The result of each production can also be specified in a more rigorously 
+checked subset of the Scala expression notation. To do this replace the 
+code-bracketed
             
-      { abstract syntax expression in Scala }
+      { result expression in Scala }
 
 with 
 
-      => abstract syntax expression in Scala
+      => result expression in Scala
+
+**NB:** there must be no { } brackets in the result expression. If you feel
+the need to have declarations, etc in the result expression then don't use
+the `=>` form.
 
 The example above can be rewritten this way
 ````
@@ -172,6 +191,7 @@ expr: Expr = ID                  => Id($ID, $START)                     // §4,
 ````
 Our intention (see **Road Map**) is eventually to be able to dispense
 with the dollar notation in the arrow forms, whereafter (for example)
+the computation of the result of the production
  
          | l:expr `*` r:expr   => Binop("*", l, r)
 would be represented as the Scala partial function
@@ -181,7 +201,7 @@ would be represented as the Scala partial function
 whose bound variables are the names of the value-carrying (ie nontrivially typed) 
 terminal symbols in the production.
 
-At the moment the representarion is
+At the moment the representation is
 
          { List(dol$l: Expr, _, dol$r: Expr) => Binop("*", dol$l, dol$r) }
 
@@ -196,13 +216,11 @@ compute the LR shift-reduce parser tables for the grammar (rules) of
 the source notation, and to do any necessary detailed diagnostics on the 
 grammar. 
 
-### Production-quality Implementations
-There are (now: early June 2026) several stable production quality implementations of the
-program, bootstrapped from an original handwritten parser and
-a simple code generator.
+### Production-quality Release
+There is (now: early June 2026) asingle production-quality release, namely
+the program `scalalr.`, and it is present in the project root. 
 
-The main production release is the `scalalr` program described above. It is
-present in the project root. It generates fairly good error diagnostics: both
+It generates fairly good error diagnostics: both
 when something is wrong with the notation description it is working on, and also when the
 grammar rules give rise to LR parsing conflicts.
 ````bash  
@@ -242,35 +260,14 @@ grammar rules give rise to LR parsing conflicts.
       -s         SOURCE
 ````
 
-Earlier releases, and experimental implementations are in the `scripts/` 
-directory 
-
-1. The `scalalrboot` program uses the original bootstrap handwritten parser and
-   the original bootstrap code generator. Guess why we called it
-   `scalalrboot`...
-
-````bash
-      Usage: scalalrboot [--output=<outputpath>] [ <file> ...]
-````
-
-2. The `scalalrstage1` program  has a notation-descripion language that is  lot like
-   the bootstrap generator.
-````bash  
-  Usage: scalalrstage1 [--output=<outputpath> (default STAGE1OUTPUT) | -o <outputpath>] [ <file> ...]
-```` 
-
-2. The `scalalrstage2` program  is now essentially the same as `scalalr`
-````bash  
-  Usage: scalalrstage2 OPTION... PATH...
-```` 
 
 
 
 ### Generated files
 
-When all is well, the generator produces several components (in distinct files)
-from each parser specification; these appear in  the directory corresponding to `%path` specification, and are
-named:
+When all is well, `scalalr` produces several components (in distinct files)
+from each parser specification; these appear in the specified `OUTPUTPATH` in the sub
+directory corresponding to `%path` specification, and are  named:
 
 1. **Scanner.scala**
    defines the Scala case classes and types corresponding to each `%token` definition.
@@ -286,9 +283,13 @@ named:
 4. **Components.scala** defines a structure that incorporates the semantics of the
    Tables and Reduction files.
 
-These files are generated in four phases:
+They are generated in five phases:
 
-0. The generator performs a superficial sanity check on the notation description, and
+1. The generator *normalises* the notation description by expanding repetition forms
+   into recursive definitions, and by checking and transforming `=> expression` forms
+   into ordinary `{{expression}}` forms
+
+1. The generator performs a superficial sanity check on the notation description, and
    informs of any obvious problems. If this is successful...
 
 1. The generator produces a plain Bison grammar `.y` file
@@ -297,7 +298,7 @@ These files are generated in four phases:
    Under normal circumstances one need not inspect the `.y` file, and symbols in the
    diagnostic/report files are expressed as they were in the Scalalr source.
 
-2. Bison is run to generate the LR parse tables as well as report and
+1. Bison is run to generate parse tables (encoded as *.xml*) as well as report and
    diagnostic files, all named for the specified `%notation.`
    The `.output` and `.html` files contain identical information: a report
    on the notation with details of states, conflicts, etc. The `.log` file
@@ -316,15 +317,14 @@ These files are generated in four phases:
    its **Tables** and **Reduction** files.
 2. The `.output` file output by Bison contains a full report on the parsing automaton, including
    details of any conflicts.
-3. When output the `.html` file output by Bison contains an *easily navigable* full report on the parsing automaton, including
-   details of any residual conflicts.  The `stage2` generator enables this with the `-html` flag: earlier
-   stage generators  always enable it.
+3. When it is output the `.html` file output by Bison contains an *easily navigable* full report on the parsing automaton, including
+   details of any residual conflicts.  THis enabled by the `-html` flag.
 4. The `.log` file  output by Bison may contain detailed diagnostic messages that help explain 
    conflicts.  
 
 ## Repetition Notations
-The *stage2* and subsequent processors include the repetition modifiers `*`, `+` and `?` 
-that make it straightforward to express repeated and optional constructs "in-situ" rather
+Specifications may include the repetition modifiers `*`, `+` and `?` 
+that make it straightforward to express repeated and optional constructs *in-situ* rather
 than having to write the grammar rules for them explicitly. 
 
 ### Implemented by left recursive productions (then reversed)
@@ -385,13 +385,13 @@ the point of use.
 ### NB
 
 1. It is always necessary to provide a name for the result of a repeated
-construct, so that it can be embodied in the result expression of its "host" production.
+construct, so that it can be used in the result expression of its "host" production.
 
 2. The repetition constructs are for convenience in simple cases: if
 one needs something more sophisticated than possibly-punctuated sequences  
 in a production it is better to hand-code explicitly-named rules.
 
-3. The right-recursive forms are present  only for completeness. During parsing they use 
+3. The right-recursive forms are present only for completeness. During parsing they use 
 parse-stack space proportional to the maximum depth of the recursion. 
 They *may* get you off the hook in the presence of certain kinds of shift-reduce conflict: 
 
@@ -409,25 +409,22 @@ Recoding it as
 defers the decision until the appearance of the `'}'`.  In general in such cases it's 
 better to use the `(x y)...` form: it's what it was invented for.
 
-## Further Reading 
-1. The best-documented simple examples of programs that 
-uses *scalalr*-generated parsing components are in 
-directories under `examples/.`
+## Further Reading
+The best-documented simple examples of programs that 
+uses **scalalr**-generated parsing components are in 
+directories under `Examples/.`
 
-2. The file `Bootstrapping.md` provides an explanation of the
-self-hosting bootstrap stages. It was written as an aide-memoire for me, and
-normal users (or even developers) don't really need to look at it.
 
-3. **Beware**: Some quick'n'dirty programs that were used in building and testing the initial bootstrap
-   appear in `bootstrap/src/test.`  They generate(d) components
-   in the **testbed** module's `src/test/scala` directory. They may mislead you.
+
 
 
 ## LR Parsing Conflict Illustrations
 A few notation definitions that result in shift-reduce or reduce-reduce 
-conflicts are gathered (as embedded strings) in the `GeneratorTests` of `stage2`.
-Here's an ambiguous grammar, and the full diagnostic reported by the stage2 generator with
-`-c` set.
+conflicts are gathered (as embedded strings) 
+in the tests gathered as `ErrorReportTests.scala`.
+
+**1.** Here's an ambiguous grammar, and the full diagnostic reported 
+when the `-c` flag is given.
 ````
    %token a
    %rules
@@ -436,19 +433,60 @@ Here's an ambiguous grammar, and the full diagnostic reported by the stage2 gene
    A = a;
    B = a;
    
-   TEST-GENERATED/conflicts/SAB/SAB.y: warning: 1 reduce/reduce conflict [-Wconflicts-rr]
-   TEST-GENERATED/conflicts/SAB/SAB.y: warning: reduce/reduce conflict on token $end
-   Example: a •
-   First reduce derivation
-   S
-   ↳ 1: A
-   ↳ 3: a •
-   Second reduce derivation
-   S
-   ↳ 2: B
-   ↳ 4: a •
+  Bison log for ScalaLR:  at Fri Jun 12 12:34:25 BST 2026
+  Testing/generated/components/generated.y: warning: 1 reduce/reduce conflict [-Wconflicts-rr]
+  Testing/generated/components/generated.y: warning: reduce/reduce conflict on token $end 
+  Example: a •
+  First reduce derivation
+    S
+    ↳ 1: A
+         ↳ 3: a •
+  Second reduce derivation
+    S
+    ↳ 2: B
+         ↳ 4: a •
+Testing/generated/components/generated.y:12.8-12: warning: rule useless in parser due to conflicts [-Wother]
+   12 | B: a // B = a
+      |        ^~~~~
+
 ````
-Here's the classic "dangling else" ambiguity, and a full diagnosis
+
+Here's an extract from the corresponding `.output` file:
+````scala
+State 1 conflicts: 1 reduce/reduce 
+...
+Grammar
+
+0      $accept: S $end
+1      S:     A
+2           | B
+3      A:   a
+4      B:   a
+...
+State 1
+
+    3 A: a •
+    4 B: a •
+
+    $end      reduce using rule 3 (A)
+    $end      [reduce using rule 4 (B)]
+    $default  reduce using rule 3 (A)
+
+    reduce/reduce conflict on token $end:
+        3 A: a •
+        4 B: a •
+      Example: a •
+      First reduce derivation
+        S
+        ↳ 1: A
+             ↳ 3: a •
+      Second reduce derivation
+        S
+        ↳ 2: B
+             ↳ 4: a •
+
+````
+**2.** Here's the classic "dangling else" ambiguity, and a full diagnosis
 ````
    %token IF THEN ELSE ID '+'
    %rules
@@ -457,40 +495,43 @@ Here's the classic "dangling else" ambiguity, and a full diagnosis
         | IF expr THEN expr
         | IF expr THEN expr ELSE expr
         
-     TEST-GENERATED/conflicts/IfThenElse/IfThenElse.y: warning: 3 shift/reduce conflicts [-Wconflicts-sr]
-     TEST-GENERATED/conflicts/IfThenElse/IfThenElse.y: warning: shift/reduce conflict on token `+`
-     
-     Example: IF expr THEN expr • `+` ID
-     Shift derivation
-       expr
-       ↳ 3: IF expr THEN expr
-                              ↳ 2: expr • `+` ID
-     Reduce derivation
-       expr
-       ↳ 2: expr                          `+` ID
-            ↳ 3: IF expr THEN expr •
-   
-      TEST-GENERATED/conflicts/IfThenElse/IfThenElse.y: warning: shift/reduce conflict on token ELSE
-        Example: IF expr THEN IF expr THEN expr • ELSE expr
-        Shift derivation
-          expr
-          ↳ 3: IF expr THEN expr
-                                 ↳ 4: IF expr THEN expr • ELSE expr
-        Reduce derivation
-          expr
-          ↳ 4: IF expr THEN expr                          ELSE expr
-                                 ↳ 3: IF expr THEN expr •
-                                 
-      TEST-GENERATED/conflicts/IfThenElse/IfThenElse.y: warning: shift/reduce conflict on token `+`
-        Example: IF expr THEN expr ELSE expr • `+` ID
-        Shift derivation
-          expr
-          ↳ 4: IF expr THEN expr ELSE expr
-                                             ↳ 2: expr • `+` ID
-        Reduce derivation
-          expr
-          ↳ 2: expr                                      `+` ID
-               ↳ 4: IF expr THEN expr ELSE expr •
+Bison log for ScalaLR: If at Fri Jun 12 13:06:18 BST 2026
+Testing/generated/danglingelselalr/If.y: warning: 3 shift/reduce conflicts [-Wconflicts-sr]
+Testing/generated/danglingelselalr/If.y: warning: shift/reduce conflict on token `+` 
+  
+  Example: IF expr THEN expr • `+` ID
+  Shift derivation
+    expr
+    ↳ 3: IF expr THEN expr
+                           ↳ 2: expr • `+` ID
+  Reduce derivation
+    expr
+    ↳ 2: expr                          `+` ID
+         ↳ 3: IF expr THEN expr •
+
+Testing/generated/danglingelselalr/If.y: warning: shift/reduce conflict on token ELSE 
+
+  Example: IF expr THEN IF expr THEN expr • ELSE expr
+  Shift derivation
+    expr
+    ↳ 3: IF expr THEN expr
+                           ↳ 4: IF expr THEN expr • ELSE expr
+  Reduce derivation
+    expr
+    ↳ 4: IF expr THEN expr                          ELSE expr
+                           ↳ 3: IF expr THEN expr •
+Testing/generated/danglingelselalr/If.y: warning: shift/reduce conflict on token `+` 
+  
+  Example: IF expr THEN expr ELSE expr • `+` ID
+  Shift derivation
+    expr
+    ↳ 4: IF expr THEN expr ELSE expr
+                                       ↳ 2: expr • `+` ID
+  Reduce derivation
+    expr
+    ↳ 2: expr                                      `+` ID
+         ↳ 4: IF expr THEN expr ELSE expr •
+
 ````
 
 ## Gotchas
@@ -500,16 +541,24 @@ unless their `attemptRecovery` variable is `true` and an `error`-handling state 
 present on the parse stack (see the Bison documentation for an explanation of
 the `error` virtual token). If their `logRecovery` variable is `true` then the recovery 
 attempt is documented (in some detail). It is nevertheless straightforward to
-construct an Read-Eval-Print-type interface that appears to recover from syntax errors by
-enclosing its top-level in a throw-handling loop.
+construct an Read-Eval-Print-type interface that appears to recover from 
+syntax errors: see `Examples/TinyFun/src/runtinyfun` for an example.
 
-2. **Trivial typos** used to be problematic. Experience with using the notation-specification 
+1. **Inadvertent Scala type errors in result Expressions** are
+discovered only as the generated scala components are being compiled 
+by Scala. The `=>` form of result expression is (at least) checked 
+for little mistakes (omitting `$`s), but ideally this would
+be done by an "onboard" type-checker. 
+Happily, with a modern IDE, supported by `mill` the
+workflow involved in getting grammars correct is not too tedious. 
+
+1. **Trivial typos** used to be problematic. Experience with using the notation-specification 
 languages early in the bootstrap sequence *used to* demonstrate the high incidence of errors 
 caused by the omission of  semicolons between rules. This was *corrected in and after stage1: 
 a semicolon can be omitted between two rules, providing there is visible vertical space between
-them.* Semicolons are still forbidden between `%...` directives before `%rules`.
+them.* Semicolons are forbidden between `%...` directives before `%rules.`
 
-4. **Scala code quotations** such as appear in `%include` passages and as 
+1. **Scala code quotations** such as appear in `%include` passages and as 
 production result expressions need a little care. The normal form of a code 
 quotation is a passage that opens with `{`, has  properly-nested occurences of 
 `{` and `}` within it and ends with a closing `}` that matches 
@@ -542,9 +591,9 @@ here in no particular order.
 
 4. Checking the form of result expressions for plausibility so as to avoid discovering 
 certain kinds of Scala error after code-generation and during compilation phase.
-**[IN PROGRESS June '26]** 
+**[DONE June '26]** 
 
-The following is a "maybe sometime" aspiration.
+#### The following is a "maybe sometime" aspiration.
 5. Additional higher level constructs that support "say it once"
 specification of notation and abstract syntax, as well as
 less "fragile" expressions of the AST results of productions. We have in mind
@@ -581,19 +630,44 @@ become part of a parser that will yield an abstract syntax tree. *Of course
 there's no harm in the parser yielding (say) a numeric value, or even being
 run for its side effects and yielding `Unit` -- though this may not be common.*
 
-## Valediction
-
-   The **stage2** code generator, being reasonably-well structured, is now  scrutable by
-   others, and might be a good place to start making enhancements to the notation-description 
-   language. 
+## History
    
-   **I regret  the inscrutability of the bootstrap code-generator**. I have no
-   excuse for this beyond my having wanted to prioritise fast turnaround while I
-   was first experimenting with my approach. Some might say that the fact that 
-   it can **still** be  used in a near production environment is testimony to 
-   my cunning, but I couldn't possibly comment! Still! Nobody needs it any more 
-   and one day I will delete it from the distribution.
+The present **scalalr** is the result of three major stages of evolution, all 
+traces of which have been elided in the current release (but not in the Git
+history).
+      
+      bootstrap      handwritten parser
+                     crude code-generator 
 
-BS: April 29th, May 13th 2026, June 5th 2026
+      stage1         scalalr-specified parser for bootstrap notation
+                     crude code-generator
+
+      stage2.1       flexible scalalr-specified parser for stage1 notation
+                     refined code-generator
+      
+      stage2.2       augmented scalalr-specified parser for stage2.1 notation
+                     (adding repeat annotations * ? + ... *.. +..)
+                     further refined code-generator
+
+
+During these stages we used **sbt** and **IntelliJ** as out build/edit systems. 
+I may not be the only serious programmer who has "only just" gotten to grip with
+the spectacularly complex **sbt** (whose **s** originally stood for **simple**).
+
+**The current release** uses the much more straightforward **Mill** build tool. 
+It seems to integrate well with IntelliJ and I recommend it. The standard 
+`mill` build uses `ScalaLR/ParserGenerator/scalalr` (inherited from
+the abovementioned evolution) to generate its
+parser components, and places the resulting runnable assembly in
+`ScalaLR/bin/scalalr.` 
+
+**Caution is counselled** if you plan to supersede
+`ScalaLR/ParserGenerator/scalalr` with the result of the current build.
+
+## Valediction
+There is  much I haven't had time to do, so feel free to experiment with the notation 
+description notation and its semantics.
+
+BS: April 29th, May 13th 2026, June 12th 2026
 
 

@@ -3,48 +3,57 @@ package build
 
 /**
     Build the ScalaLR ecosystem:
-    1. ./mill ScalaLR                   -- makes the parser generator
-    2. ./mill scalalrruntime.makejar    -- makes the runtime library
-    
+    1. ./mill ScalaLR.release    -- makes the parser generator
+    2. ./mill Runtime.release    -- makes the runtime library
+    3. ./mill ApiDocs.release    -- makes a jar of the documentation
 */
 
 import mill.*, scalalib.*
 
 trait ComponentModule extends ScalaModule {
-  def scalaVersion = "2.13.18"
+  def scalaVersion   = "2.13.18"
+  def scalalrVersion = "1.0.0"
 }
 
 object ScalaLR extends ScalalrModule {
-  def grammar     = Task.Source("stage3-notation.scalalr")
-  def generator   = "ParserGenerator/scalalr"
-  def mainClass   = Some("org.sufrin.scalalr.stage2.Generator")
-  def releasePath = "bin/scalalr"
+  override
+  def scalaVersion  = "2.13.18"
+  def notation      = "stage3-notation.scalalr"
+  def unmanagedJars = "Assets"
+  def scalalr       = "Assets/scalalr"
+  def mainClass     = Some("org.sufrin.scalalr.stage2.Generator")
+  def releasePath   = "bin/scalalr"
 
   override def moduleDeps = Seq(Shared, Utility)
 
+  // we need the scala xml module
   def mvnDeps = Seq(
       mvn"org.scala-lang.modules::scala-xml:2.3.0"
   )
   
 }
 
+// this module defines classes shared by code generator and scalalr
 object Shared extends ComponentModule {
-  override def moduleDeps = Seq(Utility)
+       override def moduleDeps = Seq(Utility)
 }
 
+// this module defines classes that (in some sense) useful
+object Utility extends ComponentModule { }
 
-object Utility extends ComponentModule {
-}
-
+// this module depends on scalalr and its runtime
+// it defines runnable tests callable from IntelliJ
 object Testing extends ComponentModule {
-     override def moduleDeps = Seq(ScalaLR, Shared, Utility)
+       override def moduleDeps = Seq(ScalaLR, Shared, Utility)
 }
 
-object scalalrruntime extends ComponentModule {
+//////////////////////////////////////////////
+
+object Runtime extends ComponentModule {
    override def moduleDeps = Seq(Shared)
 
 
-   def makejar() = Task.Command {
+   def release() = Task.Command {
          def releasePath: String     = "scalalrruntime.jar"
          def releaseTarget: os.Path  = moduleDir / os.SubPath(releasePath)
 
@@ -56,14 +65,42 @@ object scalalrruntime extends ComponentModule {
          )
 
          os.proc("chmod", "+x", releaseTarget)
-         System.err.println(releaseTarget)
+         System.err.println(s"Runtime release to $releaseTarget")
          PathRef(releaseTarget)
    }
 }
 
+//////////////////////////////////////////////
+
 object ApiDocs extends ComponentModule with UnidocModule {
-  def moduleDeps = Seq(ScalaLR)       // or Seq(Shared, ScalaLR) if that is your public root
+  def unidocVersion = Some(scalalrVersion)
+  def moduleDeps = Seq(ScalaLR)
   def unidocDocumentTitle = "ScalaLR API"
-  def unidocVersion = Some("0.1.0")
   def unidocSourceUrl = Some("https://github.com/sufrin/ScalaLR/API")
+
+  def make() = Task.Command {
+    val site = unidocLocal().path.toString
+    println(s"Documentation: $site")
+  }
+
+  def browse() = Task.Command {
+      val site = unidocLocal().path
+      os.proc("open", site / "index.html").call()
+  }
+
+  def release() = Task.Command {
+        def runtimeReleasePath = Runtime.release()
+        def site   = unidocLocal().path
+        def releasePath = "APIDocs.jar"
+        def zipped = Task.dest / "APIDocs.jar"
+        println(s"zip ${zipped}  ${site}")
+        os.zip(zipped, Seq(site))
+        def releaseTarget: os.Path = moduleDir / os.SubPath(releasePath)
+        os.makeDir.all(releaseTarget / os.up)
+         os.copy.over(
+           zipped,
+           releaseTarget
+         )
+        PathRef(releaseTarget)
+  }
 }

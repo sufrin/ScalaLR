@@ -4,36 +4,40 @@ import mill.*, scalalib.*
 /**
 
  A Mill module to support the incremental build of a program
- that uses scalalr to generate perser component files
+ that uses scalalr to generate parser component files
 
 Example use:
 {{{
     package build
     import mill.*, scalalib.*
     object RedOx extends ScalalrModule {
-      def grammar     = Task.Source("stage3-notation.scalalr")
-      def generator   = "ParserGenerator/scalalr"
-      def mainClass   = Some("org.redox.RedOx")
-      def releasePath = "bin/redox" // relative to the module directory
-}
+      def notation              = "redox.scalalr"
+      def unmanagedJars         = "ScalaLR"
+      def mainClass             = Some("org.redox.RedOx")
+      def releasePath           = "bin/redox"
+    }
 }}}
 */
 
 trait ScalalrModule extends ScalaModule {
   def scalaVersion = "2.13.18"
   // module-specific
-  def grammar:               T[PathRef]
-  def parserGenerator:       T[PathRef] = Task.Source("ParserGenerator/scalalr")
-  def unmanagedClasspathDir: T[PathRef] = Task.Source("lib")
-  def generatorArgs: Seq[String]        = Seq("-html")
+  def notation:         String
+  def scalalr:          String          = "ScalaLR/scalalr"
+  def unmanagedJars:    String          = "lib"
+  def generatorArgs:    Seq[String]     = Seq("-html")
   def generatedDirName: String          = "generated"
-  def releasePath: String               = "release"
-  def releaseTarget: os.Path            = moduleDir / os.SubPath(releasePath)
+  def releasePath:      String          = "release"
+  def releaseTarget:    os.Path         = moduleDir / os.SubPath(releasePath)
+
+  def notationPath:     T[PathRef]      = Task.Input { (PathRef(moduleDir / os.SubPath(notation)))}
+  def parserGenerator:  T[PathRef]      = Task.Input { (PathRef(moduleDir / os.up / os.SubPath(scalalr))) }
+  def unmanagedJarsDir: T[PathRef]      = Task.Input { (PathRef(moduleDir / os.up / os.SubPath(unmanagedJars))) }
 
 
   // a classpath with all the jars on the unmanagedClassPathDir()
   override def unmanagedClasspath = Task {
-    val dir = unmanagedClasspathDir().path
+    val dir = unmanagedJarsDir().path
     if (!os.exists(dir)) Seq.empty
     else
       Seq.from(
@@ -43,23 +47,26 @@ trait ScalalrModule extends ScalaModule {
       )
   }
 
+
+
    // The parent directory of the generated files
    override def generatedSources = Task {
+
         val generated = Task.dest / generatedDirName
         os.makeDir.all(generated)
+        println(s"****  ${parserGenerator().path}")
 
-        val result = os.proc(
-           parserGenerator().path,
-          "-html",
-          "-o",
-          generated.toString,
-          grammar().path
-        ).call(
-          cwd = Task.dest,
-          check = false,
-          stdout = os.Inherit,
-          stderr = os.Inherit
-        )
+        val cmd = (Seq(parserGenerator().path.toString) ++ generatorArgs ++ Seq("-o", generated.toString, notationPath().path.toString)).
+                  map { (x: String) =>x:os.Shellable }
+
+        val result =
+            os.proc(cmd*).
+            call(
+              cwd = Task.dest,
+              check = false,
+              stdout = os.Inherit,
+              stderr = os.Inherit
+            )
 
         if (result.exitCode != 0) {
             Task.fail(s"Parser generator failed:\n${result.err.text()}")

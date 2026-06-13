@@ -1,0 +1,207 @@
+/**
+    A notation somewhat reminiscent of *occam* and of Ian Page's early *Handel*
+
+    Provision for testing (see ParserTests.scala) from an IDE is made by
+    adding two prefixes in the definition of top to indicate the exact kind of
+    phrase to be parsed if that phrases in not a `declare`.
+*/
+
+
+%notation RedOx
+%package  org.redox
+%path     "org/redox"
+%tables   ielr
+
+%include {
+   import org.sufrin.scalalr.{SourceLocation,ScannerBuilder,Scanner}
+   import org.sufrin.utility.SourceTextCursor
+   import org.sufrin.utility.PrettyPrint._
+
+   /**
+        `Scanner(chars)` builds a lexical scanner using a `ScannerBuilder`. The implementations of
+        the `mkXXX` functions bridge the fixed lexical categories of the builder, and the `%token`
+        constructors declared here. The `withSymbolTokens(symbolToken)` clause initialises the
+        internal symbol and token tables of the resulting builder.
+     */
+     object Scanner {
+       def hex(chars: Seq[Char]): Long  = chars.foldLeft(0L) { (acc, c) => acc * 16 + Character.digit(c, 16) }
+       def dec(chars: Seq[Char]): Long  = chars.foldLeft(0L) { (acc, c) => acc * 10 + Character.digit(c, 10) }
+
+       def apply(chars: SourceTextCursor): Scanner[Token] =
+           new ScannerBuilder[Token](chars) {
+              def mkString(openQuote: String, CLOSEQuote: String, body: Seq[Char]): Token = STRING(s"$openQuote${body.mkString}$CLOSEQuote")
+              def mkHex(source: Seq[Char]):   Token = NUM(hex(source))
+              def mkDec(source: Seq[Char]):   Token = NUM(dec(source))
+              def mkReal(source: Seq[Char]):  Token = SCANERROR(source.mkString)
+              def mkID(source: Seq[Char]):    Token = ID(source.mkString)
+              def mkERROR(source: Seq[Char]): Token = SCANERROR(source.mkString)
+              val ENDSTREAM: Token = $end
+              val NEWLINE:   Option[Token] = None
+              def flush(): Unit = {
+                  while (chars.hasCurrent && chars.current != '\n') chars.next()
+                  print(chars.prompt); System.out.flush()
+              }
+           } withSymbolTokens(symbolToken)
+
+     }
+}
+
+%token NUM(Long) ID(String)  `(` `)` `[` `]` `,`  '.'  ':'  NL SCANERROR(String) STRING(String) '[[' ']]'
+%token `if` `alt` `{` `}` `case` `?` `->` `!` `skip` `delay` `stop` `~` `=>`
+%token `while` `until` `_`
+%token `:=` `seq` `>>`
+%token `var` `int` `rom` `chan`
+
+%prec ';'
+%prec LOW
+%right `||`
+
+%left '=' '|=' '<' '<=' '>' '>=' '=='
+
+%left '|'
+%left '^'
+%left '&'
+%left '++'
+
+
+//%non `!` `?`
+//%non   `:=`
+
+%left `+` `-`
+%left `*`
+%left '<-'  
+
+%non '<<' '[['
+%prec HIGH
+
+
+%rules
+
+%include {
+ import org.redox.AST._
+ def flatPar(l: Proc, res: List[Proc]): List[Proc] =
+     l match {
+       case PAR(l, r) => flatPar(l, flatPar(r, res))
+       case other => other :: res
+     }
+
+ def flatSeq(l: Proc, res: List[Proc]): List[Proc] =
+      l match {
+        case SEQ(l, r) => flatPar(l, flatSeq(r, res))
+        case other => other :: res
+      }
+
+ def flatten(p: Proc): Proc =
+ {  p match {
+      case PAR(l, r) => Parallel(flatPar(l, flatPar(r, Nil)))
+      case SEQ(l, r) => Sequence(flatSeq(l, flatSeq(r, Nil)))
+      case other => other
+    }
+ }
+
+ // disambiguate expr[expr]
+ def mkBracket(l: Expr, r: Expr): Expr =
+ { (l, r) match {
+    case (Num(value, 0), Num(bits, 0)) =>  Num(value, bits)
+    case (_, _) => Index(l, r)
+   }
+ }
+
+ def mkWhile(guard: Expr, body: Seq[Proc]): Proc =
+     body.size match {
+       case 0 => While(guard, SKIP)
+       case 1 => While(guard, body(0))
+       case _ => While(guard, Sequence(body))
+     }
+
+ def mkUntil(guard: Expr, body: Seq[Proc]): Proc =
+      body.size match {
+        case 0 => Until(guard, SKIP)
+        case 1 => Until(guard, body(0))
+        case _ => Until(guard, Sequence(body))
+      }
+}
+
+top: Proc = declare | "-" "proc" proc | "-" "expr" expr
+
+declare: Proc = "var" '{'  decls: (decl)* '}'
+                body: proc { Declare($decls, $body)($START, $END) }
+
+decl: Decl = "int"   ID '[' expr ']'                  (';')?  { Integer($ID, $expr) }
+           | "rom"   ID '[' expr ']' '{' exprs '}'    (';')?  { Rom($ID, $expr, $exprs) }
+           | "chan"  ID '[' expr ']'                  (';')?  { Channel($ID, $expr) }
+
+proc: Proc = prim  { $prim }
+           | l: proc '||' r: proc { PAR($l,$r)($START, $END) }
+
+
+alt: AltBranch   = '(' guard: expr ')' chan: ID  '?' lexpr '->' proc   { AltBranch($guard, $chan, $lexpr, $proc) }
+
+case: CaseBranch =  labels: (',' expr)+  '->' proc  { CaseBranch($labels, $proc) }
+
+if:    IfBranch =  expr '->' proc  { IfBranch($expr, $proc) }
+
+prim: Proc = lexprs: (',' expr)+  ':=' exprs            { Assign($lexprs, $exprs)($START, $END) }
+           | chan: expr '?' lexpr: lexpr                { Read($chan, $lexpr) }
+           | chan: expr '!' value: expr                 { Write($chan, $value) }
+           | `skip`                                     { SKIP}
+           | `delay`                                    { DELAY}
+           | `stop`                                     { STOP }
+           | "alt"         body: alts          { PriAlt($body)($START, $END) }
+           | "if"          body: ifs           { If($body)($START, $END) }
+           | "case" expr   body: cases         { Case($expr, $body)($START, $END) }
+           | "while" expr  body: procs         { mkWhile($expr, $body) }
+           | "until" expr  body: procs         { mkUntil($expr, $body) }
+           | "seq"         body: procs         { Sequence($body.map(flatten))($START, $END) }
+           | "{"  body: (proc ';')... "}"      { Sequence($body.map(flatten))($START, $END) }
+           | declare
+
+ procs:  List[Proc]      = '{' list: (proc ';')... '}' { $list };
+ alts:   List[AltBranch] = '{' list: (alt ';')... '}' { $list };
+ ifs:    List[IfBranch]  = '{' list: (if ';')... '}' { $list };
+ cases:  List[CaseBranch]= '{' list: (case ';')... '}' { $list };
+
+
+
+
+expr: Expr =
+        | relExpr
+        | l:primExpr `[` expr `]`   { mkBracket($l, $expr) }
+        | l:expr `^` r:expr         { Binop("^", $l, $r)($START, $END) }
+        | l:expr `&` r:expr         { Binop("&", $l, $r)($START, $END) }
+        | l:expr `*` r:expr         { Binop("*", $l, $r)($START, $END) }
+        | l:expr `+` r:expr         { Binop("+", $l, $r)($START, $END) }
+        | l:expr `++` r:expr        { Binop("++", $l, $r)($START, $END) }
+        | l:expr `-` r:expr         { Binop("-", $l, $r)($START, $END) }
+
+
+relExpr: Expr = primExpr
+              | l:expr `==` r:expr  { Binop("==", $l, $r)($START, $END) }
+              | l:expr `|=` r:expr  { Binop("|=", $l, $r)($START, $END) }
+              | l:expr `<=` r:expr  { Binop("<=", $l, $r)($START, $END) }
+              | l:expr `>=` r:expr  { Binop(">=", $l, $r)($START, $END) }
+              | l:expr `<` r:expr    { Binop("<", $l, $r)($START, $END) }
+              | l:expr `>` r:expr    { Binop(">", $l, $r)($START, $END) }
+
+primExpr: Expr =
+        | constExpr
+        | '~' primExpr        { Unop("~", $primExpr)($START, $END) } %prec HIGH
+        | '-' primExpr        { Unop("-", $primExpr)($START, $END) } %prec HIGH
+        | "(" expr ")"
+        | ID  "(" exprs ")"   { Apply($ID, $exprs.reverse)($START, $END) } %prec `^`
+        | '_'                 { Anything }
+        | '(' l: expr '<|' guard: expr '|>' r: cexpr ')' { Cond($guard, $l, $r)($START,$END) }
+        | l:constExpr `[[` r:constExpr ']]'   { Binop("take", $l, $r)($START, $END) }
+        | l:constExpr `<<` r:constExpr '>>'   { Binop("drop", $l, $r)($START, $END) }
+
+constExpr: Expr =
+        | ID                  { Id($ID)($START, $END) }
+        | value: NUM          { Num($value, 0)($START, $END) }
+
+cexpr: Expr = expr
+            | l: expr "<|"  guard: expr "|>" r: cexpr  {Cond($guard, $l, $r)($START,$END)}
+
+exprs: (List[Expr]) = (',' expr)*
+
+lexpr: LExpr = ID  { Id($ID)($START, $END) }
+

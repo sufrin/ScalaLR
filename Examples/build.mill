@@ -19,3 +19,14 @@ object TinyFun extends ScalalrModule {
   def mainClass   = Some("runtinyfun")
   def releasePath = "tinyfun"
 }
+
+object RedOx extends ScalalrModule {
+  override
+  def scalaVersion  = "2.13.18"
+  def notation      = "redox.scalalr"
+  def unmanagedJars = "Assets"
+  def scalalr       = "Assets/scalalr"
+  def mainClass     = Some("org.redox.RedOx")
+  def releasePath   = "bin/redox"
+}
+

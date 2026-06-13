@@ -12,19 +12,10 @@ trait ComponentModule extends ScalaModule {
 
 object TinyFun extends ScalalrModule {
   override
-  def scalaVersion = "2.13.18"
-  def grammar     = Task.Source("tinyfun.scalalr")
+  def scalaVersion  = "2.13.18"
+  def notation      = "tinyfun.scalalr"
+  def unmanagedJars = "Assets"
+  def scalalr       = "Assets/scalalr"
   def mainClass   = Some("runtinyfun")
   def releasePath = "tinyfun"
-
-  override def parserGenerator: T[PathRef] = Task.Source {
-     (moduleDir / ".." / "Assets" / "scalalr")
-  }
-
-  override def unmanagedClasspath = Task.Input {
-     Seq(
-        PathRef(moduleDir / ".." / "Assets" / "scalalrruntime.jar")
-     )
-  }
-
 }

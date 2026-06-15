@@ -1,25 +1,26 @@
 // Ian's microprocessor
 
-var {
-        int  A[8];
-        int  PC[6];
-        int  IR[8];
-        int  Halt[1];
-        chan OUT[6];
-        rom  PROG[8] { 0, 65, 66, 67, 68, 69, 192, 0 };
+DECLARE {
+        INT   A[8];
+        INT   PC[6];
+        INT   IR[8];
+        INT   Halt[1];
+        CHAN  OUT[6];
+        ROM   PROG[8] { 0, 65, 66, 67, 68, 69, 192, 0 };
+        MACRO INSTRUCTION = IR FROM 6 // for 2 bits
+        MACRO OPERAND     = IR FOR  6
 }
-seq {
+SEQ {
   A    := 0[8];
   PC   := 0[6];
   Halt := 0[1];
-  while Halt == 0[1] {
+  WHILE Halt == 0[1] {
         IR, PC := PROG[PC], PC + 1[6];
-        case (IR [[6]] ) {              // [[...]] is take
-            0 -> A := IR <<6>>;         // <<...>> is drop
-            1 -> A := A + IR <<6>>; 
-            2 -> if { A |= 0[8] -> PC := IR <<6>>  }; 
+        CASE ( INSTRUCTION ) {              
+            0 -> A := OPERAND;         
+            1 -> A := A + OPERAND; 
+            2 -> IF { A |= 0[8] -> PC := OPERAND  }; 
             3 -> Halt := 1[1];
-            _ -> skip;
         }     
   }
 }

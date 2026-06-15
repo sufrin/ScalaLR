@@ -1,0 +1,183 @@
+└─Declare
+  └─declarations: [#8]
+    └─Integer
+    │ └─id: A
+    │ └─width: Num
+    │ │ └─value: 8
+    │ │ └─bits: 0
+    │ └─init: [#0]
+    └─Integer
+    │ └─id: PC
+    │ └─width: Num
+    │ │ └─value: 6
+    │ │ └─bits: 0
+    │ └─init: [#0]
+    └─Integer
+    │ └─id: IR
+    │ └─width: Num
+    │ │ └─value: 8
+    │ │ └─bits: 0
+    │ └─init: [#0]
+    └─Integer
+    │ └─id: Halt
+    │ └─width: Num
+    │ │ └─value: 1
+    │ │ └─bits: 0
+    │ └─init: [#0]
+    └─Channel
+    │ └─id: OUT
+    │ └─width: Num
+    │   └─value: 6
+    │   └─bits: 0
+    └─Rom
+    │ └─id: PROG
+    │ └─dataWidth: Num
+    │ │ └─value: 8
+    │ │ └─bits: 0
+    │ └─data: [#8]
+    │   └─Num
+    │   │ └─value: 0
+    │   │ └─bits: 0
+    │   └─Num
+    │   │ └─value: 65
+    │   │ └─bits: 0
+    │   └─Num
+    │   │ └─value: 66
+    │   │ └─bits: 0
+    │   └─Num
+    │   │ └─value: 67
+    │   │ └─bits: 0
+    │   └─Num
+    │   │ └─value: 68
+    │   │ └─bits: 0
+    │   └─Num
+    │   │ └─value: 69
+    │   │ └─bits: 0
+    │   └─Num
+    │   │ └─value: 192
+    │   │ └─bits: 0
+    │   └─Num
+    │     └─value: 0
+    │     └─bits: 0
+    └─Macro
+    │ └─id: INSTRUCTION
+    │ └─params: [#0]
+    │ └─body: Binop
+    │   └─op: from
+    │   └─l: Id(IR)
+    │   └─r: Num
+    │     └─value: 6
+    │     └─bits: 0
+    └─Macro
+      └─id: OPERAND
+      └─params: [#0]
+      └─body: Binop
+        └─op: for
+        └─l: Id(IR)
+        └─r: Num
+          └─value: 6
+          └─bits: 0
+  └─body: Sequence
+    └─procs: [#4]
+      └─Assign
+      │ └─lhss: [#1]
+      │   └─Id(A)
+      │ └─rhss: [#1]
+      │   └─Num
+      │     └─value: 0
+      │     └─bits: 8
+      └─Assign
+      │ └─lhss: [#1]
+      │   └─Id(PC)
+      │ └─rhss: [#1]
+      │   └─Num
+      │     └─value: 0
+      │     └─bits: 6
+      └─Assign
+      │ └─lhss: [#1]
+      │   └─Id(Halt)
+      │ └─rhss: [#1]
+      │   └─Num
+      │     └─value: 0
+      │     └─bits: 1
+      └─While
+        └─guard: Binop
+        │ └─op: ==
+        │ └─l: Id(Halt)
+        │ └─r: Num
+        │   └─value: 0
+        │   └─bits: 1
+        └─body: Sequence
+          └─procs: [#2]
+            └─Assign
+            │ └─lhss: [#2]
+            │   └─Id(IR)
+            │   └─Id(PC)
+            │ └─rhss: [#2]
+            │   └─Index
+            │   │ └─array: Id(PROG)
+            │   │ └─offset: Id(PC)
+            │   └─Binop
+            │     └─op: +
+            │     └─l: Id(PC)
+            │     └─r: Num
+            │       └─value: 1
+            │       └─bits: 6
+            └─Case
+              └─subject: Id(INSTRUCTION)
+              └─branches: [#4]
+                └─CaseBranch
+                │ └─labels: [#1]
+                │   └─Num
+                │     └─value: 0
+                │     └─bits: 0
+                │ └─body: Assign
+                │   └─lhss: [#1]
+                │     └─Id(A)
+                │   └─rhss: [#1]
+                │     └─Id(OPERAND)
+                └─CaseBranch
+                │ └─labels: [#1]
+                │   └─Num
+                │     └─value: 1
+                │     └─bits: 0
+                │ └─body: Assign
+                │   └─lhss: [#1]
+                │     └─Id(A)
+                │   └─rhss: [#1]
+                │     └─Binop
+                │       └─op: +
+                │       └─l: Id(A)
+                │       └─r: Id(OPERAND)
+                └─CaseBranch
+                │ └─labels: [#1]
+                │   └─Num
+                │     └─value: 2
+                │     └─bits: 0
+                │ └─body: If
+                │   └─branches: [#1]
+                │     └─IfBranch
+                │       └─guard: Binop
+                │       │ └─op: |=
+                │       │ └─l: Id(A)
+                │       │ └─r: Num
+                │       │   └─value: 0
+                │       │   └─bits: 8
+                │       └─body: Assign
+                │         └─lhss: [#1]
+                │           └─Id(PC)
+                │         └─rhss: [#1]
+                │           └─Id(OPERAND)
+                └─CaseBranch
+                  └─labels: [#1]
+                    └─Num
+                      └─value: 3
+                      └─bits: 0
+                  └─body: Assign
+                    └─lhss: [#1]
+                      └─Id(Halt)
+                    └─rhss: [#1]
+                      └─Num
+                        └─value: 1
+                        └─bits: 1
+Declare(List(Integer(A,8,List()), Integer(PC,6,List()), Integer(IR,8,List()), Integer(Halt,1,List()), Channel(OUT,6), Rom(PROG,8,List(0, 41, 42, 43, 44, 45, c0, 0)), Macro(INSTRUCTION,List(),Binop(from,Id(IR),6)), Macro(OPERAND,List(),Binop(for,Id(IR),6))),Sequence(List(Assign(List(Id(A)),List(0:8)), Assign(List(Id(PC)),List(0:6)), Assign(List(Id(Halt)),List(0:1)), While(Binop(==,Id(Halt),0:1),Sequence(List(Assign(List(Id(IR), Id(PC)),List(Index(Id(PROG),Id(PC)), Binop(+,Id(PC),1:6))), Case(Id(INSTRUCTION),List(CaseBranch(List(0),Assign(List(Id(A)),List(Id(OPERAND)))), CaseBranch(List(1),Assign(List(Id(A)),List(Binop(+,Id(A),Id(OPERAND))))), CaseBranch(List(2),If(List(IfBranch(Binop(|=,Id(A),0:8),Assign(List(Id(PC)),List(Id(OPERAND))))))), CaseBranch(List(3),Assign(List(Id(Halt)),List(1:1))))))))))) (@1.0 ...  @26.1)

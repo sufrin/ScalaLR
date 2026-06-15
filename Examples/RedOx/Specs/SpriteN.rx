@@ -1,0 +1,133 @@
+// SpriteN ; four autonomously-moving sprites with a mouse-driven force
+// field, written with parameterised macros so each sprite's physics
+// = one one-line invocation instead of ~25 hand-replicated lines.
+
+// Tuning (DISPCAP = 64, velocity cap = ±23, force shift = 5) matches
+// SpriteOne.  No sprite-sprite interaction yet ; sprites overlap by
+// channel-|| colour mixing.
+
+// Compositing priority (front to back) ; cursor, sprites, background.
+
+// Use ;
+// cargo run // examples/SpriteN.hd \
+// --board ../boards/icepizero.videousb.toml
+
+// Handel program ; Video
+
+// hardware pins ;
+//   r          -> wrapper
+//   g          -> wrapper
+//   b          -> wrapper
+//   hsync      -> wrapper
+//   vsync      -> wrapper
+//   de         -> wrapper
+//   mousereport <- wrapper
+//   mousebtn  <- wrapper
+//   mousex    <- wrapper
+//   mousey    <- wrapper
+//   mousetype <- wrapper
+
+DECLARE {
+UINT x [10]
+UINT y [10]
+UINT r [8]
+UINT g [8]
+UINT b [8]
+UINT hsync [1]
+UINT vsync [1]
+UINT de [1]
+UINT mousereport [1]
+UINT mousebtn [8]
+UINT mousex [10]
+UINT mousey [10]
+UINT mousetype [2]
+UINT spriteX0 [10]  := 160
+UINT spriteY0 [10]  := 120
+INT spriteVX0 [8]   := 3
+INT spriteVY0 [8]   := 2
+UINT spriteX1 [10]  := 480
+UINT spriteY1 [10]  := 120
+INT spriteVX1 [8]   := 254
+INT spriteVY1 [8]   := 3
+UINT spriteX2 [10]  := 160
+UINT spriteY2 [10]  := 360
+INT spriteVX2 [8]   := 4
+INT spriteVY2 [8]   := 253
+UINT spriteX3 [10]  := 480
+UINT spriteY3 [10]  := 360
+INT spriteVX3 [8]   := 253
+INT spriteVY3 [8]   := 254
+MACRO madeup(x)     = ((x == 0[10]) && (y == 480[10]))
+MACRO vsyncstart    = ((x == 0[10]) && (y == 480[10]))
+MACRO spritehalf    = 8[10]
+MACRO leftheld      = (mousebtn[1] == TRUE)
+MACRO rightheld     = (((mousebtn FROM 1))[1] == TRUE)
+MACRO sext10(v)     = ((v[7[32] ] == TRUE) -> (v[8] + 768[10]) | v[8])
+MACRO nextpos(p, v) = ((p + sext10(v)))[10]
+MACRO bounce(p, v, limithigh)   = ((nextpos(p, v) > (limithigh - spritehalf)) || (nextpos(p, v) < spritehalf))
+MACRO disp(cursor, p)           = SIGNED(((cursor - p))[10])
+MACRO clamped(d) = ((d > 64[10]) -> 64[10] | ((d < 960[10]) -> 960[10] | d))
+MACRO attrbias(cursor, p)       = clamped(disp(cursor, p)) FROM 5
+MACRO bias(cursor, p)           = (leftheld -> attrbias(cursor, p) | (rightheld -> (0[10] - attrbias(cursor, p)) | 0[8]))
+MACRO rawv(p, v, limithigh, cursor)     = (((bounce(p, v, limithigh) -> (0[8] - v) | v) + bias(cursor, p)))[8]
+MACRO capped(p, v, limithigh, cursor)   = ( SIGNED(rawv(p, v, limithigh, cursor)) > 23[8] -> 23[8]
+                                          | SIGNED(rawv(p, v, limithigh, cursor)) < 233[8] -> 233[8]
+                                          | _ -> rawv(p, v, limithigh, cursor)
+                                          )
+MACRO nextp(p, v, limithigh) = (bounce(p, v, limithigh) -> p | nextpos(p, v))
+MACRO hit(px, py, sx, sy) = (((((px + spritehalf) >= sx) && (px <= (sx + spritehalf))) && ((py + spritehalf) >= sy)) && (py <= (sy + spritehalf)))
+MACRO cursorhit = (((((x + 4[10]) >= mousex) && (x <= (mousex + 4[10]))) && ((y + 4[10]) >= mousey)) && (y <= (mousey + 4[10])))
+MACRO h0 = hit(x, y, spriteX0, spriteY0)
+MACRO h1 = hit(x, y, spriteX1, spriteY1)
+MACRO h2 = hit(x, y, spriteX2, spriteY2)
+MACRO h3 = hit(x, y, spriteX3, spriteY3)
+MACRO spriteR = (h0 -> 255[8] | 0[8]) || (h2 -> 255[8] | 0[8]) || (h3 -> 255[8] | 0[8])
+MACRO spriteG = (h0 -> 128[8] | 0[8]) || (h1 -> 255[8] | 0[8]) || (h3 -> 255[8] | 0[8])
+MACRO spriteB = (h1 -> 255[8] | 0[8]) || (h2 -> 255[8] | 0[8])
+MACRO anyhit  = h0 || h1 || h2 || h3
+MACRO inside  = x < 640[10] && y < 480[10]
+MACRO RGB(button, default) =
+     (inside -> ( cursorhit -> (mousebtn == 0 || (mousebtn FROM button)[1] -> 255 | 0)
+                | anyhit    -> default
+                | _         -> 16
+                )
+     | _     -> 0
+     )
+}
+PAR {                                                                                                                             // 0
+  REPEAT {                                                                                                                        // w ; 1 cyc/iter
+    PAR {                                                                                                                         // w+0
+      x  := (x == 799 -> 0 | x + 1) ;                                                                                             // w+0
+      y  := (x == 799 -> (y == 524 -> 0 | y + 1) | y) ;                                                                           // w+0
+      de := (x < 641 && y < 480 -> 1 | 0) ;                                                                                       // w+0
+      hsync := (x >= 656  && x < 752 -> 0 | 1) ;                                                                                  // w+0
+      vsync := (y >= 490 && y < 492 -> 0  | 1) ;                                                                                   // w+0
+      r := RGB(0, spriteR) ;              // w+0
+      g := RGB(1, spriteG) ;              // w+0
+      b := RGB(2, spriteB) ;              // w+0
+    }
+  } ;
+  DO {                                                                                                                // y ; ? cyc/iter
+       vsyncstart ->                                                                                                  // y+0
+          PAR  {                                                                                                      // y+0
+            spriteX0    := nextp(spriteX0, spriteVX0, 639[10]) ;                                                      // y+0
+            spriteY0    := nextp(spriteY0, spriteVY0, 479[10]) ;                                                      // y+0
+            spriteVX0   := capped(spriteX0, spriteVX0, 639[10], mousex) ;                                             // y+0
+            spriteVY0   := capped(spriteY0, spriteVY0, 479[10], mousey) ;                                             // y+0
+            spriteX1    := nextp(spriteX1, spriteVX1, 639[10]) ;                                                      // y+0
+            spriteY1    := nextp(spriteY1, spriteVY1, 479[10]) ;                                                      // y+0
+            spriteVX1   := capped(spriteX1, spriteVX1, 639[10], mousex) ;                                             // y+0
+            spriteVY1   := capped(spriteY1, spriteVY1, 479[10], mousey) ;                                             // y+0
+            spriteX2    := nextp(spriteX2, spriteVX2, 639[10]) ;                                                      // y+0
+            spriteY2    := nextp(spriteY2, spriteVY2, 479[10]) ;                                                      // y+0
+            spriteVX2   := capped(spriteX2, spriteVX2, 639[10], mousex) ;                                             // y+0
+            spriteVY2   := capped(spriteY2, spriteVY2, 479[10], mousey) ;                                             // y+0
+            spriteX3    := nextp(spriteX3, spriteVX3, 639[10]) ;                                                      // y+0
+            spriteY3    := nextp(spriteY3, spriteVY3, 479[10]) ;                                                      // y+0
+            spriteVX3   := capped(spriteX3, spriteVX3, 639[10], mousex) ;                                             // y+0
+            spriteVY3   := capped(spriteY3, spriteVY3, 479[10], mousey) ;                                             // y+0
+          } ;
+       _ -> SKIP
+  }
+}
+  

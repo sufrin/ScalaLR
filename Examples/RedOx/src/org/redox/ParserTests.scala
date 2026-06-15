@@ -4,45 +4,38 @@ package org.redox
 
 import org.sufrin.SourceLocation._
 
-object test0 extends Test("")("""-proc x:=3 /*fo/* nested*/*/""".stripMargin)
-object test0a extends Test("")("""-proc x:=3 /*fo/* nested*/""")
-object test1 extends Test("")("""-proc x=0+0+0""")
-object test1a extends Test("")("-proc {xx123:=yy123>z123}")
-object test1b extends Test("")("""-proc
+object test0 extends Test("")("""-PROC x:=3 /*fo/* nested*/*/""".stripMargin)
+object test0a extends Test("")("""-PROC x:=3 /*fo/* nested*/""")
+object test1 extends Test("")("""-PROC x=0+0+0""")
+object test1a extends Test("")("-PROC {xx123:=yy123>z123}")
+object test1b extends Test("")("""-PROC
   x := Phun(3,4) + Bun()
 """)
 
-object test1c extends Test("")("""-proc
-     seq{
-        x := (T <| Phun(3,4) |>  Bun());
-        y := (L1 <| guard1 |> RL1 <| guard2 |> RR1)
+object test1c extends Test("")("""-PROC
+     SEQ{
+        x := (g1 -> c1 | g2 -> c2 | _ -> c3);
+        y := (g1 -> c1 | g2 -> c2 | c3);
+        x, y, z := y, z, x
      }
 """)
 
-object test1d extends Test("")("""-proc
-      seq{
-        x := (T <| Phun(3,4) |>  Bun());
-        y := (L1 <| guard1 |> RL1 <| guard2 |> RR1);
-        p, q := q, r
-       }
-""")
+object test2 extends Test("")("""-EXPR x == 3  || y == x || z==y """)
+object test2a extends Test("")("""-PROC SEQ { x := 3 ; y := x ; z:=y }""")
 
-object test2 extends Test("")("""-proc x := 3  || y := x || z:=y """)
-object test2a extends Test("")("""-proc seq { x := 3 || y := x || z:=y }""")
-
-object test3 extends Test("")("""-proc { x := 3+4+5  || y:=42 ;  y := x  ; z:=y ; stop } """)
+object test3 extends Test("")("""-PROC PAR { x := 3+4+5 ;  y:=42 ;  y := x  ; z:=y ; STOP } """)
 object test4 extends Test("")(
-  """-proc
+  """-PROC
      // Two's company
-    { x := 3+4+5  || y:=42 ;
+    { PAR{ x := 3+4+5 ; y:=42 };
       /* three is a crowd */
       y := x  ; z:=y+0xff ;
-      stop
+      STOP
     }
   """)
 object testalt extends Test("")(
-  """-proc
-    alt {
+  """-PROC
+    ALT {
       (watchingInput) input ? x   -> a := x ;
       (watchingReady) ready ? ANY -> out ! a ;
       (dreaming)      obfuscate ? x ->  { x:= x+1[1]; y := RAM[x] }
@@ -50,31 +43,39 @@ object testalt extends Test("")(
   """)
 
 object testLocal extends Test("")(
-  """-proc
-    alt {
-      (watchingInput) input ? x   -> var { int x[2]; int y[3] } a := x  ;
+  """-PROC
+    ALT {
+      (watchingInput) input ? x   -> DECLARE { INT x[2]; INT y[3] } a := x  ;
       (watchingReady) ready ? ANY -> out ! a ;
       (dreaming)      obfuscate ? x ->  { x:= x+1[1]; y := RAM[x] };
-      (swapping)      l?x -> var { int t[4] } { r?t; out!t; out!x }
+      (swapping)      l?x -> DECLARE { INT t[4] } { r?t; out!t; out!x }
     }
   """)
 
 object testif extends Test("")(
-  """-proc
-    if {
+  """-PROC
+    IF {
       a==b -> a := x ;
       c==d -> out ! a ;
       e==f -> {x:= x+1[1]; y := RAM[x] };
-      _    -> stop
+      _    -> STOP
     }
+  """)
+
+object  testNEW extends Test("")(
+  """-PROC
+    DECLARE {
+      INT x[1] := 0
+    }
+    STOP
   """)
 
 ///////////////////////////////////////////////////////////
 
 /**
  * Simple tests of parser components. Prefix indicates the nonterminal
- * -proc  ... text of a process ...
- * -expr  ... text of an expr ...
+ * -PROC  ... text of a process ...
+ * -EXPR  ... text of an expr ...
  * otherwise ... text of a complete program (ie var { declarations } ....
  *
  *

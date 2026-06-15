@@ -65,7 +65,7 @@ trait ScalalrModule extends ScalaModule {
               cwd = Task.dest,
               check = false,
               stdout = os.Inherit,
-              stderr = os.Inherit
+              stderr = os.Inherit  // TODO: refine scalalr reporting
             )
 
         if (result.exitCode != 0) {

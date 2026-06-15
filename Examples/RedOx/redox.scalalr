@@ -24,8 +24,12 @@
         internal symbol and token tables of the resulting builder.
      */
      object Scanner {
+       import collection.immutable.ListMap
        def hex(chars: Seq[Char]): Long  = chars.foldLeft(0L) { (acc, c) => acc * 16 + Character.digit(c, 16) }
        def dec(chars: Seq[Char]): Long  = chars.foldLeft(0L) { (acc, c) => acc * 10 + Character.digit(c, 10) }
+       def toUpperCased(mapping: Map[String,Token]): ListMap[String,Token] = {
+           ListMap.from(mapping.map { case (k, d) => (k.map(_.toUpper), d) })
+       }
 
        def apply(chars: SourceTextCursor): Scanner[Token] =
            new ScannerBuilder[Token](chars) {
@@ -41,63 +45,43 @@
                   while (chars.hasCurrent && chars.current != '\n') chars.next()
                   print(chars.prompt); System.out.flush()
               }
-           } withSymbolTokens(symbolToken)
+           } withSymbolTokens(toUpperCased(symbolToken))
 
      }
 }
 
-%token NUM(Long) ID(String)  `(` `)` `[` `]` `,`  '.'  ':'  NL SCANERROR(String) STRING(String) '[[' ']]'
+%token NUM(Long) ID(String)  `(` `)` `[` `]` `,`  '.'  ':'  NL SCANERROR(String) STRING(String)
 %token `if` `alt` `{` `}` `case` `?` `->` `!` `skip` `delay` `stop` `~` `=>`
-%token `while` `until` `_`
-%token `:=` `seq` `>>`
-%token `var` `int` `rom` `chan`
+%token `while` `until` `_` `for` `from` `repeat`
+%token `:=` `seq`
+%token `var` `int` `rom` `chan` `uint`
 
 %prec ';'
 %prec LOW
-%right `||`
 
-%left '=' '|=' '<' '<=' '>' '>=' '=='
 
-%left '|'
+%right '||'
+%right '&&'
+
+%non  '|=' '<' '<=' '>' '>=' '=='
+
+%left '$' // bitwise or
 %left '^'
 %left '&'
 %left '++'
 
 
-//%non `!` `?`
-//%non   `:=`
-
 %left `+` `-`
 %left `*`
-%left '<-'  
+%left 'for' 'from'
 
-%non '<<' '[['
 %prec HIGH
-
 
 %rules
 
 %include {
  import org.redox.AST._
- def flatPar(l: Proc, res: List[Proc]): List[Proc] =
-     l match {
-       case PAR(l, r) => flatPar(l, flatPar(r, res))
-       case other => other :: res
-     }
 
- def flatSeq(l: Proc, res: List[Proc]): List[Proc] =
-      l match {
-        case SEQ(l, r) => flatPar(l, flatSeq(r, res))
-        case other => other :: res
-      }
-
- def flatten(p: Proc): Proc =
- {  p match {
-      case PAR(l, r) => Parallel(flatPar(l, flatPar(r, Nil)))
-      case SEQ(l, r) => Sequence(flatSeq(l, flatSeq(r, Nil)))
-      case other => other
-    }
- }
 
  // disambiguate expr[expr]
  def mkBracket(l: Expr, r: Expr): Expr =
@@ -106,6 +90,13 @@
     case (_, _) => Index(l, r)
    }
  }
+
+ def mkPar(first: Proc, rest: List[Proc]): Proc =
+     rest.size match {
+            case 0 => SKIP
+            case 1 => PAR(first, rest(0))
+            case _ => Parallel(first::rest)
+          }
 
  def mkWhile(guard: Expr, body: Seq[Proc]): Proc =
      body.size match {
@@ -120,68 +111,81 @@
         case 1 => Until(guard, body(0))
         case _ => Until(guard, Sequence(body))
       }
+
+ def mkRepeat(body: Seq[Proc]): Proc =
+        body.size match {
+          case 0 => Repeat(SKIP)
+          case 1 => Repeat(body(0))
+          case _ => Repeat(Sequence(body))
+        }
 }
 
 top: Proc = declare | "-" "proc" proc | "-" "expr" expr
 
-declare: Proc = "var" '{'  decls: (decl)* '}'
-                body: proc { Declare($decls, $body)($START, $END) }
+declare: Proc = "declare" '{'  decls: (decl)* '}' body: proc { Declare($decls, $body)($START, $END) }
 
-decl: Decl = "int"   ID '[' expr ']'                  (';')?  { Integer($ID, $expr) }
-           | "rom"   ID '[' expr ']' '{' exprs '}'    (';')?  { Rom($ID, $expr, $exprs) }
-           | "chan"  ID '[' expr ']'                  (';')?  { Channel($ID, $expr) }
+decl: Decl = "int"   ID '[' width: expr ']'  initially  (';')?  { Integer($ID,  $width, $initially) }
+           | "uint"  ID '[' width: expr ']'  initially  (';')?  { Unsigned($ID, $width, $initially) }
+           | "rom"   ID '[' expr ']' '{' exprs '}'      (';')?  { Rom($ID, $expr, $exprs) }
+           | "chan"  ID '[' expr ']'                    (';')?  { Channel($ID, $expr) }
+           | "macro" ID '=' expr                        (';')?  { Macro($ID, Nil, $expr) } %prec LOW
+           | "macro" ID '(' formals: (formal ',')+  ')' '=' expr   (';')?  { Macro($ID, $formals, $expr) }
 
-proc: Proc = prim  { $prim }
-           | l: proc '||' r: proc { PAR($l,$r)($START, $END) }
+ proc: Proc = prim
 
+ // first: prim rest:('||' prim)* { mkPAR($first,$rest)($START, $END) } %prec LOW
 
-alt: AltBranch   = '(' guard: expr ')' chan: ID  '?' lexpr '->' proc   { AltBranch($guard, $chan, $lexpr, $proc) }
-
-case: CaseBranch =  labels: (',' expr)+  '->' proc  { CaseBranch($labels, $proc) }
-
-if:    IfBranch =  expr '->' proc  { IfBranch($expr, $proc) }
-
-prim: Proc = lexprs: (',' expr)+  ':=' exprs            { Assign($lexprs, $exprs)($START, $END) }
-           | chan: expr '?' lexpr: lexpr                { Read($chan, $lexpr) }
-           | chan: expr '!' value: expr                 { Write($chan, $value) }
-           | `skip`                                     { SKIP}
-           | `delay`                                    { DELAY}
-           | `stop`                                     { STOP }
-           | "alt"         body: alts          { PriAlt($body)($START, $END) }
-           | "if"          body: ifs           { If($body)($START, $END) }
-           | "case" expr   body: cases         { Case($expr, $body)($START, $END) }
-           | "while" expr  body: procs         { mkWhile($expr, $body) }
-           | "until" expr  body: procs         { mkUntil($expr, $body) }
-           | "seq"         body: procs         { Sequence($body.map(flatten))($START, $END) }
-           | "{"  body: (proc ';')... "}"      { Sequence($body.map(flatten))($START, $END) }
-           | declare
+ alt:  AltBranch  = '(' guard: expr ')' chan: ID  '?' lexpr '->' proc   { AltBranch($guard, $chan, $lexpr, $proc) };
+ case: CaseBranch =  labels: (',' expr)+  '->' proc  { CaseBranch($labels, $proc) };
+ if:   IfBranch   =  expr '->' proc  { IfBranch($expr, $proc) };
 
  procs:  List[Proc]      = '{' list: (proc ';')... '}' { $list };
  alts:   List[AltBranch] = '{' list: (alt ';')... '}' { $list };
  ifs:    List[IfBranch]  = '{' list: (if ';')... '}' { $list };
  cases:  List[CaseBranch]= '{' list: (case ';')... '}' { $list };
 
+prim: Proc = lexprs: (',' expr)+  ':=' exprs   { Assign($lexprs, $exprs)($START, $END) }
+           | chan: expr '?' lexpr: lexpr       { Read($chan, $lexpr) }
+           | chan: expr '!' value: expr        { Write($chan, $value) }
+           | `skip`                            { SKIP}
+           | `delay`                           { DELAY}
+           | `stop`                            { STOP }
+           | "alt"         body: alts          { PriAlt($body)($START, $END) }
+           | "if"          body: ifs           { If($body)($START, $END) }
+           | "do"          body: ifs           { Do($body)($START, $END) }
+           | "case" expr   body: cases         { Case($expr, $body)($START, $END) }
+           | "while" expr  body: procs         { mkWhile($expr, $body) }
+           | "until" expr  body: procs         { mkUntil($expr, $body) }
+           | "repeat"      body: procs         { mkRepeat($body) }
+           | "seq"         body: procs         { Sequence($body)($START, $END) }
+           | "par"         body: procs         { Parallel($body)($START, $END) }
+           | "{"  body: (proc ';')... "}"      { Sequence($body)($START, $END) }
+           | declare
+
 
 
 
 expr: Expr =
-        | relExpr
+        | primExpr
         | l:primExpr `[` expr `]`   { mkBracket($l, $expr) }
-        | l:expr `^` r:expr         { Binop("^", $l, $r)($START, $END) }
-        | l:expr `&` r:expr         { Binop("&", $l, $r)($START, $END) }
-        | l:expr `*` r:expr         { Binop("*", $l, $r)($START, $END) }
-        | l:expr `+` r:expr         { Binop("+", $l, $r)($START, $END) }
-        | l:expr `++` r:expr        { Binop("++", $l, $r)($START, $END) }
-        | l:expr `-` r:expr         { Binop("-", $l, $r)($START, $END) }
+        | l:expr `$` r:expr         { Binop("$", $l, $r)    ($START, $END) } // bitwise or
+        | l:expr `^` r:expr         { Binop("^", $l, $r)    ($START, $END) }
+        | l:expr `&` r:expr         { Binop("&", $l, $r)    ($START, $END) }
+        | l:expr `*` r:expr         { Binop("*", $l, $r)    ($START, $END) }
+        | l:expr `+` r:expr         { Binop("+", $l, $r)    ($START, $END) }
+        | l:expr `++` r:expr        { Binop("++", $l, $r)   ($START, $END) }
+        | l:expr `-` r:expr         { Binop("-", $l, $r)    ($START, $END) }
+        | l:expr 'for'  r:expr      { Binop("for", $l, $r)  ($START, $END) }
+        | l:expr 'from' r:expr      { Binop("from", $l, $r) ($START, $END) }
+        | l:expr '&&' r: expr       { Binop("&&", $l, $r)   ($START, $END) }
+        | l:expr '||'  r: expr      { Binop("||", $l, $r)   ($START, $END) }
+        | l:expr `==` r:expr        { Binop("==", $l, $r)   ($START, $END) }
+        | l:expr `|=` r:expr        { Binop("|=", $l, $r)   ($START, $END) }
+        | l:expr `<=` r:expr        { Binop("<=", $l, $r)   ($START, $END) }
+        | l:expr `>=` r:expr        { Binop(">=", $l, $r)   ($START, $END) }
+        | l:expr `<` r:expr         { Binop("<", $l, $r)    ($START, $END) }
+        | l:expr `>` r:expr         { Binop(">", $l, $r)    ($START, $END) }
 
-
-relExpr: Expr = primExpr
-              | l:expr `==` r:expr  { Binop("==", $l, $r)($START, $END) }
-              | l:expr `|=` r:expr  { Binop("|=", $l, $r)($START, $END) }
-              | l:expr `<=` r:expr  { Binop("<=", $l, $r)($START, $END) }
-              | l:expr `>=` r:expr  { Binop(">=", $l, $r)($START, $END) }
-              | l:expr `<` r:expr    { Binop("<", $l, $r)($START, $END) }
-              | l:expr `>` r:expr    { Binop(">", $l, $r)($START, $END) }
 
 primExpr: Expr =
         | constExpr
@@ -190,18 +194,23 @@ primExpr: Expr =
         | "(" expr ")"
         | ID  "(" exprs ")"   { Apply($ID, $exprs.reverse)($START, $END) } %prec `^`
         | '_'                 { Anything }
-        | '(' l: expr '<|' guard: expr '|>' r: cexpr ')' { Cond($guard, $l, $r)($START,$END) }
-        | l:constExpr `[[` r:constExpr ']]'   { Binop("take", $l, $r)($START, $END) }
-        | l:constExpr `<<` r:constExpr '>>'   { Binop("drop", $l, $r)($START, $END) }
+        | '('  guard: expr  '->' l: expr '|' r: condExpr ')' { Cond($guard, $l, $r)($START,$END) }
+
 
 constExpr: Expr =
         | ID                  { Id($ID)($START, $END) }
         | value: NUM          { Num($value, 0)($START, $END) }
 
-cexpr: Expr = expr
-            | l: expr "<|"  guard: expr "|>" r: cexpr  {Cond($guard, $l, $r)($START,$END)}
+condExpr: Expr  = expr
+                | guard: expr  '->' l: expr  {Cond($guard, $l, Anything)($START,$END)}
+                | guard: expr  '->' l: expr '|' r: condExpr {Cond($guard, $l, $r)($START,$END)}
 
 exprs: (List[Expr]) = (',' expr)*
 
 lexpr: LExpr = ID  { Id($ID)($START, $END) }
+
+formal: Id = ID { Id($ID)($START, $END) }
+
+initially: List[Expr] = %empty    => List()
+                      | ":=" expr => List($expr)
 

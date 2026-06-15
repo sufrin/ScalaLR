@@ -60,7 +60,9 @@ case class Read(chan: Expr,  lvalue: Expr)  extends Proc
 case class Block(decls: Seq[Decl], body: Seq[Proc])  extends Proc
 case class While(guard: Expr, body: Proc)  extends Proc
 case class Until(guard: Expr, body: Proc)  extends Proc
+case class Repeat( body: Proc)  extends Proc
 case class If(branches: Seq[IfBranch]) extends Proc
+case class Do(branches: Seq[IfBranch]) extends Proc
 case class Case(subject: Expr, branches: Seq[CaseBranch])  extends Proc
 case class Assign(lhss: Seq[Expr], rhss: Seq[Expr]) extends Proc
 case class Declare(declarations: Seq[Decl], body: Proc) extends Proc
@@ -71,10 +73,12 @@ case object DELAY extends Proc
 case object STOP extends Proc
 
 trait Decl extends AST
-case class Integer(id: String, width: Expr) extends Decl
+case class Integer(id: String, width: Expr,  init: Seq[Expr]) extends Decl
+case class Unsigned(id: String, width: Expr, init: Seq[Expr]) extends Decl
 case class Channel(id: String, width: Expr) extends Decl
 case class Ram(id: String, dataWidth: Expr, addrWidth: Expr) extends Decl
 case class Rom(id: String, dataWidth: Expr, data: Seq[Expr]) extends Decl
+case class Macro(id: String, params: Seq[Id], body: Expr) extends Decl
 
 trait Expr extends AST
 trait LExpr extends Expr

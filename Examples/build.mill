@@ -16,7 +16,7 @@ object TinyFun extends ScalalrModule {
   def notation      = "tinyfun.scalalr"
   def unmanagedJars = "Assets"
   def scalalr       = "Assets/scalalr"
-  def mainClass   = Some("runtinyfun")
+  def mainClass     = Some("runtinyfun")
   def releasePath = "tinyfun"
 }
 
@@ -28,5 +28,6 @@ object RedOx extends ScalalrModule {
   def scalalr       = "Assets/scalalr"
   def mainClass     = Some("org.redox.RedOx")
   def releasePath   = "bin/redox"
+  def generatorArgs = Seq("-html") //, "-Lsym", "-Lsyn")
 }
 

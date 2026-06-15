@@ -2,8 +2,6 @@ package org.sufrin.scalalr
 package stage2
 package runtime
 
-import org.sufrin.SourceLocation._
-import org.sufrin.utility._
 
 object  lists extends TestRUN("-Lsyn -Lsym -html", "lists.Lists")(
   """1,2,3,4,5
@@ -150,9 +148,9 @@ object expression extends TestRUN("-Lsyn -Lsym -html", "expr.Expression")()(
  def reHexify(string: String): String = s"0x$string"
 }
 
-loop:    Unit   = (NL)? (NL oneLine)* => ()         // top-level loop ignores empty lines
+loop:    Unit   = (NL)? (NL oneLine)* => ()         ;// top-level loop ignores empty lines
 
-oneLine: String = expr { $expr.prettyPrint(); "" }  // a line is just an expression
+oneLine: String = expr { $expr.prettyPrint(); "" }  ;// a line is just an expression
 
 expr: Expr = atom
            | l: expr '+' r: expr => Bin("+", $l, $r)

@@ -1,0 +1,155 @@
+Terminals unused in grammar
+
+    INT
+    HEX
+    REAL
+    ID
+    STRING
+    ERROR
+
+
+Grammar
+
+    0 $accept: loop $end
+
+    1 loop: ε
+    2      | loop command NL
+
+    3 command: ListInt
+
+    4 ListInt: S_1
+
+    5 S_1_E: S_1_E `,` DEC
+    6      | DEC
+    7      | S_1_E `,`
+
+    8 S_1: S_1_E
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    `,` (258) 5 7
+    INT (259)
+    HEX (260)
+    DEC (261) 5 6
+    REAL (262)
+    ID (263)
+    STRING (264)
+    ERROR (265)
+    NL (266) 2
+
+
+Nonterminals, with rules where they appear
+
+    $accept (12)
+        on left: 0
+    loop (13)
+        on left: 1 2
+        on right: 0 2
+    command (14)
+        on left: 3
+        on right: 2
+    ListInt (15)
+        on left: 4
+        on right: 3
+    S_1_E (16)
+        on left: 5 6 7
+        on right: 5 7 8
+    S_1 (17)
+        on left: 8
+        on right: 4
+
+
+State 0
+
+    0 $accept: • loop $end
+
+    $default  reduce using rule 1 (loop)
+
+    loop  go to state 1
+
+
+State 1
+
+    0 $accept: loop • $end
+    2 loop: loop • command NL
+
+    $end   shift, and go to state 2
+    DEC  shift, and go to state 3
+
+    command  go to state 4
+    ListInt  go to state 5
+    S_1_E  go to state 6
+    S_1  go to state 7
+
+
+State 2
+
+    0 $accept: loop $end •
+
+    $default  accept
+
+
+State 3
+
+    6 S_1_E: DEC •
+
+    $default  reduce using rule 6 (S_1_E)
+
+
+State 4
+
+    2 loop: loop command • NL
+
+    NL  shift, and go to state 8
+
+
+State 5
+
+    3 command: ListInt •
+
+    $default  reduce using rule 3 (command)
+
+
+State 6
+
+    5 S_1_E: S_1_E • `,` DEC
+    7      | S_1_E • `,`
+    8 S_1: S_1_E •
+
+    `,`  shift, and go to state 9
+
+    $default  reduce using rule 8 (S_1)
+
+
+State 7
+
+    4 ListInt: S_1 •
+
+    $default  reduce using rule 4 (ListInt)
+
+
+State 8
+
+    2 loop: loop command NL •
+
+    $default  reduce using rule 2 (loop)
+
+
+State 9
+
+    5 S_1_E: S_1_E `,` • DEC
+    7      | S_1_E `,` •
+
+    DEC  shift, and go to state 10
+
+    $default  reduce using rule 7 (S_1_E)
+
+
+State 10
+
+    5 S_1_E: S_1_E `,` DEC •
+
+    $default  reduce using rule 5 (S_1_E)

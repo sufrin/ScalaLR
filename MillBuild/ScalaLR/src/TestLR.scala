@@ -56,6 +56,8 @@ class TestRUN(args: String="", definedPackage: String="")(testinput: String="")(
   val testMain  = definedPackage.replace(".", "")
   def testProgram: String =
     s"""
+      |//> using scala 2.13
+      |//> using jar ./Runtime/scalalrruntime.jar
       |import  ${definedPackage}._
       |import org.sufrin.scalalr.stage2.TestRunner
       |import org.sufrin.scalalr._
@@ -66,6 +68,7 @@ class TestRUN(args: String="", definedPackage: String="")(testinput: String="")(
       |}
       |""".stripMargin
   CodeGenerator.writeToFile(s"Testing/src/generated/$testMain.scala")(testProgram)
+  println(s"Use your IDE to run the program at Testing/src/generated/$testMain.scala")
 }
 
 

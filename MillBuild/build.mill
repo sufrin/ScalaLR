@@ -39,12 +39,23 @@ object Shared extends ComponentModule {
 }
 
 // this module defines classes that (in some sense) useful
-object Utility extends ComponentModule { }
+object Utility extends ComponentModule {
+   override def moduleDeps = Seq(SourceLocation)
+    def mvnDeps = Seq(
+                mvn"org.scala-lang:scala-reflect:${scalaVersion()}"
+        )
+}
+
+object SourceLocation extends ComponentModule {
+        def mvnDeps = Seq(
+                mvn"org.scala-lang:scala-reflect:${scalaVersion()}"
+        )
+}
 
 // this module depends on scalalr and its runtime
 // it defines runnable tests callable from IntelliJ
 object Testing extends ComponentModule {
-       override def moduleDeps = Seq(ScalaLR, Shared, Utility)
+       override def moduleDeps = Seq(ScalaLR, Shared, Utility, SourceLocation)
 }
 
 //////////////////////////////////////////////

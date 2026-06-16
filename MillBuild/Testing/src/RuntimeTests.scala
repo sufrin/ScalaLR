@@ -13,30 +13,24 @@ object  lists extends TestRUN("-Lsyn -Lsym -html", "lists.Lists")(
 %notation  Lists
 %package   lists.Lists
 %path      "lists"
-%signature "trivial grammar of lists"
-%token INT(Int)
+
+%token     LONG(Long) NL
 
 %include {
-  import org.sufrin.scalalr.{SourceLocation,ScannerBuilder,Scanner}
+  import org.sufrin.scalalr.{Scanner,ScannerAdapter}
   import org.sufrin.utility.SourceTextCursor
 
-  def apply(chars: SourceTextCursor): Scanner[Token] = new ScannerBuilder[Token](chars) {
-       def mkString(openQuote: String, closeQuote: String, body: Seq[Char]): Token = STRING(body.mkString)
-       def mkHex(source: Seq[Char]):   Token = HEX(source.mkString)
-       def mkDec(source: Seq[Char]):   Token = DEC(source.mkString)
-       def mkReal(source: Seq[Char]):  Token = REAL(source.mkString)
-       def mkID(source: Seq[Char]):    Token = ID(source.mkString)
-       def mkERROR(source: Seq[Char]): Token = ERROR(source.mkString)
-       val ENDSTREAM: Token = $end
-       val NEWLINE:   Option[Token] = Some(NL)
-       def flush(): Unit = {
-           while (chars.hasCurrent && chars.current != '\n') chars.next()
-           print(chars.prompt); System.out.flush()
-       }
+  def apply(chars: SourceTextCursor): Scanner[Token] = new ScannerAdapter[Token](chars) {
+       val self = lists.Lists.Scanner
+       val ENDSTREAM: Token                  = self.$end
+       val UNDEF: Token                      = self.UNDEF
+       val symbolToken                       = self.symbolToken
+       override def LONG(value: Long): Token = self.LONG(value)
+       override val NEWLINE                  = Some(self.NL)
   } withSymbolTokens(symbolToken)
 }
 
-%token HEX(String) DEC(String) REAL(String) ID(String) STRING(String) ERROR(String) NL
+%token LONG(Long) NL
 
 %rules
 
@@ -45,60 +39,135 @@ object  lists extends TestRUN("-Lsyn -Lsym -html", "lists.Lists")(
  import lists.Lists._
 }
 
-loop: Unit =
-          %empty          { () }
-        | loop command NL { () }
+topLevel:  Unit = ListOfLists => println($ListOfLists)
 
-command: Unit = ListInt => println($ListInt)
+ListOfLists: List[List[Long]] = list: (NL List) ... => $list
 
-ListInt: List[Int] = list: (',' DEC) ... => List($list)
+List:  List[Long]             = list: (',' LONG) ... => $list
 
 """)
 
-object  ttylists extends TestRUN("-Lsyn -Lsym -html", "lists.Lists")()(
+/**
+ *  This tests demonstrates top-level loops with
+ *  shortcut-result transmission to the top level
+ *  running parser.
+ *
+ *  Comparing it with interactive.Lists you will find
+ *  that (1) it no longer has the problem of having to
+ *  do a system exit (program closedown) within the parser;
+ *  and (2) the type of the production `aLine` is
+ *  `Interactive.Continuation`, and such continuations
+ *  take effect when productions yield their result.
+ */
+object  shortcutLists extends TestRUN("-Lsyn -Lsym -html", "shortcut.Lists")()(
   """
 %notation  Lists
-%package   lists.Lists
-%path      "lists"
-%signature "trivial grammar of lists"
-%token INT(Int)
+%package   shortcut.Lists
+%path      "shortcut"
+
+%token     LONG(Long) NL
 
 %include {
-  import org.sufrin.scalalr.{SourceLocation,ScannerBuilder,Scanner}
-  import org.sufrin.utility.SourceTextCursor
+  import org.sufrin.scalalr._
+  import org.sufrin.utility._
 
-  def apply(chars: SourceTextCursor): Scanner[Token] = new ScannerBuilder[Token](chars) {
-       def mkString(openQuote: String, closeQuote: String, body: Seq[Char]): Token = STRING(body.mkString)
-       def mkHex(source: Seq[Char]):   Token = HEX(source.mkString)
-       def mkDec(source: Seq[Char]):   Token = DEC(source.mkString)
-       def mkReal(source: Seq[Char]):  Token = REAL(source.mkString)
-       def mkID(source: Seq[Char]):    Token = ID(source.mkString)
-       def mkERROR(source: Seq[Char]): Token = ERROR(source.mkString)
-       val ENDSTREAM: Token = $end
-       val NEWLINE:   Option[Token] = Some(NL)
-       def flush(): Unit = {
-           while (chars.hasCurrent && chars.current != '\n') chars.next()
-           print(chars.prompt); System.out.flush()
-       }
-  } withSymbolTokens(symbolToken)
+  lazy val self = this
+
+  def apply(chars: SourceTextCursor): Scanner[Token] = new ScannerAdapter[Token](chars) {
+
+       val ENDSTREAM: Token                  = self.$end
+       val UNDEF: Token                      = self.UNDEF
+       val symbolToken                       = self.symbolToken
+       override def LONG(value: Long): Token     = self.LONG(value)
+       override def DOUBLE(value: Double): Token = self.LONG(value.toLong)
+       override val NEWLINE                      = Some(self.NL)
+  }    withSymbolTokens(symbolToken)
+
+
 }
 
-%token HEX(String) DEC(String) REAL(String) ID(String) STRING(String) ERROR(String) NL
+%token LONG(Long) NL
 
 %rules
 
 %include {
  import org.sufrin.scalalr.SourceLocation
- import lists.Lists._
+ import shortcut.Lists._
+ import org.sufrin.scalalr.Interactive._
 }
 
-loop: Unit = (NL)? (NL command)* => ()
 
-command: String = ListInt { println($ListInt); "" }
+loop:   Unit        = (NL)? (NL aLine)... => ()
 
-ListInt: List[Int] = list: (',' DEC) ... => List($list)
+aLine:  Continuation  = theList: aList { println($theList); Continue }
+                      | "."            { Accept("Finished") }
+
+aList:  List[Long] = theList: (',' LONG)+ => $theList
 
 """)
+
+/**
+ *  This test demonstrates top-level loops of
+ *  the kind that are useful in read-eval-print settings.
+ *
+ *  Comparing it with shortcut.Lists you will find
+ *  that (1) it has the problem of having to
+ *  do a system exit (program closedown) within the parser;
+ *  and (2) the type of the production `aLine` is
+ *  more or less arbitrarily constructed to be a type
+ *  that has only a single inhabitant.
+ *
+ *  TODO: Unit is also such a type (inhabitant is {}), and would be more elegant to use here, but
+ *  at present (June 2026) the ScalaLR code generator uses that for something else.
+ */
+object  interactiveLists extends TestRUN("-Lsyn -Lsym -html", "interactive.Lists")()(
+  """
+%notation  Lists
+%package   interactive.Lists
+%path      "interactive"
+
+%token     LONG(Long) NL
+
+%include {
+  import org.sufrin.scalalr._
+  import org.sufrin.utility._
+
+  lazy val self = this
+
+  def apply(chars: SourceTextCursor): Scanner[Token] = new ScannerAdapter[Token](chars) {
+
+       val ENDSTREAM: Token                  = self.$end
+       val UNDEF: Token                      = self.UNDEF
+       val symbolToken                       = self.symbolToken
+       override def LONG(value: Long): Token     = self.LONG(value)
+       override def DOUBLE(value: Double): Token = self.LONG(value.toLong)
+       override val NEWLINE                      = Some(self.NL)
+  }    withSymbolTokens(symbolToken)
+
+
+}
+
+%token LONG(Long) NL
+
+%rules
+
+%include {
+ import org.sufrin.scalalr.SourceLocation
+ import interactive.Lists._
+ trait NONE
+ case object NONE extends NONE
+}
+
+
+loop : NONE    = (NL)? (NL aLine)... => NONE
+
+aLine: NONE    = theList: aList { println($theList); NONE }
+               | "."            { println("Finished"); System.exit(0); NONE }
+
+aList:  List[Long] = theList: (',' LONG)+ => $theList
+
+""")
+
 
 object expression extends TestRUN("-Lsyn -Lsym -html", "expr.Expression")()(
 """
@@ -117,7 +186,7 @@ object expression extends TestRUN("-Lsyn -Lsym -html", "expr.Expression")()(
        def mkDec(source: Seq[Char]):   Token = DEC(source.mkString)
        def mkReal(source: Seq[Char]):  Token = REAL(source.mkString)
        def mkID(source: Seq[Char]):    Token = ID(source.mkString)
-       def mkERROR(source: Seq[Char]): Token = ERROR(source.mkString)
+       def mkERROR(source: Seq[Char]): Token = { System.err.println(source.mkString); throw new Throwable(source.mkString) }
        val ENDSTREAM: Token = $end
        val NEWLINE:   Option[Token] = Some(NL)
        def flush(): Unit = {
@@ -127,10 +196,9 @@ object expression extends TestRUN("-Lsyn -Lsym -html", "expr.Expression")()(
   } withSymbolTokens(symbolToken)
 }
 
-%token HEX(String) DEC(String) REAL(String) ID(String) STRING(String) ERROR(String) NL
+%token HEX(String) DEC(String) REAL(String) ID(String) STRING(String) NL
 %left '+' '-'
 %left '*' '/'
-
 
 %rules
 

@@ -53,22 +53,32 @@ class TestRUN(args: String="", definedPackage: String="")(testinput: String="")(
   val effectiveArgs = List("--output=Testing/src/generated")++args.split(' ').toList ++ List("-#", (loc.line).toString, "-##", (loc.offset).toString, "-s", notationsource)
   Generator.main(effectiveArgs.toArray)
   val testInput =  if (testinput.isEmpty) "java.nio.file.Path.of(\"/dev/tty\")" else s"\"\"\"$testinput\"\"\""
-  val testMain  = definedPackage.replace(".", "")
+  val testMain  = definedPackage.replace(".", "-")
+  val testPath  = definedPackage.split('.')(0)
   def testProgram: String =
     s"""
       |//> using scala 2.13
-      |//> using jar ./Runtime/scalalrruntime.jar
-      |import  ${definedPackage}._
+      |//> using jar ROOT/ScalaLR/bin/scalalr.jar
+      |//> using jar ROOT/Runtime/scalalrlibrary.jar
+      |package ${definedPackage}
+      |package runner
       |import org.sufrin.scalalr.stage2.TestRunner
       |import org.sufrin.scalalr._
       |import org.sufrin.utility.SourceTextCursor
-      |object $testMain extends TestRunner [Scanner.Token] {
+      |object runner extends TestRunner [Scanner.Token] {
       |  val    components:  LRParserComponents = Components
       |  val    scanner:     Scanner[Scanner.Token] = Scanner(SourceTextCursor($testInput))
       |}
       |""".stripMargin
-  CodeGenerator.writeToFile(s"Testing/src/generated/$testMain.scala")(testProgram)
-  println(s"Use your IDE to run the program at Testing/src/generated/$testMain.scala")
+  def testCommand: String =
+    s"""cd Testing/src/generated/
+       |ln -sF ~/GitHomes/ScalaLR/MillBuild ROOT
+       |scala-cli $testMain-runner.scala $testPath
+       |""".stripMargin
+
+  CodeGenerator.writeToFile(s"Testing/src/generated/$testMain-runner.scala")(testProgram)
+  CodeGenerator.writeToFile(s"Testing/src/generated/$testMain-runner.sh")(testCommand)
+  println(s"Use your IDE to run the program at Testing/src/generated/$testMain-runner.scala")
 }
 
 

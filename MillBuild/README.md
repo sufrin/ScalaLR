@@ -1,9 +1,14 @@
 # ScalaLR
 
 **ScalaLR** is a straightforward LR(1)-parser generator for Scala that
-translates its own host notation (a description of a target notation) to the 
-essential components of a bottom-up (LR(1), LALR(1), IELR(1)) parser for the 
-target notation expressed in Scala. 
+translates its source notation (a description of a target notation) to the 
+essential components of a bottom-up (LR(1), LALR(1), IELR(1)) parser in Scala for the 
+target notation. 
+
+* Suitable for use in implementing a DSL, a language implementation, or for
+experiments with interactive proof or program development environment. 
+* A *serious* alternative to parser-combinator DSLs. 
+* Self-hosting: the parser for its own input notation is a ScalaLR parser.
 
 Its accompanying library provides implementations both of `Pull` and of `Push` 
 parsing automata that are used (with the parsing tables it generates)
@@ -11,53 +16,24 @@ to implement the target language parser. The former is designed for conventional
 "parse-to-completion" situations, the latter supports the engineering of incremental parsers 
 whose state and intermediate results can be inspected "in flight".
 
+### Why ScalaLR
+
+* Semantic actions/results of productions are expressed in Scala
+* Bison-quality grammar analysis without leaving Scala
+* Code generation is Scala-specific
+* Runtime is table-driven
+* Lexical scanner is user-supplied, with good support, in common cases, for "say it once" 
+derivation of  scanners from notation descriptions.
+
 At present the generated components are compatible
 with `scala2.13.18,` and the assets were all compiled 
 with the same version.
 
-## Getting started (users)
-The assets described below are provided in
-
-         MillBuild/Assets
-
-The current [June 2026] version of the tool is packaged in a 
-universally executable jar[*], and can be run by
-
-         scalalr [arguments]
-
-The runtime library needed  on the classpath when compiling
-or running the generated components of a parser is
-
-         scalalrruntime.jar
-
-
-### Requirement
-`Bison (GNU Bison) 3.8.2` (or a later consistent version) must be accessible
-on the current path. Bison is used to do the grammar calculations necessary to generate 
-parse-tables in Scala, and textual and html grammar reports.
-
-**[*] Universally executable jars** are regular java jar files prefixed with all that
-is needed to run them directly on Linux or OS/X machines. For the moment running
-on a Windows machine (pobably) requires
-
-         java -jar scalalr [arguments]
-
-All forms of invocation require the presence of a java implementation.
-
-### Workflow
-I think Scalalr is best utilised alongside `mill` and `IntelliJ`. The files `build.mill` with `ScalaLRModule.mill`
-is a reasonable model for a multi-module program that uses a `.scalalr` notation description. 
-
-I have found it convenient to outline a module structure in `mill.build` (without necessarily importing
-code into IntelliJ), then to generate the necessary `IntelliJ` (build-server protocol) files with
-
-   mill --bsp-install
-
-
-## Host notation
-The host notation for grammar productions and priorities is reminiscent of
+## ScalaLR notation
+The ScalaLR notation for grammar productions is reminiscent of
 Bison's notation; but there are important overall differences from Bison, as exemplified by
-the following fragment. We will document these in detail in due course.
+the following fragment. We will document these in detail in due course, and examples abound
+in the distribution.
 ````
 %notation  Expr                                             // §0
 %package   expr.Expr                                        // §0
@@ -81,9 +57,9 @@ the following fragment. We will document these in detail in due course.
 
 ````
 0. All notations have a name, and Scala code is generated with a package
-prefix that (by convention) ends in that name. The target notation parse 
-tables used are generated  as (canonical) *LR* tables, as *LALR* tables,
-or as *IELR* tables. 
+   prefix that (by convention) ends in that name. The target notation parse
+   tables used are generated  as (canonical) *LR* tables, as *LALR* tables,
+   or as *IELR* tables.
 
 1. Tokens (terminal symbols) *must* be specified. Each that carries an irredundant value
    must have the type of that value specified.
@@ -138,7 +114,7 @@ expr: Expr = ID                  { Id($ID, $START) }                    // §4,
    in a `%token` section.
 
 6. %rules are (these days) separated by visible vertical space, or by semicolons followed by
-any amount of empty space.
+   any amount of empty space.
 
 The generated target language code can easily be incorporated into a production Scala
 program. Here's a test of the earlier example that uses the `Pull` automaton.
@@ -164,9 +140,57 @@ object runexpr {
 
 ```
 
-Documentation is evolving but for the moment it should be sufficient for a knowledgeable 
+Documentation is evolving but for the moment it should be sufficient for a knowledgeable
 reader to inspect the source texts of the notation specifications and driver programs
 to be found within directories nested within `examples`.
+## Getting started (users)
+
+1. Acquire the most recent GitHub release
+2. The directories `Assets` and `MillBuild` are for potential users and developers respectively;
+and the `Examples` directory provides worked examples of small-to-medium scale parsers
+specified by ScalaLR.
+3. **Bison (GNU Bison) 3.8.2** (or a later consistent version) **must be accessible**
+on the current path. Bison is used to do the grammar calculations necessary to generate
+parse-tables in Scala, and to produce textual and html grammar reports.
+
+   
+4. The current [June 2026] version of the tool is packaged in a 
+universally executable jar, and can be run by
+
+         Assets/scalalr [arguments]
+
+5. The runtime library needed  on the classpath when compiling
+or running the generated components of a parser is
+
+         Assets/scalalrruntime.jar
+
+### Development Workflow 
+I think Scalalr is best utilised alongside `mill` and `IntelliJ`. The files `build.mill` with `ScalaLRModule.mill`
+is a reasonable model for a multi-module program that uses a `.scalalr` notation description. 
+
+I have found it convenient to outline a module structure in `mill.build` (without necessarily importing
+code into IntelliJ), then to generate the necessary `IntelliJ` (build-server protocol) files with
+
+         mill --bsp-install
+
+The files `MillBuild/build.mill` together with `MillBuild/ScalalrModule.mill` 
+provides a reasonable model for a multi-module project. The file 
+`Examples/build.mill` is a simple model for a project that builds two
+programs.
+
+#### If you find IntelliJ recalcitrant after you change module structure in your project
+
+1. Flush the IntelliJ cache **[File/Invalidate caches ...**
+2. Close the project in IntelliJ
+3. Delete the `.bsp/` and `.idea/` directories
+4. mill --bsp-install
+5. Reopen the IntelliJ project
+
+It is as well to think of the Mill build as the source of truth, and
+IntelliJ as a convenience: don't change code in IntelliJ if the
+Mill build works.
+
+
 
 ### Alternative Result Notation [June 2026]
 The result of each production can also be specified in a more rigorously 

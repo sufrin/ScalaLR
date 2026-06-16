@@ -10,6 +10,7 @@ import org.sufrin.utility.SourceTextCursor
 trait Scanner[Token]  extends Iterator[Token] {
   def sourceLocation(): SourceLocation
   def prompt(): Unit
+  def defineSymbolTokens(symbolToken: Map[String, Token]): Unit
 }
 
 /**
@@ -20,7 +21,6 @@ abstract class ScannerBuilder[Token <: Lexeme](chars: SourceTextCursor) extends 
   import org.sufrin.utility.CharSequenceMap
 
   import scala.collection.mutable
-
   /** Token from a "quoted" text, after processing any "escape" sequences in `body` */
   def mkString(openQuote: String, closeQuote: String, body: Seq[Char]): Token
   /** Token from a text of the form `0x[hexit]+` */
@@ -45,6 +45,11 @@ abstract class ScannerBuilder[Token <: Lexeme](chars: SourceTextCursor) extends 
 
   /** Mapping from (alphabetic) names to the tokens they denote */
   val symbolMap: collection.mutable.Map[String,Token] = new mutable.LinkedHashMap[String,Token]
+
+  def defineSymbolTokens(symbolToken: Map[String, Token]): Unit = {
+    withSymbolTokens(symbolToken);
+    ()
+  }
 
   /** Initialize the token and symbol mappings using the mapping supplied by `ScalaLR` .
    *  All symbols that will be seen as Letter LetterOrDigit* go into the symbol map.

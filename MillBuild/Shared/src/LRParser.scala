@@ -36,11 +36,12 @@ case class ErroneousGoto(state: Int, symbol: Int) extends Throwable
  */
 
 object LRParser {
-
   type State = Int
   type Terminal = Int
   type NonTerminal = Int
   type Symbol = Int
+
+
 
   import Action._
 
@@ -223,6 +224,11 @@ object LRParser {
             values.push(result)
             states.push(goto(currentState)(lhsSymbol))
             locations.push(left)
+            // Cheat by reducing to an ACCEPTED or ERRONEOUS state
+            result match {
+              case _: ACCEPTED |  _: ERRONEOUS => parseState = result.asInstanceOf[ParseState]
+              case _ =>
+            }
         }
       }
       parseState
@@ -355,4 +361,26 @@ object LRParser {
       parseState
     }
   }
+}
+
+/**
+ * Supports short-cut termination or continuation of a parse, and should be used
+ * with great discretion. At some point we may use it to support communication
+ * with the parsing infrastructure (for example to change the mode of operation of
+ * a lexical scanner)
+ *
+ * A production that returns an `Interaction.Continuation` result is signalling one
+ * of three outcomes:
+ * {{{
+ *   Accept(aValue) -- terminate the parse successfully now, yielding `aValue`
+ *   Error(aString) -- terminate the parse erroneously now, yielding `aString`
+ *   Continue -- continue the parse
+ * }}}
+ */
+object Interactive {
+  import LRParser.{ACCEPTED, ERRONEOUS, ParseState, RUNNING}
+  type Continuation = ParseState
+  def  Accept(value: Any):     Continuation = ACCEPTED(value)
+  def  Error(culprit: String): Continuation = ERRONEOUS(culprit)
+  val  Continue:               Continuation = RUNNING
 }

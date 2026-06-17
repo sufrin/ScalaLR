@@ -11,6 +11,7 @@ trait Scanner[Token]  extends Iterator[Token] {
   def sourceLocation(): SourceLocation
   def prompt(): Unit
   def defineSymbolTokens(symbolToken: Map[String, Token]): Unit
+  def withSymbolTokens(symbolToken: Map[String, Token]): this.type
 }
 
 /**

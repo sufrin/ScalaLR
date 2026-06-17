@@ -86,17 +86,19 @@
 
 }
 
-//command: Unit = Notation { translate($Notation) }
-
+/*
+    The prefix that comes before the rules section is specified as a
+    (left-recursive) fold. Starting with the default `Notation()` the
+    fold overlays properties of the notation:
+    they can appear in any order.
+*/
 Notation: Notation =
     Prefix
     `%rules`
     INCLUDE
     Rules
     OPTSEPARATOR
-    { $Prefix.copy(theRules = $Rules.reverse, theRulesInclude = $INCLUDE) }
-
-// A left fold that accumulates incremental changes to the initial default notation AST
+    { $Prefix.copy(theRules = $Rules.reverse, theRulesInclude = $INCLUDE) };
 
 Prefix: Notation =   %empty                                      => Notation()
                       | p: Prefix `%notation` ID                 { $p.copy(theName=$ID.toString) }
@@ -149,19 +151,11 @@ Production: Production = Fields Action Precedence { Production($Fields, $Action,
 Fields:List[NamedField] = `%empty` { Nil }
                         | fields: (NamedField)+ { $fields }
 
-/*
-Fields:(List[NamedField]) =
-    | NamedField             { List($NamedField) }
-    | NamedField Fields { $NamedField :: $Fields }
-*/
-
-// fields: (NamedField)+ { $fields }
 
 NamedField: NamedField = FIELD                               { NamedField(theFieldName = None, theField = $FIELD, $START) }
                        | theFieldName: ID ':' theName: FIELD { NamedField(theFieldName = Some($theFieldName.warnQuoted), $theName, $START) }
 
-// NB: Normalization.syntheticRuleName yields the name of a new rule, and appends to synthesisedRules,
-//     definitions of the one or more rules needed by its right hand side.
+
 FIELD: Name =   ID                       { $ID }
             | STRING                     { $STRING }
             |   '(' Fields ')'  REPEAT   { syntheticRuleName($Fields, $REPEAT, $START, $END) }
@@ -188,8 +182,9 @@ Action:(Option[Expression]) = %empty     { None }
                             | CODE       { Some(CodeExpression($CODE)) }
                             | '=>' Scala { Some(ScalaExpression($Scala, $START)) }
 
-// MicroScala notation (for actions)
-
+//
+// microScala expression language
+//
 Scala: Scala = ScalaAtom
              | fun: ScalaID '(' args: Scalas ')'   { Apply($fun, $args) }
              | obj: ScalaID '.' feature: ScalaID  '(' args: Scalas ')'   { MethodApply($obj, $feature, $args) }

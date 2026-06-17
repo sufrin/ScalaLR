@@ -64,8 +64,14 @@ object SourceTextCursor {
 
   def apply(iterable: Iterable[Char]): SourceTextCursor = new SourceTextCursor(iterable.iterator)
 
-  def apply(path: Path): SourceTextCursor =
-    if (path.toString=="/dev/tty") {
+  def apply(path: Path): SourceTextCursor = {
+    if (path.toString == "/dev/tty")
+       console
+    else
+       new SourceTextCursor(Files.readString(path).iterator)
+  }
+
+    def console: SourceTextCursor = {
       val reader = Option(System.console()) match {
         case Some(console) => console.reader()
         case None => new java.io.InputStreamReader(System.in)
@@ -80,8 +86,7 @@ object SourceTextCursor {
         }
       }
       new SourceTextCursor(it).withPrompt("> ")
-    }
-    else new SourceTextCursor(Files.readString(path).iterator)
+  }
 }
 
 /*

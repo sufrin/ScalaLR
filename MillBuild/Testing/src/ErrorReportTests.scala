@@ -89,6 +89,15 @@ object ErrConflict extends TestLR("-Lsyn -Lsym -html -c")("""
                                 B = a;
 """)
 
+object SloshErr extends TestLR("-Lsyn -Lsym -html -c")("""
+                                %token a b `\/`
+                                %rules
+                                S = A `\/` B
+
+                                A = a;
+                                B = a;
+""")
+
 
 object DanglingElseLR extends TestLR("-c -html")(
 """  %path  "danglingelselr"

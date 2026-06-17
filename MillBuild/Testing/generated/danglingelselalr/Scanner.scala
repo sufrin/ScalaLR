@@ -17,16 +17,16 @@ val symbolName: collection.immutable.Map[Int, String] = {
      import org.sufrin.utility.ArrayMap
     val arr = new Array[String](10)
          locally {
-          arr(0) = "$end"
-          arr(1) = "error"
-          arr(2) = "UNDEF"
-          arr(3) = "IF"
-          arr(4) = "THEN"
-          arr(5) = "ELSE"
-          arr(6) = "ID"
-          arr(7) = "`+`"
-          arr(8) = "$accept"
-          arr(9) = "expr"
+          arr(0) = """$end"""
+          arr(1) = """error"""
+          arr(2) = """UNDEF"""
+          arr(3) = """IF"""
+          arr(4) = """THEN"""
+          arr(5) = """ELSE"""
+          arr(6) = """ID"""
+          arr(7) = """`+`"""
+          arr(8) = """$accept"""
+          arr(9) = """expr"""
          } // locally
          ArrayMap(arr)
      }
@@ -34,6 +34,6 @@ val symbolName: collection.immutable.Map[Int, String] = {
 
 // MAP QUOTED SYMBOL NAMES TO TOKENS 
 val symbolToken: collection.immutable.Map[String, Token] =  collection.immutable.ListMap(
-    "+" -> `+`,
+    """+""" -> `+`,
     ""->$end)
 }

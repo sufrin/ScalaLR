@@ -13,9 +13,14 @@ import mill.*, scalalib.*
 trait ComponentModule extends ScalaModule {
   def scalaVersion   = "2.13.18"
   def scalalrVersion = "1.0.0"
+  override def scalacOptions = Seq(
+    "-deprecation",
+    "-feature",
+    "-unchecked"
+  )
 }
 
-object ScalaLR extends ScalalrModule {
+object ScalaLR extends ScalalrModule with ComponentModule  {
   override
   def scalaVersion  = "2.13.18"
   def notation      = "stage3-notation.scalalr"

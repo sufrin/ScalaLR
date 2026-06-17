@@ -42,7 +42,7 @@ class ScannerGenerator(notation: Notation, symbolTables: SymbolTables) extends S
   out("     import org.sufrin.utility.ArrayMap")
   out(s"    val arr = new Array[String](${nameToNumber.size})")
   out("         locally {")
-  for { (name, number) <- nameToNumber }  out(s"          arr($number) = \"$name\"")
+  for { (name, number) <- nameToNumber }  out(s"          arr($number) = \"\"\"$name\"\"\"")
   out("         } // locally")
   out("         ArrayMap(arr)")
   out("     }")
@@ -50,7 +50,7 @@ class ScannerGenerator(notation: Notation, symbolTables: SymbolTables) extends S
 
   out("// MAP QUOTED SYMBOL NAMES TO TOKENS ")
   out(s"val symbolToken: collection.immutable.Map[String, Token] =  collection.immutable.ListMap(")
-  for { name <- symbolTables.declaredTerminalNames if name.isQuoted }  out(s"    \"${name.unQuoted}\" -> $name,")
+  for { name <- symbolTables.declaredTerminalNames if name.isQuoted }  out(s"    \"\"\"${name.unQuoted}\"\"\" -> ${name.forScala},")
   out("""    ""->$end)""")
 
 

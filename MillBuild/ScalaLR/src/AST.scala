@@ -100,7 +100,7 @@ object AST {
   case class Name(unQuoted: String, isQuoted: Boolean, location: SourceLocation = SourceLocation(-1, -1)) {
     override val toString: String = if (isQuoted) s"`$unQuoted`" else unQuoted
     lazy val toFullString: String = s"$toString@${location.line}.${location.col}"
-    val forScala: String = toString
+    val forScala: String = toString.replace("\\","\\\\")
     def asPath: String = unQuoted.replace('/', '.').replace('.', '/')
     def warnQuoted: Name = {
       if (isQuoted) println(s"WARNING: Quoted symbol $this at ${location.line}.${location.col} where a plain name is required")

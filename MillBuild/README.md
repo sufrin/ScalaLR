@@ -29,7 +29,7 @@ At present the generated components are compatible
 with `scala2.13.18,` and the assets were all compiled 
 with the same version.
 
-## ScalaLR notation
+## An Annotated Example
 The ScalaLR notation for grammar productions is reminiscent of
 Bison's notation; but there are important overall differences from Bison, as exemplified by
 the following fragment. We will document these in detail in due course, and examples abound
@@ -40,20 +40,22 @@ in the distribution.
 %tables    lalr                                             // §0
 
 %include {
-   // Scala source to be included in a generated 
-   // file that supports or implements a lexer
+   // Scala source here is included in the generated object expr.Expr.Scanner 
+   // It can, but needn't, implement a lexical scanner class
+   // Here we call the class Lexer
    import org.sufrin.utility.SourceTextCursor
    import org.sufrin.scalalr.SourceLocation
 
-    def Scanner(chars: SourceTextCursor): Scanner = new Scanner(chars)
+    def lexer(chars: SourceTextCursor): Lexer = new Lexer(chars)
 
-    class Scanner(chars: SourceTextCursor) extends Iterator[Token] { ... }
+    class Lexer(chars: SourceTextCursor) extends Iterator[Token] { ... }
 
 }
 
-%token ID(String) `(` `)` `[` `]` `;` LEXICALERROR(String)  // §1
-%left `+`                                                   // §2
-%left `*`                                                   // §2
+%token ID(String) Num(Long) `(` `)` `[` `]` `;`                       // §1
+%left `+`  `-`                                              // §2
+%left `*`  `/`                                              // §2
+%right `**`
 
 ````
 0. All notations have a name, and Scala code is generated with a package
@@ -62,7 +64,7 @@ in the distribution.
    or as *IELR* tables.
 
 1. Tokens (terminal symbols) *must* be specified. Each that carries an irredundant value
-   must have the type of that value specified.
+   must have the type of that value specified. The rest are considered "punctuation".
 
 2. Shift-reduce conflicts can be resolved by specifying the
    associativity and precedence of (terminal) symbols, as in Bison.
@@ -71,73 +73,97 @@ in the distribution.
 
 %include {
  import org.sufrin.scalalr.SourceLocation
- // Scala source to be included in a generated file 
- // that imports or implements the abstract syntax
- // (or other values) specified as production values
+ // Scala source here is included in the generated object expr.Expr.Reduction
+ // that defines the result value for each production.
+ // It must import or implement the abstract syntax of the language.
+ // Here we do the latter
  
  trait Expr { val loc: SourceLocation }                                 // §4
  case class Id(s: String, loc: SourceLocation) extends Expr
+ case class Num(long: Long, loc: SourceLocation) extends Expr
  case class Binop(op: String, l: Expr, r: Expr, loc: SourceLocation) extends Expr
  case class Bra(expr: Expr, loc: SourceLocation)extends Expr
+
 }
 ````
 
 ````
-exprs: (List[Expr]) = expr            { List($expr) }                   // §3, §4
-                  |   exprs `;` expr  { $expr::$exprs }                 // §4
+exprs: List[Expr] = expr             { List($expr) }                   // §3, §4
+                  | exprs `;` expr   { $expr::$exprs }                 // §4
                   
 
-expr: Expr = ID                  { Id($ID, $START) }                    // §4, 
+expr: Expr = ID                  { Id($ID, $START) }                   // §4
+           | NUM                 { Num($ID, $START) } 
+           | l:expr `**` r:expr  { Binop("power", $l, $r, $START) }
            | l:expr `*` r:expr   { Binop("*", $l, $r, $START) }
+           | l:expr `/` r:expr   { Binop("/", $l, $r, $START) }
            | l:expr `+` r:expr   { Binop("+", $l, $r, $START) }
-           | "(" expr ")"        { Bra($expr, $START) }                 //§5
+           | l:expr `-` r:expr   { Binop("-", $l, $r, $START) }
+           | "(" expr ")"        { Bra($expr, $START) }                //§5
            | `[` expr `]`        { $expr }
            
 ````
 
-3. Nonterminal symbols have types specified explicitly on the left hand side of
-   their definition.
+3. Nonterminal symbols have Scala types specified explicitly on the left hand side of
+   their definition. 
 
-4. The abstract syntax node (or other value) represented by each production is specified as a Scala block
-   expression at its end *whose Scala syntax is left unchecked until Scala compilation*. Such expressions may refer to
-   the values of symbols (terminal or nonterminal) that appear in the production,
-   by `$label` (for a symbol labelled in the production by prefixing it with `label:`),
-   or by `$symbol` when that `symbol` appears unlabelled and uniquely.
-   They  may also refer to the start and end source location of the
-   text matched by the production using `$START` and `$END.` We often refer
-   to such expressions as *result expressions*, and in general the  result of
-   each production defining a nonterminal should have a type conformant with
+4. The abstract syntax (or other value) that results from each production is 
+   specified as a Scala **result expression**.
+
+   i. Result expressions usually refer to the result values generated by 
+   (terminal or nonterminal) symbols that appear in the production.
+
+   ii. If a symbol `S` appears prefixed by `label: ` in the production, its value
+   **must** be referred to as `$label.`
+
+   iii. If `S` appears **once only, and unlabelled** in the production, its value
+   **must** be referred to as `$S.`.
+
+   iv. Expressions may also refer to the start and end source location of the
+   text matched by the production using `$START` and `$END.`
+   
+   v. The Scala syntax and type of result expressions
+   is **unchecked until Scala compilation**. 
+
+   vi. The result of each production defining a nonterminal **must** have a type conformant with
    the declared type of that nonterminal.
+
+   vii. The "result" type of a terminal symbol is specified in its %token declaration, 
+   and the lexical scanner is expected to provide an appropriate value for such symbols
+   when they are declared with a type. Other terminal symbols are just treated as 
+   punctuation.
 
 5. Tokens enclosed in single quotes, double quotes
    or backticks are treated identically during code generation: they need not be declared
    in a `%token` section.
 
-6. %rules are (these days) separated by visible vertical space, or by semicolons followed by
+6. %rules are separated by visible vertical space, or by semicolons followed by
    any amount of empty space.
 
 The generated target language code can easily be incorporated into a production Scala
-program. Here's a test of the earlier example that uses the `Pull` automaton.
+program. Here's a test of the earlier example that uses the `Pull` automaton and the
+parser components generated by ScalaLR, together with a lexical scanner 
+built by specialising `SimpleScanner` appropriately
+
 ```scala
-object runexpr {
+   object readMeExample {
+      import expr.Expr.Components
+      import expr.Expr.Scanner._
+      import org.sufrin.utility.PrettyPrint._
+      import org.sufrin.utility._
 
-  import expr.Expr.Components
-  import expr.Expr.Scanner._
+      class LexicalScanner(source: SourceTextCursor) extends SimpleScanner[Token](source) {
+         override val NAME       = expr.Expr.Scanner.ID
+         override val ENDSTREAM  = $end
+         locally { defineSymbolTokens(expr.Expr.Scanner.symbolToken) }
+      }
 
-  import org.sufrin.utility.PrettyPrint._
-  import org.sufrin.utility._
-
-  def main(args: Array[String]): Unit = {
-    val source = """a; a+b; a*b+c*d*(e+f)*[g+h]; p+q*r"""
-    val scanner = Scanner(SourceTextCursor(source))
-
-    def next(): Token = if (scanner.hasNext) scanner.next() else $end
-
-    val parser = LRParser.Pull[Token](Components)(scanner.sourceLocation)
-    parser.run(next).prettyPrint()
-  }
-}
-
+      def main(args: Array[String]): Unit = {
+         val scanner = new LexicalScanner(SourceTextCursor("a*b + c*d; a+b * c+d"))
+         val parser  = LRParser.Pull[Token](Components)(scanner.sourceLocation)
+         parser.run(scanner.next).prettyPrint()
+      }
+   }
 ```
 
 Documentation is evolving but for the moment it should be sufficient for a knowledgeable
@@ -192,7 +218,7 @@ Mill build works.
 
 
 
-### Alternative Result Notation [June 2026]
+## Alternative Result Notation [June 2026]
 The result of each production can also be specified in a more rigorously 
 checked subset of the Scala expression notation. To do this replace the 
 code-bracketed
@@ -203,23 +229,30 @@ with
 
       => result expression in Scala
 
-**NB:** there must be no { } brackets in the result expression. If you feel
-the need to have declarations, etc in the result expression then don't use
-the `=>` form.
 
-The example above can be rewritten this way
+The result expression must be written in the defined subset of the
+Scala expression language described later; and references to the values of symbols
+are also checked
+
+#### Example
+The rules section of the example above could be rewritten in this notation:
 ````
 exprs: (List[Expr]) = expr            => List($expr)                    // §3, §4
                   |   exprs `;` expr  => $expr::$exprs                  // §4
                   
 
-expr: Expr = ID                  => Id($ID, $START)                     // §4, 
+expr: Expr = ID                  => Id($ID, $START)                     // §4,
+           ... etc
            | l:expr `*` r:expr   => Binop("*", $l, $r, $START) 
            | l:expr `+` r:expr   => Binop("+", $l, $r, $START) 
            | "(" expr ")"        => Bra($expr, $START)                  //§5
-           | `[` expr `]`        => $expr 
-           
+           | `[` expr `]`        => $expr           
 ````
+
+**NB:** there must be no { } brackets in the result expression. If you feel
+the need to have declarations in the result expression then don't use
+the `=>` form.
+
 Our intention (see **Road Map**) is eventually to be able to dispense
 with the dollar notation in the arrow forms, whereafter (for example)
 the computation of the result of the production
@@ -238,10 +271,10 @@ At the moment the representation is
 
 
 #### Aside:
-Our use of the `=>` notation is intended to make visible the
-analogy between named rules and partial functions from text to 
-abstract syntax that are composed of the union of disjoint partial functions
-from text to abstract syntax. 
+Our use of the `=>` notation is intended underline the
+analogy between productions and partial functions from parsed text to 
+abstract syntax. An individual rule corresponds to the union of
+the  partial functions that correspond to its productions.
 
 
 ## Implementations
@@ -283,7 +316,8 @@ grammar rules give rise to LR parsing conflicts.
       
       LOGGING OPTIONS
       -Lsym      show an inventory of the symbols, their types, and their definitions
-      -Lsyn      show the rules after code synthesis for repeated constructions```` 
+      -Lsyn      show the rules after code synthesis for repeated constructions 
+      -Lred      show the type contexts during the generation of reduction code```` 
 
       OUTPUTPATH is set by one of
       -p         OUTPUTPATH
@@ -450,10 +484,6 @@ better to use the `(x y)...` form: it's what it was invented for.
 The best-documented simple examples of programs that 
 uses **scalalr**-generated parsing components are in 
 directories under `Examples/.`
-
-
-
-
 
 ## LR Parsing Conflict Illustrations
 A few notation definitions that result in shift-reduce or reduce-reduce 
@@ -663,6 +693,7 @@ expr: Expr = name: ID              {Id(name=$name)}
 We also have at the back of our mind the derivation of
 unparsers (linearisers) more or less directly from such descriptions.
 
+
 ## Working Assumption
 **ScalaLR** was designed on the assumption the components it generates will
 become part of a parser that will yield an abstract syntax tree. *Of course
@@ -703,8 +734,36 @@ parser components, and places the resulting runnable assembly in
 **Caution is counselled** if you plan to supersede
 `ScalaLR/ParserGenerator/scalalr` with the result of the current build.
 
+
+## Appendix: grammar of the result-expression language
+
+````
+Scala: Scala = 
+   ScalaAtom
+ | fun: ScalaID '(' args: Scalas ')'   { Apply($fun, $args) }
+ | obj: ScalaID '.' feature: ScalaID  '(' args: Scalas ')'   { MethodApply($obj, $feature, $args) }
+ | obj: ScalaID '.' feature: ScalaID  { Dot($obj, $feature) }
+ | lhs: Scala `::` rhs: Scala         { Infix("::", $lhs, $rhs) }
+ | lhs: Scala `+`  rhs: Scala         { Infix("+", $lhs, $rhs) }
+ | lhs: Scala `*`  rhs: Scala         { Infix("*", $lhs, $rhs) }
+ | lhs: Scala `-`  rhs: Scala         { Infix("-", $lhs, $rhs) }
+
+Scalas: List[Scala] = scalas: (',' Scala)* { $scalas }
+
+ScalaAtom: Scala = ScalaID
+                 | NUM                                   { Num($NUM, $START) }
+                 | '(' Scalas ')'                        { Bra($Scalas) }
+                 | STRING                                { ScalaString($STRING.unQuoted, $START) }
+
+ScalaID: Scala = ID      { Id($ID, $START) }
+               | '$' ID  { Dollar(Id($ID, $START)) }
+
+
+
+````
+
 ## Valediction
-There is  much I haven't had time to do, so feel free to experiment with the notation 
+There is  much I haven't had time to do, so feel free to experiment with the notation
 description notation and its semantics.
 
 BS: April 29th, May 13th 2026, June 12th 2026

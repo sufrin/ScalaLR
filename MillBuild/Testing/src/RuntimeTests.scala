@@ -74,7 +74,6 @@ object  shortcutLists extends TestRUN("-Lsyn -Lsym -html", "shortcut.Lists")()(
   lazy val self = this
 
   def apply(chars: SourceTextCursor): Scanner[Token] = new ScannerAdapter[Token](chars) {
-
        val ENDSTREAM: Token                  = self.$end
        val UNDEF: Token                      = self.UNDEF
        val symbolToken                       = self.symbolToken
@@ -234,6 +233,69 @@ atom: Expr = prim         => Atom($prim)
 prim: String = HEX => reHexify($HEX) | DEC | ID | REAL | ID
 
 """)
+
+object readmeExpression extends TestSRC("-html")(
+"""
+%notation  Expr                                             // §0
+%package   expr.Expr                                        // §0
+%path      "expr"
+%tables    lalr                                             // §0
+
+%include {
+   // Scala source here is included in the generated object expr.Expr.Scanner
+}
+
+%token ID(String) `(` `)` `[` `]` `;`                       // §1
+%left `+`                                                   // §2
+%left `*`
+
+%rules
+
+%include {
+ import org.sufrin.scalalr.SourceLocation
+ // Scala source here is included in the generated object expr.Expr.Reduction
+ // that defines the result value for each production.
+ // It must import or implement the abstract syntax of the language.
+ // Here we do the latter
+
+ trait Expr { val loc: SourceLocation }                                 // §4
+ case class Id(s: String, loc: SourceLocation) extends Expr
+ case class Binop(op: String, l: Expr, r: Expr, loc: SourceLocation) extends Expr
+ case class Bra(expr: Expr, loc: SourceLocation)extends Expr
+
+}
+
+exprs: List[Expr] = expr           { List($expr) }                   // §3, §4
+                  | exprs `;` expr { $expr::$exprs }                 // §4
+
+
+expr: Expr = ID                  { Id($ID, $START) }                   // §4,
+           | l:expr `*` r:expr   { Binop("*", $l, $r, $START) }
+           | l:expr `+` r:expr   { Binop("+", $l, $r, $START) }
+           | "(" expr ")"        { Bra($expr, $START) }                //§5
+           | `[` expr `]`        { $expr }
+
+"""
+)
+
+object readMeExample {
+    import expr.Expr.Components
+    import expr.Expr.Scanner._
+    import org.sufrin.utility.PrettyPrint._
+    import org.sufrin.utility._
+
+    class Scanner(source: SourceTextCursor) extends SimpleScanner[Token](source) {
+      override val NAME       = expr.Expr.Scanner.ID
+      override val ENDSTREAM  = $end
+      locally { defineSymbolTokens(expr.Expr.Scanner.symbolToken) }
+    }
+
+    def main(args: Array[String]): Unit = {
+      val scanner = new Scanner(SourceTextCursor("a*b + c*d; a+b * c+d"))
+      val parser  = LRParser.Pull[Token](Components)(scanner.sourceLocation)
+      parser.run(scanner.next).prettyPrint()
+    }
+}
 
 
 

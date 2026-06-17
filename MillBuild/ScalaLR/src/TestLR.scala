@@ -36,6 +36,13 @@ class TestLR(args: String="")(source: String)(implicit loc: SourceLocation) exte
   Generator.main(effectiveArgs.toArray)
 }
 
+class TestSRC(args: String="")(source: String)(implicit loc: SourceLocation) extends App {
+  val effectiveArgs = List("--output=Testing/src/generated")++args.split(' ').toList ++ List("-#", (loc.line).toString, "-##", (loc.offset).toString, "-s", source)
+  Generator.main(effectiveArgs.toArray)
+}
+
+
+
 /**
  * Build parser components for a notation, as well as a small test program named `test` that runs a parser
  * based on these components, using the literal text `input` as the input to the parser.

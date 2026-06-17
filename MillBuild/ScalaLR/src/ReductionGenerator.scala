@@ -87,7 +87,7 @@ class ReductionGenerator(notation: Notation, symbolTables: SymbolTables) extends
 
           val fieldTypes =
             for {field <- fields} yield
-              s"${if (field.theFieldName.isDefined) field.theFieldName.get + "::" else ""}${field.theField}: ${symbolType(field.theField).scalaTypeName}" // anonfields.filter(sameFieldType(field)(_))"
+              s"${if (field.theFieldName.isDefined) field.theFieldName.get.toString.+(" ∈ ") else ""}${field.theField}: ${symbolType(field.theField).scalaTypeName}" // anonfields.filter(sameFieldType(field)(_))"
 
           print(
             s"""  $productionNum: ${rule.lhs} = ${production}

@@ -1,0 +1,377 @@
+Rules useless in parser due to conflicts
+
+    3 expr: expr `+` ID
+    4      | expr `+` ID
+    5      | expr `+` ID
+
+
+State 8 conflicts: 12 reduce/reduce
+State 9 conflicts: 2 shift/reduce
+State 11 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: expr $end
+
+    1 expr: ID
+    2      | expr `+` ID
+    3      | expr `+` ID
+    4      | expr `+` ID
+    5      | expr `+` ID
+    6      | IF expr THEN expr
+    7      | IF expr THEN expr ELSE expr
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    IF (258) 6 7
+    THEN (259) 6 7
+    ELSE (260) 7
+    ID (261) 1 2 3 4 5
+    `+` (262) 2 3 4 5
+
+
+Nonterminals, with rules where they appear
+
+    $accept (8)
+        on left: 0
+    expr (9)
+        on left: 1 2 3 4 5 6 7
+        on right: 0 2 3 4 5 6 7
+
+
+State 0
+
+    0 $accept: • expr $end
+
+    IF  shift, and go to state 1
+    ID  shift, and go to state 2
+
+    expr  go to state 3
+
+
+State 1
+
+    6 expr: IF • expr THEN expr
+    7      | IF • expr THEN expr ELSE expr
+
+    IF  shift, and go to state 1
+    ID  shift, and go to state 2
+
+    expr  go to state 4
+
+
+State 2
+
+    1 expr: ID •
+
+    $default  reduce using rule 1 (expr)
+
+
+State 3
+
+    0 $accept: expr • $end
+    2 expr: expr • `+` ID
+    3      | expr • `+` ID
+    4      | expr • `+` ID
+    5      | expr • `+` ID
+
+    $end   shift, and go to state 5
+    `+`  shift, and go to state 6
+
+
+State 4
+
+    2 expr: expr • `+` ID
+    3      | expr • `+` ID
+    4      | expr • `+` ID
+    5      | expr • `+` ID
+    6      | IF expr • THEN expr
+    7      | IF expr • THEN expr ELSE expr
+
+    THEN  shift, and go to state 7
+    `+`  shift, and go to state 6
+
+
+State 5
+
+    0 $accept: expr $end •
+
+    $default  accept
+
+
+State 6
+
+    2 expr: expr `+` • ID
+    3      | expr `+` • ID
+    4      | expr `+` • ID
+    5      | expr `+` • ID
+
+    ID  shift, and go to state 8
+
+
+State 7
+
+    6 expr: IF expr THEN • expr
+    7      | IF expr THEN • expr ELSE expr
+
+    IF  shift, and go to state 1
+    ID  shift, and go to state 2
+
+    expr  go to state 9
+
+
+State 8
+
+    2 expr: expr `+` ID •
+    3      | expr `+` ID •
+    4      | expr `+` ID •
+    5      | expr `+` ID •
+
+    $end      reduce using rule 2 (expr)
+    $end      [reduce using rule 3 (expr)]
+    $end      [reduce using rule 4 (expr)]
+    $end      [reduce using rule 5 (expr)]
+    THEN     reduce using rule 2 (expr)
+    THEN     [reduce using rule 3 (expr)]
+    THEN     [reduce using rule 4 (expr)]
+    THEN     [reduce using rule 5 (expr)]
+    ELSE     reduce using rule 2 (expr)
+    ELSE     [reduce using rule 3 (expr)]
+    ELSE     [reduce using rule 4 (expr)]
+    ELSE     [reduce using rule 5 (expr)]
+    `+`     reduce using rule 2 (expr)
+    `+`     [reduce using rule 3 (expr)]
+    `+`     [reduce using rule 4 (expr)]
+    `+`     [reduce using rule 5 (expr)]
+    $default  reduce using rule 2 (expr)
+
+    reduce/reduce conflict on tokens $end, THEN, ELSE, `+`:
+        2 expr: expr `+` ID •
+        3 expr: expr `+` ID •
+      Example: expr `+` ID •
+      First reduce derivation
+        expr
+        ↳ 2: expr `+` ID •
+      Second reduce derivation
+        expr
+        ↳ 3: expr `+` ID •
+
+    reduce/reduce conflict on tokens $end, THEN, ELSE, `+`:
+        2 expr: expr `+` ID •
+        4 expr: expr `+` ID •
+      Example: expr `+` ID •
+      First reduce derivation
+        expr
+        ↳ 2: expr `+` ID •
+      Second reduce derivation
+        expr
+        ↳ 4: expr `+` ID •
+
+    reduce/reduce conflict on tokens $end, THEN, ELSE, `+`:
+        2 expr: expr `+` ID •
+        5 expr: expr `+` ID •
+      Example: expr `+` ID •
+      First reduce derivation
+        expr
+        ↳ 2: expr `+` ID •
+      Second reduce derivation
+        expr
+        ↳ 5: expr `+` ID •
+
+    reduce/reduce conflict on tokens $end, THEN, ELSE, `+`:
+        3 expr: expr `+` ID •
+        4 expr: expr `+` ID •
+      Example: expr `+` ID •
+      First reduce derivation
+        expr
+        ↳ 3: expr `+` ID •
+      Second reduce derivation
+        expr
+        ↳ 4: expr `+` ID •
+
+    reduce/reduce conflict on tokens $end, THEN, ELSE, `+`:
+        3 expr: expr `+` ID •
+        5 expr: expr `+` ID •
+      Example: expr `+` ID •
+      First reduce derivation
+        expr
+        ↳ 3: expr `+` ID •
+      Second reduce derivation
+        expr
+        ↳ 5: expr `+` ID •
+
+    reduce/reduce conflict on tokens $end, THEN, ELSE, `+`:
+        4 expr: expr `+` ID •
+        5 expr: expr `+` ID •
+      Example: expr `+` ID •
+      First reduce derivation
+        expr
+        ↳ 4: expr `+` ID •
+      Second reduce derivation
+        expr
+        ↳ 5: expr `+` ID •
+
+
+
+State 9
+
+    2 expr: expr • `+` ID
+    3      | expr • `+` ID
+    4      | expr • `+` ID
+    5      | expr • `+` ID
+    6      | IF expr THEN expr •
+    7      | IF expr THEN expr • ELSE expr
+
+    ELSE  shift, and go to state 10
+    `+`  shift, and go to state 6
+
+    ELSE     [reduce using rule 6 (expr)]
+    `+`     [reduce using rule 6 (expr)]
+    $default  reduce using rule 6 (expr)
+
+    shift/reduce conflict on token `+`:
+        6 expr: IF expr THEN expr •
+        2 expr: expr • `+` ID
+      Example: IF expr THEN expr • `+` ID
+      Shift derivation
+        expr
+        ↳ 6: IF expr THEN expr
+                               ↳ 2: expr • `+` ID
+      Reduce derivation
+        expr
+        ↳ 2: expr                          `+` ID
+             ↳ 6: IF expr THEN expr •
+
+    shift/reduce conflict on token `+`:
+        6 expr: IF expr THEN expr •
+        3 expr: expr • `+` ID
+      Example: IF expr THEN expr • `+` ID
+      Shift derivation
+        expr
+        ↳ 6: IF expr THEN expr
+                               ↳ 3: expr • `+` ID
+      Reduce derivation
+        expr
+        ↳ 2: expr                          `+` ID
+             ↳ 6: IF expr THEN expr •
+
+    shift/reduce conflict on token `+`:
+        6 expr: IF expr THEN expr •
+        4 expr: expr • `+` ID
+      Example: IF expr THEN expr • `+` ID
+      Shift derivation
+        expr
+        ↳ 6: IF expr THEN expr
+                               ↳ 4: expr • `+` ID
+      Reduce derivation
+        expr
+        ↳ 2: expr                          `+` ID
+             ↳ 6: IF expr THEN expr •
+
+    shift/reduce conflict on token `+`:
+        6 expr: IF expr THEN expr •
+        5 expr: expr • `+` ID
+      Example: IF expr THEN expr • `+` ID
+      Shift derivation
+        expr
+        ↳ 6: IF expr THEN expr
+                               ↳ 5: expr • `+` ID
+      Reduce derivation
+        expr
+        ↳ 2: expr                          `+` ID
+             ↳ 6: IF expr THEN expr •
+
+    shift/reduce conflict on token ELSE:
+        6 expr: IF expr THEN expr •
+        7 expr: IF expr THEN expr • ELSE expr
+      Example: IF expr THEN IF expr THEN expr • ELSE expr
+      Shift derivation
+        expr
+        ↳ 6: IF expr THEN expr
+                               ↳ 7: IF expr THEN expr • ELSE expr
+      Reduce derivation
+        expr
+        ↳ 7: IF expr THEN expr                          ELSE expr
+                               ↳ 6: IF expr THEN expr •
+
+
+
+State 10
+
+    7 expr: IF expr THEN expr ELSE • expr
+
+    IF  shift, and go to state 1
+    ID  shift, and go to state 2
+
+    expr  go to state 11
+
+
+State 11
+
+    2 expr: expr • `+` ID
+    3      | expr • `+` ID
+    4      | expr • `+` ID
+    5      | expr • `+` ID
+    7      | IF expr THEN expr ELSE expr •
+
+    `+`  shift, and go to state 6
+
+    `+`     [reduce using rule 7 (expr)]
+    $default  reduce using rule 7 (expr)
+
+    shift/reduce conflict on token `+`:
+        7 expr: IF expr THEN expr ELSE expr •
+        2 expr: expr • `+` ID
+      Example: IF expr THEN expr ELSE expr • `+` ID
+      Shift derivation
+        expr
+        ↳ 7: IF expr THEN expr ELSE expr
+                                           ↳ 2: expr • `+` ID
+      Reduce derivation
+        expr
+        ↳ 2: expr                                      `+` ID
+             ↳ 7: IF expr THEN expr ELSE expr •
+
+    shift/reduce conflict on token `+`:
+        7 expr: IF expr THEN expr ELSE expr •
+        3 expr: expr • `+` ID
+      Example: IF expr THEN expr ELSE expr • `+` ID
+      Shift derivation
+        expr
+        ↳ 7: IF expr THEN expr ELSE expr
+                                           ↳ 3: expr • `+` ID
+      Reduce derivation
+        expr
+        ↳ 2: expr                                      `+` ID
+             ↳ 7: IF expr THEN expr ELSE expr •
+
+    shift/reduce conflict on token `+`:
+        7 expr: IF expr THEN expr ELSE expr •
+        4 expr: expr • `+` ID
+      Example: IF expr THEN expr ELSE expr • `+` ID
+      Shift derivation
+        expr
+        ↳ 7: IF expr THEN expr ELSE expr
+                                           ↳ 4: expr • `+` ID
+      Reduce derivation
+        expr
+        ↳ 2: expr                                      `+` ID
+             ↳ 7: IF expr THEN expr ELSE expr •
+
+    shift/reduce conflict on token `+`:
+        7 expr: IF expr THEN expr ELSE expr •
+        5 expr: expr • `+` ID
+      Example: IF expr THEN expr ELSE expr • `+` ID
+      Shift derivation
+        expr
+        ↳ 7: IF expr THEN expr ELSE expr
+                                           ↳ 5: expr • `+` ID
+      Reduce derivation
+        expr
+        ↳ 2: expr                                      `+` ID
+             ↳ 7: IF expr THEN expr ELSE expr •
+

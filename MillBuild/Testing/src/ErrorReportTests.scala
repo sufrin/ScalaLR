@@ -37,14 +37,14 @@ object Err2 extends TestLR("-Lsyn -Lsym -html")(
 foo: Int = 'x' => 43
 """)
 
-object Err3 extends TestLR("-Lsyn -Lsym -html")(
+object Err3 extends TestLR("-Lsyn -Lsym -Lred -html")(
   """
 // Undollared rule result
 %notation  err3
 %package   scalalr.err3
 %path      "err3"
 %signature "err3 -- undollared parameter in result"
-%%token INT(Int)
+%token INT(Int)
 %rules
 
 ListInt: List[Int] = list: (INT) ... => list
@@ -53,15 +53,31 @@ ListInt: List[Int] = list: (INT) ... => list
 
 object Err4 extends TestLR("-Lsyn -Lsym -html")(
   """
-// Unknown scala operator in result"
+// Known scala operator in result"
 %notation  err4
 %package   scalalr.err4
 %path      "err4"
-%signature "err4 -- unknown scala operator in result"
+%signature "err4 -- known scala operator in result"
 %token INT(Int)
 %rules
 
-ListInt: List[Int] = list: (INT) ... => List($list.length * 2)
+ListInt: List[Int] = list: (INT)... => List($list.length / 2)
+""")
+
+object Err5 extends TestLR("-Lsyn -Lsym -html")(
+  """
+//Checking
+%notation  err5
+%package   scalalr.err5
+%path      "err5"
+%signature "err5 -- check // after productions doesn't kill SEPARATOR"
+%token INT(Int) PIG(Pig)
+%rules
+
+
+ListInt: List[Int] = list: (INT)... => List($list.length - 2) // this should not prevent the gap below being a separator
+
+ListPig: List[Pig] = list: (PIG)... => List($list.length - 2)
 """)
 
 object ErrConflict extends TestLR("-Lsyn -Lsym -html -c")("""
@@ -85,22 +101,30 @@ object DanglingElseLR extends TestLR("-c -html")(
      expr: List[Any] = ID                                     { List("ID") }
                      | expr '+' ID                            { List($expr, "+", "ID") }
                      | IF g: expr THEN l: expr                { List("IF", $g, $l, Nil) }
+                     | IF g: expr THEN l: expr                { List("IF", $g, $l, Nil) }
                      | IF g: expr THEN l: expr ELSE r: expr   { List("IF", $g, $l, $r) }
 
 """)
 
-object DanglingElseLALR extends TestLR("-c -html")(
+object DanglingElseLALR extends TestLR("-c -html -Lsyn -Lsym -Lred")(
   """%path  "danglingelselalr"
      %notation If
      %tables   lalr
-     %token IF THEN ELSE ID '+'
+     %token IF THEN ELSE ID(String) '+'
+     /* This demonstrates pattern generation contexts,
+        the merging of identical states by Bison,
+        and that lalr yields fewer conflicts than lr.
+     */
 
      %rules
 
-      expr = ID
-        | expr '+' ID
-        | IF expr THEN expr
-        | IF expr THEN expr ELSE expr
+      expr: String = ID
+        | l:expr '+' r:ID       => $r
+        | expr '+' r: ID        => $r
+        | l:expr '+' ID         => $ID
+        | expr '+' ID           => $ID
+        | IF guard: expr THEN expr => $guard
+        | IF guard: expr x:THEN expr ELSE expr => $guard
 
 """)
 

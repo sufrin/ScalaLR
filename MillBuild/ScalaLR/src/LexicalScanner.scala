@@ -109,6 +109,7 @@ object LexicalScanner {
         case '?' => afterNextChar(`?`)
         case '*' => afterNextChar(`*`)
         case '+' => afterNextChar(`+`)
+        case '-' => afterNextChar(`-`)
         case '.' => afterNextChar(`.`)
         case '$' => afterNextChar(`$`)
         case ':' =>
@@ -157,14 +158,15 @@ object LexicalScanner {
           theChar match {
             case '*' =>
               eatComment()
+              nnext()
             case '/' =>
               chars.dropWhile( c=>c!='\n')
-              eatWhitespace()
+              //eatWhitespace()
+              nnext()
             case other =>
-              //Syntax.Parser.warn(s"Malformed comment sentinel: \"/$other\" at $sourceLocation")
-              chars.dropWhile( c=>c!='\n')
+              `/`
           }
-          nnext()
+
         case '{' => // } to balance the %include
           nextChar(); afterNextChar(CODE(chars.takeNested2('{', '}')  .mkString("")))
         case '«' => // » to balance the %include

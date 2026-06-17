@@ -116,6 +116,7 @@ object Generator extends org.sufrin.logging.SourceLoggable {
             |LOGGING OPTIONS
             |-Lsym      show an inventory of the symbols, their types, and their definitions
             |-Lsyn      show the rules after code synthesis for repeated constructions
+            |-Lred      show type environments during reduction generation
             |
             |OUTPUTPATH is set by one of
             |-p         OUTPUTPATH

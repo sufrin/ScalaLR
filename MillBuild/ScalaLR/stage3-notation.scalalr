@@ -33,6 +33,7 @@
 
 %right '::'
 %left  '+' '-'
+%left  '*' '/'
 %right '.'
 
   %left SEPARATOR
@@ -195,6 +196,8 @@ Scala: Scala = ScalaAtom
              | obj: ScalaID '.' feature: ScalaID  { Dot($obj, $feature) }
              | lhs: Scala `::` rhs: Scala         { Infix("::", $lhs, $rhs) }
              | lhs: Scala `+`  rhs: Scala         { Infix("+", $lhs, $rhs) }
+             | lhs: Scala `*`  rhs: Scala         { Infix("*", $lhs, $rhs) }
+             | lhs: Scala `/`  rhs: Scala         { Infix("/", $lhs, $rhs) }
              | lhs: Scala `-`  rhs: Scala         { Infix("-", $lhs, $rhs) }
 
 Scalas: List[Scala] = scalas: (',' Scala)* { $scalas }

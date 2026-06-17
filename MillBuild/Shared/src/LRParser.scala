@@ -355,6 +355,11 @@ object LRParser {
             val newState = goto(currentState)(lhsSymbol)
             states.push(newState)
             stepUnfinished = true
+            // Cheat by reducing to an ACCEPTED or ERRONEOUS state
+            result match {
+              case _: ACCEPTED |  _: ERRONEOUS => parseState = result.asInstanceOf[ParseState]
+              case _ =>
+            }
         }
         if (logState) Console.println(s"$currentState: «$input» $act")
       }

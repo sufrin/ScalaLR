@@ -18,6 +18,7 @@ class ComponentsGenerator(notation: Notation) extends SourceCode {
          |}
          |
          |object Components extends org.sufrin.scalalr.LRParserComponents {
+         |  type Token = $thePackage.Scanner.Token
          |  import org.sufrin.scalalr.Action.Action
          |  import org.sufrin.scalalr.LRParser.{NonTerminal, State, Symbol, Terminal}
          |  import org.sufrin.scalalr.SourceLocation
@@ -25,7 +26,11 @@ class ComponentsGenerator(notation: Notation) extends SourceCode {
          |  val action:     State                                   => Terminal=>Action      = $thePackage.Tables.action
          |  val goto:       State                                   => NonTerminal => State  = $thePackage.Tables.goto
          |  val reduction:  (SourceLocation, SourceLocation, State) => Reduce                = $thePackage.Reduction.reduction
+         |  // maps the integer code of a symbol to its name
          |  val symbolName: Map[Symbol, String]                                              = $thePackage.Scanner.symbolName
+         |  // maps the name of a non-value-carrying "punctuation" `Token` to the token itself (useful for lexer table initialization)
+         |  val symbolToken: collection.immutable.Map[String, Token]                         = $thePackage.Scanner.symbolToken
+         |
          |}
          |
          |

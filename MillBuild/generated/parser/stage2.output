@@ -1,0 +1,3490 @@
+Terminals unused in grammar
+
+    COMMENT
+    LEXICALERROR
+    `;`
+    `{`
+    `}`
+    `%type`
+    HIGH
+
+
+Grammar
+
+    0 $accept: Notation $end
+
+    1 Notation: Prefix `%rules` INCLUDE Rules OPTSEPARATOR
+
+    2 Prefix: ε
+    3      | Prefix `%notation` ID
+    4      | Prefix `%package` ID
+    5      | Prefix `%path` STRINGorID
+    6      | Prefix `%tables` STRINGorID
+    7      | Prefix `%include` CODE
+    8      | Prefix `%token` TypedTerminals
+    9      | Prefix `%left` TypedTerminals
+   10      | Prefix `%right` TypedTerminals
+   11      | Prefix `%non` TypedTerminals
+   12      | Prefix `%prec` TypedTerminals
+   13      | Prefix `%dialect` STRINGorID
+   14      | Prefix `%scalalr` STRINGorID
+   15      | Prefix `%signature` STRINGorID
+
+   16 INCLUDE: `%include` CODE SEPARATOR
+   17      | ε
+
+   18 OPTSEPARATOR: ε
+   19      | SEPARATOR
+
+   20 STRINGorID: ID
+   21      | STRING
+
+   22 TypedTerminals: ε
+   23      | TypedTerminal TypedTerminals
+
+   24 TypedTerminal: STRINGorID `:` Type
+   25      | STRINGorID `(` Type `)`
+   26      | STRINGorID
+
+   27 Rules: Rule
+   28      | Rules SEPARATOR Rule
+
+   29 Rule: LHS S_1 RHS
+
+   30 LHS: ID `:` Type `=`
+   31      | ID `=`
+
+   32 RHS: Production
+   33      | Production `|` RHS
+
+   34 Production: Fields Action Precedence
+
+   35 Fields: `%empty`
+   36      | S_2
+
+   37 NamedField: FIELD
+   38      | ID `:` FIELD
+
+   39 FIELD: ID
+   40      | STRING
+   41      | `(` Fields `)` REPEAT
+
+   42 REPEAT: `?`
+   43      | `*`
+   44      | `+`
+   45      | `*` `.` `.`
+   46      | `+` `.` `.`
+   47      | `.` `.` `.`
+
+   48 Precedence: S_3
+
+   49 Type: ID
+   50      | ID `[` Types `]`
+   51      | `(` Types `)`
+   52      | `(` `)`
+
+   53 Types: S_4
+
+   54 Action: ε
+   55      | CODE
+   56      | `=>` Scala
+
+   57 Scala: ScalaAtom
+   58      | ScalaID `(` Scalas `)`
+   59      | ScalaID `.` ScalaID `(` Scalas `)`
+   60      | ScalaID `.` ScalaID
+   61      | Scala `::` Scala
+   62      | Scala `+` Scala
+   63      | Scala `*` Scala
+   64      | Scala `/` Scala
+   65      | Scala `-` Scala
+
+   66 Scalas: S_5
+
+   67 ScalaAtom: ScalaID
+   68      | NUM
+   69      | `(` Scalas `)`
+   70      | STRING
+
+   71 ScalaID: ID
+   72      | `$` ID
+
+   73 S_1: ε
+   74      | `|`
+
+   75 S_2_L: NamedField
+   76      | S_2_L NamedField
+
+   77 S_2: S_2_L
+
+   78 S_3: ε
+   79      | `%prec` ID
+
+   80 S_4_L: Type
+   81      | S_4_L `,` Type
+
+   82 S_4: S_4_L
+
+   83 S_5_L: Scala
+   84      | S_5_L `,` Scala
+
+   85 S_5: ε
+   86      | S_5_L
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    ID (258) 3 4 20 30 31 38 39 49 50 71 72 79
+    NUM (259) 68
+    CODE (260) 7 16 55
+    STRING (261) 21 40 70
+    COMMENT (262)
+    LEXICALERROR (263)
+    `[` (264) 50
+    `]` (265) 50
+    `;` (266)
+    `=` (267) 30 31
+    `|` (268) 33 74
+    `:` (269) 24 30 38
+    `{` (270)
+    `}` (271)
+    `(` (272) 25 41 51 52 58 59 69
+    `)` (273) 25 41 51 52 58 59 69
+    `,` (274) 81 84
+    `%path` (275) 5
+    `%type` (276)
+    `%empty` (277) 35
+    `%notation` (278) 3
+    `%package` (279) 4
+    `%token` (280) 8
+    `%left` (281) 9
+    `%right` (282) 10
+    `%non` (283) 11
+    `%rules` (284) 1
+    `%include` (285) 7 16
+    `%prec` (286) 12 79
+    `%tables` (287) 6
+    `%dialect` (288) 13
+    `%scalalr` (289) 14
+    `%signature` (290) 15
+    `*` (291) 43 45 63
+    `?` (292) 42
+    `+` (293) 44 46 62
+    `=>` (294) 56
+    `$` (295) 72
+    `::` (296) 61
+    `-` (297) 65
+    `/` (298) 64
+    `.` (299) 45 46 47 59 60
+    SEPARATOR (300) 16 19 28
+    HIGH (301)
+
+
+Nonterminals, with rules where they appear
+
+    $accept (47)
+        on left: 0
+    Notation (48)
+        on left: 1
+        on right: 0
+    Prefix (49)
+        on left: 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+        on right: 1 3 4 5 6 7 8 9 10 11 12 13 14 15
+    INCLUDE (50)
+        on left: 16 17
+        on right: 1
+    OPTSEPARATOR (51)
+        on left: 18 19
+        on right: 1
+    STRINGorID (52)
+        on left: 20 21
+        on right: 5 6 13 14 15 24 25 26
+    TypedTerminals (53)
+        on left: 22 23
+        on right: 8 9 10 11 12 23
+    TypedTerminal (54)
+        on left: 24 25 26
+        on right: 23
+    Rules (55)
+        on left: 27 28
+        on right: 1 28
+    Rule (56)
+        on left: 29
+        on right: 27 28
+    LHS (57)
+        on left: 30 31
+        on right: 29
+    RHS (58)
+        on left: 32 33
+        on right: 29 33
+    Production (59)
+        on left: 34
+        on right: 32 33
+    Fields (60)
+        on left: 35 36
+        on right: 34 41
+    NamedField (61)
+        on left: 37 38
+        on right: 75 76
+    FIELD (62)
+        on left: 39 40 41
+        on right: 37 38
+    REPEAT (63)
+        on left: 42 43 44 45 46 47
+        on right: 41
+    Precedence (64)
+        on left: 48
+        on right: 34
+    Type (65)
+        on left: 49 50 51 52
+        on right: 24 25 30 80 81
+    Types (66)
+        on left: 53
+        on right: 50 51
+    Action (67)
+        on left: 54 55 56
+        on right: 34
+    Scala (68)
+        on left: 57 58 59 60 61 62 63 64 65
+        on right: 56 61 62 63 64 65 83 84
+    Scalas (69)
+        on left: 66
+        on right: 58 59 69
+    ScalaAtom (70)
+        on left: 67 68 69 70
+        on right: 57
+    ScalaID (71)
+        on left: 71 72
+        on right: 58 59 60 67
+    S_1 (72)
+        on left: 73 74
+        on right: 29
+    S_2_L (73)
+        on left: 75 76
+        on right: 76 77
+    S_2 (74)
+        on left: 77
+        on right: 36
+    S_3 (75)
+        on left: 78 79
+        on right: 48
+    S_4_L (76)
+        on left: 80 81
+        on right: 81 82
+    S_4 (77)
+        on left: 82
+        on right: 53
+    S_5_L (78)
+        on left: 83 84
+        on right: 84 86
+    S_5 (79)
+        on left: 85 86
+        on right: 66
+
+
+State 0
+
+    0 $accept: • Notation $end
+
+    `%path`  reduce using rule 2 (Prefix)
+    `%notation`  reduce using rule 2 (Prefix)
+    `%package`  reduce using rule 2 (Prefix)
+    `%token`  reduce using rule 2 (Prefix)
+    `%left`  reduce using rule 2 (Prefix)
+    `%right`  reduce using rule 2 (Prefix)
+    `%non`  reduce using rule 2 (Prefix)
+    `%rules`  reduce using rule 2 (Prefix)
+    `%include`  reduce using rule 2 (Prefix)
+    `%prec`  reduce using rule 2 (Prefix)
+    `%tables`  reduce using rule 2 (Prefix)
+    `%dialect`  reduce using rule 2 (Prefix)
+    `%scalalr`  reduce using rule 2 (Prefix)
+    `%signature`  reduce using rule 2 (Prefix)
+
+    Notation  go to state 1
+    Prefix  go to state 2
+
+
+State 1
+
+    0 $accept: Notation • $end
+
+    $end  shift, and go to state 3
+
+
+State 2
+
+    1 Notation: Prefix • `%rules` INCLUDE Rules OPTSEPARATOR
+    3 Prefix: Prefix • `%notation` ID
+    4      | Prefix • `%package` ID
+    5      | Prefix • `%path` STRINGorID
+    6      | Prefix • `%tables` STRINGorID
+    7      | Prefix • `%include` CODE
+    8      | Prefix • `%token` TypedTerminals
+    9      | Prefix • `%left` TypedTerminals
+   10      | Prefix • `%right` TypedTerminals
+   11      | Prefix • `%non` TypedTerminals
+   12      | Prefix • `%prec` TypedTerminals
+   13      | Prefix • `%dialect` STRINGorID
+   14      | Prefix • `%scalalr` STRINGorID
+   15      | Prefix • `%signature` STRINGorID
+
+    `%path`  shift, and go to state 4
+    `%notation`  shift, and go to state 5
+    `%package`  shift, and go to state 6
+    `%token`  shift, and go to state 7
+    `%left`  shift, and go to state 8
+    `%right`  shift, and go to state 9
+    `%non`  shift, and go to state 10
+    `%rules`  shift, and go to state 11
+    `%include`  shift, and go to state 12
+    `%prec`  shift, and go to state 13
+    `%tables`  shift, and go to state 14
+    `%dialect`  shift, and go to state 15
+    `%scalalr`  shift, and go to state 16
+    `%signature`  shift, and go to state 17
+
+
+State 3
+
+    0 $accept: Notation $end •
+
+    $default  accept
+
+
+State 4
+
+    5 Prefix: Prefix `%path` • STRINGorID
+
+    ID  shift, and go to state 18
+    STRING  shift, and go to state 19
+
+    STRINGorID  go to state 20
+
+
+State 5
+
+    3 Prefix: Prefix `%notation` • ID
+
+    ID  shift, and go to state 21
+
+
+State 6
+
+    4 Prefix: Prefix `%package` • ID
+
+    ID  shift, and go to state 22
+
+
+State 7
+
+    8 Prefix: Prefix `%token` • TypedTerminals
+
+    ID  shift, and go to state 142
+    STRING  shift, and go to state 143
+
+    `%path`  reduce using rule 22 (TypedTerminals)
+    `%notation`  reduce using rule 22 (TypedTerminals)
+    `%package`  reduce using rule 22 (TypedTerminals)
+    `%token`  reduce using rule 22 (TypedTerminals)
+    `%left`  reduce using rule 22 (TypedTerminals)
+    `%right`  reduce using rule 22 (TypedTerminals)
+    `%non`  reduce using rule 22 (TypedTerminals)
+    `%rules`  reduce using rule 22 (TypedTerminals)
+    `%include`  reduce using rule 22 (TypedTerminals)
+    `%prec`  reduce using rule 22 (TypedTerminals)
+    `%tables`  reduce using rule 22 (TypedTerminals)
+    `%dialect`  reduce using rule 22 (TypedTerminals)
+    `%scalalr`  reduce using rule 22 (TypedTerminals)
+    `%signature`  reduce using rule 22 (TypedTerminals)
+
+    STRINGorID  go to state 23
+    TypedTerminals  go to state 24
+    TypedTerminal  go to state 25
+
+
+State 8
+
+    9 Prefix: Prefix `%left` • TypedTerminals
+
+    ID  shift, and go to state 142
+    STRING  shift, and go to state 143
+
+    `%path`  reduce using rule 22 (TypedTerminals)
+    `%notation`  reduce using rule 22 (TypedTerminals)
+    `%package`  reduce using rule 22 (TypedTerminals)
+    `%token`  reduce using rule 22 (TypedTerminals)
+    `%left`  reduce using rule 22 (TypedTerminals)
+    `%right`  reduce using rule 22 (TypedTerminals)
+    `%non`  reduce using rule 22 (TypedTerminals)
+    `%rules`  reduce using rule 22 (TypedTerminals)
+    `%include`  reduce using rule 22 (TypedTerminals)
+    `%prec`  reduce using rule 22 (TypedTerminals)
+    `%tables`  reduce using rule 22 (TypedTerminals)
+    `%dialect`  reduce using rule 22 (TypedTerminals)
+    `%scalalr`  reduce using rule 22 (TypedTerminals)
+    `%signature`  reduce using rule 22 (TypedTerminals)
+
+    STRINGorID  go to state 23
+    TypedTerminals  go to state 26
+    TypedTerminal  go to state 25
+
+
+State 9
+
+   10 Prefix: Prefix `%right` • TypedTerminals
+
+    ID  shift, and go to state 142
+    STRING  shift, and go to state 143
+
+    `%path`  reduce using rule 22 (TypedTerminals)
+    `%notation`  reduce using rule 22 (TypedTerminals)
+    `%package`  reduce using rule 22 (TypedTerminals)
+    `%token`  reduce using rule 22 (TypedTerminals)
+    `%left`  reduce using rule 22 (TypedTerminals)
+    `%right`  reduce using rule 22 (TypedTerminals)
+    `%non`  reduce using rule 22 (TypedTerminals)
+    `%rules`  reduce using rule 22 (TypedTerminals)
+    `%include`  reduce using rule 22 (TypedTerminals)
+    `%prec`  reduce using rule 22 (TypedTerminals)
+    `%tables`  reduce using rule 22 (TypedTerminals)
+    `%dialect`  reduce using rule 22 (TypedTerminals)
+    `%scalalr`  reduce using rule 22 (TypedTerminals)
+    `%signature`  reduce using rule 22 (TypedTerminals)
+
+    STRINGorID  go to state 23
+    TypedTerminals  go to state 27
+    TypedTerminal  go to state 25
+
+
+State 10
+
+   11 Prefix: Prefix `%non` • TypedTerminals
+
+    ID  shift, and go to state 142
+    STRING  shift, and go to state 143
+
+    `%path`  reduce using rule 22 (TypedTerminals)
+    `%notation`  reduce using rule 22 (TypedTerminals)
+    `%package`  reduce using rule 22 (TypedTerminals)
+    `%token`  reduce using rule 22 (TypedTerminals)
+    `%left`  reduce using rule 22 (TypedTerminals)
+    `%right`  reduce using rule 22 (TypedTerminals)
+    `%non`  reduce using rule 22 (TypedTerminals)
+    `%rules`  reduce using rule 22 (TypedTerminals)
+    `%include`  reduce using rule 22 (TypedTerminals)
+    `%prec`  reduce using rule 22 (TypedTerminals)
+    `%tables`  reduce using rule 22 (TypedTerminals)
+    `%dialect`  reduce using rule 22 (TypedTerminals)
+    `%scalalr`  reduce using rule 22 (TypedTerminals)
+    `%signature`  reduce using rule 22 (TypedTerminals)
+
+    STRINGorID  go to state 23
+    TypedTerminals  go to state 28
+    TypedTerminal  go to state 25
+
+
+State 11
+
+    1 Notation: Prefix `%rules` • INCLUDE Rules OPTSEPARATOR
+
+    `%include`  shift, and go to state 29
+
+    ID  reduce using rule 17 (INCLUDE)
+
+    INCLUDE  go to state 30
+
+
+State 12
+
+    7 Prefix: Prefix `%include` • CODE
+
+    CODE  shift, and go to state 31
+
+
+State 13
+
+   12 Prefix: Prefix `%prec` • TypedTerminals
+
+    ID  shift, and go to state 142
+    STRING  shift, and go to state 143
+
+    `%path`  reduce using rule 22 (TypedTerminals)
+    `%notation`  reduce using rule 22 (TypedTerminals)
+    `%package`  reduce using rule 22 (TypedTerminals)
+    `%token`  reduce using rule 22 (TypedTerminals)
+    `%left`  reduce using rule 22 (TypedTerminals)
+    `%right`  reduce using rule 22 (TypedTerminals)
+    `%non`  reduce using rule 22 (TypedTerminals)
+    `%rules`  reduce using rule 22 (TypedTerminals)
+    `%include`  reduce using rule 22 (TypedTerminals)
+    `%prec`  reduce using rule 22 (TypedTerminals)
+    `%tables`  reduce using rule 22 (TypedTerminals)
+    `%dialect`  reduce using rule 22 (TypedTerminals)
+    `%scalalr`  reduce using rule 22 (TypedTerminals)
+    `%signature`  reduce using rule 22 (TypedTerminals)
+
+    STRINGorID  go to state 23
+    TypedTerminals  go to state 32
+    TypedTerminal  go to state 25
+
+
+State 14
+
+    6 Prefix: Prefix `%tables` • STRINGorID
+
+    ID  shift, and go to state 18
+    STRING  shift, and go to state 19
+
+    STRINGorID  go to state 33
+
+
+State 15
+
+   13 Prefix: Prefix `%dialect` • STRINGorID
+
+    ID  shift, and go to state 18
+    STRING  shift, and go to state 19
+
+    STRINGorID  go to state 34
+
+
+State 16
+
+   14 Prefix: Prefix `%scalalr` • STRINGorID
+
+    ID  shift, and go to state 18
+    STRING  shift, and go to state 19
+
+    STRINGorID  go to state 35
+
+
+State 17
+
+   15 Prefix: Prefix `%signature` • STRINGorID
+
+    ID  shift, and go to state 18
+    STRING  shift, and go to state 19
+
+    STRINGorID  go to state 36
+
+
+State 18
+
+   20 STRINGorID: ID •
+
+    `%path`  reduce using rule 20 (STRINGorID)
+    `%notation`  reduce using rule 20 (STRINGorID)
+    `%package`  reduce using rule 20 (STRINGorID)
+    `%token`  reduce using rule 20 (STRINGorID)
+    `%left`  reduce using rule 20 (STRINGorID)
+    `%right`  reduce using rule 20 (STRINGorID)
+    `%non`  reduce using rule 20 (STRINGorID)
+    `%rules`  reduce using rule 20 (STRINGorID)
+    `%include`  reduce using rule 20 (STRINGorID)
+    `%prec`  reduce using rule 20 (STRINGorID)
+    `%tables`  reduce using rule 20 (STRINGorID)
+    `%dialect`  reduce using rule 20 (STRINGorID)
+    `%scalalr`  reduce using rule 20 (STRINGorID)
+    `%signature`  reduce using rule 20 (STRINGorID)
+
+
+State 19
+
+   21 STRINGorID: STRING •
+
+    `%path`  reduce using rule 21 (STRINGorID)
+    `%notation`  reduce using rule 21 (STRINGorID)
+    `%package`  reduce using rule 21 (STRINGorID)
+    `%token`  reduce using rule 21 (STRINGorID)
+    `%left`  reduce using rule 21 (STRINGorID)
+    `%right`  reduce using rule 21 (STRINGorID)
+    `%non`  reduce using rule 21 (STRINGorID)
+    `%rules`  reduce using rule 21 (STRINGorID)
+    `%include`  reduce using rule 21 (STRINGorID)
+    `%prec`  reduce using rule 21 (STRINGorID)
+    `%tables`  reduce using rule 21 (STRINGorID)
+    `%dialect`  reduce using rule 21 (STRINGorID)
+    `%scalalr`  reduce using rule 21 (STRINGorID)
+    `%signature`  reduce using rule 21 (STRINGorID)
+
+
+State 20
+
+    5 Prefix: Prefix `%path` STRINGorID •
+
+    `%path`  reduce using rule 5 (Prefix)
+    `%notation`  reduce using rule 5 (Prefix)
+    `%package`  reduce using rule 5 (Prefix)
+    `%token`  reduce using rule 5 (Prefix)
+    `%left`  reduce using rule 5 (Prefix)
+    `%right`  reduce using rule 5 (Prefix)
+    `%non`  reduce using rule 5 (Prefix)
+    `%rules`  reduce using rule 5 (Prefix)
+    `%include`  reduce using rule 5 (Prefix)
+    `%prec`  reduce using rule 5 (Prefix)
+    `%tables`  reduce using rule 5 (Prefix)
+    `%dialect`  reduce using rule 5 (Prefix)
+    `%scalalr`  reduce using rule 5 (Prefix)
+    `%signature`  reduce using rule 5 (Prefix)
+
+
+State 21
+
+    3 Prefix: Prefix `%notation` ID •
+
+    `%path`  reduce using rule 3 (Prefix)
+    `%notation`  reduce using rule 3 (Prefix)
+    `%package`  reduce using rule 3 (Prefix)
+    `%token`  reduce using rule 3 (Prefix)
+    `%left`  reduce using rule 3 (Prefix)
+    `%right`  reduce using rule 3 (Prefix)
+    `%non`  reduce using rule 3 (Prefix)
+    `%rules`  reduce using rule 3 (Prefix)
+    `%include`  reduce using rule 3 (Prefix)
+    `%prec`  reduce using rule 3 (Prefix)
+    `%tables`  reduce using rule 3 (Prefix)
+    `%dialect`  reduce using rule 3 (Prefix)
+    `%scalalr`  reduce using rule 3 (Prefix)
+    `%signature`  reduce using rule 3 (Prefix)
+
+
+State 22
+
+    4 Prefix: Prefix `%package` ID •
+
+    `%path`  reduce using rule 4 (Prefix)
+    `%notation`  reduce using rule 4 (Prefix)
+    `%package`  reduce using rule 4 (Prefix)
+    `%token`  reduce using rule 4 (Prefix)
+    `%left`  reduce using rule 4 (Prefix)
+    `%right`  reduce using rule 4 (Prefix)
+    `%non`  reduce using rule 4 (Prefix)
+    `%rules`  reduce using rule 4 (Prefix)
+    `%include`  reduce using rule 4 (Prefix)
+    `%prec`  reduce using rule 4 (Prefix)
+    `%tables`  reduce using rule 4 (Prefix)
+    `%dialect`  reduce using rule 4 (Prefix)
+    `%scalalr`  reduce using rule 4 (Prefix)
+    `%signature`  reduce using rule 4 (Prefix)
+
+
+State 23
+
+   24 TypedTerminal: STRINGorID • `:` Type
+   25      | STRINGorID • `(` Type `)`
+   26      | STRINGorID •
+
+    `:`  shift, and go to state 37
+    `(`  shift, and go to state 38
+
+    ID  reduce using rule 26 (TypedTerminal)
+    STRING  reduce using rule 26 (TypedTerminal)
+    `%path`  reduce using rule 26 (TypedTerminal)
+    `%notation`  reduce using rule 26 (TypedTerminal)
+    `%package`  reduce using rule 26 (TypedTerminal)
+    `%token`  reduce using rule 26 (TypedTerminal)
+    `%left`  reduce using rule 26 (TypedTerminal)
+    `%right`  reduce using rule 26 (TypedTerminal)
+    `%non`  reduce using rule 26 (TypedTerminal)
+    `%rules`  reduce using rule 26 (TypedTerminal)
+    `%include`  reduce using rule 26 (TypedTerminal)
+    `%prec`  reduce using rule 26 (TypedTerminal)
+    `%tables`  reduce using rule 26 (TypedTerminal)
+    `%dialect`  reduce using rule 26 (TypedTerminal)
+    `%scalalr`  reduce using rule 26 (TypedTerminal)
+    `%signature`  reduce using rule 26 (TypedTerminal)
+
+
+State 24
+
+    8 Prefix: Prefix `%token` TypedTerminals •
+
+    `%path`  reduce using rule 8 (Prefix)
+    `%notation`  reduce using rule 8 (Prefix)
+    `%package`  reduce using rule 8 (Prefix)
+    `%token`  reduce using rule 8 (Prefix)
+    `%left`  reduce using rule 8 (Prefix)
+    `%right`  reduce using rule 8 (Prefix)
+    `%non`  reduce using rule 8 (Prefix)
+    `%rules`  reduce using rule 8 (Prefix)
+    `%include`  reduce using rule 8 (Prefix)
+    `%prec`  reduce using rule 8 (Prefix)
+    `%tables`  reduce using rule 8 (Prefix)
+    `%dialect`  reduce using rule 8 (Prefix)
+    `%scalalr`  reduce using rule 8 (Prefix)
+    `%signature`  reduce using rule 8 (Prefix)
+
+
+State 25
+
+   23 TypedTerminals: TypedTerminal • TypedTerminals
+
+    ID  shift, and go to state 142
+    STRING  shift, and go to state 143
+
+    `%path`  reduce using rule 22 (TypedTerminals)
+    `%notation`  reduce using rule 22 (TypedTerminals)
+    `%package`  reduce using rule 22 (TypedTerminals)
+    `%token`  reduce using rule 22 (TypedTerminals)
+    `%left`  reduce using rule 22 (TypedTerminals)
+    `%right`  reduce using rule 22 (TypedTerminals)
+    `%non`  reduce using rule 22 (TypedTerminals)
+    `%rules`  reduce using rule 22 (TypedTerminals)
+    `%include`  reduce using rule 22 (TypedTerminals)
+    `%prec`  reduce using rule 22 (TypedTerminals)
+    `%tables`  reduce using rule 22 (TypedTerminals)
+    `%dialect`  reduce using rule 22 (TypedTerminals)
+    `%scalalr`  reduce using rule 22 (TypedTerminals)
+    `%signature`  reduce using rule 22 (TypedTerminals)
+
+    STRINGorID  go to state 23
+    TypedTerminals  go to state 39
+    TypedTerminal  go to state 25
+
+
+State 26
+
+    9 Prefix: Prefix `%left` TypedTerminals •
+
+    `%path`  reduce using rule 9 (Prefix)
+    `%notation`  reduce using rule 9 (Prefix)
+    `%package`  reduce using rule 9 (Prefix)
+    `%token`  reduce using rule 9 (Prefix)
+    `%left`  reduce using rule 9 (Prefix)
+    `%right`  reduce using rule 9 (Prefix)
+    `%non`  reduce using rule 9 (Prefix)
+    `%rules`  reduce using rule 9 (Prefix)
+    `%include`  reduce using rule 9 (Prefix)
+    `%prec`  reduce using rule 9 (Prefix)
+    `%tables`  reduce using rule 9 (Prefix)
+    `%dialect`  reduce using rule 9 (Prefix)
+    `%scalalr`  reduce using rule 9 (Prefix)
+    `%signature`  reduce using rule 9 (Prefix)
+
+
+State 27
+
+   10 Prefix: Prefix `%right` TypedTerminals •
+
+    `%path`  reduce using rule 10 (Prefix)
+    `%notation`  reduce using rule 10 (Prefix)
+    `%package`  reduce using rule 10 (Prefix)
+    `%token`  reduce using rule 10 (Prefix)
+    `%left`  reduce using rule 10 (Prefix)
+    `%right`  reduce using rule 10 (Prefix)
+    `%non`  reduce using rule 10 (Prefix)
+    `%rules`  reduce using rule 10 (Prefix)
+    `%include`  reduce using rule 10 (Prefix)
+    `%prec`  reduce using rule 10 (Prefix)
+    `%tables`  reduce using rule 10 (Prefix)
+    `%dialect`  reduce using rule 10 (Prefix)
+    `%scalalr`  reduce using rule 10 (Prefix)
+    `%signature`  reduce using rule 10 (Prefix)
+
+
+State 28
+
+   11 Prefix: Prefix `%non` TypedTerminals •
+
+    `%path`  reduce using rule 11 (Prefix)
+    `%notation`  reduce using rule 11 (Prefix)
+    `%package`  reduce using rule 11 (Prefix)
+    `%token`  reduce using rule 11 (Prefix)
+    `%left`  reduce using rule 11 (Prefix)
+    `%right`  reduce using rule 11 (Prefix)
+    `%non`  reduce using rule 11 (Prefix)
+    `%rules`  reduce using rule 11 (Prefix)
+    `%include`  reduce using rule 11 (Prefix)
+    `%prec`  reduce using rule 11 (Prefix)
+    `%tables`  reduce using rule 11 (Prefix)
+    `%dialect`  reduce using rule 11 (Prefix)
+    `%scalalr`  reduce using rule 11 (Prefix)
+    `%signature`  reduce using rule 11 (Prefix)
+
+
+State 29
+
+   16 INCLUDE: `%include` • CODE SEPARATOR
+
+    CODE  shift, and go to state 40
+
+
+State 30
+
+    1 Notation: Prefix `%rules` INCLUDE • Rules OPTSEPARATOR
+
+    ID  shift, and go to state 41
+
+    Rules  go to state 42
+    Rule  go to state 43
+    LHS  go to state 44
+
+
+State 31
+
+    7 Prefix: Prefix `%include` CODE •
+
+    `%path`  reduce using rule 7 (Prefix)
+    `%notation`  reduce using rule 7 (Prefix)
+    `%package`  reduce using rule 7 (Prefix)
+    `%token`  reduce using rule 7 (Prefix)
+    `%left`  reduce using rule 7 (Prefix)
+    `%right`  reduce using rule 7 (Prefix)
+    `%non`  reduce using rule 7 (Prefix)
+    `%rules`  reduce using rule 7 (Prefix)
+    `%include`  reduce using rule 7 (Prefix)
+    `%prec`  reduce using rule 7 (Prefix)
+    `%tables`  reduce using rule 7 (Prefix)
+    `%dialect`  reduce using rule 7 (Prefix)
+    `%scalalr`  reduce using rule 7 (Prefix)
+    `%signature`  reduce using rule 7 (Prefix)
+
+
+State 32
+
+   12 Prefix: Prefix `%prec` TypedTerminals •
+
+    `%path`  reduce using rule 12 (Prefix)
+    `%notation`  reduce using rule 12 (Prefix)
+    `%package`  reduce using rule 12 (Prefix)
+    `%token`  reduce using rule 12 (Prefix)
+    `%left`  reduce using rule 12 (Prefix)
+    `%right`  reduce using rule 12 (Prefix)
+    `%non`  reduce using rule 12 (Prefix)
+    `%rules`  reduce using rule 12 (Prefix)
+    `%include`  reduce using rule 12 (Prefix)
+    `%prec`  reduce using rule 12 (Prefix)
+    `%tables`  reduce using rule 12 (Prefix)
+    `%dialect`  reduce using rule 12 (Prefix)
+    `%scalalr`  reduce using rule 12 (Prefix)
+    `%signature`  reduce using rule 12 (Prefix)
+
+
+State 33
+
+    6 Prefix: Prefix `%tables` STRINGorID •
+
+    `%path`  reduce using rule 6 (Prefix)
+    `%notation`  reduce using rule 6 (Prefix)
+    `%package`  reduce using rule 6 (Prefix)
+    `%token`  reduce using rule 6 (Prefix)
+    `%left`  reduce using rule 6 (Prefix)
+    `%right`  reduce using rule 6 (Prefix)
+    `%non`  reduce using rule 6 (Prefix)
+    `%rules`  reduce using rule 6 (Prefix)
+    `%include`  reduce using rule 6 (Prefix)
+    `%prec`  reduce using rule 6 (Prefix)
+    `%tables`  reduce using rule 6 (Prefix)
+    `%dialect`  reduce using rule 6 (Prefix)
+    `%scalalr`  reduce using rule 6 (Prefix)
+    `%signature`  reduce using rule 6 (Prefix)
+
+
+State 34
+
+   13 Prefix: Prefix `%dialect` STRINGorID •
+
+    `%path`  reduce using rule 13 (Prefix)
+    `%notation`  reduce using rule 13 (Prefix)
+    `%package`  reduce using rule 13 (Prefix)
+    `%token`  reduce using rule 13 (Prefix)
+    `%left`  reduce using rule 13 (Prefix)
+    `%right`  reduce using rule 13 (Prefix)
+    `%non`  reduce using rule 13 (Prefix)
+    `%rules`  reduce using rule 13 (Prefix)
+    `%include`  reduce using rule 13 (Prefix)
+    `%prec`  reduce using rule 13 (Prefix)
+    `%tables`  reduce using rule 13 (Prefix)
+    `%dialect`  reduce using rule 13 (Prefix)
+    `%scalalr`  reduce using rule 13 (Prefix)
+    `%signature`  reduce using rule 13 (Prefix)
+
+
+State 35
+
+   14 Prefix: Prefix `%scalalr` STRINGorID •
+
+    `%path`  reduce using rule 14 (Prefix)
+    `%notation`  reduce using rule 14 (Prefix)
+    `%package`  reduce using rule 14 (Prefix)
+    `%token`  reduce using rule 14 (Prefix)
+    `%left`  reduce using rule 14 (Prefix)
+    `%right`  reduce using rule 14 (Prefix)
+    `%non`  reduce using rule 14 (Prefix)
+    `%rules`  reduce using rule 14 (Prefix)
+    `%include`  reduce using rule 14 (Prefix)
+    `%prec`  reduce using rule 14 (Prefix)
+    `%tables`  reduce using rule 14 (Prefix)
+    `%dialect`  reduce using rule 14 (Prefix)
+    `%scalalr`  reduce using rule 14 (Prefix)
+    `%signature`  reduce using rule 14 (Prefix)
+
+
+State 36
+
+   15 Prefix: Prefix `%signature` STRINGorID •
+
+    `%path`  reduce using rule 15 (Prefix)
+    `%notation`  reduce using rule 15 (Prefix)
+    `%package`  reduce using rule 15 (Prefix)
+    `%token`  reduce using rule 15 (Prefix)
+    `%left`  reduce using rule 15 (Prefix)
+    `%right`  reduce using rule 15 (Prefix)
+    `%non`  reduce using rule 15 (Prefix)
+    `%rules`  reduce using rule 15 (Prefix)
+    `%include`  reduce using rule 15 (Prefix)
+    `%prec`  reduce using rule 15 (Prefix)
+    `%tables`  reduce using rule 15 (Prefix)
+    `%dialect`  reduce using rule 15 (Prefix)
+    `%scalalr`  reduce using rule 15 (Prefix)
+    `%signature`  reduce using rule 15 (Prefix)
+
+
+State 37
+
+   24 TypedTerminal: STRINGorID `:` • Type
+
+    ID  shift, and go to state 45
+    `(`  shift, and go to state 46
+
+    Type  go to state 47
+
+
+State 38
+
+   25 TypedTerminal: STRINGorID `(` • Type `)`
+
+    ID  shift, and go to state 144
+    `(`  shift, and go to state 145
+
+    Type  go to state 48
+
+
+State 39
+
+   23 TypedTerminals: TypedTerminal TypedTerminals •
+
+    `%path`  reduce using rule 23 (TypedTerminals)
+    `%notation`  reduce using rule 23 (TypedTerminals)
+    `%package`  reduce using rule 23 (TypedTerminals)
+    `%token`  reduce using rule 23 (TypedTerminals)
+    `%left`  reduce using rule 23 (TypedTerminals)
+    `%right`  reduce using rule 23 (TypedTerminals)
+    `%non`  reduce using rule 23 (TypedTerminals)
+    `%rules`  reduce using rule 23 (TypedTerminals)
+    `%include`  reduce using rule 23 (TypedTerminals)
+    `%prec`  reduce using rule 23 (TypedTerminals)
+    `%tables`  reduce using rule 23 (TypedTerminals)
+    `%dialect`  reduce using rule 23 (TypedTerminals)
+    `%scalalr`  reduce using rule 23 (TypedTerminals)
+    `%signature`  reduce using rule 23 (TypedTerminals)
+
+
+State 40
+
+   16 INCLUDE: `%include` CODE • SEPARATOR
+
+    SEPARATOR  shift, and go to state 49
+
+
+State 41
+
+   30 LHS: ID • `:` Type `=`
+   31      | ID • `=`
+
+    `=`  shift, and go to state 50
+    `:`  shift, and go to state 51
+
+
+State 42
+
+    1 Notation: Prefix `%rules` INCLUDE Rules • OPTSEPARATOR
+   28 Rules: Rules • SEPARATOR Rule
+
+    SEPARATOR  shift, and go to state 52
+
+    $end  reduce using rule 18 (OPTSEPARATOR)
+
+    OPTSEPARATOR  go to state 53
+
+
+State 43
+
+   27 Rules: Rule •
+
+    $end   reduce using rule 27 (Rules)
+    SEPARATOR  reduce using rule 27 (Rules)
+
+
+State 44
+
+   29 Rule: LHS • S_1 RHS
+
+    `|`  shift, and go to state 54
+
+    ID  reduce using rule 73 (S_1)
+    STRING  reduce using rule 73 (S_1)
+    `(`  reduce using rule 73 (S_1)
+    `%empty`  reduce using rule 73 (S_1)
+
+    S_1  go to state 55
+
+
+State 45
+
+   49 Type: ID •
+   50      | ID • `[` Types `]`
+
+    `[`  shift, and go to state 56
+
+    ID  reduce using rule 49 (Type)
+    STRING  reduce using rule 49 (Type)
+    `%path`  reduce using rule 49 (Type)
+    `%notation`  reduce using rule 49 (Type)
+    `%package`  reduce using rule 49 (Type)
+    `%token`  reduce using rule 49 (Type)
+    `%left`  reduce using rule 49 (Type)
+    `%right`  reduce using rule 49 (Type)
+    `%non`  reduce using rule 49 (Type)
+    `%rules`  reduce using rule 49 (Type)
+    `%include`  reduce using rule 49 (Type)
+    `%prec`  reduce using rule 49 (Type)
+    `%tables`  reduce using rule 49 (Type)
+    `%dialect`  reduce using rule 49 (Type)
+    `%scalalr`  reduce using rule 49 (Type)
+    `%signature`  reduce using rule 49 (Type)
+
+
+State 46
+
+   51 Type: `(` • Types `)`
+   52      | `(` • `)`
+
+    ID  shift, and go to state 146
+    `(`  shift, and go to state 147
+    `)`  shift, and go to state 57
+
+    Type  go to state 58
+    Types  go to state 59
+    S_4_L  go to state 60
+    S_4  go to state 61
+
+
+State 47
+
+   24 TypedTerminal: STRINGorID `:` Type •
+
+    ID  reduce using rule 24 (TypedTerminal)
+    STRING  reduce using rule 24 (TypedTerminal)
+    `%path`  reduce using rule 24 (TypedTerminal)
+    `%notation`  reduce using rule 24 (TypedTerminal)
+    `%package`  reduce using rule 24 (TypedTerminal)
+    `%token`  reduce using rule 24 (TypedTerminal)
+    `%left`  reduce using rule 24 (TypedTerminal)
+    `%right`  reduce using rule 24 (TypedTerminal)
+    `%non`  reduce using rule 24 (TypedTerminal)
+    `%rules`  reduce using rule 24 (TypedTerminal)
+    `%include`  reduce using rule 24 (TypedTerminal)
+    `%prec`  reduce using rule 24 (TypedTerminal)
+    `%tables`  reduce using rule 24 (TypedTerminal)
+    `%dialect`  reduce using rule 24 (TypedTerminal)
+    `%scalalr`  reduce using rule 24 (TypedTerminal)
+    `%signature`  reduce using rule 24 (TypedTerminal)
+
+
+State 48
+
+   25 TypedTerminal: STRINGorID `(` Type • `)`
+
+    `)`  shift, and go to state 62
+
+
+State 49
+
+   16 INCLUDE: `%include` CODE SEPARATOR •
+
+    ID  reduce using rule 16 (INCLUDE)
+
+
+State 50
+
+   31 LHS: ID `=` •
+
+    ID  reduce using rule 31 (LHS)
+    STRING  reduce using rule 31 (LHS)
+    `|`  reduce using rule 31 (LHS)
+    `(`  reduce using rule 31 (LHS)
+    `%empty`  reduce using rule 31 (LHS)
+
+
+State 51
+
+   30 LHS: ID `:` • Type `=`
+
+    ID  shift, and go to state 148
+    `(`  shift, and go to state 149
+
+    Type  go to state 63
+
+
+State 52
+
+   19 OPTSEPARATOR: SEPARATOR •
+   28 Rules: Rules SEPARATOR • Rule
+
+    ID  shift, and go to state 41
+
+    $end  reduce using rule 19 (OPTSEPARATOR)
+
+    Rule  go to state 64
+    LHS  go to state 44
+
+
+State 53
+
+    1 Notation: Prefix `%rules` INCLUDE Rules OPTSEPARATOR •
+
+    $end  reduce using rule 1 (Notation)
+
+
+State 54
+
+   74 S_1: `|` •
+
+    ID  reduce using rule 74 (S_1)
+    STRING  reduce using rule 74 (S_1)
+    `(`  reduce using rule 74 (S_1)
+    `%empty`  reduce using rule 74 (S_1)
+
+
+State 55
+
+   29 Rule: LHS S_1 • RHS
+
+    ID  shift, and go to state 65
+    STRING  shift, and go to state 66
+    `(`  shift, and go to state 67
+    `%empty`  shift, and go to state 68
+
+    RHS  go to state 69
+    Production  go to state 70
+    Fields  go to state 71
+    NamedField  go to state 72
+    FIELD  go to state 73
+    S_2_L  go to state 74
+    S_2  go to state 75
+
+
+State 56
+
+   50 Type: ID `[` • Types `]`
+
+    ID  shift, and go to state 150
+    `(`  shift, and go to state 151
+
+    Type  go to state 152
+    Types  go to state 76
+    S_4_L  go to state 153
+    S_4  go to state 154
+
+
+State 57
+
+   52 Type: `(` `)` •
+
+    ID  reduce using rule 52 (Type)
+    STRING  reduce using rule 52 (Type)
+    `%path`  reduce using rule 52 (Type)
+    `%notation`  reduce using rule 52 (Type)
+    `%package`  reduce using rule 52 (Type)
+    `%token`  reduce using rule 52 (Type)
+    `%left`  reduce using rule 52 (Type)
+    `%right`  reduce using rule 52 (Type)
+    `%non`  reduce using rule 52 (Type)
+    `%rules`  reduce using rule 52 (Type)
+    `%include`  reduce using rule 52 (Type)
+    `%prec`  reduce using rule 52 (Type)
+    `%tables`  reduce using rule 52 (Type)
+    `%dialect`  reduce using rule 52 (Type)
+    `%scalalr`  reduce using rule 52 (Type)
+    `%signature`  reduce using rule 52 (Type)
+
+
+State 58
+
+   80 S_4_L: Type •
+
+    `)`  reduce using rule 80 (S_4_L)
+    `,`  reduce using rule 80 (S_4_L)
+
+
+State 59
+
+   51 Type: `(` Types • `)`
+
+    `)`  shift, and go to state 77
+
+
+State 60
+
+   81 S_4_L: S_4_L • `,` Type
+   82 S_4: S_4_L •
+
+    `,`  shift, and go to state 78
+
+    `)`  reduce using rule 82 (S_4)
+
+
+State 61
+
+   53 Types: S_4 •
+
+    `)`  reduce using rule 53 (Types)
+
+
+State 62
+
+   25 TypedTerminal: STRINGorID `(` Type `)` •
+
+    ID  reduce using rule 25 (TypedTerminal)
+    STRING  reduce using rule 25 (TypedTerminal)
+    `%path`  reduce using rule 25 (TypedTerminal)
+    `%notation`  reduce using rule 25 (TypedTerminal)
+    `%package`  reduce using rule 25 (TypedTerminal)
+    `%token`  reduce using rule 25 (TypedTerminal)
+    `%left`  reduce using rule 25 (TypedTerminal)
+    `%right`  reduce using rule 25 (TypedTerminal)
+    `%non`  reduce using rule 25 (TypedTerminal)
+    `%rules`  reduce using rule 25 (TypedTerminal)
+    `%include`  reduce using rule 25 (TypedTerminal)
+    `%prec`  reduce using rule 25 (TypedTerminal)
+    `%tables`  reduce using rule 25 (TypedTerminal)
+    `%dialect`  reduce using rule 25 (TypedTerminal)
+    `%scalalr`  reduce using rule 25 (TypedTerminal)
+    `%signature`  reduce using rule 25 (TypedTerminal)
+
+
+State 63
+
+   30 LHS: ID `:` Type • `=`
+
+    `=`  shift, and go to state 79
+
+
+State 64
+
+   28 Rules: Rules SEPARATOR Rule •
+
+    $end   reduce using rule 28 (Rules)
+    SEPARATOR  reduce using rule 28 (Rules)
+
+
+State 65
+
+   38 NamedField: ID • `:` FIELD
+   39 FIELD: ID •
+
+    `:`  shift, and go to state 80
+
+    $end   reduce using rule 39 (FIELD)
+    ID  reduce using rule 39 (FIELD)
+    CODE  reduce using rule 39 (FIELD)
+    STRING  reduce using rule 39 (FIELD)
+    `|`  reduce using rule 39 (FIELD)
+    `(`  reduce using rule 39 (FIELD)
+    `%prec`  reduce using rule 39 (FIELD)
+    `=>`  reduce using rule 39 (FIELD)
+    SEPARATOR  reduce using rule 39 (FIELD)
+
+
+State 66
+
+   40 FIELD: STRING •
+
+    $end   reduce using rule 40 (FIELD)
+    ID  reduce using rule 40 (FIELD)
+    CODE  reduce using rule 40 (FIELD)
+    STRING  reduce using rule 40 (FIELD)
+    `|`  reduce using rule 40 (FIELD)
+    `(`  reduce using rule 40 (FIELD)
+    `%prec`  reduce using rule 40 (FIELD)
+    `=>`  reduce using rule 40 (FIELD)
+    SEPARATOR  reduce using rule 40 (FIELD)
+
+
+State 67
+
+   41 FIELD: `(` • Fields `)` REPEAT
+
+    ID  shift, and go to state 155
+    STRING  shift, and go to state 156
+    `(`  shift, and go to state 157
+    `%empty`  shift, and go to state 158
+
+    Fields  go to state 81
+    NamedField  go to state 159
+    FIELD  go to state 160
+    S_2_L  go to state 161
+    S_2  go to state 162
+
+
+State 68
+
+   35 Fields: `%empty` •
+
+    $end   reduce using rule 35 (Fields)
+    CODE  reduce using rule 35 (Fields)
+    `|`  reduce using rule 35 (Fields)
+    `%prec`  reduce using rule 35 (Fields)
+    `=>`  reduce using rule 35 (Fields)
+    SEPARATOR  reduce using rule 35 (Fields)
+
+
+State 69
+
+   29 Rule: LHS S_1 RHS •
+
+    $end   reduce using rule 29 (Rule)
+    SEPARATOR  reduce using rule 29 (Rule)
+
+
+State 70
+
+   32 RHS: Production •
+   33      | Production • `|` RHS
+
+    `|`  shift, and go to state 82
+
+    $end   reduce using rule 32 (RHS)
+    SEPARATOR  reduce using rule 32 (RHS)
+
+
+State 71
+
+   34 Production: Fields • Action Precedence
+
+    CODE  shift, and go to state 83
+    `=>`  shift, and go to state 84
+
+    $end   reduce using rule 54 (Action)
+    `|`  reduce using rule 54 (Action)
+    `%prec`  reduce using rule 54 (Action)
+    SEPARATOR  reduce using rule 54 (Action)
+
+    Action  go to state 85
+
+
+State 72
+
+   75 S_2_L: NamedField •
+
+    $end   reduce using rule 75 (S_2_L)
+    ID  reduce using rule 75 (S_2_L)
+    CODE  reduce using rule 75 (S_2_L)
+    STRING  reduce using rule 75 (S_2_L)
+    `|`  reduce using rule 75 (S_2_L)
+    `(`  reduce using rule 75 (S_2_L)
+    `%prec`  reduce using rule 75 (S_2_L)
+    `=>`  reduce using rule 75 (S_2_L)
+    SEPARATOR  reduce using rule 75 (S_2_L)
+
+
+State 73
+
+   37 NamedField: FIELD •
+
+    $end   reduce using rule 37 (NamedField)
+    ID  reduce using rule 37 (NamedField)
+    CODE  reduce using rule 37 (NamedField)
+    STRING  reduce using rule 37 (NamedField)
+    `|`  reduce using rule 37 (NamedField)
+    `(`  reduce using rule 37 (NamedField)
+    `%prec`  reduce using rule 37 (NamedField)
+    `=>`  reduce using rule 37 (NamedField)
+    SEPARATOR  reduce using rule 37 (NamedField)
+
+
+State 74
+
+   76 S_2_L: S_2_L • NamedField
+   77 S_2: S_2_L •
+
+    ID  shift, and go to state 65
+    STRING  shift, and go to state 66
+    `(`  shift, and go to state 67
+
+    $end   reduce using rule 77 (S_2)
+    CODE  reduce using rule 77 (S_2)
+    `|`  reduce using rule 77 (S_2)
+    `%prec`  reduce using rule 77 (S_2)
+    `=>`  reduce using rule 77 (S_2)
+    SEPARATOR  reduce using rule 77 (S_2)
+
+    NamedField  go to state 86
+    FIELD  go to state 73
+
+
+State 75
+
+   36 Fields: S_2 •
+
+    $end   reduce using rule 36 (Fields)
+    CODE  reduce using rule 36 (Fields)
+    `|`  reduce using rule 36 (Fields)
+    `%prec`  reduce using rule 36 (Fields)
+    `=>`  reduce using rule 36 (Fields)
+    SEPARATOR  reduce using rule 36 (Fields)
+
+
+State 76
+
+   50 Type: ID `[` Types • `]`
+
+    `]`  shift, and go to state 87
+
+
+State 77
+
+   51 Type: `(` Types `)` •
+
+    ID  reduce using rule 51 (Type)
+    STRING  reduce using rule 51 (Type)
+    `%path`  reduce using rule 51 (Type)
+    `%notation`  reduce using rule 51 (Type)
+    `%package`  reduce using rule 51 (Type)
+    `%token`  reduce using rule 51 (Type)
+    `%left`  reduce using rule 51 (Type)
+    `%right`  reduce using rule 51 (Type)
+    `%non`  reduce using rule 51 (Type)
+    `%rules`  reduce using rule 51 (Type)
+    `%include`  reduce using rule 51 (Type)
+    `%prec`  reduce using rule 51 (Type)
+    `%tables`  reduce using rule 51 (Type)
+    `%dialect`  reduce using rule 51 (Type)
+    `%scalalr`  reduce using rule 51 (Type)
+    `%signature`  reduce using rule 51 (Type)
+
+
+State 78
+
+   81 S_4_L: S_4_L `,` • Type
+
+    ID  shift, and go to state 146
+    `(`  shift, and go to state 147
+
+    Type  go to state 88
+
+
+State 79
+
+   30 LHS: ID `:` Type `=` •
+
+    ID  reduce using rule 30 (LHS)
+    STRING  reduce using rule 30 (LHS)
+    `|`  reduce using rule 30 (LHS)
+    `(`  reduce using rule 30 (LHS)
+    `%empty`  reduce using rule 30 (LHS)
+
+
+State 80
+
+   38 NamedField: ID `:` • FIELD
+
+    ID  shift, and go to state 89
+    STRING  shift, and go to state 66
+    `(`  shift, and go to state 67
+
+    FIELD  go to state 90
+
+
+State 81
+
+   41 FIELD: `(` Fields • `)` REPEAT
+
+    `)`  shift, and go to state 91
+
+
+State 82
+
+   33 RHS: Production `|` • RHS
+
+    ID  shift, and go to state 65
+    STRING  shift, and go to state 66
+    `(`  shift, and go to state 67
+    `%empty`  shift, and go to state 68
+
+    RHS  go to state 92
+    Production  go to state 70
+    Fields  go to state 71
+    NamedField  go to state 72
+    FIELD  go to state 73
+    S_2_L  go to state 74
+    S_2  go to state 75
+
+
+State 83
+
+   55 Action: CODE •
+
+    $end   reduce using rule 55 (Action)
+    `|`  reduce using rule 55 (Action)
+    `%prec`  reduce using rule 55 (Action)
+    SEPARATOR  reduce using rule 55 (Action)
+
+
+State 84
+
+   56 Action: `=>` • Scala
+
+    ID  shift, and go to state 93
+    NUM  shift, and go to state 94
+    STRING  shift, and go to state 95
+    `(`  shift, and go to state 96
+    `$`  shift, and go to state 97
+
+    Scala  go to state 98
+    ScalaAtom  go to state 99
+    ScalaID  go to state 100
+
+
+State 85
+
+   34 Production: Fields Action • Precedence
+
+    `%prec`  shift, and go to state 101
+
+    $end   reduce using rule 78 (S_3)
+    `|`  reduce using rule 78 (S_3)
+    SEPARATOR  reduce using rule 78 (S_3)
+
+    Precedence  go to state 102
+    S_3  go to state 103
+
+
+State 86
+
+   76 S_2_L: S_2_L NamedField •
+
+    $end   reduce using rule 76 (S_2_L)
+    ID  reduce using rule 76 (S_2_L)
+    CODE  reduce using rule 76 (S_2_L)
+    STRING  reduce using rule 76 (S_2_L)
+    `|`  reduce using rule 76 (S_2_L)
+    `(`  reduce using rule 76 (S_2_L)
+    `%prec`  reduce using rule 76 (S_2_L)
+    `=>`  reduce using rule 76 (S_2_L)
+    SEPARATOR  reduce using rule 76 (S_2_L)
+
+
+State 87
+
+   50 Type: ID `[` Types `]` •
+
+    ID  reduce using rule 50 (Type)
+    STRING  reduce using rule 50 (Type)
+    `%path`  reduce using rule 50 (Type)
+    `%notation`  reduce using rule 50 (Type)
+    `%package`  reduce using rule 50 (Type)
+    `%token`  reduce using rule 50 (Type)
+    `%left`  reduce using rule 50 (Type)
+    `%right`  reduce using rule 50 (Type)
+    `%non`  reduce using rule 50 (Type)
+    `%rules`  reduce using rule 50 (Type)
+    `%include`  reduce using rule 50 (Type)
+    `%prec`  reduce using rule 50 (Type)
+    `%tables`  reduce using rule 50 (Type)
+    `%dialect`  reduce using rule 50 (Type)
+    `%scalalr`  reduce using rule 50 (Type)
+    `%signature`  reduce using rule 50 (Type)
+
+
+State 88
+
+   81 S_4_L: S_4_L `,` Type •
+
+    `)`  reduce using rule 81 (S_4_L)
+    `,`  reduce using rule 81 (S_4_L)
+
+
+State 89
+
+   39 FIELD: ID •
+
+    $end   reduce using rule 39 (FIELD)
+    ID  reduce using rule 39 (FIELD)
+    CODE  reduce using rule 39 (FIELD)
+    STRING  reduce using rule 39 (FIELD)
+    `|`  reduce using rule 39 (FIELD)
+    `(`  reduce using rule 39 (FIELD)
+    `%prec`  reduce using rule 39 (FIELD)
+    `=>`  reduce using rule 39 (FIELD)
+    SEPARATOR  reduce using rule 39 (FIELD)
+
+
+State 90
+
+   38 NamedField: ID `:` FIELD •
+
+    $end   reduce using rule 38 (NamedField)
+    ID  reduce using rule 38 (NamedField)
+    CODE  reduce using rule 38 (NamedField)
+    STRING  reduce using rule 38 (NamedField)
+    `|`  reduce using rule 38 (NamedField)
+    `(`  reduce using rule 38 (NamedField)
+    `%prec`  reduce using rule 38 (NamedField)
+    `=>`  reduce using rule 38 (NamedField)
+    SEPARATOR  reduce using rule 38 (NamedField)
+
+
+State 91
+
+   41 FIELD: `(` Fields `)` • REPEAT
+
+    `*`  shift, and go to state 104
+    `?`  shift, and go to state 105
+    `+`  shift, and go to state 106
+    `.`  shift, and go to state 107
+
+    REPEAT  go to state 108
+
+
+State 92
+
+   33 RHS: Production `|` RHS •
+
+    $end   reduce using rule 33 (RHS)
+    SEPARATOR  reduce using rule 33 (RHS)
+
+
+State 93
+
+   71 ScalaID: ID •
+
+    $end   reduce using rule 71 (ScalaID)
+    `|`  reduce using rule 71 (ScalaID)
+    `(`  reduce using rule 71 (ScalaID)
+    `%prec`  reduce using rule 71 (ScalaID)
+    `*`  reduce using rule 71 (ScalaID)
+    `+`  reduce using rule 71 (ScalaID)
+    `::`  reduce using rule 71 (ScalaID)
+    `-`  reduce using rule 71 (ScalaID)
+    `/`  reduce using rule 71 (ScalaID)
+    `.`  reduce using rule 71 (ScalaID)
+    SEPARATOR  reduce using rule 71 (ScalaID)
+
+
+State 94
+
+   68 ScalaAtom: NUM •
+
+    $end   reduce using rule 68 (ScalaAtom)
+    `|`  reduce using rule 68 (ScalaAtom)
+    `%prec`  reduce using rule 68 (ScalaAtom)
+    `*`  reduce using rule 68 (ScalaAtom)
+    `+`  reduce using rule 68 (ScalaAtom)
+    `::`  reduce using rule 68 (ScalaAtom)
+    `-`  reduce using rule 68 (ScalaAtom)
+    `/`  reduce using rule 68 (ScalaAtom)
+    SEPARATOR  reduce using rule 68 (ScalaAtom)
+
+
+State 95
+
+   70 ScalaAtom: STRING •
+
+    $end   reduce using rule 70 (ScalaAtom)
+    `|`  reduce using rule 70 (ScalaAtom)
+    `%prec`  reduce using rule 70 (ScalaAtom)
+    `*`  reduce using rule 70 (ScalaAtom)
+    `+`  reduce using rule 70 (ScalaAtom)
+    `::`  reduce using rule 70 (ScalaAtom)
+    `-`  reduce using rule 70 (ScalaAtom)
+    `/`  reduce using rule 70 (ScalaAtom)
+    SEPARATOR  reduce using rule 70 (ScalaAtom)
+
+
+State 96
+
+   69 ScalaAtom: `(` • Scalas `)`
+
+    ID  shift, and go to state 163
+    NUM  shift, and go to state 164
+    STRING  shift, and go to state 165
+    `(`  shift, and go to state 166
+    `$`  shift, and go to state 167
+
+    `)`  reduce using rule 85 (S_5)
+
+    Scala  go to state 109
+    Scalas  go to state 110
+    ScalaAtom  go to state 168
+    ScalaID  go to state 169
+    S_5_L  go to state 111
+    S_5  go to state 112
+
+
+State 97
+
+   72 ScalaID: `$` • ID
+
+    ID  shift, and go to state 113
+
+
+State 98
+
+   56 Action: `=>` Scala •
+   61 Scala: Scala • `::` Scala
+   62      | Scala • `+` Scala
+   63      | Scala • `*` Scala
+   64      | Scala • `/` Scala
+   65      | Scala • `-` Scala
+
+    `*`  shift, and go to state 114
+    `+`  shift, and go to state 115
+    `::`  shift, and go to state 116
+    `-`  shift, and go to state 117
+    `/`  shift, and go to state 118
+
+    $end   reduce using rule 56 (Action)
+    `|`  reduce using rule 56 (Action)
+    `%prec`  reduce using rule 56 (Action)
+    SEPARATOR  reduce using rule 56 (Action)
+
+
+State 99
+
+   57 Scala: ScalaAtom •
+
+    $end   reduce using rule 57 (Scala)
+    `|`  reduce using rule 57 (Scala)
+    `%prec`  reduce using rule 57 (Scala)
+    `*`  reduce using rule 57 (Scala)
+    `+`  reduce using rule 57 (Scala)
+    `::`  reduce using rule 57 (Scala)
+    `-`  reduce using rule 57 (Scala)
+    `/`  reduce using rule 57 (Scala)
+    SEPARATOR  reduce using rule 57 (Scala)
+
+
+State 100
+
+   58 Scala: ScalaID • `(` Scalas `)`
+   59      | ScalaID • `.` ScalaID `(` Scalas `)`
+   60      | ScalaID • `.` ScalaID
+   67 ScalaAtom: ScalaID •
+
+    `(`  shift, and go to state 119
+    `.`  shift, and go to state 120
+
+    $end   reduce using rule 67 (ScalaAtom)
+    `|`  reduce using rule 67 (ScalaAtom)
+    `%prec`  reduce using rule 67 (ScalaAtom)
+    `*`  reduce using rule 67 (ScalaAtom)
+    `+`  reduce using rule 67 (ScalaAtom)
+    `::`  reduce using rule 67 (ScalaAtom)
+    `-`  reduce using rule 67 (ScalaAtom)
+    `/`  reduce using rule 67 (ScalaAtom)
+    SEPARATOR  reduce using rule 67 (ScalaAtom)
+
+
+State 101
+
+   79 S_3: `%prec` • ID
+
+    ID  shift, and go to state 121
+
+
+State 102
+
+   34 Production: Fields Action Precedence •
+
+    $end   reduce using rule 34 (Production)
+    `|`  reduce using rule 34 (Production)
+    SEPARATOR  reduce using rule 34 (Production)
+
+
+State 103
+
+   48 Precedence: S_3 •
+
+    $end   reduce using rule 48 (Precedence)
+    `|`  reduce using rule 48 (Precedence)
+    SEPARATOR  reduce using rule 48 (Precedence)
+
+
+State 104
+
+   43 REPEAT: `*` •
+   45      | `*` • `.` `.`
+
+    `.`  shift, and go to state 122
+
+    $end   reduce using rule 43 (REPEAT)
+    ID  reduce using rule 43 (REPEAT)
+    CODE  reduce using rule 43 (REPEAT)
+    STRING  reduce using rule 43 (REPEAT)
+    `|`  reduce using rule 43 (REPEAT)
+    `(`  reduce using rule 43 (REPEAT)
+    `%prec`  reduce using rule 43 (REPEAT)
+    `=>`  reduce using rule 43 (REPEAT)
+    SEPARATOR  reduce using rule 43 (REPEAT)
+
+
+State 105
+
+   42 REPEAT: `?` •
+
+    $end   reduce using rule 42 (REPEAT)
+    ID  reduce using rule 42 (REPEAT)
+    CODE  reduce using rule 42 (REPEAT)
+    STRING  reduce using rule 42 (REPEAT)
+    `|`  reduce using rule 42 (REPEAT)
+    `(`  reduce using rule 42 (REPEAT)
+    `%prec`  reduce using rule 42 (REPEAT)
+    `=>`  reduce using rule 42 (REPEAT)
+    SEPARATOR  reduce using rule 42 (REPEAT)
+
+
+State 106
+
+   44 REPEAT: `+` •
+   46      | `+` • `.` `.`
+
+    `.`  shift, and go to state 123
+
+    $end   reduce using rule 44 (REPEAT)
+    ID  reduce using rule 44 (REPEAT)
+    CODE  reduce using rule 44 (REPEAT)
+    STRING  reduce using rule 44 (REPEAT)
+    `|`  reduce using rule 44 (REPEAT)
+    `(`  reduce using rule 44 (REPEAT)
+    `%prec`  reduce using rule 44 (REPEAT)
+    `=>`  reduce using rule 44 (REPEAT)
+    SEPARATOR  reduce using rule 44 (REPEAT)
+
+
+State 107
+
+   47 REPEAT: `.` • `.` `.`
+
+    `.`  shift, and go to state 124
+
+
+State 108
+
+   41 FIELD: `(` Fields `)` REPEAT •
+
+    $end   reduce using rule 41 (FIELD)
+    ID  reduce using rule 41 (FIELD)
+    CODE  reduce using rule 41 (FIELD)
+    STRING  reduce using rule 41 (FIELD)
+    `|`  reduce using rule 41 (FIELD)
+    `(`  reduce using rule 41 (FIELD)
+    `%prec`  reduce using rule 41 (FIELD)
+    `=>`  reduce using rule 41 (FIELD)
+    SEPARATOR  reduce using rule 41 (FIELD)
+
+
+State 109
+
+   61 Scala: Scala • `::` Scala
+   62      | Scala • `+` Scala
+   63      | Scala • `*` Scala
+   64      | Scala • `/` Scala
+   65      | Scala • `-` Scala
+   83 S_5_L: Scala •
+
+    `*`  shift, and go to state 170
+    `+`  shift, and go to state 171
+    `::`  shift, and go to state 172
+    `-`  shift, and go to state 173
+    `/`  shift, and go to state 174
+
+    `)`  reduce using rule 83 (S_5_L)
+    `,`  reduce using rule 83 (S_5_L)
+
+
+State 110
+
+   69 ScalaAtom: `(` Scalas • `)`
+
+    `)`  shift, and go to state 125
+
+
+State 111
+
+   84 S_5_L: S_5_L • `,` Scala
+   86 S_5: S_5_L •
+
+    `,`  shift, and go to state 126
+
+    `)`  reduce using rule 86 (S_5)
+
+
+State 112
+
+   66 Scalas: S_5 •
+
+    `)`  reduce using rule 66 (Scalas)
+
+
+State 113
+
+   72 ScalaID: `$` ID •
+
+    $end   reduce using rule 72 (ScalaID)
+    `|`  reduce using rule 72 (ScalaID)
+    `(`  reduce using rule 72 (ScalaID)
+    `%prec`  reduce using rule 72 (ScalaID)
+    `*`  reduce using rule 72 (ScalaID)
+    `+`  reduce using rule 72 (ScalaID)
+    `::`  reduce using rule 72 (ScalaID)
+    `-`  reduce using rule 72 (ScalaID)
+    `/`  reduce using rule 72 (ScalaID)
+    `.`  reduce using rule 72 (ScalaID)
+    SEPARATOR  reduce using rule 72 (ScalaID)
+
+
+State 114
+
+   63 Scala: Scala `*` • Scala
+
+    ID  shift, and go to state 93
+    NUM  shift, and go to state 94
+    STRING  shift, and go to state 95
+    `(`  shift, and go to state 96
+    `$`  shift, and go to state 97
+
+    Scala  go to state 127
+    ScalaAtom  go to state 99
+    ScalaID  go to state 100
+
+
+State 115
+
+   62 Scala: Scala `+` • Scala
+
+    ID  shift, and go to state 93
+    NUM  shift, and go to state 94
+    STRING  shift, and go to state 95
+    `(`  shift, and go to state 96
+    `$`  shift, and go to state 97
+
+    Scala  go to state 128
+    ScalaAtom  go to state 99
+    ScalaID  go to state 100
+
+
+State 116
+
+   61 Scala: Scala `::` • Scala
+
+    ID  shift, and go to state 93
+    NUM  shift, and go to state 94
+    STRING  shift, and go to state 95
+    `(`  shift, and go to state 96
+    `$`  shift, and go to state 97
+
+    Scala  go to state 129
+    ScalaAtom  go to state 99
+    ScalaID  go to state 100
+
+
+State 117
+
+   65 Scala: Scala `-` • Scala
+
+    ID  shift, and go to state 93
+    NUM  shift, and go to state 94
+    STRING  shift, and go to state 95
+    `(`  shift, and go to state 96
+    `$`  shift, and go to state 97
+
+    Scala  go to state 130
+    ScalaAtom  go to state 99
+    ScalaID  go to state 100
+
+
+State 118
+
+   64 Scala: Scala `/` • Scala
+
+    ID  shift, and go to state 93
+    NUM  shift, and go to state 94
+    STRING  shift, and go to state 95
+    `(`  shift, and go to state 96
+    `$`  shift, and go to state 97
+
+    Scala  go to state 131
+    ScalaAtom  go to state 99
+    ScalaID  go to state 100
+
+
+State 119
+
+   58 Scala: ScalaID `(` • Scalas `)`
+
+    ID  shift, and go to state 163
+    NUM  shift, and go to state 164
+    STRING  shift, and go to state 165
+    `(`  shift, and go to state 166
+    `$`  shift, and go to state 167
+
+    `)`  reduce using rule 85 (S_5)
+
+    Scala  go to state 109
+    Scalas  go to state 132
+    ScalaAtom  go to state 168
+    ScalaID  go to state 169
+    S_5_L  go to state 111
+    S_5  go to state 112
+
+
+State 120
+
+   59 Scala: ScalaID `.` • ScalaID `(` Scalas `)`
+   60      | ScalaID `.` • ScalaID
+
+    ID  shift, and go to state 175
+    `$`  shift, and go to state 176
+
+    ScalaID  go to state 133
+
+
+State 121
+
+   79 S_3: `%prec` ID •
+
+    $end   reduce using rule 79 (S_3)
+    `|`  reduce using rule 79 (S_3)
+    SEPARATOR  reduce using rule 79 (S_3)
+
+
+State 122
+
+   45 REPEAT: `*` `.` • `.`
+
+    `.`  shift, and go to state 134
+
+
+State 123
+
+   46 REPEAT: `+` `.` • `.`
+
+    `.`  shift, and go to state 135
+
+
+State 124
+
+   47 REPEAT: `.` `.` • `.`
+
+    `.`  shift, and go to state 136
+
+
+State 125
+
+   69 ScalaAtom: `(` Scalas `)` •
+
+    $end   reduce using rule 69 (ScalaAtom)
+    `|`  reduce using rule 69 (ScalaAtom)
+    `%prec`  reduce using rule 69 (ScalaAtom)
+    `*`  reduce using rule 69 (ScalaAtom)
+    `+`  reduce using rule 69 (ScalaAtom)
+    `::`  reduce using rule 69 (ScalaAtom)
+    `-`  reduce using rule 69 (ScalaAtom)
+    `/`  reduce using rule 69 (ScalaAtom)
+    SEPARATOR  reduce using rule 69 (ScalaAtom)
+
+
+State 126
+
+   84 S_5_L: S_5_L `,` • Scala
+
+    ID  shift, and go to state 163
+    NUM  shift, and go to state 164
+    STRING  shift, and go to state 165
+    `(`  shift, and go to state 166
+    `$`  shift, and go to state 167
+
+    Scala  go to state 137
+    ScalaAtom  go to state 168
+    ScalaID  go to state 169
+
+
+State 127
+
+   61 Scala: Scala • `::` Scala
+   62      | Scala • `+` Scala
+   63      | Scala • `*` Scala
+   63      | Scala `*` Scala •
+   64      | Scala • `/` Scala
+   65      | Scala • `-` Scala
+
+    $end   reduce using rule 63 (Scala)
+    `|`  reduce using rule 63 (Scala)
+    `%prec`  reduce using rule 63 (Scala)
+    `*`  reduce using rule 63 (Scala)
+    `+`  reduce using rule 63 (Scala)
+    `::`  reduce using rule 63 (Scala)
+    `-`  reduce using rule 63 (Scala)
+    `/`  reduce using rule 63 (Scala)
+    SEPARATOR  reduce using rule 63 (Scala)
+
+
+State 128
+
+   61 Scala: Scala • `::` Scala
+   62      | Scala • `+` Scala
+   62      | Scala `+` Scala •
+   63      | Scala • `*` Scala
+   64      | Scala • `/` Scala
+   65      | Scala • `-` Scala
+
+    `*`  shift, and go to state 114
+    `/`  shift, and go to state 118
+
+    $end   reduce using rule 62 (Scala)
+    `|`  reduce using rule 62 (Scala)
+    `%prec`  reduce using rule 62 (Scala)
+    `+`  reduce using rule 62 (Scala)
+    `::`  reduce using rule 62 (Scala)
+    `-`  reduce using rule 62 (Scala)
+    SEPARATOR  reduce using rule 62 (Scala)
+
+
+State 129
+
+   61 Scala: Scala • `::` Scala
+   61      | Scala `::` Scala •
+   62      | Scala • `+` Scala
+   63      | Scala • `*` Scala
+   64      | Scala • `/` Scala
+   65      | Scala • `-` Scala
+
+    `*`  shift, and go to state 114
+    `+`  shift, and go to state 115
+    `::`  shift, and go to state 116
+    `-`  shift, and go to state 117
+    `/`  shift, and go to state 118
+
+    $end   reduce using rule 61 (Scala)
+    `|`  reduce using rule 61 (Scala)
+    `%prec`  reduce using rule 61 (Scala)
+    SEPARATOR  reduce using rule 61 (Scala)
+
+
+State 130
+
+   61 Scala: Scala • `::` Scala
+   62      | Scala • `+` Scala
+   63      | Scala • `*` Scala
+   64      | Scala • `/` Scala
+   65      | Scala • `-` Scala
+   65      | Scala `-` Scala •
+
+    `*`  shift, and go to state 114
+    `/`  shift, and go to state 118
+
+    $end   reduce using rule 65 (Scala)
+    `|`  reduce using rule 65 (Scala)
+    `%prec`  reduce using rule 65 (Scala)
+    `+`  reduce using rule 65 (Scala)
+    `::`  reduce using rule 65 (Scala)
+    `-`  reduce using rule 65 (Scala)
+    SEPARATOR  reduce using rule 65 (Scala)
+
+
+State 131
+
+   61 Scala: Scala • `::` Scala
+   62      | Scala • `+` Scala
+   63      | Scala • `*` Scala
+   64      | Scala • `/` Scala
+   64      | Scala `/` Scala •
+   65      | Scala • `-` Scala
+
+    $end   reduce using rule 64 (Scala)
+    `|`  reduce using rule 64 (Scala)
+    `%prec`  reduce using rule 64 (Scala)
+    `*`  reduce using rule 64 (Scala)
+    `+`  reduce using rule 64 (Scala)
+    `::`  reduce using rule 64 (Scala)
+    `-`  reduce using rule 64 (Scala)
+    `/`  reduce using rule 64 (Scala)
+    SEPARATOR  reduce using rule 64 (Scala)
+
+
+State 132
+
+   58 Scala: ScalaID `(` Scalas • `)`
+
+    `)`  shift, and go to state 138
+
+
+State 133
+
+   59 Scala: ScalaID `.` ScalaID • `(` Scalas `)`
+   60      | ScalaID `.` ScalaID •
+
+    `(`  shift, and go to state 139
+
+    $end   reduce using rule 60 (Scala)
+    `|`  reduce using rule 60 (Scala)
+    `%prec`  reduce using rule 60 (Scala)
+    `*`  reduce using rule 60 (Scala)
+    `+`  reduce using rule 60 (Scala)
+    `::`  reduce using rule 60 (Scala)
+    `-`  reduce using rule 60 (Scala)
+    `/`  reduce using rule 60 (Scala)
+    SEPARATOR  reduce using rule 60 (Scala)
+
+
+State 134
+
+   45 REPEAT: `*` `.` `.` •
+
+    $end   reduce using rule 45 (REPEAT)
+    ID  reduce using rule 45 (REPEAT)
+    CODE  reduce using rule 45 (REPEAT)
+    STRING  reduce using rule 45 (REPEAT)
+    `|`  reduce using rule 45 (REPEAT)
+    `(`  reduce using rule 45 (REPEAT)
+    `%prec`  reduce using rule 45 (REPEAT)
+    `=>`  reduce using rule 45 (REPEAT)
+    SEPARATOR  reduce using rule 45 (REPEAT)
+
+
+State 135
+
+   46 REPEAT: `+` `.` `.` •
+
+    $end   reduce using rule 46 (REPEAT)
+    ID  reduce using rule 46 (REPEAT)
+    CODE  reduce using rule 46 (REPEAT)
+    STRING  reduce using rule 46 (REPEAT)
+    `|`  reduce using rule 46 (REPEAT)
+    `(`  reduce using rule 46 (REPEAT)
+    `%prec`  reduce using rule 46 (REPEAT)
+    `=>`  reduce using rule 46 (REPEAT)
+    SEPARATOR  reduce using rule 46 (REPEAT)
+
+
+State 136
+
+   47 REPEAT: `.` `.` `.` •
+
+    $end   reduce using rule 47 (REPEAT)
+    ID  reduce using rule 47 (REPEAT)
+    CODE  reduce using rule 47 (REPEAT)
+    STRING  reduce using rule 47 (REPEAT)
+    `|`  reduce using rule 47 (REPEAT)
+    `(`  reduce using rule 47 (REPEAT)
+    `%prec`  reduce using rule 47 (REPEAT)
+    `=>`  reduce using rule 47 (REPEAT)
+    SEPARATOR  reduce using rule 47 (REPEAT)
+
+
+State 137
+
+   61 Scala: Scala • `::` Scala
+   62      | Scala • `+` Scala
+   63      | Scala • `*` Scala
+   64      | Scala • `/` Scala
+   65      | Scala • `-` Scala
+   84 S_5_L: S_5_L `,` Scala •
+
+    `*`  shift, and go to state 170
+    `+`  shift, and go to state 171
+    `::`  shift, and go to state 172
+    `-`  shift, and go to state 173
+    `/`  shift, and go to state 174
+
+    `)`  reduce using rule 84 (S_5_L)
+    `,`  reduce using rule 84 (S_5_L)
+
+
+State 138
+
+   58 Scala: ScalaID `(` Scalas `)` •
+
+    $end   reduce using rule 58 (Scala)
+    `|`  reduce using rule 58 (Scala)
+    `%prec`  reduce using rule 58 (Scala)
+    `*`  reduce using rule 58 (Scala)
+    `+`  reduce using rule 58 (Scala)
+    `::`  reduce using rule 58 (Scala)
+    `-`  reduce using rule 58 (Scala)
+    `/`  reduce using rule 58 (Scala)
+    SEPARATOR  reduce using rule 58 (Scala)
+
+
+State 139
+
+   59 Scala: ScalaID `.` ScalaID `(` • Scalas `)`
+
+    ID  shift, and go to state 163
+    NUM  shift, and go to state 164
+    STRING  shift, and go to state 165
+    `(`  shift, and go to state 166
+    `$`  shift, and go to state 167
+
+    `)`  reduce using rule 85 (S_5)
+
+    Scala  go to state 109
+    Scalas  go to state 140
+    ScalaAtom  go to state 168
+    ScalaID  go to state 169
+    S_5_L  go to state 111
+    S_5  go to state 112
+
+
+State 140
+
+   59 Scala: ScalaID `.` ScalaID `(` Scalas • `)`
+
+    `)`  shift, and go to state 141
+
+
+State 141
+
+   59 Scala: ScalaID `.` ScalaID `(` Scalas `)` •
+
+    $end   reduce using rule 59 (Scala)
+    `|`  reduce using rule 59 (Scala)
+    `%prec`  reduce using rule 59 (Scala)
+    `*`  reduce using rule 59 (Scala)
+    `+`  reduce using rule 59 (Scala)
+    `::`  reduce using rule 59 (Scala)
+    `-`  reduce using rule 59 (Scala)
+    `/`  reduce using rule 59 (Scala)
+    SEPARATOR  reduce using rule 59 (Scala)
+
+
+State 142
+
+   20 STRINGorID: ID •
+
+    ID  reduce using rule 20 (STRINGorID)
+    STRING  reduce using rule 20 (STRINGorID)
+    `:`  reduce using rule 20 (STRINGorID)
+    `(`  reduce using rule 20 (STRINGorID)
+    `%path`  reduce using rule 20 (STRINGorID)
+    `%notation`  reduce using rule 20 (STRINGorID)
+    `%package`  reduce using rule 20 (STRINGorID)
+    `%token`  reduce using rule 20 (STRINGorID)
+    `%left`  reduce using rule 20 (STRINGorID)
+    `%right`  reduce using rule 20 (STRINGorID)
+    `%non`  reduce using rule 20 (STRINGorID)
+    `%rules`  reduce using rule 20 (STRINGorID)
+    `%include`  reduce using rule 20 (STRINGorID)
+    `%prec`  reduce using rule 20 (STRINGorID)
+    `%tables`  reduce using rule 20 (STRINGorID)
+    `%dialect`  reduce using rule 20 (STRINGorID)
+    `%scalalr`  reduce using rule 20 (STRINGorID)
+    `%signature`  reduce using rule 20 (STRINGorID)
+
+
+State 143
+
+   21 STRINGorID: STRING •
+
+    ID  reduce using rule 21 (STRINGorID)
+    STRING  reduce using rule 21 (STRINGorID)
+    `:`  reduce using rule 21 (STRINGorID)
+    `(`  reduce using rule 21 (STRINGorID)
+    `%path`  reduce using rule 21 (STRINGorID)
+    `%notation`  reduce using rule 21 (STRINGorID)
+    `%package`  reduce using rule 21 (STRINGorID)
+    `%token`  reduce using rule 21 (STRINGorID)
+    `%left`  reduce using rule 21 (STRINGorID)
+    `%right`  reduce using rule 21 (STRINGorID)
+    `%non`  reduce using rule 21 (STRINGorID)
+    `%rules`  reduce using rule 21 (STRINGorID)
+    `%include`  reduce using rule 21 (STRINGorID)
+    `%prec`  reduce using rule 21 (STRINGorID)
+    `%tables`  reduce using rule 21 (STRINGorID)
+    `%dialect`  reduce using rule 21 (STRINGorID)
+    `%scalalr`  reduce using rule 21 (STRINGorID)
+    `%signature`  reduce using rule 21 (STRINGorID)
+
+
+State 144
+
+   49 Type: ID •
+   50      | ID • `[` Types `]`
+
+    `[`  shift, and go to state 177
+
+    `)`  reduce using rule 49 (Type)
+
+
+State 145
+
+   51 Type: `(` • Types `)`
+   52      | `(` • `)`
+
+    ID  shift, and go to state 146
+    `(`  shift, and go to state 147
+    `)`  shift, and go to state 178
+
+    Type  go to state 58
+    Types  go to state 179
+    S_4_L  go to state 60
+    S_4  go to state 61
+
+
+State 146
+
+   49 Type: ID •
+   50      | ID • `[` Types `]`
+
+    `[`  shift, and go to state 180
+
+    `)`  reduce using rule 49 (Type)
+    `,`  reduce using rule 49 (Type)
+
+
+State 147
+
+   51 Type: `(` • Types `)`
+   52      | `(` • `)`
+
+    ID  shift, and go to state 146
+    `(`  shift, and go to state 147
+    `)`  shift, and go to state 181
+
+    Type  go to state 58
+    Types  go to state 182
+    S_4_L  go to state 60
+    S_4  go to state 61
+
+
+State 148
+
+   49 Type: ID •
+   50      | ID • `[` Types `]`
+
+    `[`  shift, and go to state 183
+
+    `=`  reduce using rule 49 (Type)
+
+
+State 149
+
+   51 Type: `(` • Types `)`
+   52      | `(` • `)`
+
+    ID  shift, and go to state 146
+    `(`  shift, and go to state 147
+    `)`  shift, and go to state 184
+
+    Type  go to state 58
+    Types  go to state 185
+    S_4_L  go to state 60
+    S_4  go to state 61
+
+
+State 150
+
+   49 Type: ID •
+   50      | ID • `[` Types `]`
+
+    `[`  shift, and go to state 186
+
+    `]`  reduce using rule 49 (Type)
+    `,`  reduce using rule 49 (Type)
+
+
+State 151
+
+   51 Type: `(` • Types `)`
+   52      | `(` • `)`
+
+    ID  shift, and go to state 146
+    `(`  shift, and go to state 147
+    `)`  shift, and go to state 187
+
+    Type  go to state 58
+    Types  go to state 188
+    S_4_L  go to state 60
+    S_4  go to state 61
+
+
+State 152
+
+   80 S_4_L: Type •
+
+    `]`  reduce using rule 80 (S_4_L)
+    `,`  reduce using rule 80 (S_4_L)
+
+
+State 153
+
+   81 S_4_L: S_4_L • `,` Type
+   82 S_4: S_4_L •
+
+    `,`  shift, and go to state 189
+
+    `]`  reduce using rule 82 (S_4)
+
+
+State 154
+
+   53 Types: S_4 •
+
+    `]`  reduce using rule 53 (Types)
+
+
+State 155
+
+   38 NamedField: ID • `:` FIELD
+   39 FIELD: ID •
+
+    `:`  shift, and go to state 190
+
+    ID  reduce using rule 39 (FIELD)
+    STRING  reduce using rule 39 (FIELD)
+    `(`  reduce using rule 39 (FIELD)
+    `)`  reduce using rule 39 (FIELD)
+
+
+State 156
+
+   40 FIELD: STRING •
+
+    ID  reduce using rule 40 (FIELD)
+    STRING  reduce using rule 40 (FIELD)
+    `(`  reduce using rule 40 (FIELD)
+    `)`  reduce using rule 40 (FIELD)
+
+
+State 157
+
+   41 FIELD: `(` • Fields `)` REPEAT
+
+    ID  shift, and go to state 155
+    STRING  shift, and go to state 156
+    `(`  shift, and go to state 157
+    `%empty`  shift, and go to state 158
+
+    Fields  go to state 191
+    NamedField  go to state 159
+    FIELD  go to state 160
+    S_2_L  go to state 161
+    S_2  go to state 162
+
+
+State 158
+
+   35 Fields: `%empty` •
+
+    `)`  reduce using rule 35 (Fields)
+
+
+State 159
+
+   75 S_2_L: NamedField •
+
+    ID  reduce using rule 75 (S_2_L)
+    STRING  reduce using rule 75 (S_2_L)
+    `(`  reduce using rule 75 (S_2_L)
+    `)`  reduce using rule 75 (S_2_L)
+
+
+State 160
+
+   37 NamedField: FIELD •
+
+    ID  reduce using rule 37 (NamedField)
+    STRING  reduce using rule 37 (NamedField)
+    `(`  reduce using rule 37 (NamedField)
+    `)`  reduce using rule 37 (NamedField)
+
+
+State 161
+
+   76 S_2_L: S_2_L • NamedField
+   77 S_2: S_2_L •
+
+    ID  shift, and go to state 155
+    STRING  shift, and go to state 156
+    `(`  shift, and go to state 157
+
+    `)`  reduce using rule 77 (S_2)
+
+    NamedField  go to state 192
+    FIELD  go to state 160
+
+
+State 162
+
+   36 Fields: S_2 •
+
+    `)`  reduce using rule 36 (Fields)
+
+
+State 163
+
+   71 ScalaID: ID •
+
+    `(`  reduce using rule 71 (ScalaID)
+    `)`  reduce using rule 71 (ScalaID)
+    `,`  reduce using rule 71 (ScalaID)
+    `*`  reduce using rule 71 (ScalaID)
+    `+`  reduce using rule 71 (ScalaID)
+    `::`  reduce using rule 71 (ScalaID)
+    `-`  reduce using rule 71 (ScalaID)
+    `/`  reduce using rule 71 (ScalaID)
+    `.`  reduce using rule 71 (ScalaID)
+
+
+State 164
+
+   68 ScalaAtom: NUM •
+
+    `)`  reduce using rule 68 (ScalaAtom)
+    `,`  reduce using rule 68 (ScalaAtom)
+    `*`  reduce using rule 68 (ScalaAtom)
+    `+`  reduce using rule 68 (ScalaAtom)
+    `::`  reduce using rule 68 (ScalaAtom)
+    `-`  reduce using rule 68 (ScalaAtom)
+    `/`  reduce using rule 68 (ScalaAtom)
+
+
+State 165
+
+   70 ScalaAtom: STRING •
+
+    `)`  reduce using rule 70 (ScalaAtom)
+    `,`  reduce using rule 70 (ScalaAtom)
+    `*`  reduce using rule 70 (ScalaAtom)
+    `+`  reduce using rule 70 (ScalaAtom)
+    `::`  reduce using rule 70 (ScalaAtom)
+    `-`  reduce using rule 70 (ScalaAtom)
+    `/`  reduce using rule 70 (ScalaAtom)
+
+
+State 166
+
+   69 ScalaAtom: `(` • Scalas `)`
+
+    ID  shift, and go to state 163
+    NUM  shift, and go to state 164
+    STRING  shift, and go to state 165
+    `(`  shift, and go to state 166
+    `$`  shift, and go to state 167
+
+    `)`  reduce using rule 85 (S_5)
+
+    Scala  go to state 109
+    Scalas  go to state 193
+    ScalaAtom  go to state 168
+    ScalaID  go to state 169
+    S_5_L  go to state 111
+    S_5  go to state 112
+
+
+State 167
+
+   72 ScalaID: `$` • ID
+
+    ID  shift, and go to state 194
+
+
+State 168
+
+   57 Scala: ScalaAtom •
+
+    `)`  reduce using rule 57 (Scala)
+    `,`  reduce using rule 57 (Scala)
+    `*`  reduce using rule 57 (Scala)
+    `+`  reduce using rule 57 (Scala)
+    `::`  reduce using rule 57 (Scala)
+    `-`  reduce using rule 57 (Scala)
+    `/`  reduce using rule 57 (Scala)
+
+
+State 169
+
+   58 Scala: ScalaID • `(` Scalas `)`
+   59      | ScalaID • `.` ScalaID `(` Scalas `)`
+   60      | ScalaID • `.` ScalaID
+   67 ScalaAtom: ScalaID •
+
+    `(`  shift, and go to state 195
+    `.`  shift, and go to state 196
+
+    `)`  reduce using rule 67 (ScalaAtom)
+    `,`  reduce using rule 67 (ScalaAtom)
+    `*`  reduce using rule 67 (ScalaAtom)
+    `+`  reduce using rule 67 (ScalaAtom)
+    `::`  reduce using rule 67 (ScalaAtom)
+    `-`  reduce using rule 67 (ScalaAtom)
+    `/`  reduce using rule 67 (ScalaAtom)
+
+
+State 170
+
+   63 Scala: Scala `*` • Scala
+
+    ID  shift, and go to state 163
+    NUM  shift, and go to state 164
+    STRING  shift, and go to state 165
+    `(`  shift, and go to state 166
+    `$`  shift, and go to state 167
+
+    Scala  go to state 197
+    ScalaAtom  go to state 168
+    ScalaID  go to state 169
+
+
+State 171
+
+   62 Scala: Scala `+` • Scala
+
+    ID  shift, and go to state 163
+    NUM  shift, and go to state 164
+    STRING  shift, and go to state 165
+    `(`  shift, and go to state 166
+    `$`  shift, and go to state 167
+
+    Scala  go to state 198
+    ScalaAtom  go to state 168
+    ScalaID  go to state 169
+
+
+State 172
+
+   61 Scala: Scala `::` • Scala
+
+    ID  shift, and go to state 163
+    NUM  shift, and go to state 164
+    STRING  shift, and go to state 165
+    `(`  shift, and go to state 166
+    `$`  shift, and go to state 167
+
+    Scala  go to state 199
+    ScalaAtom  go to state 168
+    ScalaID  go to state 169
+
+
+State 173
+
+   65 Scala: Scala `-` • Scala
+
+    ID  shift, and go to state 163
+    NUM  shift, and go to state 164
+    STRING  shift, and go to state 165
+    `(`  shift, and go to state 166
+    `$`  shift, and go to state 167
+
+    Scala  go to state 200
+    ScalaAtom  go to state 168
+    ScalaID  go to state 169
+
+
+State 174
+
+   64 Scala: Scala `/` • Scala
+
+    ID  shift, and go to state 163
+    NUM  shift, and go to state 164
+    STRING  shift, and go to state 165
+    `(`  shift, and go to state 166
+    `$`  shift, and go to state 167
+
+    Scala  go to state 201
+    ScalaAtom  go to state 168
+    ScalaID  go to state 169
+
+
+State 175
+
+   71 ScalaID: ID •
+
+    $end   reduce using rule 71 (ScalaID)
+    `|`  reduce using rule 71 (ScalaID)
+    `(`  reduce using rule 71 (ScalaID)
+    `%prec`  reduce using rule 71 (ScalaID)
+    `*`  reduce using rule 71 (ScalaID)
+    `+`  reduce using rule 71 (ScalaID)
+    `::`  reduce using rule 71 (ScalaID)
+    `-`  reduce using rule 71 (ScalaID)
+    `/`  reduce using rule 71 (ScalaID)
+    SEPARATOR  reduce using rule 71 (ScalaID)
+
+
+State 176
+
+   72 ScalaID: `$` • ID
+
+    ID  shift, and go to state 202
+
+
+State 177
+
+   50 Type: ID `[` • Types `]`
+
+    ID  shift, and go to state 150
+    `(`  shift, and go to state 151
+
+    Type  go to state 152
+    Types  go to state 203
+    S_4_L  go to state 153
+    S_4  go to state 154
+
+
+State 178
+
+   52 Type: `(` `)` •
+
+    `)`  reduce using rule 52 (Type)
+
+
+State 179
+
+   51 Type: `(` Types • `)`
+
+    `)`  shift, and go to state 204
+
+
+State 180
+
+   50 Type: ID `[` • Types `]`
+
+    ID  shift, and go to state 150
+    `(`  shift, and go to state 151
+
+    Type  go to state 152
+    Types  go to state 205
+    S_4_L  go to state 153
+    S_4  go to state 154
+
+
+State 181
+
+   52 Type: `(` `)` •
+
+    `)`  reduce using rule 52 (Type)
+    `,`  reduce using rule 52 (Type)
+
+
+State 182
+
+   51 Type: `(` Types • `)`
+
+    `)`  shift, and go to state 206
+
+
+State 183
+
+   50 Type: ID `[` • Types `]`
+
+    ID  shift, and go to state 150
+    `(`  shift, and go to state 151
+
+    Type  go to state 152
+    Types  go to state 207
+    S_4_L  go to state 153
+    S_4  go to state 154
+
+
+State 184
+
+   52 Type: `(` `)` •
+
+    `=`  reduce using rule 52 (Type)
+
+
+State 185
+
+   51 Type: `(` Types • `)`
+
+    `)`  shift, and go to state 208
+
+
+State 186
+
+   50 Type: ID `[` • Types `]`
+
+    ID  shift, and go to state 150
+    `(`  shift, and go to state 151
+
+    Type  go to state 152
+    Types  go to state 209
+    S_4_L  go to state 153
+    S_4  go to state 154
+
+
+State 187
+
+   52 Type: `(` `)` •
+
+    `]`  reduce using rule 52 (Type)
+    `,`  reduce using rule 52 (Type)
+
+
+State 188
+
+   51 Type: `(` Types • `)`
+
+    `)`  shift, and go to state 210
+
+
+State 189
+
+   81 S_4_L: S_4_L `,` • Type
+
+    ID  shift, and go to state 150
+    `(`  shift, and go to state 151
+
+    Type  go to state 211
+
+
+State 190
+
+   38 NamedField: ID `:` • FIELD
+
+    ID  shift, and go to state 212
+    STRING  shift, and go to state 156
+    `(`  shift, and go to state 157
+
+    FIELD  go to state 213
+
+
+State 191
+
+   41 FIELD: `(` Fields • `)` REPEAT
+
+    `)`  shift, and go to state 214
+
+
+State 192
+
+   76 S_2_L: S_2_L NamedField •
+
+    ID  reduce using rule 76 (S_2_L)
+    STRING  reduce using rule 76 (S_2_L)
+    `(`  reduce using rule 76 (S_2_L)
+    `)`  reduce using rule 76 (S_2_L)
+
+
+State 193
+
+   69 ScalaAtom: `(` Scalas • `)`
+
+    `)`  shift, and go to state 215
+
+
+State 194
+
+   72 ScalaID: `$` ID •
+
+    `(`  reduce using rule 72 (ScalaID)
+    `)`  reduce using rule 72 (ScalaID)
+    `,`  reduce using rule 72 (ScalaID)
+    `*`  reduce using rule 72 (ScalaID)
+    `+`  reduce using rule 72 (ScalaID)
+    `::`  reduce using rule 72 (ScalaID)
+    `-`  reduce using rule 72 (ScalaID)
+    `/`  reduce using rule 72 (ScalaID)
+    `.`  reduce using rule 72 (ScalaID)
+
+
+State 195
+
+   58 Scala: ScalaID `(` • Scalas `)`
+
+    ID  shift, and go to state 163
+    NUM  shift, and go to state 164
+    STRING  shift, and go to state 165
+    `(`  shift, and go to state 166
+    `$`  shift, and go to state 167
+
+    `)`  reduce using rule 85 (S_5)
+
+    Scala  go to state 109
+    Scalas  go to state 216
+    ScalaAtom  go to state 168
+    ScalaID  go to state 169
+    S_5_L  go to state 111
+    S_5  go to state 112
+
+
+State 196
+
+   59 Scala: ScalaID `.` • ScalaID `(` Scalas `)`
+   60      | ScalaID `.` • ScalaID
+
+    ID  shift, and go to state 217
+    `$`  shift, and go to state 218
+
+    ScalaID  go to state 219
+
+
+State 197
+
+   61 Scala: Scala • `::` Scala
+   62      | Scala • `+` Scala
+   63      | Scala • `*` Scala
+   63      | Scala `*` Scala •
+   64      | Scala • `/` Scala
+   65      | Scala • `-` Scala
+
+    `)`  reduce using rule 63 (Scala)
+    `,`  reduce using rule 63 (Scala)
+    `*`  reduce using rule 63 (Scala)
+    `+`  reduce using rule 63 (Scala)
+    `::`  reduce using rule 63 (Scala)
+    `-`  reduce using rule 63 (Scala)
+    `/`  reduce using rule 63 (Scala)
+
+
+State 198
+
+   61 Scala: Scala • `::` Scala
+   62      | Scala • `+` Scala
+   62      | Scala `+` Scala •
+   63      | Scala • `*` Scala
+   64      | Scala • `/` Scala
+   65      | Scala • `-` Scala
+
+    `*`  shift, and go to state 170
+    `/`  shift, and go to state 174
+
+    `)`  reduce using rule 62 (Scala)
+    `,`  reduce using rule 62 (Scala)
+    `+`  reduce using rule 62 (Scala)
+    `::`  reduce using rule 62 (Scala)
+    `-`  reduce using rule 62 (Scala)
+
+
+State 199
+
+   61 Scala: Scala • `::` Scala
+   61      | Scala `::` Scala •
+   62      | Scala • `+` Scala
+   63      | Scala • `*` Scala
+   64      | Scala • `/` Scala
+   65      | Scala • `-` Scala
+
+    `*`  shift, and go to state 170
+    `+`  shift, and go to state 171
+    `::`  shift, and go to state 172
+    `-`  shift, and go to state 173
+    `/`  shift, and go to state 174
+
+    `)`  reduce using rule 61 (Scala)
+    `,`  reduce using rule 61 (Scala)
+
+
+State 200
+
+   61 Scala: Scala • `::` Scala
+   62      | Scala • `+` Scala
+   63      | Scala • `*` Scala
+   64      | Scala • `/` Scala
+   65      | Scala • `-` Scala
+   65      | Scala `-` Scala •
+
+    `*`  shift, and go to state 170
+    `/`  shift, and go to state 174
+
+    `)`  reduce using rule 65 (Scala)
+    `,`  reduce using rule 65 (Scala)
+    `+`  reduce using rule 65 (Scala)
+    `::`  reduce using rule 65 (Scala)
+    `-`  reduce using rule 65 (Scala)
+
+
+State 201
+
+   61 Scala: Scala • `::` Scala
+   62      | Scala • `+` Scala
+   63      | Scala • `*` Scala
+   64      | Scala • `/` Scala
+   64      | Scala `/` Scala •
+   65      | Scala • `-` Scala
+
+    `)`  reduce using rule 64 (Scala)
+    `,`  reduce using rule 64 (Scala)
+    `*`  reduce using rule 64 (Scala)
+    `+`  reduce using rule 64 (Scala)
+    `::`  reduce using rule 64 (Scala)
+    `-`  reduce using rule 64 (Scala)
+    `/`  reduce using rule 64 (Scala)
+
+
+State 202
+
+   72 ScalaID: `$` ID •
+
+    $end   reduce using rule 72 (ScalaID)
+    `|`  reduce using rule 72 (ScalaID)
+    `(`  reduce using rule 72 (ScalaID)
+    `%prec`  reduce using rule 72 (ScalaID)
+    `*`  reduce using rule 72 (ScalaID)
+    `+`  reduce using rule 72 (ScalaID)
+    `::`  reduce using rule 72 (ScalaID)
+    `-`  reduce using rule 72 (ScalaID)
+    `/`  reduce using rule 72 (ScalaID)
+    SEPARATOR  reduce using rule 72 (ScalaID)
+
+
+State 203
+
+   50 Type: ID `[` Types • `]`
+
+    `]`  shift, and go to state 220
+
+
+State 204
+
+   51 Type: `(` Types `)` •
+
+    `)`  reduce using rule 51 (Type)
+
+
+State 205
+
+   50 Type: ID `[` Types • `]`
+
+    `]`  shift, and go to state 221
+
+
+State 206
+
+   51 Type: `(` Types `)` •
+
+    `)`  reduce using rule 51 (Type)
+    `,`  reduce using rule 51 (Type)
+
+
+State 207
+
+   50 Type: ID `[` Types • `]`
+
+    `]`  shift, and go to state 222
+
+
+State 208
+
+   51 Type: `(` Types `)` •
+
+    `=`  reduce using rule 51 (Type)
+
+
+State 209
+
+   50 Type: ID `[` Types • `]`
+
+    `]`  shift, and go to state 223
+
+
+State 210
+
+   51 Type: `(` Types `)` •
+
+    `]`  reduce using rule 51 (Type)
+    `,`  reduce using rule 51 (Type)
+
+
+State 211
+
+   81 S_4_L: S_4_L `,` Type •
+
+    `]`  reduce using rule 81 (S_4_L)
+    `,`  reduce using rule 81 (S_4_L)
+
+
+State 212
+
+   39 FIELD: ID •
+
+    ID  reduce using rule 39 (FIELD)
+    STRING  reduce using rule 39 (FIELD)
+    `(`  reduce using rule 39 (FIELD)
+    `)`  reduce using rule 39 (FIELD)
+
+
+State 213
+
+   38 NamedField: ID `:` FIELD •
+
+    ID  reduce using rule 38 (NamedField)
+    STRING  reduce using rule 38 (NamedField)
+    `(`  reduce using rule 38 (NamedField)
+    `)`  reduce using rule 38 (NamedField)
+
+
+State 214
+
+   41 FIELD: `(` Fields `)` • REPEAT
+
+    `*`  shift, and go to state 224
+    `?`  shift, and go to state 225
+    `+`  shift, and go to state 226
+    `.`  shift, and go to state 227
+
+    REPEAT  go to state 228
+
+
+State 215
+
+   69 ScalaAtom: `(` Scalas `)` •
+
+    `)`  reduce using rule 69 (ScalaAtom)
+    `,`  reduce using rule 69 (ScalaAtom)
+    `*`  reduce using rule 69 (ScalaAtom)
+    `+`  reduce using rule 69 (ScalaAtom)
+    `::`  reduce using rule 69 (ScalaAtom)
+    `-`  reduce using rule 69 (ScalaAtom)
+    `/`  reduce using rule 69 (ScalaAtom)
+
+
+State 216
+
+   58 Scala: ScalaID `(` Scalas • `)`
+
+    `)`  shift, and go to state 229
+
+
+State 217
+
+   71 ScalaID: ID •
+
+    `(`  reduce using rule 71 (ScalaID)
+    `)`  reduce using rule 71 (ScalaID)
+    `,`  reduce using rule 71 (ScalaID)
+    `*`  reduce using rule 71 (ScalaID)
+    `+`  reduce using rule 71 (ScalaID)
+    `::`  reduce using rule 71 (ScalaID)
+    `-`  reduce using rule 71 (ScalaID)
+    `/`  reduce using rule 71 (ScalaID)
+
+
+State 218
+
+   72 ScalaID: `$` • ID
+
+    ID  shift, and go to state 230
+
+
+State 219
+
+   59 Scala: ScalaID `.` ScalaID • `(` Scalas `)`
+   60      | ScalaID `.` ScalaID •
+
+    `(`  shift, and go to state 231
+
+    `)`  reduce using rule 60 (Scala)
+    `,`  reduce using rule 60 (Scala)
+    `*`  reduce using rule 60 (Scala)
+    `+`  reduce using rule 60 (Scala)
+    `::`  reduce using rule 60 (Scala)
+    `-`  reduce using rule 60 (Scala)
+    `/`  reduce using rule 60 (Scala)
+
+
+State 220
+
+   50 Type: ID `[` Types `]` •
+
+    `)`  reduce using rule 50 (Type)
+
+
+State 221
+
+   50 Type: ID `[` Types `]` •
+
+    `)`  reduce using rule 50 (Type)
+    `,`  reduce using rule 50 (Type)
+
+
+State 222
+
+   50 Type: ID `[` Types `]` •
+
+    `=`  reduce using rule 50 (Type)
+
+
+State 223
+
+   50 Type: ID `[` Types `]` •
+
+    `]`  reduce using rule 50 (Type)
+    `,`  reduce using rule 50 (Type)
+
+
+State 224
+
+   43 REPEAT: `*` •
+   45      | `*` • `.` `.`
+
+    `.`  shift, and go to state 232
+
+    ID  reduce using rule 43 (REPEAT)
+    STRING  reduce using rule 43 (REPEAT)
+    `(`  reduce using rule 43 (REPEAT)
+    `)`  reduce using rule 43 (REPEAT)
+
+
+State 225
+
+   42 REPEAT: `?` •
+
+    ID  reduce using rule 42 (REPEAT)
+    STRING  reduce using rule 42 (REPEAT)
+    `(`  reduce using rule 42 (REPEAT)
+    `)`  reduce using rule 42 (REPEAT)
+
+
+State 226
+
+   44 REPEAT: `+` •
+   46      | `+` • `.` `.`
+
+    `.`  shift, and go to state 233
+
+    ID  reduce using rule 44 (REPEAT)
+    STRING  reduce using rule 44 (REPEAT)
+    `(`  reduce using rule 44 (REPEAT)
+    `)`  reduce using rule 44 (REPEAT)
+
+
+State 227
+
+   47 REPEAT: `.` • `.` `.`
+
+    `.`  shift, and go to state 234
+
+
+State 228
+
+   41 FIELD: `(` Fields `)` REPEAT •
+
+    ID  reduce using rule 41 (FIELD)
+    STRING  reduce using rule 41 (FIELD)
+    `(`  reduce using rule 41 (FIELD)
+    `)`  reduce using rule 41 (FIELD)
+
+
+State 229
+
+   58 Scala: ScalaID `(` Scalas `)` •
+
+    `)`  reduce using rule 58 (Scala)
+    `,`  reduce using rule 58 (Scala)
+    `*`  reduce using rule 58 (Scala)
+    `+`  reduce using rule 58 (Scala)
+    `::`  reduce using rule 58 (Scala)
+    `-`  reduce using rule 58 (Scala)
+    `/`  reduce using rule 58 (Scala)
+
+
+State 230
+
+   72 ScalaID: `$` ID •
+
+    `(`  reduce using rule 72 (ScalaID)
+    `)`  reduce using rule 72 (ScalaID)
+    `,`  reduce using rule 72 (ScalaID)
+    `*`  reduce using rule 72 (ScalaID)
+    `+`  reduce using rule 72 (ScalaID)
+    `::`  reduce using rule 72 (ScalaID)
+    `-`  reduce using rule 72 (ScalaID)
+    `/`  reduce using rule 72 (ScalaID)
+
+
+State 231
+
+   59 Scala: ScalaID `.` ScalaID `(` • Scalas `)`
+
+    ID  shift, and go to state 163
+    NUM  shift, and go to state 164
+    STRING  shift, and go to state 165
+    `(`  shift, and go to state 166
+    `$`  shift, and go to state 167
+
+    `)`  reduce using rule 85 (S_5)
+
+    Scala  go to state 109
+    Scalas  go to state 235
+    ScalaAtom  go to state 168
+    ScalaID  go to state 169
+    S_5_L  go to state 111
+    S_5  go to state 112
+
+
+State 232
+
+   45 REPEAT: `*` `.` • `.`
+
+    `.`  shift, and go to state 236
+
+
+State 233
+
+   46 REPEAT: `+` `.` • `.`
+
+    `.`  shift, and go to state 237
+
+
+State 234
+
+   47 REPEAT: `.` `.` • `.`
+
+    `.`  shift, and go to state 238
+
+
+State 235
+
+   59 Scala: ScalaID `.` ScalaID `(` Scalas • `)`
+
+    `)`  shift, and go to state 239
+
+
+State 236
+
+   45 REPEAT: `*` `.` `.` •
+
+    ID  reduce using rule 45 (REPEAT)
+    STRING  reduce using rule 45 (REPEAT)
+    `(`  reduce using rule 45 (REPEAT)
+    `)`  reduce using rule 45 (REPEAT)
+
+
+State 237
+
+   46 REPEAT: `+` `.` `.` •
+
+    ID  reduce using rule 46 (REPEAT)
+    STRING  reduce using rule 46 (REPEAT)
+    `(`  reduce using rule 46 (REPEAT)
+    `)`  reduce using rule 46 (REPEAT)
+
+
+State 238
+
+   47 REPEAT: `.` `.` `.` •
+
+    ID  reduce using rule 47 (REPEAT)
+    STRING  reduce using rule 47 (REPEAT)
+    `(`  reduce using rule 47 (REPEAT)
+    `)`  reduce using rule 47 (REPEAT)
+
+
+State 239
+
+   59 Scala: ScalaID `.` ScalaID `(` Scalas `)` •
+
+    `)`  reduce using rule 59 (Scala)
+    `,`  reduce using rule 59 (Scala)
+    `*`  reduce using rule 59 (Scala)
+    `+`  reduce using rule 59 (Scala)
+    `::`  reduce using rule 59 (Scala)
+    `-`  reduce using rule 59 (Scala)
+    `/`  reduce using rule 59 (Scala)

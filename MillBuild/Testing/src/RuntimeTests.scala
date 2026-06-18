@@ -4,12 +4,16 @@ package runtime
 
 
 object  lists extends TestRUN("-Lsyn -Lsym -html", "lists.Lists")(
-  """1,2,3,4,5
-    |6,7,8,9,0
+  """0,1,2,3,4,
+    |5,6,7,8,9
     |
+    |
+    |
+    |10,11,12,13,14
+    |20,21,22,23,24
     |""".stripMargin
 )(
-"""
+  """
 %notation  Lists
 %package   lists.Lists
 %path      "lists"
@@ -17,17 +21,15 @@ object  lists extends TestRUN("-Lsyn -Lsym -html", "lists.Lists")(
 %token     LONG(Long) NL
 
 %include {
-  import org.sufrin.scalalr.{Scanner,ScannerAdapter}
-  import org.sufrin.utility.SourceTextCursor
+  import org.sufrin.scalalr._
+  import org.sufrin.utility._
+  lazy val generated = this
 
-  def apply(chars: SourceTextCursor): Scanner[Token] = new ScannerAdapter[Token](chars) {
-       val self = lists.Lists.Scanner
-       val ENDSTREAM: Token                  = self.$end
-       val UNDEF: Token                      = self.UNDEF
-       val symbolToken                       = self.symbolToken
-       override def LONG(value: Long): Token = self.LONG(value)
-       override val NEWLINE                  = Some(self.NL)
-  } withSymbolTokens(symbolToken)
+  def apply(chars: SourceTextCursor): Scanner[Token] = new SimpleScannerCore[Token](chars) {
+       override val LONG     = generated.LONG
+       override val NEWLINE  = Some(generated.NL)
+       override def TOKENMAP = TokenMap
+  }
 }
 
 %token LONG(Long) NL
@@ -39,13 +41,13 @@ object  lists extends TestRUN("-Lsyn -Lsym -html", "lists.Lists")(
  import lists.Lists._
 }
 
-topLevel:  Unit = ListOfLists => println($ListOfLists)
 
-ListOfLists: List[List[Long]] = list: (NL List) ... => $list
+lists: List[List[Long]] = (NL)? theLists: (NL aList)... => $theLists
 
-List:  List[Long]             = list: (',' LONG) ... => $list
+aList:  List[Long] = theList: (',' LONG)... => $theList
 
-""")
+"""
+)
 
 /**
  *  This tests demonstrates top-level loops with
@@ -65,24 +67,15 @@ object  shortcutLists extends TestRUN("-Lsyn -Lsym -html", "shortcut.Lists")()(
 %package   shortcut.Lists
 %path      "shortcut"
 
-%token     LONG(Long) NL
-
 %include {
   import org.sufrin.scalalr._
   import org.sufrin.utility._
-
-  lazy val self = this
-
-  def apply(chars: SourceTextCursor): Scanner[Token] = new ScannerAdapter[Token](chars) {
-       val ENDSTREAM: Token                  = self.$end
-       val UNDEF: Token                      = self.UNDEF
-       val symbolToken                       = self.symbolToken
-       override def LONG(value: Long): Token     = self.LONG(value)
-       override def DOUBLE(value: Double): Token = self.LONG(value.toLong)
-       override val NEWLINE                      = Some(self.NL)
-  }    withSymbolTokens(symbolToken)
-
-
+  val generated: this.type = this
+  def apply(chars: SourceTextCursor): Scanner[Token] = new SimpleScannerCore[Token](chars) {
+       override val LONG     = generated.LONG
+       override val NEWLINE  = Some(generated.NL)
+       override def TOKENMAP = TokenMap
+  }
 }
 
 %token LONG(Long) NL
@@ -131,17 +124,13 @@ object  interactiveLists extends TestRUN("-Lsyn -Lsym -html", "interactive.Lists
   import org.sufrin.scalalr._
   import org.sufrin.utility._
 
-  lazy val self = this
+  lazy val generated = this
 
-  def apply(chars: SourceTextCursor): Scanner[Token] = new ScannerAdapter[Token](chars) {
-
-       val ENDSTREAM: Token                  = self.$end
-       val UNDEF: Token                      = self.UNDEF
-       val symbolToken                       = self.symbolToken
-       override def LONG(value: Long): Token     = self.LONG(value)
-       override def DOUBLE(value: Double): Token = self.LONG(value.toLong)
-       override val NEWLINE                      = Some(self.NL)
-  }    withSymbolTokens(symbolToken)
+  def apply(chars: SourceTextCursor): Scanner[Token] = new SimpleScannerCore[Token](chars) {
+       override val LONG     = generated.LONG
+       override val NEWLINE  = Some(generated.NL)
+       override def TOKENMAP = TokenMap
+  }
 
 
 }
@@ -165,137 +154,111 @@ aLine: NONE    = theList: aList { println($theList); NONE }
 
 aList:  List[Long] = theList: (',' LONG)+ => $theList
 
-""")
-
-
-object expression extends TestRUN("-Lsyn -Lsym -html", "expr.Expression")()(
-"""
-%notation  Expression
-%package   expr.Expression
-%path      "expr"
-%signature "arithmetic expressions"
-
-%include {
-  import org.sufrin.scalalr.{SourceLocation,ScannerBuilder,Scanner}
-  import org.sufrin.utility.SourceTextCursor
-
-  def apply(chars: SourceTextCursor): Scanner[Token] = new ScannerBuilder[Token](chars) {
-       def mkString(openQuote: String, closeQuote: String, body: Seq[Char]): Token = STRING(body.mkString)
-       def mkHex(source: Seq[Char]):   Token = HEX(source.mkString)
-       def mkDec(source: Seq[Char]):   Token = DEC(source.mkString)
-       def mkReal(source: Seq[Char]):  Token = REAL(source.mkString)
-       def mkID(source: Seq[Char]):    Token = ID(source.mkString)
-       def mkERROR(source: Seq[Char]): Token = { System.err.println(source.mkString); throw new Throwable(source.mkString) }
-       val ENDSTREAM: Token = $end
-       val NEWLINE:   Option[Token] = Some(NL)
-       def flush(): Unit = {
-           while (chars.hasCurrent && chars.current != '\n') chars.next()
-           print(chars.prompt); System.out.flush()
-       }
-  } withSymbolTokens(symbolToken)
-}
-
-%token HEX(String) DEC(String) REAL(String) ID(String) STRING(String) NL
-%left '+' '-'
-%left '*' '/'
-
-%rules
-
-%include {
- import org.sufrin.scalalr.SourceLocation
- import expr.Expression._
- import org.sufrin.utility.PrettyPrint._
-
- trait Expr
- case class Bin(op: String, l: Expr, r: Expr) extends Expr
- case class Atom(string: String)              extends Expr
- case class Bra(e: Expr)                      extends Expr
- case class Quoted(string: String)            extends Expr { override val toString = s"$string" }
-
- def reHexify(string: String): String = s"0x$string"
-}
-
-loop:    Unit   = (NL)? (NL oneLine)* => ()         ;// top-level loop ignores empty lines
-
-oneLine: String = expr { $expr.prettyPrint(); "" }  ;// a line is just an expression
-
-expr: Expr = atom
-           | l: expr '+' r: expr => Bin("+", $l, $r)
-           | l: expr '*' r: expr => Bin("*", $l, $r)
-           | l: expr '-' r: expr => Bin("-", $l, $r)
-           | l: expr '/' r: expr => Bin("/", $l, $r)
-           | '(' expr ')' => Bra($expr)
-
-
-atom: Expr = prim         => Atom($prim)
-           | STRING       => Quoted($STRING)
-
-prim: String = HEX => reHexify($HEX) | DEC | ID | REAL | ID
-
-""")
-
-object readmeExpression extends TestSRC("-html")(
-"""
-%notation  Expr                                             // §0
-%package   expr.Expr                                        // §0
-%path      "expr"
-%tables    lalr                                             // §0
-
-%include {
-   // Scala source here is included in the generated object expr.Expr.Scanner
-}
-
-%token ID(String) `(` `)` `[` `]` `;`                       // §1
-%left `+`                                                   // §2
-%left `*`
-
-%rules
-
-%include {
- import org.sufrin.scalalr.SourceLocation
- // Scala source here is included in the generated object expr.Expr.Reduction
- // that defines the result value for each production.
- // It must import or implement the abstract syntax of the language.
- // Here we do the latter
-
- trait Expr { val loc: SourceLocation }                                 // §4
- case class Id(s: String, loc: SourceLocation) extends Expr
- case class Binop(op: String, l: Expr, r: Expr, loc: SourceLocation) extends Expr
- case class Bra(expr: Expr, loc: SourceLocation)extends Expr
-
-}
-
-exprs: List[Expr] = expr           { List($expr) }                   // §3, §4
-                  | exprs `;` expr { $expr::$exprs }                 // §4
-
-
-expr: Expr = ID                  { Id($ID, $START) }                   // §4,
-           | l:expr `*` r:expr   { Binop("*", $l, $r, $START) }
-           | l:expr `+` r:expr   { Binop("+", $l, $r, $START) }
-           | "(" expr ")"        { Bra($expr, $START) }                //§5
-           | `[` expr `]`        { $expr }
-
 """
 )
 
+object SharedSpecification {
+  import org.sufrin.SourceLocation._
+  val loc: SourceLocation = sourcePath
+  val expressionNotation =  """
+      %notation  Expression
+      %package   expr.Expression
+      %path      "expr"
+      %signature "arithmetic expressions"
+
+      %include {
+        import org.sufrin.scalalr._
+        import org.sufrin.utility._
+
+        lazy val generated = this
+
+        def apply(chars: SourceTextCursor): Scanner[Token] = new SimpleScannerCore[Token](chars) {
+             override val LONG       = generated.LONG
+             override val DOUBLE     = generated.DOUBLE
+             override val NEWLINE    = Some(generated.NL)
+             override val IDENTIFIER = generated.ID
+             override val STRING     = generated.QUOTE
+             override def TOKENMAP   = TokenMap
+        }
+
+      }
+
+      %token LONG(Long) DOUBLE(Double) ID(String) QUOTE(String) NL
+      %left '+' '-'
+      %left '*' '/'
+
+      %rules
+
+      %include {
+       import org.sufrin.scalalr.SourceLocation
+       import expr.Expression._
+       import org.sufrin.utility.PrettyPrint._
+       trait Void
+       case object Void extends Void
+
+       trait Expr
+       case class Bin(op: String, l: Expr, r: Expr) extends Expr
+       case class Bra(e: Expr)                      extends Expr
+       case class Quoted(string: String)            extends Expr { override val toString = s"\"$string\"" }
+       case class Id(string: String)                extends Expr
+       case class Num(double: Double)               extends Expr
+      }
+
+      loop: ()   = (NL)? (NL oneLine)... => ()       // top-level loop ignores empty lines
+
+      oneLine: Void  = expr { $expr.prettyPrint(); println("> "); Void }  // a line is just an expression
+
+      expr: Expr =
+       | atom
+       | l: expr '+' r: expr => Bin("+", $l, $r)
+       | l: expr '*' r: expr => Bin("*", $l, $r)
+       | l: expr '-' r: expr => Bin("-", $l, $r)
+       | l: expr '/' r: expr => Bin("/", $l, $r)
+       | '(' expr ')' => Bra($expr)
+
+
+      atom: Expr =
+      | ID      => Id($ID)
+      | LONG    => Num($LONG.toDouble)
+      | DOUBLE  => Num($DOUBLE)
+      | QUOTE   => Quoted($QUOTE)
+"""
+}
+
+object expression extends TestRUN("-Lsyn -Lsym -html", "expr.Expression")("a+b*c+d")(SharedSpecification.expressionNotation)(loc = SharedSpecification.loc)
+
+object readmeExpression extends TestSRC("-html")(SharedSpecification.expressionNotation)
+
+
 object readMeExample {
-    import expr.Expr.Components
-    import expr.Expr.Scanner._
+    import expr.Expression.Components
+    import expr.Expression.Scanner._
     import org.sufrin.utility.PrettyPrint._
     import org.sufrin.utility._
 
-    class Scanner(source: SourceTextCursor) extends SimpleScanner[Token](source) {
-      override val NAME       = expr.Expr.Scanner.ID
-      override val ENDSTREAM  = $end
-      locally { defineSymbolTokens(expr.Expr.Scanner.symbolToken) }
-    }
+    val generated = expr.Expression.Scanner
+
+    class MainScanner(chars: SourceTextCursor) extends SimpleScannerCore[Token](chars) {
+      override val LONG       = generated.LONG
+      override val DOUBLE     = generated.DOUBLE
+      override val NEWLINE    = Some(generated.NL)
+      override val IDENTIFIER = generated.ID
+      override val STRING     = generated.QUOTE
+      override def TOKENMAP   = TokenMap
+  }
 
     def main(args: Array[String]): Unit = {
-      val scanner = new Scanner(SourceTextCursor("a*b + c*d; a+b * c+d"))
-      val parser  = LRParser.Pull[Token](Components)(scanner.sourceLocation)
+      val scanner = new MainScanner(SourceTextCursor.console.withPrompt("> "))
+      print("> ")
+      val parser  = LRParser.Pull[Components.Token](Components)(scanner.sourceLocation)
       parser.run(scanner.next).prettyPrint()
     }
 }
+
+
+
+
+
 
 
 

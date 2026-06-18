@@ -22,6 +22,7 @@ class ScannerGenerator(notation: Notation, symbolTables: SymbolTables) extends S
 
   // Synthetic terminals
   out(s"case object $$end extends $theUnion { val value = (); val symbol = 0 }") // TERMINAL
+  out(s"val ENDSTREAM: $theUnion = $$end")
   out(s"case object error extends $theUnion { val value = (); val symbol = 1 }")
   out(s"case object UNDEF extends $theUnion { val value = (); val symbol = 2 }")
 
@@ -49,9 +50,10 @@ class ScannerGenerator(notation: Notation, symbolTables: SymbolTables) extends S
   out("\n")
 
   out("// MAP QUOTED SYMBOL NAMES TO TOKENS ")
-  out(s"val symbolToken: collection.immutable.Map[String, Token] =  collection.immutable.ListMap(")
+  out(s"lazy val symbolToken: collection.immutable.Map[String, Token] =  collection.immutable.ListMap(")
   for { name <- symbolTables.declaredTerminalNames if name.isQuoted }  out(s"    \"\"\"${name.unQuoted}\"\"\" -> ${name.forScala},")
-  out("""    ""->$end)""")
+  out("""    ""->ENDSTREAM)""")
+  out(s"lazy val TokenMap: collection.immutable.Map[String, Token] = symbolToken")
 
 
   out("}\n")

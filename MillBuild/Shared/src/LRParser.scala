@@ -98,7 +98,7 @@ object LRParser {
     var logRecovery = true
     var currentState = 0
 
-    /** MUST BE IDENTICAL TO THE (INVARIANT) BISON CODE FOR THE VIRTUAL TERMINAL SYMBOL "error" */
+    /** MUST BE IDENTICAL TO THE (UNIVERSALLY INVARIANT) BISON CODE FOR THE VIRTUAL TERMINAL SYMBOL "error" */
     val errorSymbol: Int = 1
 
     /**
@@ -239,7 +239,7 @@ object LRParser {
    * Build a `Push` automaton from the aggregated tables specified by `components` and a `sourceLocation()` function
    */
   object Push {
-    def apply[Lex <: Lexeme](components: LRParserComponents)(sourceLocation: ()=>SourceLocation): Push[Lex] = {
+    def apply[Token <: Lexeme](components: LRParserComponents)(sourceLocation: ()=>SourceLocation): Push[Token] = {
       import components._
       new Push(action, goto, reduction, symbolName, sourceLocation)
     }
@@ -249,7 +249,7 @@ object LRParser {
    * Build a `Pull` automaton from the aggregated tables specified by `components` and a `sourceLocation()` function
    */
   object Pull {
-    def apply[Lex <: Lexeme](components: LRParserComponents)(sourceLocation: ()=>SourceLocation): Pull[Lex] = {
+    def apply[Token <: Lexeme](components: LRParserComponents)(sourceLocation: ()=>SourceLocation): Pull[Token] = {
       import components._
       new Pull(action, goto, reduction, symbolName, sourceLocation)
     }

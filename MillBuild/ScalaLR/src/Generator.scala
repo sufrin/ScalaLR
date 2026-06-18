@@ -56,7 +56,7 @@ object Generator extends org.sufrin.logging.SourceLoggable {
     import org.sufrin.scalalr.LRParser._
     import scalalr.stage2.{Components, Scanner}
     val scanner = LexicalScanner(cursor)
-    val parser  = LRParser.Pull[LexicalScanner.Token](Components)(scanner.sourceLocation)
+    val parser  = LRParser.Pull[Scanner.Token](Components)(scanner.sourceLocation)
     parser.logState = logParse
     parser.run(scanner.next) match {
       case ACCEPTED(notation: Notation) =>

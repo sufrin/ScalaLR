@@ -2,6 +2,8 @@
 /**
         Identical to stage2-notation, except that the description uses * + ? decorated descriptions of repeated/optional
         phrases, and (occasionally) the => notation for production result expressions.
+
+        Added: there can be two INCLUDEs in the rules section; one before the productions, one after. (BS:19/June/26)
 */
 
 
@@ -95,10 +97,11 @@
 Notation: Notation =
     Prefix
     `%rules`
-    INCLUDE
+    firstInclude: INCLUDE
     Rules
     OPTSEPARATOR
-    { $Prefix.copy(theRules = $Rules.reverse, theRulesInclude = $INCLUDE) };
+    secondInclude: INCLUDE
+    { $Prefix.copy(theRules = $Rules.reverse, theRulesInclude = $firstInclude++"\n\n"++$secondInclude) }
 
 Prefix: Notation =   %empty                                      => Notation()
                       | p: Prefix `%notation` ID                 { $p.copy(theName=$ID.toString) }

@@ -49,10 +49,10 @@ object Reduction {
 
 
 def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufrin.scalalr.SourceLocation, n: Int): PartialFunction[List[Any], Any] = n match {
- /* Notation: Notation = Prefix `%rules` INCLUDE Rules OPTSEPARATOR {  $Prefix.copy(theRules = $Rules.reverse, theRulesInclude = $INCLUDE)  }  */
+ /* Notation: Notation = Prefix `%rules` firstInclude: INCLUDE Rules OPTSEPARATOR secondInclude: INCLUDE {  $Prefix.copy(theRules = $Rules.reverse, theRulesInclude = $firstInclude++$secondInclude)  }  */
  case 1 => 
-  { case List(dol$Prefix: Notation,  _ , dol$INCLUDE: String, dol$Rules: List[Rule @unchecked],  _ ) => 
-        dol$Prefix.copy(theRules = dol$Rules.reverse, theRulesInclude = dol$INCLUDE)
+  { case List(dol$Prefix: Notation,  _ , dol$firstInclude: String, dol$Rules: List[Rule @unchecked],  _ , dol$secondInclude: String) => 
+        dol$Prefix.copy(theRules = dol$Rules.reverse, theRulesInclude = dol$firstInclude++dol$secondInclude)
   }
  /* Prefix: Notation =  => Notation()  */
  case 2 => 
@@ -297,87 +297,81 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
  /* Scala: Scala = lhs: Scala `+` rhs: Scala {  Infix("+", $lhs, $rhs)  }  */
  case 62 => 
   { case List(dol$lhs: Scala, _, dol$rhs: Scala) =>  Infix("+", dol$lhs, dol$rhs) } 
- /* Scala: Scala = lhs: Scala `*` rhs: Scala {  Infix("*", $lhs, $rhs)  }  */
- case 63 => 
-  { case List(dol$lhs: Scala, _, dol$rhs: Scala) =>  Infix("*", dol$lhs, dol$rhs) } 
- /* Scala: Scala = lhs: Scala `/` rhs: Scala {  Infix("/", $lhs, $rhs)  }  */
- case 64 => 
-  { case List(dol$lhs: Scala, _, dol$rhs: Scala) =>  Infix("/", dol$lhs, dol$rhs) } 
  /* Scala: Scala = lhs: Scala `-` rhs: Scala {  Infix("-", $lhs, $rhs)  }  */
- case 65 => 
+ case 63 => 
   { case List(dol$lhs: Scala, _, dol$rhs: Scala) =>  Infix("-", dol$lhs, dol$rhs) } 
  /* Scalas: List[Scala] = scalas: S_5 {  $scalas  }  */
- case 66 => 
+ case 64 => 
   { case List(dol$scalas: List[Scala @unchecked]) =>  dol$scalas } 
  /* ScalaAtom: Scala = ScalaID { $ScalaID }  */
- case 67 => 
+ case 65 => 
   { case List(dol$ScalaID: Scala) =>  dol$ScalaID } 
  /* ScalaAtom: Scala = NUM {  Num($NUM, $START)  }  */
- case 68 => 
+ case 66 => 
   { case List(dol$NUM: String) =>  Num(dol$NUM, dol$START) } 
  /* ScalaAtom: Scala = `(` Scalas `)` {  Bra($Scalas)  }  */
- case 69 => 
+ case 67 => 
   { case List( _ , dol$Scalas: List[Scala @unchecked],  _ ) =>  Bra(dol$Scalas) } 
  /* ScalaAtom: Scala = STRING {  ScalaString($STRING.unQuoted, $START)  }  */
- case 70 => 
+ case 68 => 
   { case List(dol$STRING: org.sufrin.scalalr.stage2.AST.Name) => 
         ScalaString(dol$STRING.unQuoted, dol$START)
   }
  /* ScalaID: Scala = ID {  Id($ID, $START)  }  */
- case 71 => 
+ case 69 => 
   { case List(dol$ID: org.sufrin.scalalr.stage2.AST.Name) =>  Id(dol$ID, dol$START) } 
  /* ScalaID: Scala = `$` ID {  Dollar(Id($ID, $START))  }  */
- case 72 => 
+ case 70 => 
   { case List(_, dol$ID: org.sufrin.scalalr.stage2.AST.Name) => 
         Dollar(Id(dol$ID, dol$START))
   }
  /* S_1: Option[Unit] =  { None }  */
- case 73 => 
+ case 71 => 
   { case List() =>  None } 
  /* S_1: Option[Unit] = `|` { Some(()) }  */
- case 74 => 
+ case 72 => 
   { case List(_) =>  Some(()) } 
  /* S_2_L: List[NamedField] = NamedField { List($NamedField) }  */
- case 75 => 
+ case 73 => 
   { case List(dol$NamedField: NamedField) =>  List(dol$NamedField) } 
  /* S_2_L: List[NamedField] = S_2_L NamedField { $NamedField :: $S_2_L }  */
- case 76 => 
+ case 74 => 
   { case List(dol$S_2_L: List[NamedField @unchecked], dol$NamedField: NamedField) => 
         dol$NamedField :: dol$S_2_L
   }
  /* S_2: List[NamedField] = S_2_L { $S_2_L.reverse }  */
- case 77 => 
+ case 75 => 
   { case List(dol$S_2_L: List[NamedField @unchecked]) =>  dol$S_2_L.reverse } 
  /* S_3: Option[org.sufrin.scalalr.stage2.AST.Name] =  { None }  */
- case 78 => 
+ case 76 => 
   { case List() =>  None } 
  /* S_3: Option[org.sufrin.scalalr.stage2.AST.Name] = `%prec` ID { Some($ID) }  */
- case 79 => 
+ case 77 => 
   { case List(_, dol$ID: org.sufrin.scalalr.stage2.AST.Name) =>  Some(dol$ID) } 
  /* S_4_L: List[SymbolType] = Type { List($Type) }  */
- case 80 => 
+ case 78 => 
   { case List(dol$Type: SymbolType) =>  List(dol$Type) } 
  /* S_4_L: List[SymbolType] = S_4_L `,` Type { $Type :: $S_4_L }  */
- case 81 => 
+ case 79 => 
   { case List(dol$S_4_L: List[SymbolType @unchecked], _, dol$Type: SymbolType) => 
         dol$Type :: dol$S_4_L
   }
  /* S_4: List[SymbolType] = S_4_L { $S_4_L.reverse }  */
- case 82 => 
+ case 80 => 
   { case List(dol$S_4_L: List[SymbolType @unchecked]) =>  dol$S_4_L.reverse } 
  /* S_5_L: List[Scala] = Scala { List($Scala) }  */
- case 83 => 
+ case 81 => 
   { case List(dol$Scala: Scala) =>  List(dol$Scala) } 
  /* S_5_L: List[Scala] = S_5_L `,` Scala { $Scala :: $S_5_L }  */
- case 84 => 
+ case 82 => 
   { case List(dol$S_5_L: List[Scala @unchecked], _, dol$Scala: Scala) => 
         dol$Scala :: dol$S_5_L
   }
  /* S_5: List[Scala] =  { Nil }  */
- case 85 => 
+ case 83 => 
   { case List() =>  Nil } 
  /* S_5: List[Scala] = S_5_L { $S_5_L.reverse }  */
- case 86 => 
+ case 84 => 
   { case List(dol$S_5_L: List[Scala @unchecked]) =>  dol$S_5_L.reverse } 
 
  }

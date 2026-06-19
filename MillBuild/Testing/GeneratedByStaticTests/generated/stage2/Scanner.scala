@@ -50,14 +50,13 @@ case object `=>` extends Token { val value = (); val symbol = 39 }
 case object `$` extends Token { val value = (); val symbol = 40 }
 case object `::` extends Token { val value = (); val symbol = 41 }
 case object `-` extends Token { val value = (); val symbol = 42 }
-case object `/` extends Token { val value = (); val symbol = 43 }
-case object `.` extends Token { val value = (); val symbol = 44 }
-case object SEPARATOR extends Token { val value = (); val symbol = 45 }
-case object HIGH extends Token { val value = (); val symbol = 46 }
+case object `.` extends Token { val value = (); val symbol = 43 }
+case object SEPARATOR extends Token { val value = (); val symbol = 44 }
+case object HIGH extends Token { val value = (); val symbol = 45 }
 // MAP SYMBOL NUMBERS TO NAMES
 val symbolName: collection.immutable.Map[Int, String] = {
      import org.sufrin.utility.ArrayMap
-    val arr = new Array[String](80)
+    val arr = new Array[String](79)
          locally {
           arr(0) = """$end"""
           arr(1) = """error"""
@@ -102,50 +101,49 @@ val symbolName: collection.immutable.Map[Int, String] = {
           arr(40) = """`$`"""
           arr(41) = """`::`"""
           arr(42) = """`-`"""
-          arr(43) = """`/`"""
-          arr(44) = """`.`"""
-          arr(45) = """SEPARATOR"""
-          arr(46) = """HIGH"""
-          arr(47) = """$accept"""
-          arr(48) = """Notation"""
-          arr(49) = """Prefix"""
-          arr(50) = """INCLUDE"""
-          arr(51) = """OPTSEPARATOR"""
-          arr(52) = """STRINGorID"""
-          arr(53) = """TypedTerminals"""
-          arr(54) = """TypedTerminal"""
-          arr(55) = """Rules"""
-          arr(56) = """Rule"""
-          arr(57) = """LHS"""
-          arr(58) = """RHS"""
-          arr(59) = """Production"""
-          arr(60) = """Fields"""
-          arr(61) = """NamedField"""
-          arr(62) = """FIELD"""
-          arr(63) = """REPEAT"""
-          arr(64) = """Precedence"""
-          arr(65) = """Type"""
-          arr(66) = """Types"""
-          arr(67) = """Action"""
-          arr(68) = """Scala"""
-          arr(69) = """Scalas"""
-          arr(70) = """ScalaAtom"""
-          arr(71) = """ScalaID"""
-          arr(72) = """S_1"""
-          arr(73) = """S_2_L"""
-          arr(74) = """S_2"""
-          arr(75) = """S_3"""
-          arr(76) = """S_4_L"""
-          arr(77) = """S_4"""
-          arr(78) = """S_5_L"""
-          arr(79) = """S_5"""
+          arr(43) = """`.`"""
+          arr(44) = """SEPARATOR"""
+          arr(45) = """HIGH"""
+          arr(46) = """$accept"""
+          arr(47) = """Notation"""
+          arr(48) = """Prefix"""
+          arr(49) = """INCLUDE"""
+          arr(50) = """OPTSEPARATOR"""
+          arr(51) = """STRINGorID"""
+          arr(52) = """TypedTerminals"""
+          arr(53) = """TypedTerminal"""
+          arr(54) = """Rules"""
+          arr(55) = """Rule"""
+          arr(56) = """LHS"""
+          arr(57) = """RHS"""
+          arr(58) = """Production"""
+          arr(59) = """Fields"""
+          arr(60) = """NamedField"""
+          arr(61) = """FIELD"""
+          arr(62) = """REPEAT"""
+          arr(63) = """Precedence"""
+          arr(64) = """Type"""
+          arr(65) = """Types"""
+          arr(66) = """Action"""
+          arr(67) = """Scala"""
+          arr(68) = """Scalas"""
+          arr(69) = """ScalaAtom"""
+          arr(70) = """ScalaID"""
+          arr(71) = """S_1"""
+          arr(72) = """S_2_L"""
+          arr(73) = """S_2"""
+          arr(74) = """S_3"""
+          arr(75) = """S_4_L"""
+          arr(76) = """S_4"""
+          arr(77) = """S_5_L"""
+          arr(78) = """S_5"""
          } // locally
          ArrayMap(arr)
      }
 
 
 // MAP QUOTED SYMBOL NAMES TO TOKENS 
-val symbolToken: collection.immutable.Map[String, Token] =  collection.immutable.ListMap(
+lazy val symbolToken: collection.immutable.Map[String, Token] =  collection.immutable.ListMap(
     """[""" -> `[`,
     """]""" -> `]`,
     """;""" -> `;`,
@@ -180,7 +178,7 @@ val symbolToken: collection.immutable.Map[String, Token] =  collection.immutable
     """$""" -> `$`,
     """::""" -> `::`,
     """-""" -> `-`,
-    """/""" -> `/`,
     """.""" -> `.`,
     ""->ENDSTREAM)
+lazy val TokenMap: collection.immutable.Map[String, Token] = symbolToken
 }

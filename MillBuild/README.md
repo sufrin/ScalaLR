@@ -761,7 +761,125 @@ ScalaID: Scala = ID      { Id($ID, $START) }
 
 
 ````
+## Appendix: a larger example
+Our example will read arithmetic expressions from the console, line by line.
 
+Each expression will be pretty printed (as an abstract syntax tree).
+
+The notation description is below. Its main contribution to the
+program is the definition of lexical symbol types: 
+
+1. The value carrying terminal "tokens" and the types of value they carry.
+2. The arithmetic operators, their precedence and their associativity.
+3. The additional non-value-carrying "punctuation" symbols are '(' and ')'. These
+are defined automatically because they appear in the grammar rules.
+4. The grammar rules written in a form that exploits the fact that
+the "result expression" of a rule may have side-effects. 
+
+Although we *could* do so, we don't define a lexical scanner here: we'll do that in the 
+main program.
+
+````scalalr
+      %notation  Expression
+      %package   expr.Expression
+      %path      "expr"
+      %signature "arithmetic expressions"
+
+      %token LONG(Long) DOUBLE(Double) ID(String) QUOTE(String) NL
+      %left '+' '-'
+      %left '*' '/'
+
+      %rules
+
+      loop: ()       = (NL)? (NL oneLine)... => ()
+
+      oneLine: Void  = expr { $expr.prettyPrint(); println("> "); Void } 
+
+      expr: Expr =
+       | atom
+       | l: expr '+' r: expr => Bin("+", $l, $r)
+       | l: expr '*' r: expr => Bin("*", $l, $r)
+       | l: expr '-' r: expr => Bin("-", $l, $r)
+       | l: expr '/' r: expr => Bin("/", $l, $r)
+       | '(' expr ')' => Bra($expr)
+
+      atom: Expr =
+        | ID      => Id($ID)
+        | LONG    => Num($LONG.toDouble)
+        | DOUBLE  => Num($DOUBLE)
+        | QUOTE   => Quoted($QUOTE)
+      
+      /**
+        The following %include becomes part of the Scala file 
+        that defines the correspondence between productions 
+        and their result  expressions. 
+        The abstract syntax tree constructors 
+            Bin, Bra, Id, Num, Quoted 
+        are defined in a separate package, though they could have
+        been defined here.  
+      */
+      %include {
+       import expr.Expression._
+       import expr.AST._
+       import org.sufrin.utility.PrettyPrint._
+       trait Void
+       case object Void extends Void
+     }
+
+````
+
+Here we define the abstract syntax constructors.
+````scala
+      package expr.AST {
+        trait Expr
+      
+        case class Bin(op: String, l: Expr, r: Expr) extends Expr
+        case class Bra(e: Expr) extends Expr
+        case class Quoted(string: String) extends Expr {
+          override val toString = s"\"$string\""
+        }
+      
+        case class Id(string: String) extends Expr
+        case class Num(double: Double) extends Expr
+}
+````
+
+Finally we put all the generated and utility program components together. 
+The class `ExpressionScanner` provides the link between the texts of expressions,
+and the terminal symbols (of `Scanner.Token` type) that drive the parser. We
+define it by subclassing `scalalr.SimpleScannerCore` -- binding the strings 
+of (various kinds) that the simple scanner finds to (their corresponding) token
+constructors. The `TOKENMAP` is used by the simple scanner to initialize its
+internal text-to-Token mappings. 
+````scala
+object Evaluator {
+ import expr.Expression.Components
+ import expr.Expression.Scanner._
+   
+ import org.sufrin.utility.PrettyPrint._
+ import org.sufrin.utility._
+ import org.sufrin.scalalr._
+
+class ExpressionScanner(chars: SourceTextCursor) extends SimpleScannerCore[Token](chars) {
+    val symbols = expr.Expression.Scanner
+    override val LONG    = symbols.LONG
+    override val DOUBLE  = symbols.DOUBLE
+    override val NEWLINE = Some(symbols.NL)
+    override val IDENTIFIER = symbols.ID
+    override val STRING     = symbols.QUOTE
+    override def TOKENMAP   = symbols.TokenMap
+  }
+
+  def main(args: Array[String]): Unit = {
+    val scanner = new ExpressionScanner(SourceTextCursor.console.withPrompt("> "))
+    print("Welcome\n> ")
+    val parser = LRParser.Pull[Components.Token](Components)(scanner.sourceLocation)
+    parser.run(scanner.next).prettyPrint()
+  }
+}
+````
+There is nothing mandatory about the use of `SimpleScannerCore`, but it's a great
+convenience when one is constructing and testing new notations.
 ## Valediction
 There is  much I haven't had time to do, so feel free to experiment with the notation
 description notation and its semantics.

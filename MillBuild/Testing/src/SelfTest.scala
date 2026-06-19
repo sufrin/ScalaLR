@@ -1,7 +1,9 @@
 package org.sufrin.scalalr
 package stage2
 
-object SelfTest extends TestLR("-Lsyn -Lsym -html")(
+/** Generate components for the current ScalaLR notation */
+
+object SelfTest extends Test.COMPONENTS("-Lsyn -Lsym -html")(
 """
 /**
         Identical to stage2-notation, except that the description uses * + ? decorated descriptions of repeated/optional
@@ -89,18 +91,18 @@ object SelfTest extends TestLR("-Lsyn -Lsym -html")(
 
 }
 
-//command: Unit = Notation { translate($Notation) }
+/*command: Unit = Notation { translate($Notation) } */
 
 Notation: Notation =
     Prefix
     `%rules`
-    INCLUDE
+    firstInclude: INCLUDE
     Rules
     OPTSEPARATOR
-    { $Prefix.copy(theRules = $Rules.reverse, theRulesInclude = $INCLUDE) }
+    secondInclude: INCLUDE
+    { $Prefix.copy(theRules = $Rules.reverse, theRulesInclude = $firstInclude++"\n\n"++$secondInclude) }
 
 // A left fold that accumulates incremental changes to the initial default notation AST
-
 Prefix: Notation =   %empty                                      => Notation()
                       | p: Prefix `%notation` ID                 { $p.copy(theName=$ID.toString) }
                       | p: Prefix `%package`  ID                 { $p.copy(thePackage=$ID.toString) }
@@ -159,7 +161,6 @@ Fields:(List[NamedField]) =
 */
 
 // fields: (NamedField)+ { $fields }
-
 NamedField: NamedField = FIELD                               { NamedField(theFieldName = None, theField = $FIELD, $START) }
                        | theFieldName: ID ':' theName: FIELD { NamedField(theFieldName = Some($theFieldName.warnQuoted), $theName, $START) }
 
@@ -191,8 +192,9 @@ Action:(Option[Expression]) = %empty     { None }
                             | CODE       { Some(CodeExpression($CODE)) }
                             | '=>' Scala { Some(ScalaExpression($Scala, $START)) }
 
+//
 // MicroScala notation (for actions)
-
+//
 Scala: Scala = ScalaAtom
              | fun: ScalaID '(' args: Scalas ')'   { Apply($fun, $args) }
              | obj: ScalaID '.' feature: ScalaID  '(' args: Scalas ')'   { MethodApply($obj, $feature, $args) }

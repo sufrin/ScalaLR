@@ -382,10 +382,10 @@ object LRParser {
  *   Continue -- continue the parse
  * }}}
  */
-object Interactive {
+object Shortcut {
   import LRParser.{ACCEPTED, ERRONEOUS, ParseState, RUNNING}
-  type Continuation = ParseState
-  def  Accept(value: Any):     Continuation = ACCEPTED(value)
-  def  Error(culprit: String): Continuation = ERRONEOUS(culprit)
-  val  Continue:               Continuation = RUNNING
+  type Shortcut = ParseState
+  def  Accept(value: Any):     Shortcut = ACCEPTED(value)
+  def  Error(culprit: String): Shortcut = ERRONEOUS(culprit)
+  val  Continue:               Shortcut = RUNNING
 }

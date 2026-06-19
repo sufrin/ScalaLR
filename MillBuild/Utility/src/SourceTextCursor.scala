@@ -1,5 +1,6 @@
 package org.sufrin.utility
 import java.nio.file.{Files, Path}
+import scala.Console.out
 
 /**
 * A `Cursor` for text sequences that also keeps track of the coordinates of
@@ -9,7 +10,7 @@ class SourceTextCursor(iterator: Iterator[Char]) extends Cursor[Char] {
   private var _lines = 1
   private var _chars = 0
   private var _lastChar: Char = 0 // Dummy
-  var prompt: String = ""
+  var promptString: String = ""
 
   def withStartLocation(atLine: Int, atCol: Int = 0): this.type = {
     _lines = atLine+1
@@ -18,9 +19,11 @@ class SourceTextCursor(iterator: Iterator[Char]) extends Cursor[Char] {
   }
 
   def withPrompt(thePrompt: String): this.type = {
-    prompt=thePrompt
+    promptString=thePrompt
     this
   }
+
+  def prompt(): Unit = if (promptString.nonEmpty) { out.flush(); print(promptString); out.flush() }
 
 
   /** `(lines, chars)` are the coordinates of `current`  */
@@ -65,7 +68,7 @@ object SourceTextCursor {
   def apply(iterable: Iterable[Char]): SourceTextCursor = new SourceTextCursor(iterable.iterator)
 
   def apply(path: Path): SourceTextCursor = {
-    if (path.toString == "/dev/tty")
+    if (path.toString == "/dev/console")
        console
     else
        new SourceTextCursor(Files.readString(path).iterator)

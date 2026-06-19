@@ -5,7 +5,7 @@ package stage2
  * Feature tests: that include deliberate errors
  */
 
-object Err1 extends TestLR("-Lsyn -Lsym -html")(
+object Err1 extends Test.COMPONENTS("-Lsyn -Lsym -html")(
 """
 // Incomplete grammar
 %notation  err1
@@ -23,7 +23,7 @@ object Err1 extends TestLR("-Lsyn -Lsym -html")(
 foo: Int = 'x' => 43
 """)
 
-object Err2 extends TestLR("-Lsyn -Lsym -html")(
+object Err2 extends Test.COMPONENTS("-Lsyn -Lsym -html")(
   """
 // Wrong table type: still generates code
 %notation  err2
@@ -37,7 +37,7 @@ object Err2 extends TestLR("-Lsyn -Lsym -html")(
 foo: Int = 'x' => 43
 """)
 
-object Err3 extends TestLR("-Lsyn -Lsym -Lred -html")(
+object Err3 extends Test.COMPONENTS("-Lsyn -Lsym -Lred -html")(
   """
 // Undollared rule result
 %notation  err3
@@ -51,7 +51,7 @@ ListInt: List[Int] = list: (INT) ... => list
 """)
 
 
-object Err4 extends TestLR("-Lsyn -Lsym -html")(
+object Err4 extends Test.COMPONENTS("-Lsyn -Lsym -html")(
   """
 // Known scala operator in result"
 %notation  err4
@@ -64,8 +64,7 @@ object Err4 extends TestLR("-Lsyn -Lsym -html")(
 ListInt: List[Int] = list: (INT)... => List($list.length / 2)
 """)
 
-object Err5 extends TestLR("-Lsyn -Lsym -html")(
-  """
+object Err5 extends Test.COMPONENTS("-Lsyn -Lsym -html")("""
 //Checking
 %notation  err5
 %package   scalalr.err5
@@ -80,7 +79,7 @@ ListInt: List[Int] = list: (INT)... => List($list.length - 2) // this should not
 ListPig: List[Pig] = list: (PIG)... => List($list.length - 2)
 """)
 
-object ErrConflict extends TestLR("-Lsyn -Lsym -html -c")("""
+object ErrConflict extends Test.COMPONENTS("-Lsyn -Lsym -html -c")("""
                                 %token a
                                 %rules
                                 S = A
@@ -89,7 +88,7 @@ object ErrConflict extends TestLR("-Lsyn -Lsym -html -c")("""
                                 B = a;
 """)
 
-object SloshErr extends TestLR("-Lsyn -Lsym -html -c")("""
+object SloshErr extends Test.COMPONENTS("-Lsyn -Lsym -html -c")("""
                                 %token a b `\/`
                                 %rules
                                 S = A `\/` B
@@ -99,7 +98,7 @@ object SloshErr extends TestLR("-Lsyn -Lsym -html -c")("""
 """)
 
 
-object DanglingElseLR extends TestLR("-c -html")(
+object DanglingElseLR extends Test.COMPONENTS("-c -html")(
 """  %path  "danglingelselr"
      %notation If
      %tables lr
@@ -115,7 +114,7 @@ object DanglingElseLR extends TestLR("-c -html")(
 
 """)
 
-object DanglingElseLALR extends TestLR("-c -html -Lsyn -Lsym -Lred")(
+object DanglingElseLALR extends Test.COMPONENTS("-c -html -Lsyn -Lsym -Lred")(
   """%path  "danglingelselalr"
      %notation If
      %tables   lalr
@@ -136,6 +135,23 @@ object DanglingElseLALR extends TestLR("-c -html -Lsyn -Lsym -Lred")(
         | IF guard: expr x:THEN expr ELSE expr => $guard
 
 """)
+
+object TwoIncludes extends Test.COMPONENTS("-c -html -Lsyn -Lsym -Lred")(
+  """
+                                   %token a
+                                   %rules
+                                   %include { this is the first include }
+
+                                   S = A | B
+
+                                   A = a
+
+                                   B = a
+
+                                   %include { this is the second include };
+
+  """.stripMargin
+)
 
 
 

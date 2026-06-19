@@ -3,7 +3,7 @@ package stage2
 package runtime
 
 
-object  lists extends TestRUN("-Lsyn -Lsym -html", "lists.Lists")(
+object  lists extends Test.RUN("-Lsyn -Lsym -html", "lists.Lists")(
   """0,1,2,3,4,
     |5,6,7,8,9
     |
@@ -11,8 +11,7 @@ object  lists extends TestRUN("-Lsyn -Lsym -html", "lists.Lists")(
     |
     |10,11,12,13,14
     |20,21,22,23,24
-    |""".stripMargin
-)(
+    |""".stripMargin)(
   """
 %notation  Lists
 %package   lists.Lists
@@ -61,7 +60,7 @@ aList:  List[Long] = theList: (',' LONG)... => $theList
  *  `Interactive.Continuation`, and such continuations
  *  take effect when productions yield their result.
  */
-object  shortcutLists extends TestRUN("-Lsyn -Lsym -html", "shortcut.Lists")()(
+object  shortcutLists extends Test.RUN("-Lsyn -Lsym -html", "shortcut.Lists")()(
   """
 %notation  Lists
 %package   shortcut.Lists
@@ -83,16 +82,15 @@ object  shortcutLists extends TestRUN("-Lsyn -Lsym -html", "shortcut.Lists")()(
 %rules
 
 %include {
- import org.sufrin.scalalr.SourceLocation
  import shortcut.Lists._
- import org.sufrin.scalalr.Interactive._
+ import org.sufrin.scalalr.Shortcut._
 }
 
 
 loop:   Unit        = (NL)? (NL aLine)... => ()
 
-aLine:  Continuation  = theList: aList { println($theList); Continue }
-                      | "."            { Accept("Finished") }
+aLine:  Shortcut  = theList: aList { println($theList); Continue }
+                  | "."            { Accept("Finished") }
 
 aList:  List[Long] = theList: (',' LONG)+ => $theList
 
@@ -112,7 +110,7 @@ aList:  List[Long] = theList: (',' LONG)+ => $theList
  *  TODO: Unit is also such a type (inhabitant is {}), and would be more elegant to use here, but
  *  at present (June 2026) the ScalaLR code generator uses that for something else.
  */
-object  interactiveLists extends TestRUN("-Lsyn -Lsym -html", "interactive.Lists")()(
+object  interactiveLists extends Test.RUN("-Lsyn -Lsym -html", "interactive.Lists")()(
   """
 %notation  Lists
 %package   interactive.Lists
@@ -189,24 +187,9 @@ object SharedSpecification {
 
       %rules
 
-      %include {
-       import org.sufrin.scalalr.SourceLocation
-       import expr.Expression._
-       import org.sufrin.utility.PrettyPrint._
-       trait Void
-       case object Void extends Void
+      loop: ()   = (NL)? (NL oneLine)... => ()
 
-       trait Expr
-       case class Bin(op: String, l: Expr, r: Expr) extends Expr
-       case class Bra(e: Expr)                      extends Expr
-       case class Quoted(string: String)            extends Expr { override val toString = s"\"$string\"" }
-       case class Id(string: String)                extends Expr
-       case class Num(double: Double)               extends Expr
-      }
-
-      loop: ()   = (NL)? (NL oneLine)... => ()       // top-level loop ignores empty lines
-
-      oneLine: Void  = expr { $expr.prettyPrint(); println("> "); Void }  // a line is just an expression
+      oneLine: Void  = expr { $expr.prettyPrint(); print(">> "); Void }
 
       expr: Expr =
        | atom
@@ -222,38 +205,59 @@ object SharedSpecification {
       | LONG    => Num($LONG.toDouble)
       | DOUBLE  => Num($DOUBLE)
       | QUOTE   => Quoted($QUOTE)
+
+
+      %include {
+       import org.sufrin.utility.PrettyPrint._
+       import expr.AST._
+       trait Void
+       case object Void extends Void
+      }
+
 """
 }
 
-object expression extends TestRUN("-Lsyn -Lsym -html", "expr.Expression")("a+b*c+d")(SharedSpecification.expressionNotation)(loc = SharedSpecification.loc)
+object expression extends Test.RUN("-Lsyn -Lsym -html", "expr.Expression")("(yourExpressionHere)")(SharedSpecification.expressionNotation)(loc = SharedSpecification.loc)
 
-object readmeExpression extends TestSRC("-html")(SharedSpecification.expressionNotation)
+object expresssionNotation extends Test.SOURCE("-html")(SharedSpecification.expressionNotation)
 
-
-object readMeExample {
+object expressionEvaluator extends Test.OBJECT("ExpressionEvaluator")(
+  """
     import expr.Expression.Components
     import expr.Expression.Scanner._
     import org.sufrin.utility.PrettyPrint._
     import org.sufrin.utility._
+    import org.sufrin.scalalr._
 
-    val generated = expr.Expression.Scanner
-
-    class MainScanner(chars: SourceTextCursor) extends SimpleScannerCore[Token](chars) {
-      override val LONG       = generated.LONG
-      override val DOUBLE     = generated.DOUBLE
-      override val NEWLINE    = Some(generated.NL)
-      override val IDENTIFIER = generated.ID
-      override val STRING     = generated.QUOTE
+    class ExpressionScanner(chars: SourceTextCursor) extends SimpleScannerCore[Token](chars) {
+      val symbols = expr.Expression.Scanner
+      override val LONG       = symbols.LONG
+      override val DOUBLE     = symbols.DOUBLE
+      override val NEWLINE    = Some(symbols.NL)
+      override val IDENTIFIER = symbols.ID
+      override val STRING     = symbols.QUOTE
       override def TOKENMAP   = TokenMap
   }
 
     def main(args: Array[String]): Unit = {
-      val scanner = new MainScanner(SourceTextCursor.console.withPrompt("> "))
-      print("> ")
+      val scanner = new ExpressionScanner(SourceTextCursor.console.withPrompt("> "))
+      print("Welcome\n> ")
       val parser  = LRParser.Pull[Components.Token](Components)(scanner.sourceLocation)
       parser.run(scanner.next).prettyPrint()
-    }
-}
+  }
+
+""")
+
+object AST extends Test.SCALA("AST")(
+  """  package expr.AST
+       trait Expr
+       case class Bin(op: String, l: Expr, r: Expr) extends Expr
+       case class Bra(e: Expr)                      extends Expr
+       case class Quoted(string: String)            extends Expr { override val toString = s"\"$string\"" }
+       case class Id(string: String)                extends Expr
+       case class Num(double: Double)               extends Expr
+""")
+
 
 
 

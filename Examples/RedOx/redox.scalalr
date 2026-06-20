@@ -43,7 +43,7 @@
               def mkIDENTIFIER(source: Seq[Char]):  Token = ID(source.mkString)
               def mkERROR(source: Seq[Char]):       Token = SCANERROR(source.mkString)
               val NEWLINE:                   Option[Token] = None
-              override val ENDSTREAM: Token = Scanner.ENDSTREAM
+              override val ENDSTREAM: Token                = Scanner.ENDSTREAM
            } withSymbolTokens(toUpperCased(symbolToken))
 
 }

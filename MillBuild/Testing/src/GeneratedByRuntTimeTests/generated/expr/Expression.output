@@ -1,0 +1,365 @@
+Grammar
+
+    0 $accept: loop $end
+
+    1 loop: S_1 S_2
+
+    2 oneLine: expr
+
+    3 expr: atom
+    4      | expr `+` expr
+    5      | expr `*` expr
+    6      | expr `-` expr
+    7      | expr `/` expr
+    8      | `(` expr `)`
+
+    9 atom: ID
+   10      | LONG
+   11      | DOUBLE
+   12      | QUOTE
+
+   13 S_1: ε
+   14      | NL
+
+   15 S_2_E: S_2_E NL oneLine
+   16      | oneLine
+   17      | S_2_E NL
+
+   18 S_2: S_2_E
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    `(` (258) 8
+    `)` (259) 8
+    LONG (260) 10
+    DOUBLE (261) 11
+    ID (262) 9
+    QUOTE (263) 12
+    NL (264) 14 15 17
+    `+` (265) 4
+    `-` (266) 6
+    `*` (267) 5
+    `/` (268) 7
+
+
+Nonterminals, with rules where they appear
+
+    $accept (14)
+        on left: 0
+    loop (15)
+        on left: 1
+        on right: 0
+    oneLine (16)
+        on left: 2
+        on right: 15 16
+    expr (17)
+        on left: 3 4 5 6 7 8
+        on right: 2 4 5 6 7 8
+    atom (18)
+        on left: 9 10 11 12
+        on right: 3
+    S_1 (19)
+        on left: 13 14
+        on right: 1
+    S_2_E (20)
+        on left: 15 16 17
+        on right: 15 17 18
+    S_2 (21)
+        on left: 18
+        on right: 1
+
+
+State 0
+
+    0 $accept: • loop $end
+
+    NL  shift, and go to state 1
+
+    $default  reduce using rule 13 (S_1)
+
+    loop  go to state 2
+    S_1  go to state 3
+
+
+State 1
+
+   14 S_1: NL •
+
+    $default  reduce using rule 14 (S_1)
+
+
+State 2
+
+    0 $accept: loop • $end
+
+    $end  shift, and go to state 4
+
+
+State 3
+
+    1 loop: S_1 • S_2
+
+    `(`  shift, and go to state 5
+    LONG  shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    ID  shift, and go to state 8
+    QUOTE  shift, and go to state 9
+
+    oneLine  go to state 10
+    expr  go to state 11
+    atom  go to state 12
+    S_2_E  go to state 13
+    S_2  go to state 14
+
+
+State 4
+
+    0 $accept: loop $end •
+
+    $default  accept
+
+
+State 5
+
+    8 expr: `(` • expr `)`
+
+    `(`  shift, and go to state 5
+    LONG  shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    ID  shift, and go to state 8
+    QUOTE  shift, and go to state 9
+
+    expr  go to state 15
+    atom  go to state 12
+
+
+State 6
+
+   10 atom: LONG •
+
+    $default  reduce using rule 10 (atom)
+
+
+State 7
+
+   11 atom: DOUBLE •
+
+    $default  reduce using rule 11 (atom)
+
+
+State 8
+
+    9 atom: ID •
+
+    $default  reduce using rule 9 (atom)
+
+
+State 9
+
+   12 atom: QUOTE •
+
+    $default  reduce using rule 12 (atom)
+
+
+State 10
+
+   16 S_2_E: oneLine •
+
+    $default  reduce using rule 16 (S_2_E)
+
+
+State 11
+
+    2 oneLine: expr •
+    4 expr: expr • `+` expr
+    5      | expr • `*` expr
+    6      | expr • `-` expr
+    7      | expr • `/` expr
+
+    `+`  shift, and go to state 16
+    `-`  shift, and go to state 17
+    `*`  shift, and go to state 18
+    `/`  shift, and go to state 19
+
+    $default  reduce using rule 2 (oneLine)
+
+
+State 12
+
+    3 expr: atom •
+
+    $default  reduce using rule 3 (expr)
+
+
+State 13
+
+   15 S_2_E: S_2_E • NL oneLine
+   17      | S_2_E • NL
+   18 S_2: S_2_E •
+
+    NL  shift, and go to state 20
+
+    $default  reduce using rule 18 (S_2)
+
+
+State 14
+
+    1 loop: S_1 S_2 •
+
+    $default  reduce using rule 1 (loop)
+
+
+State 15
+
+    4 expr: expr • `+` expr
+    5      | expr • `*` expr
+    6      | expr • `-` expr
+    7      | expr • `/` expr
+    8      | `(` expr • `)`
+
+    `)`  shift, and go to state 21
+    `+`  shift, and go to state 16
+    `-`  shift, and go to state 17
+    `*`  shift, and go to state 18
+    `/`  shift, and go to state 19
+
+
+State 16
+
+    4 expr: expr `+` • expr
+
+    `(`  shift, and go to state 5
+    LONG  shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    ID  shift, and go to state 8
+    QUOTE  shift, and go to state 9
+
+    expr  go to state 22
+    atom  go to state 12
+
+
+State 17
+
+    6 expr: expr `-` • expr
+
+    `(`  shift, and go to state 5
+    LONG  shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    ID  shift, and go to state 8
+    QUOTE  shift, and go to state 9
+
+    expr  go to state 23
+    atom  go to state 12
+
+
+State 18
+
+    5 expr: expr `*` • expr
+
+    `(`  shift, and go to state 5
+    LONG  shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    ID  shift, and go to state 8
+    QUOTE  shift, and go to state 9
+
+    expr  go to state 24
+    atom  go to state 12
+
+
+State 19
+
+    7 expr: expr `/` • expr
+
+    `(`  shift, and go to state 5
+    LONG  shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    ID  shift, and go to state 8
+    QUOTE  shift, and go to state 9
+
+    expr  go to state 25
+    atom  go to state 12
+
+
+State 20
+
+   15 S_2_E: S_2_E NL • oneLine
+   17      | S_2_E NL •
+
+    `(`  shift, and go to state 5
+    LONG  shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    ID  shift, and go to state 8
+    QUOTE  shift, and go to state 9
+
+    $default  reduce using rule 17 (S_2_E)
+
+    oneLine  go to state 26
+    expr  go to state 11
+    atom  go to state 12
+
+
+State 21
+
+    8 expr: `(` expr `)` •
+
+    $default  reduce using rule 8 (expr)
+
+
+State 22
+
+    4 expr: expr • `+` expr
+    4      | expr `+` expr •
+    5      | expr • `*` expr
+    6      | expr • `-` expr
+    7      | expr • `/` expr
+
+    `*`  shift, and go to state 18
+    `/`  shift, and go to state 19
+
+    $default  reduce using rule 4 (expr)
+
+
+State 23
+
+    4 expr: expr • `+` expr
+    5      | expr • `*` expr
+    6      | expr • `-` expr
+    6      | expr `-` expr •
+    7      | expr • `/` expr
+
+    `*`  shift, and go to state 18
+    `/`  shift, and go to state 19
+
+    $default  reduce using rule 6 (expr)
+
+
+State 24
+
+    4 expr: expr • `+` expr
+    5      | expr • `*` expr
+    5      | expr `*` expr •
+    6      | expr • `-` expr
+    7      | expr • `/` expr
+
+    $default  reduce using rule 5 (expr)
+
+
+State 25
+
+    4 expr: expr • `+` expr
+    5      | expr • `*` expr
+    6      | expr • `-` expr
+    7      | expr • `/` expr
+    7      | expr `/` expr •
+
+    $default  reduce using rule 7 (expr)
+
+
+State 26
+
+   15 S_2_E: S_2_E NL oneLine •
+
+    $default  reduce using rule 15 (S_2_E)

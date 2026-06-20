@@ -763,18 +763,33 @@ ScalaID: Scala = ID      { Id($ID, $START) }
 ````
 ## Appendix: a larger example
 Our example will read arithmetic expressions from the console, line by line.
-
 Each expression will be pretty printed (as an abstract syntax tree).
 
 The notation description is below. Its main contribution to the
 program is the definition of lexical symbol types: 
 
-1. The value carrying terminal "tokens" and the types of value they carry.
-2. The arithmetic operators, their precedence and their associativity.
+1. The value-carrying terminal "tokens" and the types of value they carry.
+2. The arithmetic operators, their precedence and their associativity. 
 3. The additional non-value-carrying "punctuation" symbols are '(' and ')'. These
 are defined automatically because they appear in the grammar rules.
 4. The grammar rules written in a form that exploits the fact that
-the "result expression" of a rule may have side-effects. 
+the "result expression" of a production may have side-effects, and that
+it is evaluated when the production has been parsed.
+
+   i. The topmost rule, `loop,` specifies that input is parsed as a stream of
+   `oneLine` punctuated by newline symbols.
+   
+   ii. When a `oneLine` has been parsed -- that is to say when an `expr`
+   has been parsed and the `NL` that
+   follows it has been parsed -- its "result expression" is evaluated. This 
+   has two side-effects: the pretty-printing of the result `expr` and the
+   printing of a prompt. Its result is the value `Void`, which is of type
+   `Void`.
+   
+       { $expr.prettyPrint(); println("> "); Void }
+   
+5. The `expr` rule's *non-ambiguity* relies on the priority and associativity declarations for the
+arithmetic operators. 
 
 Although we *could* do so, we don't define a lexical scanner here: we'll do that in the 
 main program.
@@ -786,14 +801,16 @@ main program.
       %signature "arithmetic expressions"
 
       %token LONG(Long) DOUBLE(Double) ID(String) QUOTE(String) NL
-      %left '+' '-'
-      %left '*' '/'
+      
+      // arithmetic operators in order of increasing priority
+      %left '+' '-' 
+      %left '*' '/' 
 
       %rules
 
       loop: ()       = (NL)? (NL oneLine)... => ()
 
-      oneLine: Void  = expr { $expr.prettyPrint(); println("> "); Void } 
+      oneLine: Void  = expr { $expr.prettyPrint(); print(">> "); Void } 
 
       expr: Expr =
        | atom
@@ -813,10 +830,13 @@ main program.
         The following %include becomes part of the Scala file 
         that defines the correspondence between productions 
         and their result  expressions. 
+        
         The abstract syntax tree constructors 
+        
             Bin, Bra, Id, Num, Quoted 
-        are defined in a separate package, though they could have
-        been defined here.  
+        
+        are defined in the separate package expr.AST though they
+        could have been defined here.  
       */
       %include {
        import expr.Expression._
@@ -830,6 +850,7 @@ main program.
 
 Here we define the abstract syntax constructors.
 ````scala
+      // file: AST.scala
       package expr.AST {
         trait Expr
       
@@ -850,9 +871,10 @@ and the terminal symbols (of `Scanner.Token` type) that drive the parser. We
 define it by subclassing `scalalr.SimpleScannerCore` -- binding the strings 
 of (various kinds) that the simple scanner finds to (their corresponding) token
 constructors. The `TOKENMAP` is used by the simple scanner to initialize its
-internal text-to-Token mappings. 
+internal mapping from punctuation-characters to tokens. 
 ````scala
-object Evaluator {
+// file: ExpressionEvaluator.scala
+object ExpressionEvaluator {
  import expr.Expression.Components
  import expr.Expression.Scanner._
    
@@ -878,8 +900,8 @@ class ExpressionScanner(chars: SourceTextCursor) extends SimpleScannerCore[Token
   }
 }
 ````
-There is nothing mandatory about the use of `SimpleScannerCore`, but it's a great
-convenience when one is constructing and testing new notations.
+There is nothing mandatory about the use of `SimpleScannerCore,` but it's a great
+convenience when constructing and testing new notations.
 ## Valediction
 There is  much I haven't had time to do, so feel free to experiment with the notation
 description notation and its semantics.

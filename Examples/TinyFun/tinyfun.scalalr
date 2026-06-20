@@ -5,7 +5,7 @@
 %tables   lr
 
 %include {
-  import org.sufrin.scalalr.{SourceLocation,ScannerBuilder,Scanner}
+  import org.sufrin.scalalr.{SourceLocation,ScannerCore,Scanner}
   import org.sufrin.utility.SourceTextCursor
 
   /**
@@ -14,25 +14,27 @@
      constructors declared here. The `withSymbolTokens(symbolToken)` clause initialises the
      internal symbol and token tables of the resulting builder.
   */
-  object Scanner {
-    def apply(chars: SourceTextCursor): Scanner[Token] = new ScannerBuilder[Token](chars) {
-       def mkString(openQuote: String, closeQuote: String, body: Seq[Char]): Token = STRING(s"$openQuote${body.mkString}$closeQuote")
-       def mkHex(source: Seq[Char]):   Token = HEX(source.mkString)
-       def mkDec(source: Seq[Char]):   Token = DEC(source.mkString)
-       def mkReal(source: Seq[Char]):  Token = REAL(source.mkString)
-       def mkID(source: Seq[Char]):    Token = ID(source.mkString)
-       def mkERROR(source: Seq[Char]): Token = SCANERROR(source.mkString)
-       val ENDSTREAM: Token = $end
-       val NEWLINE:   Option[Token] = Some(NL)
-       def flush(): Unit = {
-           while (chars.hasCurrent && chars.current != '\n') chars.next()
-           print(chars.prompt); System.out.flush()
-       }
-       locally {
-         TinyFun.prompt = chars.prompt
-       }
-    } withSymbolTokens(symbolToken)
-  }
+
+
+      def makeScanner(chars: SourceTextCursor): ScannerCore[Token] = new ScannerCore[Token](chars) {
+         def mkString(openQuote: String, closeQuote: String, body: Seq[Char]): Token = STRING(s"$openQuote${body.mkString}$closeQuote")
+         def mkHex(source: Seq[Char]):          Token = HEX(source.mkString)
+         def mkDec(source: Seq[Char]):          Token = DEC(source.mkString)
+         def mkReal(source: Seq[Char]):         Token = REAL(source.mkString)
+         def mkIDENTIFIER(source: Seq[Char]):   Token = ID(source.mkString)
+         def mkERROR(source: Seq[Char]):        Token = SCANERROR(source.mkString)
+         val NEWLINE:                    Option[Token] = Some(NL)
+         def flush(): Unit = {
+             while (chars.hasCurrent && chars.current != '\n') chars.next()
+             print(chars.prompt); System.out.flush()
+         }
+         locally {
+           TinyFun.prompt = chars.promptString
+         }
+      } withSymbolTokens(symbolToken)
+
+
+
 
 }
 

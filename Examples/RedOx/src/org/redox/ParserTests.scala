@@ -80,13 +80,16 @@ object  testNEW extends Test("")(
  *
  *
  */
-class Test(args: String="")(source: String)(implicit loc: SourceLocation) extends App {
+class Test(arguments: String="")(source: String)(implicit loc: SourceLocation)  {
   // calculate starting location of source string in this file
-  val line   = loc.line-1
-  val offset = (loc.offset+s"Test($args) (".length)
-  val effectiveArgs = args.split(' ').dropWhile(_.isEmpty).toList ++
-                      List("-#", line.toString, "-##", offset.toString, "-literally", source)
-  println(s"$loc ${effectiveArgs.mkString("RedOx ", " ", "")}")
-  RedOx.main(effectiveArgs.toArray)
+  def main(args: Array[String]): Unit = {
+    val line = loc.line - 1
+    val offset = (loc.offset + s"Test($arguments) (".length)
+    val effectiveArgs = arguments.split(' ').dropWhile(_.isEmpty).toList ++
+        List("-#", line.toString, "-##", offset.toString, "-literally", source)
+    println(s"$loc ${effectiveArgs.mkString("RedOx ", " ", "")}")
+    RedOx.main(effectiveArgs.toArray)
+
+  }
 }
 

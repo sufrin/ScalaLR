@@ -26,13 +26,14 @@ object runtinyfun  {
   def main(args: Array[String]): Unit = {
     import org.sufrin.scalalr._
     import org.sufrin.utility._
+
     import tinyfun.Components
     import tinyfun.Scanner._
 
     val log = args.contains("-l")
     val push = args.contains("-p")
     val recover = args.contains("-r")
-    val file = (args.toList.filterNot(_.startsWith("-")) ++ List("/dev/tty")).head
+    val file = (args.toList.filterNot(_.startsWith("-")) ++ List("/dev/console")).head
     if (args.contains("-h")) {
       println(
         """Usage: runtinyfun [flags]
@@ -48,7 +49,7 @@ object runtinyfun  {
       import LRParser._
       var state: ParseState = RUNNING
       while (state == RUNNING) {
-        val scanner = Scanner(SourceTextCursor(Paths.get(file)))
+        val scanner = makeScanner(SourceTextCursor(file))
         val parser = LRParser.Push[Token](Components)(scanner.sourceLocation)
         parser.logState = log
         parser.attemptRecovery = recover
@@ -70,7 +71,7 @@ object runtinyfun  {
       import LRParser._
       var state: ParseState = RUNNING
       while (state == RUNNING) {
-        val scanner = Scanner(SourceTextCursor(Paths.get(file)))
+        val scanner = makeScanner(SourceTextCursor(Paths.get(file)))
         val parser = LRParser.Pull[Token](Components)(scanner.sourceLocation)
         parser.logState = log
         parser.attemptRecovery = recover

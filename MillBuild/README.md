@@ -890,6 +890,7 @@ class ExpressionScanner(chars: SourceTextCursor) extends SimpleScannerCore[Token
     override val IDENTIFIER = symbols.ID
     override val STRING     = symbols.QUOTE
     override def TOKENMAP   = symbols.TokenMap
+    override val ENDSTREAM  = symbols.ENDSTREAM
   }
 
   def main(args: Array[String]): Unit = {

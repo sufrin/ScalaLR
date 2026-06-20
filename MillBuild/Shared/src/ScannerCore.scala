@@ -62,10 +62,7 @@ abstract class ScannerCore[Token <: Lexeme](chars: SourceTextCursor) extends Sca
    * This is a straightforward way of interpreting a newline from a terminal exactly when it appears.
    */
   val NEWLINE:                    Option[Token] // == NONE when NL is just whitespace
-  val ENDSTREAM:                  Token = new Lexeme {
-    val value: Any = ()
-    val symbol: Int = 0
-  }.asInstanceOf[Token]
+  val ENDSTREAM:                  Token
 
   /** Trie mapping from (non-alphabetic) names to the tokens they denote  */
   val tokenMap: CharSequenceMap[Token] = new CharSequenceMap[Token]
@@ -89,7 +86,7 @@ abstract class ScannerCore[Token <: Lexeme](chars: SourceTextCursor) extends Sca
     this
   }
 
-  def prompt(): Unit = { print(chars.prompt); System.out.flush() }
+  def prompt(): Unit = { print(chars.promptString); System.out.flush() }
 
   var lastLocation: SourceLocation = SourceLocation(chars.lines,  chars.chars)
   def sourceLocation(): SourceLocation = lastLocation

@@ -15,6 +15,7 @@ object ExpressionEvaluator {
       override val IDENTIFIER = symbols.ID
       override val STRING     = symbols.QUOTE
       override def TOKENMAP   = TokenMap
+      override val ENDSTREAM  = symbols.ENDSTREAM
   }
 
     def main(args: Array[String]): Unit = {

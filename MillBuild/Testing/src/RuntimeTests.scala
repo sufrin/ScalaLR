@@ -25,9 +25,10 @@ object  lists extends Test.RUN("-Lsyn -Lsym -html", "lists.Lists")(
   lazy val generated = this
 
   def apply(chars: SourceTextCursor): Scanner[Token] = new SimpleScannerCore[Token](chars) {
-       override val LONG     = generated.LONG
-       override val NEWLINE  = Some(generated.NL)
-       override def TOKENMAP = TokenMap
+       override val LONG      = generated.LONG
+       override val NEWLINE   = Some(generated.NL)
+       override def TOKENMAP  = generated.TokenMap
+       override val ENDSTREAM = generated.ENDSTREAM
   }
 }
 
@@ -69,11 +70,12 @@ object  shortcutLists extends Test.RUN("-Lsyn -Lsym -html", "shortcut.Lists")()(
 %include {
   import org.sufrin.scalalr._
   import org.sufrin.utility._
-  val generated: this.type = this
+  lazy val generated: this.type = this
   def apply(chars: SourceTextCursor): Scanner[Token] = new SimpleScannerCore[Token](chars) {
-       override val LONG     = generated.LONG
-       override val NEWLINE  = Some(generated.NL)
-       override def TOKENMAP = TokenMap
+       override val LONG      = generated.LONG
+       override val NEWLINE   = Some(generated.NL)
+       override def TOKENMAP  = generated.TokenMap
+       override val ENDSTREAM = generated.ENDSTREAM
   }
 }
 
@@ -127,8 +129,9 @@ object  interactiveLists extends Test.RUN("-Lsyn -Lsym -html", "interactive.List
   def apply(chars: SourceTextCursor): Scanner[Token] = new SimpleScannerCore[Token](chars) {
        override val LONG     = generated.LONG
        override val NEWLINE  = Some(generated.NL)
-       override def TOKENMAP = TokenMap
-  }
+       override def TOKENMAP = generated.TokenMap
+       override val ENDSTREAM = generated.ENDSTREAM
+}
 
 
 }
@@ -177,6 +180,7 @@ object SharedSpecification {
              override val IDENTIFIER = generated.ID
              override val STRING     = generated.QUOTE
              override def TOKENMAP   = TokenMap
+             override val ENDSTREAM  = generated.ENDSTREAM
         }
 
       }
@@ -219,9 +223,9 @@ object SharedSpecification {
 
 object expression extends Test.RUN("-Lsyn -Lsym -html", "expr.Expression")("(yourExpressionHere)")(SharedSpecification.expressionNotation)(loc = SharedSpecification.loc)
 
-object expresssionNotation extends Test.SOURCE("-html")(SharedSpecification.expressionNotation)
+object MakeExpresssionNotation extends Test.SOURCE("-html")(SharedSpecification.expressionNotation)
 
-object expressionEvaluator extends Test.OBJECT("ExpressionEvaluator")(
+object MakeExpressionEvaluator extends Test.OBJECT("ExpressionEvaluator")(
   """
     import expr.Expression.Components
     import expr.Expression.Scanner._
@@ -237,6 +241,7 @@ object expressionEvaluator extends Test.OBJECT("ExpressionEvaluator")(
       override val IDENTIFIER = symbols.ID
       override val STRING     = symbols.QUOTE
       override def TOKENMAP   = TokenMap
+      override val ENDSTREAM  = symbols.ENDSTREAM
   }
 
     def main(args: Array[String]): Unit = {
@@ -248,7 +253,7 @@ object expressionEvaluator extends Test.OBJECT("ExpressionEvaluator")(
 
 """)
 
-object AST extends Test.SCALA("AST")(
+object MakeAST extends Test.SCALA("AST")(
   """  package expr.AST
        trait Expr
        case class Bin(op: String, l: Expr, r: Expr) extends Expr
@@ -258,7 +263,12 @@ object AST extends Test.SCALA("AST")(
        case class Num(double: Double)               extends Expr
 """)
 
+object ExpressionEvaluator extends App {
+  MakeAST.main(Array())
+  MakeExpresssionNotation.main(Array())
+  MakeExpressionEvaluator.main(Array())
 
+}
 
 
 

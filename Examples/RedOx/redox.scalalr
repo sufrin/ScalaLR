@@ -13,9 +13,10 @@
 %tables   ielr
 
 %include {
-   import org.sufrin.scalalr.{SourceLocation,ScannerBuilder,Scanner}
+   import org.sufrin.scalalr.{SourceLocation,ScannerCore,Scanner}
    import org.sufrin.utility.SourceTextCursor
    import org.sufrin.utility.PrettyPrint._
+
 
    /**
         `Scanner(chars)` builds a lexical scanner using a `ScannerBuilder`. The implementations of
@@ -23,7 +24,7 @@
         constructors declared here. The `withSymbolTokens(symbolToken)` clause initialises the
         internal symbol and token tables of the resulting builder.
      */
-     object Scanner {
+
        import collection.immutable.ListMap
        def hex(chars: Seq[Char]): Long  = chars.foldLeft(0L) { (acc, c) => acc * 16 + Character.digit(c, 16) }
        def dec(chars: Seq[Char]): Long  = chars.foldLeft(0L) { (acc, c) => acc * 10 + Character.digit(c, 10) }
@@ -31,23 +32,20 @@
            ListMap.from(mapping.map { case (k, d) => (k.map(_.toUpper), d) })
        }
 
-       def apply(chars: SourceTextCursor): Scanner[Token] =
-           new ScannerBuilder[Token](chars) {
+       // type Token = org.redox.Scanner.Token
+
+       def makeScanner(chars: SourceTextCursor): Scanner[Token] =
+           new ScannerCore[Token](chars) {
               def mkString(openQuote: String, CLOSEQuote: String, body: Seq[Char]): Token = STRING(s"$openQuote${body.mkString}$CLOSEQuote")
-              def mkHex(source: Seq[Char]):   Token = NUM(hex(source))
-              def mkDec(source: Seq[Char]):   Token = NUM(dec(source))
-              def mkReal(source: Seq[Char]):  Token = SCANERROR(source.mkString)
-              def mkID(source: Seq[Char]):    Token = ID(source.mkString)
-              def mkERROR(source: Seq[Char]): Token = SCANERROR(source.mkString)
-              val ENDSTREAM: Token = $end
-              val NEWLINE:   Option[Token] = None
-              def flush(): Unit = {
-                  while (chars.hasCurrent && chars.current != '\n') chars.next()
-                  print(chars.prompt); System.out.flush()
-              }
+              def mkHex(source: Seq[Char]):         Token = NUM(hex(source))
+              def mkDec(source: Seq[Char]):         Token = NUM(dec(source))
+              def mkReal(source: Seq[Char]):        Token = SCANERROR(source.mkString)
+              def mkIDENTIFIER(source: Seq[Char]):  Token = ID(source.mkString)
+              def mkERROR(source: Seq[Char]):       Token = SCANERROR(source.mkString)
+              val NEWLINE:                   Option[Token] = None
+              override val ENDSTREAM: Token = Scanner.ENDSTREAM
            } withSymbolTokens(toUpperCased(symbolToken))
 
-     }
 }
 
 %token NUM(Long) ID(String)  `(` `)` `[` `]` `,`  '.'  ':'  NL SCANERROR(String) STRING(String)
@@ -133,7 +131,6 @@ decl: Decl = "int"   ID '[' width: expr ']'  initially  (';')?  { Integer($ID,  
 
  proc: Proc = prim
 
- // first: prim rest:('||' prim)* { mkPAR($first,$rest)($START, $END) } %prec LOW
 
  alt:  AltBranch  = '(' guard: expr ')' chan: ID  '?' lexpr '->' proc   { AltBranch($guard, $chan, $lexpr, $proc) };
  case: CaseBranch =  labels: (',' expr)+  '->' proc  { CaseBranch($labels, $proc) };

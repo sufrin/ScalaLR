@@ -22,8 +22,8 @@ object RedOx {
   var logParse = false
 
   def exploreSource(cursor: SourceTextCursor): Unit = {
-    val scanner = Scanner(cursor)
-    val parser = LRParser.Pull[Token](Components)(scanner.sourceLocation)
+    val scanner = makeScanner(cursor)
+    val parser  = LRParser.Pull[Token](Components)(scanner.sourceLocation)
     parser.logState = logParse
     try {
       parser.run(scanner.next) match {

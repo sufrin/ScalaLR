@@ -1,0 +1,192 @@
+Grammar
+
+    0 $accept: lists $end
+
+    1 lists: S_1 S_2
+
+    2 aList: S_3
+
+    3 S_1: ε
+    4      | NL
+
+    5 S_2_E: S_2_E NL aList
+    6      | aList
+    7      | S_2_E NL
+
+    8 S_2: S_2_E
+
+    9 S_3_E: S_3_E `,` LONG
+   10      | LONG
+   11      | S_3_E `,`
+
+   12 S_3: S_3_E
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    `,` (258) 9 11
+    LONG (259) 9 10
+    NL (260) 4 5 7
+
+
+Nonterminals, with rules where they appear
+
+    $accept (6)
+        on left: 0
+    lists (7)
+        on left: 1
+        on right: 0
+    aList (8)
+        on left: 2
+        on right: 5 6
+    S_1 (9)
+        on left: 3 4
+        on right: 1
+    S_2_E (10)
+        on left: 5 6 7
+        on right: 5 7 8
+    S_2 (11)
+        on left: 8
+        on right: 1
+    S_3_E (12)
+        on left: 9 10 11
+        on right: 9 11 12
+    S_3 (13)
+        on left: 12
+        on right: 2
+
+
+State 0
+
+    0 $accept: • lists $end
+
+    NL  shift, and go to state 1
+
+    $default  reduce using rule 3 (S_1)
+
+    lists  go to state 2
+    S_1  go to state 3
+
+
+State 1
+
+    4 S_1: NL •
+
+    $default  reduce using rule 4 (S_1)
+
+
+State 2
+
+    0 $accept: lists • $end
+
+    $end  shift, and go to state 4
+
+
+State 3
+
+    1 lists: S_1 • S_2
+
+    LONG  shift, and go to state 5
+
+    aList  go to state 6
+    S_2_E  go to state 7
+    S_2  go to state 8
+    S_3_E  go to state 9
+    S_3  go to state 10
+
+
+State 4
+
+    0 $accept: lists $end •
+
+    $default  accept
+
+
+State 5
+
+   10 S_3_E: LONG •
+
+    $default  reduce using rule 10 (S_3_E)
+
+
+State 6
+
+    6 S_2_E: aList •
+
+    $default  reduce using rule 6 (S_2_E)
+
+
+State 7
+
+    5 S_2_E: S_2_E • NL aList
+    7      | S_2_E • NL
+    8 S_2: S_2_E •
+
+    NL  shift, and go to state 11
+
+    $default  reduce using rule 8 (S_2)
+
+
+State 8
+
+    1 lists: S_1 S_2 •
+
+    $default  reduce using rule 1 (lists)
+
+
+State 9
+
+    9 S_3_E: S_3_E • `,` LONG
+   11      | S_3_E • `,`
+   12 S_3: S_3_E •
+
+    `,`  shift, and go to state 12
+
+    $default  reduce using rule 12 (S_3)
+
+
+State 10
+
+    2 aList: S_3 •
+
+    $default  reduce using rule 2 (aList)
+
+
+State 11
+
+    5 S_2_E: S_2_E NL • aList
+    7      | S_2_E NL •
+
+    LONG  shift, and go to state 5
+
+    $default  reduce using rule 7 (S_2_E)
+
+    aList  go to state 13
+    S_3_E  go to state 9
+    S_3  go to state 10
+
+
+State 12
+
+    9 S_3_E: S_3_E `,` • LONG
+   11      | S_3_E `,` •
+
+    LONG  shift, and go to state 14
+
+    $default  reduce using rule 11 (S_3_E)
+
+
+State 13
+
+    5 S_2_E: S_2_E NL aList •
+
+    $default  reduce using rule 5 (S_2_E)
+
+
+State 14
+
+    9 S_3_E: S_3_E `,` LONG •
+
+    $default  reduce using rule 9 (S_3_E)

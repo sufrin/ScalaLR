@@ -15,6 +15,7 @@ object Scanner{
              override val IDENTIFIER = generated.ID
              override val STRING     = generated.QUOTE
              override def TOKENMAP   = TokenMap
+             override val ENDSTREAM  = generated.ENDSTREAM
         }
 
       

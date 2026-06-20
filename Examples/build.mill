@@ -8,9 +8,14 @@ import mill.*, scalalib.*
 
 trait ComponentModule extends ScalaModule {
   def scalaVersion = "2.13.18"
+   override def scalacOptions = Seq(
+      "-deprecation",
+      "-feature",
+      "-unchecked"
+    )
 }
 
-object TinyFun extends ScalalrModule {
+object TinyFun extends ScalalrModule with ComponentModule  {
   override
   def scalaVersion  = "2.13.18"
   def notation      = "tinyfun.scalalr"
@@ -20,7 +25,7 @@ object TinyFun extends ScalalrModule {
   def releasePath = "tinyfun"
 }
 
-object RedOx extends ScalalrModule {
+object RedOx extends ScalalrModule with ComponentModule {
   override
   def scalaVersion  = "2.13.18"
   def notation      = "redox.scalalr"

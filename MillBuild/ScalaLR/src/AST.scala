@@ -83,6 +83,7 @@ object AST {
    theTokenType:    Type    = Type(name="Token", parameters = Nil, location = SourceLocation(-1, -1)),
    theTokens:       List[TokenSpec]  = Nil,
    theRules:        List[Rule]       = Nil,
+   inferEnabled:    List[String]     = Nil,
    theTokensInclude:  String         = "",
    theRulesInclude:   String         = "",
    theSignature:      String         = ""
@@ -228,12 +229,16 @@ object AST {
     def free:      List[Name]
     /** '$'-decorated variables of the expression */
     def decorated: List[Name]
+    /** Could this denote a constructor */
+    def isConst: Boolean = false
+    val START: SourceLocation = SourceLocation(0,0)
   }
 
-  case class Id(name: Name, START: SourceLocation) extends Scala {
+  case class Id(name: Name, override val START: SourceLocation) extends Scala {
     val forScala = if (name.isQuoted) s""""${name.unQuoted}"""" else name.unQuoted
     def free: List[Name] = List(name)
     def decorated: List[Name] = Nil
+    override def isConst: Boolean = true
   }
 
   /** A `$`-decorated scala expression */
@@ -243,12 +248,12 @@ object AST {
     override def decorated: List[Name] = scala.free
   }
 
-  case class Num(forScala: String, START: SourceLocation) extends Scala {
+  case class Num(forScala: String, override val START: SourceLocation) extends Scala {
     def free: List[Name] = Nil
     def decorated: List[Name] = Nil
   }
 
-  case class ScalaString(string: String, START: SourceLocation) extends Scala {
+  case class ScalaString(string: String, override val START: SourceLocation) extends Scala {
     val forScala = s""""$string""""
     def free: List[Name] = Nil
     def decorated: List[Name] = Nil
@@ -287,7 +292,15 @@ object AST {
       }
     }
     def decorated: List[Name] = path.decorated ++ args.flatMap(_.decorated)
+  }
 
+  /** Synthetic only: a call to path with parameter values passed by equals */
+  case class ApplyNamed(path: Scala, args: Seq[Name]) extends Scala {
+    def toEquation(name: Name): String = s"${name.forScala} = $$${name.forScala}"
+    val forScala: String = s"${path.forScala}(${args.map(toEquation).mkString(", ")})"
+
+    def free: List[Name]      = args.toList
+    def decorated: List[Name] = args.toList
   }
 
   /** obj.feature(args...) with `obj` and `args` as sources of free/decorated variables */

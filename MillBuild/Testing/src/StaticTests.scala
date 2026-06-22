@@ -79,6 +79,84 @@ ListInt: List[Int] = list: (INT)... => List($list.length - 2) // this should not
 ListPig: List[Pig] = list: (PIG)... => List($list.length - 2)
 """)
 
+object allTyped extends Test.COMPONENTS("-Lsyn -Lsym -html")("""
+//Checking
+%notation  allTyped
+%package   scalalr.allTyped
+%path      "allTyped"
+%signature "allTyped: explore automated construction of CST"
+%token    INT(Int) PIG(Pig)  DOG(Dog)
+%rules
+
+top = ListInt | ListPig | ListDog
+
+ListInt: List[Int] = list: (',' INT)+
+
+ListPig: List[Pig] = list: (',' PIG)+
+
+ListDog = list: (',' DOG)+
+""")
+
+object resultsInferred extends Test.COMPONENTS("-Lsyn -Lsym -Lauto -html")("""
+//
+%notation  resultsInferred
+%package   scalalr.resultsInferred
+%path      "resultsInferred"
+%signature "resultsInferred: explore automated construction of CST"
+%token    INT(Int) PIG(Pig)  DOG(Dog) CAT(String)
+%infer    results
+
+%rules
+
+top: Any = ListInt | ListPig | ListDog | ListCat | nil | null
+
+nil: String = %empty => Nil
+
+null: Int      = %empty => 42
+
+string: String = %empty => "fortytwo"
+
+ListInt: List[Int] = list: (',' INT)+ => Ints
+
+ListPig: List[Pig] = list: (',' PIG)+ => Pigs
+
+ListDog = list: (',' DOG)+ => Dogs
+
+ListCat: List[String] = CAT => Cat | l: CAT '=' r: CAT => Pair
+
+""")
+
+object resultsInferredError extends Test.COMPONENTS("-Lsyn -Lsym -Lauto -html")("""
+//
+%notation  resultsInferred
+%package   scalalr.resultsInferred
+%path      "resultsInferred"
+%signature "resultsInferred: explore automated construction of CST"
+%token    INT(Int) PIG(Pig)  DOG(Dog) CAT(String)
+%infer    results
+
+%rules
+
+top: Any = ListInt | ListPig | ListDog | ListCat | nil | null | string
+
+nil: String = %empty => Nil
+
+null: Int      = %empty => 42
+
+string: String = `ignore` x:INT => "fortytwo"
+
+ListInt: List[Int] = list: (',' INT)+ => Ints
+
+ListPig: List[Pig] = list: (',' PIG)+ => Pigs
+
+ListDog = list: (',' DOG)+ => Dogs
+
+ListCat: List[String] = CAT => Cat | l: CAT '=' r: CAT => Pair
+
+""")
+
+
+
 object ErrConflict extends Test.COMPONENTS("-Lsyn -Lsym -html -c")("""
                                 %token a
                                 %rules

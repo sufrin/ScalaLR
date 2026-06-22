@@ -208,15 +208,48 @@ object Normalization  {
     }
   }
 
+  // TODO: this should be a Notation feature
+  var autoResults: Boolean = Generator.logGeneration.contains("auto")
+
   /**
    *
-   * Invent/infer a reduction for a production that lacks one
-   * This is only effective if the production has exactly one value-carrying symbol
+   * Invent/infer a reduction for a production that:
+   *
+   * (1) lacks one, or
+   * (2) has a reduction that is a constructor or constant value
+   *
+   * 1. is only effective if the production has exactly one value-carrying symbol
+   * 2. uses the following heuristics based on the form of the production
+   *
+   * {{{
+   *    lhs: Type = ... l1: S1 ... ln: Sn => C
+   * }}}
+   * where the `C` can be interpreted as a result-constructing expression (Constructor)  so
+   * that the `C` is invoked with named arguments that match its parameter names.
+   * {{{
+   *    lhs: Type = ... l1: S1 ... ln: Sn => C(l1=$l1, ... ln=$ln)
+   * }}}
+   * and, if `TT` is a solo terminal value-carrying symbol (and `C` is a one-argument constructor)
+   * {{{
+   *   lhs: Type = ... TT ... => C
+   * }}}
+   * into
+   * {{{
+   *   lhs: Type = ... TT ... => C($TT)
+   * }}}
+   *
+   * If there are no value-carrying terminal symbols, then the result will be the constant `C`
+   *
    */
   def inferReduction(symbolTable: SymbolTables)(rule: Rule): Rule = {
     implicit class FieldTyping(field: NamedField) {
       def hasNoType: Boolean = symbolTable.symbolType.getOrElse(field.theField, NoType)==NoType
       def hasType:   Boolean = symbolTable.symbolType.getOrElse(field.theField, NoType)!=NoType
+      def isPunctuation: Boolean =
+        symbolTable.symbolType.get(field.theField) match {
+           case None     => false
+           case Some(ty) => ty.isNoType
+      }
     }
 
     // TODO: needs a little refactoring!
@@ -283,7 +316,6 @@ object Normalization  {
               production.copy(reduction =  Some(CodeExpression(" () ")))
           }
       }
-
     }
 
     def fieldNames(fields: Seq[NamedField]): Seq[Name] = {
@@ -294,23 +326,69 @@ object Normalization  {
 
     }
 
-    def actionCheckedProduction(lhs: TypedNonterminal, production: Production): Production =
+    /**
+     * Yields the production after checking its result expression for sanity.
+     *
+     * 1. At present the sanity check warns of variables free in the result expression
+     * that are not in scope (declared as labels) in the production. It also warns of those
+     * in scope that are not decorated with dollar signs; and eventually vetoes code-generation
+     * if any appear.
+     *
+     * 2. Eventually it will (if enabled) transform the result expressions of rules of the form
+     * {{{
+     *    lhs: Type = ... l1: S1 ... ln: Sn => C
+     * }}}
+     * where the `C` can be interpreted as a result-constructing expression (Constructor)  so
+     * that the `C` is invoked with named arguments that match its parameter names.
+     * {{{
+     *    lhs: Type = ... l1: S1 ... ln: Sn => C(l1=$l1, ... ln=$ln)
+     * }}}
+     * and, if `TT` is a solo terminal value-carrying symbol (and `C` is a one-argument constructor)
+     * {{{
+     *   lhs: Type = ... TT ... => C
+     * }}}
+     * into
+     * {{{
+     *   lhs: Type = ... TT ... => C($TT)
+     * }}}
+     * If there are no value carrying terminal symbols, then the result will be the constant `C`
+     *
+     * 3. The above rules naturally give rise to the possibility that the collection of rules can /define/
+     * a collection of types.
+     *
+     * @param lhs
+     * @param production
+     * @return production
+     */
+    def resultCheckedProduction(lhs: TypedNonterminal, production: Production): Production =
       production.reduction match {
         case None => production
         case Some(CodeExpression(_)) => production
         case Some(ScalaExpression(scala, start: SourceLocation)) =>
-          val inScope = fieldNames(production.symbols)
-          val used = scala.free
-          val hasDollar = scala.decorated
-          val unscoped = for { variable <- used if !inScope.contains(variable) } yield variable
-          val noDollar = for { variable <- used if inScope.contains(variable) && !hasDollar.contains(variable) } yield variable
-          if (unscoped.nonEmpty) Messages.warning(s"${start} undeclared: (${unscoped.mkString(" ")})  $lhs = $production  ")
-          if (noDollar.nonEmpty) Messages.fatal(s"${start} un$$ollared: (${noDollar.mkString(" ")}) $lhs = $production  ")
-          production.copy(reduction = production.reduction)
+          if (symbolTable.inferResults && scala.isConst ) {
+            val inScope = fieldNames(production.symbols.filterNot(_.isPunctuation)) // ignore punctuation
+            val START = scala.START
+             val autoReduction =
+             inScope.length match {
+               case 0 => production.reduction
+               case 1 => Some(ScalaExpression(Apply(scala, List(Dollar(Id(inScope(0), START)))), START)) // IDENTICAL ANON TERMINALS PICKED UP LATER
+               case _ => Some(ScalaExpression(ApplyNamed(scala, inScope), START))
+             }
+             production.copy(reduction = autoReduction)
+          } else {
+            val inScope = fieldNames(production.symbols)
+            val used = scala.free
+            val hasDollar = scala.decorated
+            val unscoped = for {variable <- used if !inScope.contains(variable)} yield variable
+            val noDollar = for {variable <- used if inScope.contains(variable) && !hasDollar.contains(variable)} yield variable
+            if (unscoped.nonEmpty) Messages.warning(s"${start} undeclared: (${unscoped.mkString(" ")})  $lhs = $production  ")
+            if (noDollar.nonEmpty) Messages.fatal(s"${start} un$$ollared: (${noDollar.mkString(" ")}) $lhs = $production  ")
+            production.copy(reduction = production.reduction)
+          }
       }
 
 
-    val newRHS = for { production <- rule.rhs } yield inferredProduction(actionCheckedProduction(rule.lhs, production))
+    val newRHS = for { production <- rule.rhs } yield inferredProduction(resultCheckedProduction(rule.lhs, production))
     rule.copy(rhs=newRHS)
 
   }

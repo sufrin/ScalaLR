@@ -87,6 +87,10 @@ object SelfTest extends Test.COMPONENTS("-Lsyn -Lsym -html")(
 
         def withSignature(signature: String): Notation =
                  p.copy(theSignature = s"${p.theSignature} $signature")
+
+        def withInferDeclaration(kind: String): Notation =
+            p.copy(inferEnabled = kind.map{_.toUpper} :: p.inferEnabled)
+
  }
 
 }
@@ -114,6 +118,7 @@ Prefix: Notation =   %empty                                      => Notation()
                       | p: Prefix `%right`    TypedTerminals     { $p.withTokenDeclaration(Right)($TypedTerminals) }
                       | p: Prefix `%non`      TypedTerminals     { $p.withTokenDeclaration(Nonassoc)($TypedTerminals) }
                       | p: Prefix `%prec`     TypedTerminals     { $p.withTokenDeclaration(Precedence)($TypedTerminals) }
+                      | p: Prefix `%infer`     ID                 { $p.withInferDeclaration($ID.toString)}
                       | p: Prefix `%dialect`   STRINGorID        { $p.withSignature($STRINGorID.unQuoted) }
                       | p: Prefix `%scalalr`   STRINGorID        { $p.withSignature($STRINGorID.unQuoted) }
                       | p: Prefix `%signature` STRINGorID        => $p.withSignature($STRINGorID.unQuoted)
@@ -154,11 +159,6 @@ Production: Production = Fields Action Precedence { Production($Fields, $Action,
 Fields:List[NamedField] = `%empty` { Nil }
                         | fields: (NamedField)+ { $fields }
 
-/*
-Fields:(List[NamedField]) =
-    | NamedField             { List($NamedField) }
-    | NamedField Fields { $NamedField :: $Fields }
-*/
 
 // fields: (NamedField)+ { $fields }
 NamedField: NamedField = FIELD                               { NamedField(theFieldName = None, theField = $FIELD, $START) }

@@ -31,7 +31,7 @@
   `%path`       `%type`     `%empty`    `%notation`     `%package` `%token`
   `%left`       `%right`    `%non`      `%rules`
   `%include`    `%prec`     `%tables`   `%dialect`      `%scalalr` `%signature`
-  `*`           `?`         `+`         `=>`            `$`
+  `*`           `?`         `+`         `=>`            `$`        `%results` `%infer`
 
 %right '::'
 %left  '+' '-'
@@ -84,6 +84,10 @@
 
         def withSignature(signature: String): Notation =
                  p.copy(theSignature = s"${p.theSignature} $signature")
+
+        def withInferDeclaration(kind: String): Notation =
+            p.copy(inferEnabled = kind.map{_.toUpper} :: p.inferEnabled)
+
  }
 
 }
@@ -104,18 +108,19 @@ Notation: Notation =
     { $Prefix.copy(theRules = $Rules.reverse, theRulesInclude = $firstInclude++"\n\n"++$secondInclude) }
 
 Prefix: Notation =   %empty                                      => Notation()
-                      | p: Prefix `%notation` ID                 { $p.copy(theName=$ID.toString) }
-                      | p: Prefix `%package`  ID                 { $p.copy(thePackage=$ID.toString) }
-                      | p: Prefix `%path`     STRINGorID         { $p.copy(theExplicitPath=$STRINGorID.asPath) }
-                      | p: Prefix `%tables`   STRINGorID         { $p.copy(tablesType=mkTableType($STRINGorID.unQuoted)) }
-                      | p: Prefix `%include`  CODE               { $p.copy(theTokensInclude=$CODE) }
-                      | p: Prefix `%token`    TypedTerminals     { $p.withTokenDeclaration(Tokens)($TypedTerminals) }
-                      | p: Prefix `%left`     TypedTerminals     { $p.withTokenDeclaration(Left)($TypedTerminals) }
-                      | p: Prefix `%right`    TypedTerminals     { $p.withTokenDeclaration(Right)($TypedTerminals) }
-                      | p: Prefix `%non`      TypedTerminals     { $p.withTokenDeclaration(Nonassoc)($TypedTerminals) }
-                      | p: Prefix `%prec`     TypedTerminals     { $p.withTokenDeclaration(Precedence)($TypedTerminals) }
-                      | p: Prefix `%dialect`   STRINGorID        { $p.withSignature($STRINGorID.unQuoted) }
-                      | p: Prefix `%scalalr`   STRINGorID        { $p.withSignature($STRINGorID.unQuoted) }
+                      | p: Prefix `%notation`  ID                 { $p.copy(theName=$ID.toString) }
+                      | p: Prefix `%package`   ID                 { $p.copy(thePackage=$ID.toString) }
+                      | p: Prefix `%path`      STRINGorID         { $p.copy(theExplicitPath=$STRINGorID.asPath) }
+                      | p: Prefix `%tables`    STRINGorID         { $p.copy(tablesType=mkTableType($STRINGorID.unQuoted)) }
+                      | p: Prefix `%include`   CODE               { $p.copy(theTokensInclude=$CODE) }
+                      | p: Prefix `%token`     TypedTerminals     { $p.withTokenDeclaration(Tokens)($TypedTerminals) }
+                      | p: Prefix `%left`      TypedTerminals     { $p.withTokenDeclaration(Left)($TypedTerminals) }
+                      | p: Prefix `%right`     TypedTerminals     { $p.withTokenDeclaration(Right)($TypedTerminals) }
+                      | p: Prefix `%non`       TypedTerminals     { $p.withTokenDeclaration(Nonassoc)($TypedTerminals) }
+                      | p: Prefix `%prec`      TypedTerminals     { $p.withTokenDeclaration(Precedence)($TypedTerminals) }
+                      | p: Prefix `%infer`     ID                 { $p.withInferDeclaration($ID.toString)}
+                      | p: Prefix `%dialect`   STRINGorID         { $p.withSignature($STRINGorID.unQuoted) }
+                      | p: Prefix `%scalalr`   STRINGorID         { $p.withSignature($STRINGorID.unQuoted) }
                       | p: Prefix `%signature` STRINGorID        => $p.withSignature($STRINGorID.unQuoted)
 
 INCLUDE:    String  = `%include` CODE SEPARATOR { $CODE }

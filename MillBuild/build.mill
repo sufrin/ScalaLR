@@ -35,7 +35,6 @@ object ScalaLR extends ScalalrModule with ComponentModule  {
   def mvnDeps = Seq(
       mvn"org.scala-lang.modules::scala-xml:2.3.0"
   )
-  
 }
 
 // this module defines classes shared by code generator and scalalr

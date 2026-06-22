@@ -147,6 +147,8 @@ object LexicalScanner {
             case "signature"    => `%signature`
             case "precedence"   => `%prec`
             case "prec"         => `%prec`
+            case "results"      => `%results`
+            case "infer"        => `%infer`
             case "rules"        =>
               inRulesSection = true
               eatWhitespace()

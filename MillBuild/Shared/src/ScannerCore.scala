@@ -45,13 +45,29 @@ abstract class ScannerCore[Token <: Lexeme](chars: SourceTextCursor) extends Sca
   import org.sufrin.utility.CharSequenceMap
 
   import scala.collection.mutable
-  /** Token from a "quoted" text, after processing any "escape" sequences in `body` */
+  /**
+   * Token from a "quoted" text. Client's is responsibility for processing any "escape" sequences in `body` ,
+   * and we don't define an `escape` character here.
+   *
+   * But we provide several different pairs of open/close quote in addition to the usual `'` and "` , namely
+   * properly nested: `("«", "»")`, and `("“", "“")`
+   *
+   */
   def mkString(openQuote: String, closeQuote: String, body: Seq[Char]): Token
   /** Token from a text of the form `0x[hexit]+` */
   def mkHex(source: Seq[Char]):   Token
   /** Token from a text of the form `[digit]+` */
   def mkDec(source: Seq[Char]):   Token
-  /** Token from a text of the form `[digit]+.[digit]+(e[digit]+)?` */
+  /** Token from a text of one of the forms:
+   *       intpart . fracpart exp [-]? exppart
+   *       intpart exp  [-]? exppart
+   *  where
+   *       intpart  = [digit]+
+   *       fracpart = [digit]*
+   *       exppart  = [digit]+
+   * and
+   *       exp      = [Ee]
+   */
   def mkReal(source: Seq[Char]):  Token
   /** Token from the text of an identifier [letter][letterordigit]+ */
   def mkIDENTIFIER(source: Seq[Char]):    Token
@@ -121,28 +137,15 @@ abstract class ScannerCore[Token <: Lexeme](chars: SourceTextCursor) extends Sca
 
 
   def nextNumber(intPart: Seq[Char]) : Token = {
-    if (hasChar)
-    theChar match {
-      case '.' =>
-        nextChar()
-        val fracPart = chars.takeWhile(c=>c.isDigit).prepended('.')// ddd.ddd
-        if (hasChar)
-        theChar.toLower match {
-          case 'e' =>
-            nextChar()
-            val expPart =
-              if (hasChar) chars.takeWhile(c=>c.isDigit).prepended('e') else(Seq('0'))
-            mkReal(intPart ++ fracPart ++ expPart)
-          case _ =>
-            mkReal(intPart ++ fracPart)
-        } else mkReal(intPart ++ fracPart)
-      case 'e' =>
-        nextChar()
-        val expPart = chars.takeWhile(c=>c.isDigit).prepended('e')
-        mkReal(intPart ++ expPart)
-      case _   =>
-        mkDec(intPart)
-    } else mkDec(intPart)
+    if (hasChar && (theChar=='.' || theChar=='e')) {
+      val dot      = chars.takeIf(c=>c=='.')
+      val fracPart = dot ++ chars.takeWhile(c=>c.isDigit)
+      val exp = chars.takeIf(c=>c.toLower=='e')
+      val neg = chars.takeIf(c=>c=='-')
+      val expPart = if (exp.isEmpty) Seq() else exp ++ neg ++ chars.takeWhile(c=>c.isDigit)
+      mkReal(intPart ++ fracPart ++ expPart)
+    } else  mkDec(intPart)
+
   }
 
 

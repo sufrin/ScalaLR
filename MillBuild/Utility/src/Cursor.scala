@@ -63,6 +63,15 @@ trait Cursor[T] {
     result.toSeq
   }
 
+  def takeIf(p: T => Boolean): Seq[T] = {
+    val result = collection.mutable.ArrayBuffer[T]()
+    if (hasCurrent && p(current)) {
+      result append current
+      next()
+    }
+    result.toSeq
+  }
+
   /**
    *
    * {{{

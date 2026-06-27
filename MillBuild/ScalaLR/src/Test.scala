@@ -56,7 +56,7 @@ object Test {
    * @param loc
    */
   class Generate(args: String = "")(notationSource: String)(loc: SourceLocation) extends App {
-    val effectiveArgs = args.split(' ').toList ++ List("-#", (loc.line + 1).toString, "-##", "0" /*(loc.offset).toString*/ , "-s", notationSource)
+    val effectiveArgs = args.split(' ').toList ++ List("-#", (loc.line-1).toString, "-##", "0" /*(loc.offset).toString*/ , "-s", notationSource)
     println("**************************************")
     println(s"Generating parser components from  ${loc.file}:${loc.line} $args")
     println("**************************************")

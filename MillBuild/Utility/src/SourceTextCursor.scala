@@ -75,10 +75,11 @@ object SourceTextCursor {
   }
 
     def console: SourceTextCursor = {
-      val reader = Option(System.console()) match {
-        case Some(console) => console.reader()
-        case None => new java.io.InputStreamReader(System.in)
-      }
+      val reader = new java.io.InputStreamReader(System.in)
+      //Option(System.console()) match {
+      // case Some(console) => console.reader()
+      //  case None =>
+      //}
       val it = new Iterator[Char] {
         def hasNext: Boolean =  true
         def next(): Char = {

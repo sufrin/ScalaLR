@@ -14,7 +14,7 @@
  *  Top level read-eval-print interpreter for TinyFun.
  *
  *  Notice that the top-level parser(s) are reinitialised when a parse error is
- *  encountered. This is the simplext way of recovering from such errors without
+ *  encountered. This is the simplest way of recovering from such errors without
  *  using the (immature) error-recovery features of the parser.
  *
  */

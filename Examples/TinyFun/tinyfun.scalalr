@@ -9,14 +9,14 @@
   import org.sufrin.utility.SourceTextCursor
 
   /**
-     `Scanner(chars)` builds a lexical scanner using a `ScannerBuilder`. The implementations of
+     `Scanner(chars)` builds a lexical scanner from a `ScannerCore`. The implementations of
      the `mkXXX` functions bridge the fixed lexical categories of the builder, and the `%token`
      constructors declared here. The `withSymbolTokens(symbolToken)` clause initialises the
-     internal symbol and token tables of the resulting builder.
+     internal symbol map and prefixmap of the resulting builder.
   */
 
 
-      def makeScanner(chars: SourceTextCursor): ScannerCore[Token] = new ScannerCore[Token](chars) {
+      def makeScanner(chars: SourceTextCursor): Scanner[Token] = new ScannerCore[Token](chars) {
          def mkString(openQuote: String, closeQuote: String, body: Seq[Char]): Token = STRING(s"$openQuote${body.mkString}$closeQuote")
          def mkHex(source: Seq[Char]):          Token = HEX(source.mkString)
          def mkDec(source: Seq[Char]):          Token = DEC(source.mkString)
@@ -24,24 +24,23 @@
          def mkIDENTIFIER(source: Seq[Char]):   Token = ID(source.mkString)
          def mkERROR(source: Seq[Char]):        Token = SCANERROR(source.mkString)
          val NEWLINE:                    Option[Token] = Some(NL)
+         override val ENDSTREAM: Token                = Scanner.ENDSTREAM
+
          def flush(): Unit = {
              while (chars.hasCurrent && chars.current != '\n') chars.next()
-             print(chars.prompt); System.out.flush()
+             print(chars.promptString); System.out.flush()
          }
          locally {
            TinyFun.prompt = chars.promptString
          }
       } withSymbolTokens(symbolToken)
 
-
-
-
 }
 
 %token HEX(Seq[Char]) DEC(Seq[Char]) REAL(Seq[Char]) ID(Seq[Char])  `(` `)` `[` `]` `,` SCANERROR(Seq[Char]) STRING(Seq[Char]) NL "QUIT"
 %right `=`
-%left `+` `-`
-%left `*` `/`
+%left  `+` `-`
+%left  `*` `/`
 %right `^`
 %prec UNARY
 

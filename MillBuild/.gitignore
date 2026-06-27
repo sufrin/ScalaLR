@@ -3,4 +3,6 @@ out/*
 .idea/*
 .bsp/*
 */GeneratedByRuntimeTests/*
+*/GeneratedByStaticTests/*
+
 

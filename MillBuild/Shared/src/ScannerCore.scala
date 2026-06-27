@@ -6,23 +6,43 @@ import org.sufrin.utility.SourceTextCursor
  * A `Scanner` is a `Token` `Iterator` that supplies source locations.
  * In general `sourceLocation()` yields the starting source location of the latest `Token` to be
  * returned.
+ *
+ *
  */
 trait Scanner[Token]  extends Iterator[Token] {
   def sourceLocation(): SourceLocation
+
   def prompt(): Unit
-  def defineSymbolTokens(symbolToken: Map[String, Token]): Unit
+}
+
+/** An extensible scanner is a scanner with additional features that
+ * support its parameterization by a straightforward mapping and/or a
+ * prefix map.
+ *
+ * The former is used when the scanner has completely isolated a String from its subject text.
+ * The latter is used when the scanner needs incremental access to the representation
+ * because it is seeking to isolate the longest prefix of the remaining subject text that
+ * has a corresponding token.
+ */
+trait ExtensibleScanner[Token] extends Scanner[Token] {
+  /** If `name` corresponds to a `token: Token` in the `PrefixMap` or in the `Map` . yield `Some(token)` else yield `None` */
+  def getToken(name: String): Option[Token]
+
+  def setPrefixMap(name: String, token: Token): Option[Token]
+  def setMap(name: String, token: Token): Option[Token]
   def withSymbolTokens(symbolToken: Map[String, Token]): this.type
+  def defineSymbolTokens(symbolToken: Map[String, Token]): Unit
 }
 
 /**
  * A builder for parameterisable lexical scanners. Simplicity is the
- * watchword so as to keep the API simple. It is expected that the
- * following "token-handlers" will all be defined. They are intended
- * to map a sequence of characters discovered by the scanning machinery
- * to a `Token` of the appropriate kind
+ * watchword so as to keep the API small.
+ *
+ * It is expected that the following "token-handlers" will all be defined. They are intended
+ * to map a sequence of characters that corresponds to a scanned symbol  to the corresponding  `Token`
  *
  * {{{
- *   // Token from a "quoted" text, after processing any "escape" sequences in `body`
+ *   // Token from a "quoted" text. It is the client's responsibility to process any "escape" sequences in `body`
  *   def mkString(openQuote: String, closeQuote: String, body: Seq[Char]): Token
  *
  *   // Token from a text of the form `0x[hexit]+`
@@ -41,12 +61,12 @@ trait Scanner[Token]  extends Iterator[Token] {
  *   def mkERROR(source: Seq[Char]): Token
  * }}}
  */
-abstract class ScannerCore[Token <: Lexeme](chars: SourceTextCursor) extends Scanner[Token] {
+abstract class ScannerCore[Token <: Lexeme](chars: SourceTextCursor) extends ExtensibleScanner[Token] {
   import org.sufrin.utility.CharSequenceMap
 
   import scala.collection.mutable
   /**
-   * Token from a "quoted" text. Client's is responsibility for processing any "escape" sequences in `body` ,
+   * Token from a "quoted" text. Client has responsibility for processing any "escape" sequences in `body` ,
    * and we don't define an `escape` character here.
    *
    * But we provide several different pairs of open/close quote in addition to the usual `'` and "` , namely
@@ -80,11 +100,11 @@ abstract class ScannerCore[Token <: Lexeme](chars: SourceTextCursor) extends Sca
   val NEWLINE:                    Option[Token] // == NONE when NL is just whitespace
   val ENDSTREAM:                  Token
 
-  /** Trie mapping from (non-alphabetic) names to the tokens they denote  */
-  val tokenMap: CharSequenceMap[Token] = new CharSequenceMap[Token]
+  /** PrefixMap mapping names to the tokens they denote: accessible incrementally  */
+  val tokenPrefixMap: CharSequenceMap[Token] = new CharSequenceMap[Token]
 
-  /** Mapping from (alphabetic) names to the tokens they denote */
-  val symbolMap: collection.mutable.Map[String,Token] = new mutable.LinkedHashMap[String,Token]
+  /** Mapping from names to the tokens they denote */
+  val tokenMap: collection.mutable.Map[String,Token] = new mutable.LinkedHashMap[String,Token]
 
   def defineSymbolTokens(symbolToken: Map[String, Token]): Unit = {
     withSymbolTokens(symbolToken);
@@ -93,13 +113,31 @@ abstract class ScannerCore[Token <: Lexeme](chars: SourceTextCursor) extends Sca
 
   /** Initialize the token and symbol mappings using the mapping supplied by `ScalaLR` .
    *  All symbols that will be seen as Letter LetterOrDigit* go into the symbol map.
-   *  All symbols (~LetterOrDigit)+ go into the token trie map.
+   *  All symbols (~LetterOrDigit)+ go into the token PrefixMap map.
    *  Other symbols are ignored: ie there is no provision for hybrids.
    */
   def withSymbolTokens(symbolToken: Map[String, Token]): this.type = {
-    for { (symbol, token) <- symbolToken if symbol.nonEmpty && symbol.forall(_.isLetterOrDigit)} symbolMap(symbol) = token
-    for { (symbol, token) <- symbolToken if symbol.nonEmpty && symbol.forall { c => ! c.isLetterOrDigit}} tokenMap(symbol) = token
+    for { (symbol, token) <- symbolToken if symbol.nonEmpty && symbol.forall(_.isLetterOrDigit)} tokenMap(symbol) = token
+    for { (symbol, token) <- symbolToken if symbol.nonEmpty && symbol.forall { c => ! c.isLetterOrDigit}} tokenPrefixMap(symbol) = token
     this
+  }
+
+  def getToken(name: String): Option[Token] =
+    tokenPrefixMap.get(name) match {
+      case None    => tokenMap.get(name)
+      case defined => defined
+    }
+
+  def setPrefixMap(name: String, token: Token): Option[Token] =  {
+    val result = tokenPrefixMap.get(name)
+    tokenPrefixMap(name) = token
+    result
+  }
+
+  def setMap(name: String, token: Token): Option[Token]  =  {
+    val result = tokenMap.get(name)
+    tokenMap(name) = token
+    result
   }
 
   def prompt(): Unit = { print(chars.promptString); System.out.flush() }
@@ -145,7 +183,6 @@ abstract class ScannerCore[Token <: Lexeme](chars: SourceTextCursor) extends Sca
       val expPart = if (exp.isEmpty) Seq() else exp ++ neg ++ chars.takeWhile(c=>c.isDigit)
       mkReal(intPart ++ fracPart ++ expPart)
     } else  mkDec(intPart)
-
   }
 
 
@@ -157,7 +194,7 @@ abstract class ScannerCore[Token <: Lexeme](chars: SourceTextCursor) extends Sca
       case c if c.isLetter =>
         val prefix = chars.takeWhile(_.isLetterOrDigit)
         val string = prefix.mkString("")
-        symbolMap.getOrElse(string, mkIDENTIFIER(string))
+        tokenMap.getOrElse(string, mkIDENTIFIER(string))
 
       case '0' =>
         nextChar()
@@ -192,13 +229,13 @@ abstract class ScannerCore[Token <: Lexeme](chars: SourceTextCursor) extends Sca
             chars.dropWhile( c=>c!='\n')
             next()
           case other =>
-            tokenMap.longestPrefixMatch(s"/$other") match {
+            tokenPrefixMap.longestPrefixMatch(s"/$other") match {
               case None => mkERROR(s"at: /$other")
               case Some((tok, edges)) =>
                 tok
             }
         }
-        
+
       case '«' =>
         nextChar(); afterNextChar(mkString("«", "»", chars.takeNested2('«', '»')))
       case '“' =>
@@ -209,7 +246,7 @@ abstract class ScannerCore[Token <: Lexeme](chars: SourceTextCursor) extends Sca
         nextChar(); afterNextChar(mkString("'", "'", chars.takeWhile( c => c!='\'')))
 
       case c  =>
-        tokenMap.longestPrefixMatch(chars) match {
+        tokenPrefixMap.longestPrefixMatch(chars) match {
           case None =>
             mkERROR(s"no lexical token begins with the character `$c`")
           case Some((tok, edges)) =>

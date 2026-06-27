@@ -127,7 +127,6 @@ ListCat: List[String] = CAT => Cat | l: CAT '=' r: CAT => Pair
 """)
 
 object resultsInferredError extends Test.COMPONENTS("-Lsyn -Lsym -Lauto -html")("""
-//
 %notation  resultsInferred
 %package   scalalr.resultsInferred
 %path      "resultsInferred"
@@ -214,19 +213,18 @@ object DanglingElseLALR extends Test.COMPONENTS("-c -html -Lsyn -Lsym -Lred")(
 
 """)
 
-object TwoIncludes extends Test.COMPONENTS("-c -html -Lsyn -Lsym -Lred")(
-  """
-                                   %token a
-                                   %rules
-                                   %include { this is the first include }
+object TwoIncludes extends Test.COMPONENTS("-c -html -Lsyn -Lsym -Lred")("""
+ %token a(T)
+ %rules
+ %include { this is the first include }
 
-                                   S = A | B
+ S: T = A | B
 
-                                   A = a
+ A = a
 
-                                   B = a
+ B = a
 
-                                   %include { this is the second include };
+ %include { this is the second include };
 
   """.stripMargin
 )

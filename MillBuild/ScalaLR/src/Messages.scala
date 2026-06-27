@@ -11,6 +11,7 @@ object Messages {
   }
   def halt(): Unit = {
     System.err.println(s"*HALTED: No code generation")
+    System.exit(1)
   }
   def reset(): Unit = fatalErrors = 0
   def noneFatal: Boolean = fatalErrors == 0

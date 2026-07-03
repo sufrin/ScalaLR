@@ -13,10 +13,11 @@ object Err1 extends Test.COMPONENTS("-Lsyn -Lsym -html")(
 %path      "err1"
 %signature "err1"
 %tables    lr
+
 /* A nested comment
-   /* that is not
+   /* that is
    */
-   completely closed
+   completely closed  */
 
 %rules
 
@@ -79,7 +80,8 @@ ListInt: List[Int] = list: (INT)... => List($list.length - 2) // this should not
 ListPig: List[Pig] = list: (PIG)... => List($list.length - 2)
 """)
 
-object allTyped extends Test.COMPONENTS("-Lsyn -Lsym -html")("""
+object allTyped extends Test.COMPONENTS("-Lsyn -Lsym -html")(
+"""
 //Checking
 %notation  allTyped
 %package   scalalr.allTyped
@@ -95,9 +97,12 @@ ListInt: List[Int] = list: (',' INT)+
 ListPig: List[Pig] = list: (',' PIG)+
 
 ListDog = list: (',' DOG)+
+
+fo
 """)
 
-object resultsInferred extends Test.COMPONENTS("-Lsyn -Lsym -Lauto -html")("""
+object resultsInferred extends Test.COMPONENTS("-Lsyn -Lsym -Lauto -html")(
+"""
 //
 %notation  resultsInferred
 %package   scalalr.resultsInferred

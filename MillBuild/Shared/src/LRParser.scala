@@ -59,7 +59,8 @@ object LRParser {
    */
   sealed trait ParseState
   /** The automaton is running  */
-  case object RUNNING extends ParseState
+  case object RUNNING    extends ParseState
+  case object RECOVERING extends ParseState
   /** The (push) automaton is running and wants the context to
    *  provide the next input lexeme.
    *  @see step
@@ -69,6 +70,11 @@ object LRParser {
   case class  ERRONEOUS(diagnosis: String) extends Throwable with ParseState
   /** The automaton has accepted the input: `values` is the result of the top-level production */
   case class  ACCEPTED(values: Any) extends ParseState
+  /** 
+   * A result-expression has invoked the `Shortcut.Instruct(instruction)` so as to continue the parse as if from
+   * the top level after obeying the given instruction
+   */
+  case class  INSTRUCTED(instruction: Any) extends ParseState
 
   /**
    * Core of both the Pull and Push parser automata.
@@ -95,7 +101,8 @@ object LRParser {
     var parseState: ParseState = RUNNING
     var logState: Boolean = false
     var attemptRecovery = false
-    var logRecovery = true
+    var logRecovery = false
+    var reductionOnError = false
     var currentState = 0
 
     /** MUST BE IDENTICAL TO THE (UNIVERSALLY INVARIANT) BISON CODE FOR THE VIRTUAL TERMINAL SYMBOL "error" */
@@ -118,15 +125,44 @@ object LRParser {
     }
 
     /**
-     * A rudimentary diagnostic message for use when a parse error is discovered
+     * A rudimentary diagnostic message for use when a parse error is discovered.
+     * TODO: This really should be turned over to the client to format
      * @param currentInput
      * @param currentState
      * @return
      */
     def diagnosis(currentInput: Lex, currentState: State): String = {
-      val acceptable = for {(symbol, name) <- symbolName if action(currentState)(symbol) != ERROR } yield name
-      val oneOf = if (acceptable.size>1) " one of: " else ": "
-      s"Syntax error at ${sourceLocation()}. ${currentInput} is not$oneOf${acceptable.mkString(" ")}"
+      val EOF = "<end of file>"
+      val acceptable = (for {(symbol, name) <- symbolName if action(currentState)(symbol) != ERROR }
+                            yield if (symbol==0) EOF else name).toSeq.sorted
+      val oneOf      = if (acceptable.size>1) " one of: " else ": "
+      def shortValue(a: Any): String = {
+        val s = a match {
+          case it: String => s""""${if (it.length>10) it.take(10)+"..." else it}""""
+          case it: Int    => it.toString
+          case it: Long   => it.toString
+          case it: Float  => it.toString
+          case it: Double => it.toString
+          case it: Char   => s"'$it'"
+          case it: Iterable[Any] => "[...]"
+          case it: Product => s"${it.productPrefix}(...)"
+          case _ => ""
+         }
+        if (s.nonEmpty) s"($s)" else ""
+      }
+      val topSymbols = symbols.take(6).toSeq.map(symbolName)
+      val topValues  = values.take(6).map(shortValue(_)).toSeq
+      val topLocs    = locations.take(6).map(_.toString)
+      val context    = for { i<-0 until topLocs.length } yield s"${topSymbols(i)}${topValues(i)}${topLocs(i)}"
+      val atEof      = currentInput.symbol==0
+      val eofExplain = if (atEof) EOF else ""
+      val where      = s"${sourceLocation()} $eofExplain"
+      val contextLine = if (context.isEmpty) "" else context.mkString("  Context:", "\n         : ", "")
+      s"""Syntax error at: ${where}
+         |  Found: ${if (atEof) EOF else currentInput}
+         |  Expecting$oneOf${acceptable.mkString(" ")}
+         |  $contextLine
+         |""".stripMargin
     }
 
     /**
@@ -167,18 +203,21 @@ object LRParser {
     import collection.mutable.Stack
 
     def run(next: () => Lex): ParseState = {
-      //symbols.push(0)
-      //values.push(())
+      symbols.push(0)
+      values.push(())
       states.push(0)
       var location = sourceLocation()
+      locations.push(location)
       var input = next()
 
-      while (parseState == RUNNING) {
+      while (parseState == RUNNING || parseState == RECOVERING) {
         var currentState = states.top
         val act = action(currentState)(input.symbol)
         if (logState) println(s"$currentState: ${symbolName(input.symbol)}=«$input»  $act")
         act match {
           case _: GOTO => //TODO: Not really an action
+            parseState = RUNNING
+
           case SHIFT(newState) =>
             states.push(newState)
             symbols.push(input.symbol)
@@ -186,18 +225,63 @@ object LRParser {
             locations.push(location)
             input = next()
             location = sourceLocation()
+            parseState = RUNNING
+
           case ACCEPT =>
             parseState = ACCEPTED(values(1))
-          case ERROR =>
+
+          case ERROR if parseState == RECOVERING =>
+            input = next()
+
+          case ERROR => // parseState == RUNNING
             val cause = diagnosis(input, currentState)
             if (attemptRecovery && findRecoveryState(cause)) {
               val SHIFT(newState) = action(states.top)(errorSymbol)
               states.push(newState)
               symbols.push(errorSymbol)
-              values.push(None)
+              values.push(cause)
               locations.push(location)
               //println(s"error SHIFT($newState)")
-              parseState = NEXTSTEP
+              if (logState) println(s"ERROR SHIFTED: ${mkString}")
+              // experiment: force a reduction (maybe)
+              if (reductionOnError)
+              action(newState)(1)  match {
+                case REDUCE(lhsSymbol, production, size) =>
+                  parseState = ERRONEOUS(s"${cause}Parsing: ${symbolName(lhsSymbol)}\n")
+                  var reduced: List[Any] = Nil
+                  var right = location
+                  var left = location
+                  // pop the top "frame"
+                  for {i <- 1 to size} {
+                    states.pop()
+                    symbols.pop()
+                    reduced = values.pop() :: reduced
+                    left = locations.pop()
+                  }
+                  // calculate the reduced "frame"
+                  if (logState) println(s"REDUCE ($reduced) to ")
+                  val result = reduction(left, right, production)(reduced)
+                  if (logState) println(s"$result")
+                  // push its reduction and symbol type
+                  currentState = states.top
+                  symbols.push(lhsSymbol)
+                  values.push(result)
+                  states.push(goto(currentState)(lhsSymbol))
+                  locations.push(left)
+                  // Cheat by reducing to an ACCEPTED, ERRONEOUS, or INSTRUCTED state
+                  result match {
+                    case ERRONEOUS(comment: String)    => parseState = ERRONEOUS(s"$cause$comment")
+                    case _: ACCEPTED |  _: ERRONEOUS | _: INSTRUCTED => parseState = result.asInstanceOf[ParseState]
+                    case _ =>
+                  }
+                case otherwise =>
+                  parseState = ERRONEOUS(diagnosis(input, currentState))
+              }
+              else { // discard symbols until one is acceptable
+                println(s"Discarded $input")
+                input = next()
+                parseState = RECOVERING
+              }
             } else  {
               parseState = ERRONEOUS(diagnosis(input, currentState))
             }
@@ -224,9 +308,10 @@ object LRParser {
             values.push(result)
             states.push(goto(currentState)(lhsSymbol))
             locations.push(left)
-            // Cheat by reducing to an ACCEPTED or ERRONEOUS state
+            parseState = RUNNING
+            // Cheat by reducing to an ACCEPTED, ERRONEOUS, or INSTRUCTED state
             result match {
-              case _: ACCEPTED |  _: ERRONEOUS => parseState = result.asInstanceOf[ParseState]
+              case _: ACCEPTED |  _: ERRONEOUS | _: INSTRUCTED => parseState = result.asInstanceOf[ParseState]
               case _ =>
             }
         }
@@ -294,7 +379,8 @@ object LRParser {
       symbols.push(0)
       values.push(())
       states.push(0)
-      locations.push(SourceLocation(0,0))
+      val location = sourceLocation()
+      locations.push(location)
       NEXTSTEP
     }
 
@@ -355,9 +441,9 @@ object LRParser {
             val newState = goto(currentState)(lhsSymbol)
             states.push(newState)
             stepUnfinished = true
-            // Cheat by reducing to an ACCEPTED or ERRONEOUS state
+            // Cheat by reducing to an ACCEPTED, ERRONEOUS, or INSTRUCTED state
             result match {
-              case _: ACCEPTED |  _: ERRONEOUS => parseState = result.asInstanceOf[ParseState]
+              case _: ACCEPTED |  _: ERRONEOUS | _: INSTRUCTED => parseState = result.asInstanceOf[ParseState]
               case _ =>
             }
         }
@@ -370,22 +456,27 @@ object LRParser {
 
 /**
  * Supports short-cut termination or continuation of a parse, and should be used
- * with great discretion. At some point we may use it to support communication
- * with the parsing infrastructure (for example to change the mode of operation of
- * a lexical scanner)
+ * with great discretion.
  *
- * A production that returns an `Interaction.Continuation` result is signalling one
- * of three outcomes:
+ * A production that returns a `Shortcut.Shortcut` result is signalling one
+ * of four outcomes:
  * {{{
  *   Accept(aValue) -- terminate the parse successfully now, yielding `aValue`
  *   Error(aString) -- terminate the parse erroneously now, yielding `aString`
  *   Continue -- continue the parse
+ *   Instruct(anInstruction) -- continue the parse after having obeyed `anInstruction`
  * }}}
+ * The exact interpretations of "terminate" and "continue" (and instructions) are
+ * left open to be decided by specific notation/top-level combinations.
+ * Some (conventional file-at-a-time compilers) will not use shortcuts at all;
+ * others (for example interactive systems that incrementally act on top-level phrases
+ * may use "Continue", and "Instruct" and restart the parse using the prevailing scanner)
  */
 object Shortcut {
-  import LRParser.{ACCEPTED, ERRONEOUS, ParseState, RUNNING}
+  import LRParser._
   type Shortcut = ParseState
-  def  Accept(value: Any):     Shortcut = ACCEPTED(value)
-  def  Error(culprit: String): Shortcut = ERRONEOUS(culprit)
-  val  Continue:               Shortcut = RUNNING
+  def  Accept(value: Any):          Shortcut = ACCEPTED(value)
+  def  Instruct(instruction: Any):  Shortcut = INSTRUCTED(instruction)
+  def  Error(culprit: String):      Shortcut = ERRONEOUS(culprit)
+  val  Continue:                    Shortcut = RUNNING
 }

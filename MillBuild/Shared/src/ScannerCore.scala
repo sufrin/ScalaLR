@@ -100,6 +100,9 @@ abstract class ScannerCore[Token <: Lexeme](chars: SourceTextCursor) extends Ext
   val NEWLINE:                    Option[Token] // == NONE when NL is just whitespace
   val ENDSTREAM:                  Token
 
+  /** overrideable: so that some lexical context can be kept  */
+  def allowNL: Boolean           = false
+
   /** PrefixMap mapping names to the tokens they denote: accessible incrementally  */
   val tokenPrefixMap: CharSequenceMap[Token] = new CharSequenceMap[Token]
 
@@ -209,10 +212,14 @@ abstract class ScannerCore[Token <: Lexeme](chars: SourceTextCursor) extends Ext
         val intPart = chars.takeWhile(c=>c.isDigit)
         nextNumber(intPart)
 
+      case '\u0000' =>
+        nextChar()
+        if (hasChar) next() else ENDSTREAM
+
       // When a newline appears return NEWLINE (if it's defined) without actually reading ahead.
-      // and pretend that the read ahead got a space, so that the subsequent next() skips this space
-      case c if c=='\n'     =>
-        chars.current = ' '
+      // and pretend that the read ahead got a nul, so that the subsequent next() skips this nul
+      case c if c=='\n' && allowNL   =>
+        chars.current = '\u0000'
         if (NEWLINE.isDefined) NEWLINE.get else next()
 
       case c if c.isWhitespace =>

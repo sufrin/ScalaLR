@@ -101,7 +101,7 @@ abstract class ScannerCore[Token <: Lexeme](chars: SourceTextCursor) extends Ext
   val ENDSTREAM:                  Token
 
   /** overrideable: so that some lexical context can be kept  */
-  def allowNL: Boolean           = false
+  def allowNL: Boolean           = true
 
   /** PrefixMap mapping names to the tokens they denote: accessible incrementally  */
   val tokenPrefixMap: CharSequenceMap[Token] = new CharSequenceMap[Token]
@@ -255,7 +255,8 @@ abstract class ScannerCore[Token <: Lexeme](chars: SourceTextCursor) extends Ext
       case c  =>
         tokenPrefixMap.longestPrefixMatch(chars) match {
           case None =>
-            mkERROR(s"no lexical token begins with the character `$c`")
+            nextChar()
+            mkERROR(s"No token starting `$c` can be completed here.")
           case Some((tok, edges)) =>
             tok
         }

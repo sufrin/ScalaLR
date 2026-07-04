@@ -231,58 +231,63 @@ object LRParser {
             parseState = ACCEPTED(values(1))
 
           case ERROR if parseState == RECOVERING =>
+            println(s"Discarded $input")
             input = next()
 
           case ERROR => // parseState == RUNNING
             val cause = diagnosis(input, currentState)
-            if (attemptRecovery && findRecoveryState(cause)) {
-              val SHIFT(newState) = action(states.top)(errorSymbol)
-              states.push(newState)
-              symbols.push(errorSymbol)
-              values.push(cause)
-              locations.push(location)
-              //println(s"error SHIFT($newState)")
-              if (logState) println(s"ERROR SHIFTED: ${mkString}")
-              // experiment: force a reduction (maybe)
-              if (reductionOnError)
-              action(newState)(1)  match {
-                case REDUCE(lhsSymbol, production, size) =>
-                  parseState = ERRONEOUS(s"${cause}Parsing: ${symbolName(lhsSymbol)}\n")
-                  var reduced: List[Any] = Nil
-                  var right = location
-                  var left = location
-                  // pop the top "frame"
-                  for {i <- 1 to size} {
-                    states.pop()
-                    symbols.pop()
-                    reduced = values.pop() :: reduced
-                    left = locations.pop()
+            if (attemptRecovery) {
+              if (findRecoveryState(cause)) {
+                  val SHIFT(newState) = action(states.top)(errorSymbol)
+                  states.push(newState)
+                  symbols.push(errorSymbol)
+                  values.push(cause)
+                  locations.push(location)
+                  //println(s"error SHIFT($newState)")
+                  if (logState) println(s"ERROR SHIFTED: ${mkString}")
+                  // experiment: force a reduction (maybe)
+                  if (reductionOnError)
+                     action(newState)(1)  match {
+                    case REDUCE(lhsSymbol, production, size) =>
+                      parseState = ERRONEOUS(s"${cause}Parsing: ${symbolName(lhsSymbol)}\n")
+                      var reduced: List[Any] = Nil
+                      var right = location
+                      var left = location
+                      // pop the top "frame"
+                      for {i <- 1 to size} {
+                        states.pop()
+                        symbols.pop()
+                        reduced = values.pop() :: reduced
+                        left = locations.pop()
+                      }
+                      // calculate the reduced "frame"
+                      if (logState) println(s"REDUCE ($reduced) to ")
+                      val result = reduction(left, right, production)(reduced)
+                      if (logState) println(s"$result")
+                      // push its reduction and symbol type
+                      currentState = states.top
+                      symbols.push(lhsSymbol)
+                      values.push(result)
+                      states.push(goto(currentState)(lhsSymbol))
+                      locations.push(left)
+                      // Cheat by reducing to an ACCEPTED, ERRONEOUS, or INSTRUCTED state
+                      result match {
+                        case ERRONEOUS(comment: String)    => parseState = ERRONEOUS(s"$cause$comment")
+                        case _: ACCEPTED |  _: ERRONEOUS | _: INSTRUCTED => parseState = result.asInstanceOf[ParseState]
+                        case _ =>
+                      }
+                    case otherwise =>
+                      parseState = ERRONEOUS(diagnosis(input, currentState))
                   }
-                  // calculate the reduced "frame"
-                  if (logState) println(s"REDUCE ($reduced) to ")
-                  val result = reduction(left, right, production)(reduced)
-                  if (logState) println(s"$result")
-                  // push its reduction and symbol type
-                  currentState = states.top
-                  symbols.push(lhsSymbol)
-                  values.push(result)
-                  states.push(goto(currentState)(lhsSymbol))
-                  locations.push(left)
-                  // Cheat by reducing to an ACCEPTED, ERRONEOUS, or INSTRUCTED state
-                  result match {
-                    case ERRONEOUS(comment: String)    => parseState = ERRONEOUS(s"$cause$comment")
-                    case _: ACCEPTED |  _: ERRONEOUS | _: INSTRUCTED => parseState = result.asInstanceOf[ParseState]
-                    case _ =>
+                  else { // discard symbols until one is acceptable
+                    println(s"Discarded $input")
+                    input = next()
+                    parseState = RECOVERING
                   }
-                case otherwise =>
-                  parseState = ERRONEOUS(diagnosis(input, currentState))
+              } else  {
+                parseState = ERRONEOUS(diagnosis(input, currentState))
               }
-              else { // discard symbols until one is acceptable
-                println(s"Discarded $input")
-                input = next()
-                parseState = RECOVERING
-              }
-            } else  {
+            } else {
               parseState = ERRONEOUS(diagnosis(input, currentState))
             }
 

@@ -108,18 +108,20 @@ object LRParser {
     /** MUST BE IDENTICAL TO THE (UNIVERSALLY INVARIANT) BISON CODE FOR THE VIRTUAL TERMINAL SYMBOL "error" */
     val errorSymbol: Int = 1
 
+    def popAll(): Unit =  {
+      states.pop()
+      values.pop()
+      symbols.pop()
+      locations.pop()
+    }
+
     /**
      * Find a state on the stack of states that will shift "error"; report the `cause`
      */
     def findRecoveryState(cause: String): Boolean = {
       if (logRecovery) println(s"$cause\nFinding an error-SHIFT state:\n${mkString}")
       def cannotShiftError(state: State): Boolean = !(action(state)(errorSymbol).isInstanceOf[SHIFT])
-      while (states.nonEmpty && cannotShiftError(states.top)) {
-        states.pop()
-        values.pop()
-        symbols.pop()
-        locations.pop()
-      }
+      while (states.nonEmpty && cannotShiftError(states.top)) popAll()
       if (logRecovery && states.nonEmpty) println(s"Recovered to:\n${mkString}")
       states.nonEmpty
     }
@@ -150,9 +152,10 @@ object LRParser {
          }
         if (s.nonEmpty) s"($s)" else ""
       }
-      val topSymbols = symbols.take(6).toSeq.map(symbolName)
-      val topValues  = values.take(6).map(shortValue(_)).toSeq
-      val topLocs    = locations.take(6).map(_.toString)
+      val depth = symbols.length-1 min 6
+      val topSymbols = symbols.take(depth).toSeq.map(symbolName)
+      val topValues  = values.take(depth).map(shortValue(_)).toSeq
+      val topLocs    = locations.take(depth).map(_.toString)
       val context    = for { i<-0 until topLocs.length } yield s"${topSymbols(i)}${topValues(i)}${topLocs(i)}"
       val atEof      = currentInput.symbol==0
       val eofExplain = if (atEof) EOF else ""
@@ -241,7 +244,7 @@ object LRParser {
                   val SHIFT(newState) = action(states.top)(errorSymbol)
                   states.push(newState)
                   symbols.push(errorSymbol)
-                  values.push(cause)
+                  values.push(())
                   locations.push(location)
                   //println(s"error SHIFT($newState)")
                   if (logState) println(s"ERROR SHIFTED: ${mkString}")
@@ -272,8 +275,14 @@ object LRParser {
                       locations.push(left)
                       // Cheat by reducing to an ACCEPTED, ERRONEOUS, or INSTRUCTED state
                       result match {
-                        case ERRONEOUS(comment: String)    => parseState = ERRONEOUS(s"$cause$comment")
-                        case _: ACCEPTED |  _: ERRONEOUS | _: INSTRUCTED => parseState = result.asInstanceOf[ParseState]
+                        case ERRONEOUS(comment: String)    =>
+                          parseState = ERRONEOUS(s"$cause$comment")
+                          popAll()
+                        case _: ACCEPTED |  _: ERRONEOUS | _: INSTRUCTED  =>
+                          parseState = result.asInstanceOf[ParseState]
+                          popAll()
+                        case RUNNING =>
+                          popAll()
                         case _ =>
                       }
                     case otherwise =>
@@ -313,10 +322,17 @@ object LRParser {
             values.push(result)
             states.push(goto(currentState)(lhsSymbol))
             locations.push(left)
-            parseState = RUNNING
+
             // Cheat by reducing to an ACCEPTED, ERRONEOUS, or INSTRUCTED state
             result match {
-              case _: ACCEPTED |  _: ERRONEOUS | _: INSTRUCTED => parseState = result.asInstanceOf[ParseState]
+              case ERRONEOUS(comment: String)    =>
+                parseState = ERRONEOUS(s"$comment")
+                popAll()
+              case _: ACCEPTED |  _: ERRONEOUS | _: INSTRUCTED  =>
+                parseState = result.asInstanceOf[ParseState]
+                popAll()
+              case RUNNING =>
+                popAll()
               case _ =>
             }
         }
@@ -448,7 +464,14 @@ object LRParser {
             stepUnfinished = true
             // Cheat by reducing to an ACCEPTED, ERRONEOUS, or INSTRUCTED state
             result match {
-              case _: ACCEPTED |  _: ERRONEOUS | _: INSTRUCTED => parseState = result.asInstanceOf[ParseState]
+              case ERRONEOUS(comment: String)    =>
+                parseState = ERRONEOUS(s"$comment")
+                popAll()
+              case _: ACCEPTED |  _: ERRONEOUS | _: INSTRUCTED  =>
+                parseState = result.asInstanceOf[ParseState]
+                popAll()
+              case RUNNING =>
+                popAll()
               case _ =>
             }
         }

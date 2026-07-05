@@ -17,24 +17,35 @@ package org.sufrin.utility
  * @tparam T
  */
 class RevSeq[T](elts: Seq[T]) {
-  /** Represents    seq: Seq[T]
-    * Abstraction   abs: Seq[T] = reversed.reverse
+  /** Represents
+   *  {{{
+   *    seq: Seq[T]
+   *  }}}
+   *
+   *
+   * Abstraction
+   * {{{
+   *    abs: Seq[T] = reversed.reverse
+   * }}}
    */
 
   // initially: seq = elts
   var reversed: List[T] = elts.toList
 
   /**
-   * Scala notation `this :+ elt`, or `this.:+(elt)`
-   * ensures: seq = `seq ++ [elt]
+   * Scala notation: both `this:+ elt`, or `this.:+(elt)`
+   * ensure:
+   * {{{
+   *   seq = `seq ++ [elt]
    *          returns this
+   * }}}
    */
   def :+ (elt: T): this.type = {
     reversed = elt :: reversed
     this
   }
 
-  /*
+  /**
    * In scala notation: `elt :: this` behaves as  `this :+ elt`
    */
   def ::(elt: T): this.type = {

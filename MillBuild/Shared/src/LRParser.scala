@@ -11,7 +11,7 @@ package org.sufrin.scalalr
 trait Lexeme { val value: Any ; val symbol: Int }
 
 /** (approximation to) a location in the source text being parsed */
-case class SourceLocation(line: Int, col: Int) { override def toString: String = s"@$line.$col"}
+case class SourceLocation(line: Int, col: Int, path: String = "") { override def toString: String = s"$path@$line.$col"}
 
 /**
  * Hopefully obsolete: thrown when an automaton cannot find an appropriate result state

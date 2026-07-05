@@ -91,15 +91,15 @@ object ApiDocs extends ComponentModule with UnidocModule {
   def unidocVersion = Some(scalalrVersion)
   def moduleDeps = Seq(ScalaLR)
   def unidocDocumentTitle = "ScalaLR API"
-  def unidocSourceUrl = Some("https://github.com/sufrin/ScalaLR/API")
+  //def unidocSourceUrl = Some("https://github.com/sufrin/ScalaLR/")
 
   def make() = Task.Command {
-    val site = unidocLocal().path.toString
+    val site = unidocSite().path.toString
     println(s"Documentation: $site")
   }
 
   def browse() = Task.Command {
-      val site = unidocLocal().path
+      val site = unidocSite().path
       os.proc("open", site / "index.html").call()
   }
 

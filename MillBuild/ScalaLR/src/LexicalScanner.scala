@@ -32,7 +32,7 @@ object LexicalScanner {
   }
 
   class LexicalScanner(chars: SourceTextCursor) extends Iterator[Token] {
-    def sourceLocation(): SourceLocation = SourceLocation(chars.lines,  chars.chars)
+    def sourceLocation(): SourceLocation = SourceLocation(chars.lines,  chars.chars, chars.path)
     @inline def hasChar: Boolean = chars.hasCurrent
     @inline def theChar: Char = chars.current
     @inline def nextChar(): Unit = chars.next()

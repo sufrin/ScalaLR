@@ -227,7 +227,7 @@ object Normalization  {
    * where the `C` can be interpreted as a result-constructing expression (Constructor)  so
    * that the `C` is invoked with named arguments that match its parameter names.
    * {{{
-   *    lhs: Type = ... l1: S1 ... ln: Sn => C(l1=$l1, ... ln=$ln)
+   *    lhs: Type = ... l1: S1 ... ln: Sn => C(l1=\$l1, ... ln=\$ln)
    * }}}
    * and, if `TT` is a solo terminal value-carrying symbol (and `C` is a one-argument constructor)
    * {{{
@@ -235,7 +235,7 @@ object Normalization  {
    * }}}
    * into
    * {{{
-   *   lhs: Type = ... TT ... => C($TT)
+   *   lhs: Type = ... TT ... => C(\$TT)
    * }}}
    *
    * If there are no value-carrying terminal symbols, then the result will be the constant `C`

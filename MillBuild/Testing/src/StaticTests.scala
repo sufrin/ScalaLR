@@ -97,8 +97,6 @@ ListInt: List[Int] = list: (',' INT)+
 ListPig: List[Pig] = list: (',' PIG)+
 
 ListDog = list: (',' DOG)+
-
-fo
 """)
 
 object resultsInferred extends Test.COMPONENTS("-Lsyn -Lsym -Lauto -html")(

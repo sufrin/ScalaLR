@@ -18,7 +18,8 @@ object Test {
   /**
    * An App subclass to simplify construction of `scalalr` tests of notation processing. For example:
    * {{{
-   *   object test1 extends TestLR("")("""
+   *   object test1 extends COMPONENTS("")(
+   * """
    *    %tables    ielr
    *    %notation  stage2test
    *    %package   scalalr.stage2test
@@ -33,6 +34,9 @@ object Test {
    * in `Testing/generated`, and this directory may be deleted
    * at any time. Indeed it MUST be deleted (or excluded from processing some other way)
    * if for any reason it turns out not to be compileable.
+   *
+   * For precise source positions in messages about testing code,
+   * start the long comment on the line subsequent to the object definition.
    *
    * }}}
    *
@@ -70,6 +74,8 @@ object Test {
    * at any time. Indeed, if you are using IntelliJ, it MUST be deleted (or excluded from processing some other way)
    * if for any reason it turns out not to be compileable: for otherwise IntelliJ
    *
+   * For precise source positions in messages about testing code,
+   * start the long comment on the line subsequent to the object definition.
    */
   class SOURCE(args: String = "")(notationSource: String)(implicit loc: SourceLocation = sourcePath) extends
     Generate("--output=Testing/src/GeneratedByRuntTimeTests/generated/ " + args)(notationSource)(loc)
@@ -87,6 +93,9 @@ object Test {
    * Build parser components for a notation, as well as a small test that runs a parser
    * based on these components, using the literal text `input` as the input to the parser, or
    * (if that is empty) using the terminal console.
+   *
+   * For precise source positions in messages about testing code,
+   * start the long comment on the line subsequent to the object definition.
    *
    * The test program and the generated scanner components are all placed "under"  `Testing/src/GeneratedByRuntTimeTests/generated`
    *

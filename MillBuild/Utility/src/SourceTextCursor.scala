@@ -23,6 +23,14 @@ class SourceTextCursor(iterator: Iterator[Char]) extends Cursor[Char] {
     this
   }
 
+  private var _path: String = ""
+  def withPath(path: String): this.type = {
+    _path = path
+    this
+  }
+
+  def path: String = _path
+
   def prompt(): Unit = if (promptString.nonEmpty) { out.flush(); print(promptString); out.flush() }
 
 
@@ -71,7 +79,7 @@ object SourceTextCursor {
     if (path.toString == "/dev/console")
        console
     else
-       new SourceTextCursor(Files.readString(path).iterator)
+       new SourceTextCursor(Files.readString(path).iterator).withPath(path.toString)
   }
 
     def console: SourceTextCursor = {

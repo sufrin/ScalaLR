@@ -193,7 +193,7 @@ object SharedSpecification {
 
       loop: ()   = (NL)? (NL oneLine)... => ()
 
-      oneLine: Void  = expr { $expr.prettyPrint(); print(">> "); Void }
+      oneLine: Void  = expr { $expr.prettyPrint(); Void }
 
       expr: Expr =
        | atom
@@ -246,7 +246,7 @@ object MakeExpressionEvaluator extends Test.OBJECT("ExpressionEvaluator")(
 
     def main(args: Array[String]): Unit = {
       val scanner = new ExpressionScanner(SourceTextCursor.console.withPrompt("> "))
-      print("Welcome\n> ")
+      println("Welcome")
       val parser  = LRParser.Pull[Components.Token](Components)(scanner.sourceLocation)
       parser.run(scanner.next).prettyPrint()
   }

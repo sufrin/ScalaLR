@@ -16,9 +16,9 @@ def reduction(dol$START:  org.sufrin.scalalr.SourceLocation, dol$END:  org.sufri
  /* loop: Unit = S_1 S_2 => ()  */
  case 1 => 
   { case List(dol$S_1: Option[Unit @unchecked], dol$S_2: List[Void @unchecked]) =>  () } 
- /* oneLine: Void = expr {  $expr.prettyPrint(); print(">> "); Void  }  */
+ /* oneLine: Void = expr {  $expr.prettyPrint(); Void  }  */
  case 2 => 
-  { case List(dol$expr: Expr) =>  dol$expr.prettyPrint(); print(">> "); Void } 
+  { case List(dol$expr: Expr) =>  dol$expr.prettyPrint(); Void } 
  /* expr: Expr = atom { $atom }  */
  case 3 => 
   { case List(dol$atom: Expr) =>  dol$atom } 

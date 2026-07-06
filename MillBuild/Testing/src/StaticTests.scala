@@ -90,7 +90,7 @@ object allTyped extends Test.COMPONENTS("-Lsyn -Lsym -html")(
 %token    INT(Int) PIG(Pig)  DOG(Dog)
 %rules
 
-top = ListInt | ListPig | ListDog
+top = ListInt | ListPig | ListDog | error
 
 ListInt: List[Int] = list: (',' INT)+
 
@@ -119,7 +119,7 @@ null: Int      = %empty => 42
 
 string: String = %empty => "fortytwo"
 
-ListInt: List[Int] = list: (',' INT)+ => Ints
+ListInt: List[Int] = list: (',' INT)+ => Ints | error
 
 ListPig: List[Pig] = list: (',' PIG)+ => Pigs
 

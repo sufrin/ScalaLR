@@ -99,10 +99,18 @@ object LRParser {
     val states  = new Stack[State]
     val locations = new Stack[SourceLocation]
     var parseState: ParseState = RUNNING
-    var logState: Boolean = false
-    var attemptRecovery = false
-    var logRecovery = false
-    var reductionOnError = false
+
+    /**
+     * Variables controlling various experimental/debugging facilities
+     *
+     */
+    var logState,  attemptRecovery, logRecovery, logContext, reductionOnError = false
+    /**
+     *  On a syntax error, try to identify the name of the (nonterminal) symbol
+     *  whose parse was interrupted by the error. This is done by identifying the
+     *  "innermost" definition in which a production of the form `error => ()` appears.
+     */
+    var locateError = true
     var currentState = 0
 
     /** MUST BE IDENTICAL TO THE (UNIVERSALLY INVARIANT) BISON CODE FOR THE VIRTUAL TERMINAL SYMBOL "error" */
@@ -160,11 +168,11 @@ object LRParser {
       val atEof      = currentInput.symbol==0
       val eofExplain = if (atEof) EOF else ""
       val where      = s"${sourceLocation()} $eofExplain"
-      val contextLine = if (context.isEmpty) "" else context.mkString("  Context:", "\n         : ", "")
+      val contextLine = if (logContext && context.nonEmpty) context.mkString("\n  Context:", "\n         : ", "") else ""
+
       s"""Syntax error at: ${where}
          |  Found: ${if (atEof) EOF else currentInput}
-         |  Expecting$oneOf${acceptable.mkString(" ")}
-         |  $contextLine
+         |  Expecting$oneOf${acceptable.mkString(" ")}$contextLine
          |""".stripMargin
     }
 
@@ -239,7 +247,7 @@ object LRParser {
 
           case ERROR => // parseState == RUNNING
             val cause = diagnosis(input, currentState)
-            if (attemptRecovery) {
+            if (attemptRecovery || locateError) {
               if (findRecoveryState(cause)) {
                   val SHIFT(newState) = action(states.top)(errorSymbol)
                   states.push(newState)
@@ -249,49 +257,54 @@ object LRParser {
                   //println(s"error SHIFT($newState)")
                   if (logState) println(s"ERROR SHIFTED: ${mkString}")
                   // experiment: force a reduction (maybe)
-                  if (reductionOnError)
-                     action(newState)(1)  match {
+                  if (reductionOnError || locateError)
+                     action(newState)(errorSymbol)  match {
                     case REDUCE(lhsSymbol, production, size) =>
-                      parseState = ERRONEOUS(s"${cause}Parsing: ${symbolName(lhsSymbol)}\n")
-                      var reduced: List[Any] = Nil
-                      var right = location
-                      var left = location
-                      // pop the top "frame"
-                      for {i <- 1 to size} {
-                        states.pop()
-                        symbols.pop()
-                        reduced = values.pop() :: reduced
-                        left = locations.pop()
-                      }
-                      // calculate the reduced "frame"
-                      if (logState) println(s"REDUCE ($reduced) to ")
-                      val result = reduction(left, right, production)(reduced)
-                      if (logState) println(s"$result")
-                      // push its reduction and symbol type
-                      currentState = states.top
-                      symbols.push(lhsSymbol)
-                      values.push(result)
-                      states.push(goto(currentState)(lhsSymbol))
-                      locations.push(left)
-                      // Cheat by reducing to an ACCEPTED, ERRONEOUS, or INSTRUCTED state
-                      result match {
-                        case ERRONEOUS(comment: String)    =>
-                          parseState = ERRONEOUS(s"$cause$comment")
-                          popAll()
-                        case _: ACCEPTED |  _: ERRONEOUS | _: INSTRUCTED  =>
-                          parseState = result.asInstanceOf[ParseState]
-                          popAll()
-                        case RUNNING =>
-                          popAll()
-                        case _ =>
+                      parseState = ERRONEOUS(s"${cause}  While parsing: ${symbolName(lhsSymbol)}\n")
+                      if (reductionOnError) {
+                        var reduced: List[Any] = Nil
+                        var right = location
+                        var left = location
+                        // pop the top "frame"
+                        for {i <- 1 to size} {
+                          states.pop()
+                          symbols.pop()
+                          reduced = values.pop() :: reduced
+                          left = locations.pop()
+                        }
+                        // calculate the reduced "frame"
+                        if (logState) println(s"REDUCE ($reduced) to ")
+                        val result = reduction(left, right, production)(reduced)
+                        if (logState) println(s"$result")
+                        // push its reduction and symbol type
+                        currentState = states.top
+                        symbols.push(lhsSymbol)
+                        values.push(result)
+                        states.push(goto(currentState)(lhsSymbol))
+                        locations.push(left)
+                        // Cheat by reducing to an ACCEPTED, ERRONEOUS, or INSTRUCTED state
+                        result match {
+                          case ERRONEOUS(comment: String) =>
+                            parseState = ERRONEOUS(s"$cause$comment")
+                            popAll()
+                          case _: ACCEPTED | _: ERRONEOUS | _: INSTRUCTED =>
+                            parseState = result.asInstanceOf[ParseState]
+                            popAll()
+                          case RUNNING =>
+                            popAll()
+                          case _ =>
+                        }
                       }
                     case otherwise =>
                       parseState = ERRONEOUS(diagnosis(input, currentState))
                   }
-                  else { // discard symbols until one is acceptable
+                  else if (attemptRecovery) { // discard symbols until one is acceptable
                     println(s"Discarded $input")
                     input = next()
                     parseState = RECOVERING
+                  }
+                  else {
+                    parseState = ERRONEOUS(diagnosis(input, currentState))
                   }
               } else  {
                 parseState = ERRONEOUS(diagnosis(input, currentState))

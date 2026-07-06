@@ -145,7 +145,7 @@ abstract class ScannerCore[Token <: Lexeme](chars: SourceTextCursor) extends Ext
 
   def prompt(): Unit = { print(chars.promptString); System.out.flush() }
 
-  var lastLocation: SourceLocation = SourceLocation(chars.lines,  chars.chars)
+  var lastLocation: SourceLocation = SourceLocation(chars.lines,  chars.chars, chars.path)
   def sourceLocation(): SourceLocation = lastLocation
 
 

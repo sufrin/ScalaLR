@@ -242,7 +242,7 @@ object LRParser {
             parseState = ACCEPTED(values(1))
 
           case ERROR if parseState == RECOVERING =>
-            println(s"Discarded $input")
+            if (logState) println(s"Discarded $input")
             input = next()
 
           case ERROR => // parseState == RUNNING
@@ -299,7 +299,7 @@ object LRParser {
                       parseState = ERRONEOUS(diagnosis(input, currentState))
                   }
                   else if (attemptRecovery) { // discard symbols until one is acceptable
-                    println(s"Discarded $input")
+                    if (logState) println(s"Discarded $input")
                     input = next()
                     parseState = RECOVERING
                   }

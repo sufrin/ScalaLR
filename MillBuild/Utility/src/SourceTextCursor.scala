@@ -9,8 +9,23 @@ import scala.Console.out
 class SourceTextCursor(iterator: Iterator[Char]) extends Cursor[Char] {
   private var _lines = 1
   private var _chars = 0
-  private var _lastChar: Char = 0 // Dummy
-  var promptString: String = ""
+  private var _lastChar: Char = '\u0000' // NUL
+
+  var prompting = false
+  private var makePrompt: () => String = ()=>""
+
+  /**
+   *  Use the expression `prompt` to generate (a new) prompt string
+   *  If it yields "" the first tme it is invoked, then stop prompting.
+   */
+  def withPrompt(prompt: => String): this.type = {
+    makePrompt = () => prompt
+    prompting  = true
+    this
+  }
+
+  /** Invoked whenever `next()` is invoked after the last character read was `\n` */
+  @inline def prompt(): Unit = { out.flush(); print(makePrompt()); out.flush() }
 
   def withStartLocation(atLine: Int, atCol: Int = 0): this.type = {
     _lines = atLine+1
@@ -18,12 +33,9 @@ class SourceTextCursor(iterator: Iterator[Char]) extends Cursor[Char] {
     this
   }
 
-  def withPrompt(thePrompt: String): this.type = {
-    promptString=thePrompt
-    this
-  }
 
   private var _path: String = ""
+
   def withPath(path: String): this.type = {
     _path = path
     this
@@ -31,7 +43,6 @@ class SourceTextCursor(iterator: Iterator[Char]) extends Cursor[Char] {
 
   def path: String = _path
 
-  def prompt(): Unit = if (promptString.nonEmpty) { out.flush(); print(promptString); out.flush() }
 
 
   /** `(lines, chars)` are the coordinates of `current`  */
@@ -41,8 +52,11 @@ class SourceTextCursor(iterator: Iterator[Char]) extends Cursor[Char] {
 
   /**
    * Returns the next character from the iterator; maintaining `chars`, `lines` as
+   * the coordinates of the current position in the text, and prompting when
+   * that is appropriate.
    */
   @inline private def getNext(): Char = {
+    if (prompting && (_lastChar=='\n' || _lastChar=='\u0000') ) prompt()
     val n = iterator.next()
     _lastChar match {
       case 0 =>
@@ -97,7 +111,7 @@ object SourceTextCursor {
           }
         }
       }
-      new SourceTextCursor(it).withPrompt("> ")
+      new SourceTextCursor(it)
   }
 }
 

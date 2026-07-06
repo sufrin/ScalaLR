@@ -143,7 +143,7 @@ abstract class ScannerCore[Token <: Lexeme](chars: SourceTextCursor) extends Ext
     result
   }
 
-  def prompt(): Unit = { print(chars.promptString); System.out.flush() }
+  def prompt(): Unit = { chars.prompt() }
 
   var lastLocation: SourceLocation = SourceLocation(chars.lines,  chars.chars, chars.path)
   def sourceLocation(): SourceLocation = lastLocation
@@ -212,6 +212,8 @@ abstract class ScannerCore[Token <: Lexeme](chars: SourceTextCursor) extends Ext
         val intPart = chars.takeWhile(c=>c.isDigit)
         nextNumber(intPart)
 
+      case '\u0004' =>
+        ENDSTREAM
       case '\u0000' =>
         nextChar()
         if (hasChar) next() else ENDSTREAM
@@ -256,7 +258,7 @@ abstract class ScannerCore[Token <: Lexeme](chars: SourceTextCursor) extends Ext
         tokenPrefixMap.longestPrefixMatch(chars) match {
           case None =>
             nextChar()
-            mkERROR(s"No token starting `$c` can be completed here.")
+            mkERROR(s"No token starting `$c` [${c.toInt}] can be completed here.")
           case Some((tok, edges)) =>
             tok
         }

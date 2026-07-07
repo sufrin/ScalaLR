@@ -1,0 +1,13 @@
+c f g x = f(g x)
+fix f = f(fix f)
+
+foo x = { y | y>=x -> y-x }
+
+bar:: A B C -> D -> E
+
+bar =  {
+       | F a | a>K -> a*a
+       | G b | b<K -> b*b
+       | H(J x) -> x+x/x
+       }
+       

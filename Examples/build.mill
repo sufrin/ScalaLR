@@ -36,3 +36,28 @@ object RedOx extends ScalalrModule with ComponentModule {
   def generatorArgs = Seq("-html") //, "-Lsym", "-Lsyn")
 }
 
+object Calculator extends ScalalrModule with ComponentModule  {
+  override
+  def scalaVersion  = "2.13.18"
+  def notation      = "calculator.scalalr"
+  def unmanagedJars = "Assets"
+  def scalalr       = "Assets/scalalr"
+  def mainClass     = Some("Calculator")
+  def releasePath   = "bin/calculator"
+  def generatorArgs: Seq[String] = Seq(
+  "-html",
+  //"-Lsym",
+  //"-Lsyn",
+  //"-c"
+  )
+
+
+  override def moduleDeps = Seq()
+
+  // we need the scala xml module
+  def mvnDeps = Seq(
+      mvn"org.scala-lang.modules::scala-xml:2.3.0"
+  )
+}
+
+

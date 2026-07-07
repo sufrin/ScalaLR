@@ -1,0 +1,329 @@
+%notation Calc
+%package  calculator.Calc
+%path     "calculator"
+%tables   lr
+%infer    results
+
+%token ID(String) INT(Long) REAL(Double) STRING(calculator.syntax.QUOTATION) NL LEXICALERROR(String) ENDOFFILE
+%token `where` `{` `}` `(` `)` `;` `,`  `[` `]` `_`
+
+// Some tokens are left to be defined: they share associativity and precedence with well known tokens
+%prec LOWEST
+%non   `=`
+%non   '::'
+%right '->'
+%non   OPN0(String)
+%right OPR1(String)
+%left  OPL2(String)
+%left  OPL3(String)
+%non   OPL4(String)
+%left  OPL5(String) '-'
+%left  OPL6(String)
+%left  OPL7(String)
+%left  OPL8(String)
+%left  OPL9(String)
+%left  APPLY
+%prec  HIGHEST
+
+%include «
+   import org.sufrin.scalalr.{SourceLocation,ScannerCore,Scanner}
+   import org.sufrin.utility.SourceTextCursor
+   import org.sufrin.utility.PrettyPrint._
+   import calculator.syntax.QUOTATION
+
+   val predefinedSymbols =
+     Seq(
+        OPL2("||"), OPL3("&&"), OPL5("+"), OPL5("~"),
+        OPL6("*"),  OPL6("/"),  OPL6("%")
+     )  ++
+     List("<", "<=", "==", ">", ">=").map(OPL4(_)) ++
+     List(":").map(OPR1(_))
+
+   private val operators = Map(predefinedSymbols.map{ case t: Token => (t.value: String, t) }: _*)
+
+
+
+     /**
+        `makeScanner(chars)` builds a lexical scanner using a `ScannerBuilder`. The implementations of
+        the `mkXXX` functions bridge the fixed lexical categories of the builder, and the `%token`
+        constructors declared here. The `withSymbolTokens(symbolToken)` clause initialises the
+        internal symbol and token tables of the resulting builder.
+     */
+
+       import collection.immutable.ListMap
+       def hex(chars: Seq[Char]): Long  = chars.foldLeft(0L) { (acc, c) => acc * 16 + Character.digit(c, 16) }
+       def dec(chars: Seq[Char]): Long  = chars.foldLeft(0L) { (acc, c) => acc * 10 + Character.digit(c, 10) }
+       def toUpperCased(mapping: Map[String,Token]): ListMap[String,Token] = {
+           ListMap.from(mapping.map { case (k, d) => (k.map(_.toUpper), d) })
+       }
+
+       // type Token = org.redox.Scanner.Token
+
+       def makeScanner(chars: SourceTextCursor) =
+           new ScannerCore[Token](chars) {
+              def mkString(openQuote: String, closeQuote: String, body: Seq[Char]): Token =
+                  STRING(QUOTATION(openQuote, body.mkString, closeQuote))
+              def mkHex(source: Seq[Char]):         Token  = INT(hex(source))
+              def mkDec(source: Seq[Char]):         Token  = INT(dec(source))
+              def mkReal(source: Seq[Char]):        Token  = REAL(source.mkString.toDouble)
+              def mkIDENTIFIER(source: Seq[Char]):  Token  = ID(source.mkString)
+              def mkERROR(source: Seq[Char]):       Token  = { LEXICALERROR(s"At ${chars.lines}.${chars.chars}: ${source.mkString}") }
+              val NEWLINE:                   Option[Token] = Some(NL)
+              override val ENDSTREAM: Token                = Scanner.ENDOFFILE // make the appearance of end of file accessible in the grammar
+              locally {
+                defineSymbolTokens(symbolToken ++ operators)
+              }
+           }
+
+       /**
+         This internal module supports extensibility of the lexer from the language.
+       */
+       object Extensibility {
+         def extend(core: ScannerCore[Token], newSymbol: String, oldSymbol: String): Unit = {
+             val newToken = core.tokenMap.get(oldSymbol) match {
+                case None      => OPL9(newSymbol)
+                case Some(tok) =>
+                  tok match {
+                    case _: OPN0 => OPN0(newSymbol)
+                    case _: OPR1 => OPR1(newSymbol)
+                    case _: OPL2 => OPL2(newSymbol)
+                    case _: OPL3 => OPL3(newSymbol)
+                    case _: OPL4 => OPL4(newSymbol)
+                    case _: OPL5 => OPL5(newSymbol)
+                    case _: OPL6 => OPL6(newSymbol)
+                    case _: OPL7 => OPL7(newSymbol)
+                    case _: OPL8 => OPL8(newSymbol)
+                    case _       => OPL9(newSymbol)
+                  }
+            }
+            core.defineSymbolTokens(Map(newSymbol -> newToken))
+         }
+       }
+»
+
+
+%rules
+
+%include «
+  import org.sufrin.scalalr.Shortcut._
+  import org.sufrin.utility.PrettyPrint._
+
+
+  import calculator.syntax._
+
+
+    def translate(clause: TREE): TREE = {
+      import calculator.visitor.Visitors._
+      import calculator.visitor.Dispatch._
+      clause match {
+        case it: Expr        => it.visit(DetupleExpression)
+        case it: Definition  => it.visit(DetupleDefinition)
+      }
+    }
+
+    /**
+        For the time being we simply show the clauses as they are parsed. 
+    */
+    def layout(clause: TREE): TREE = {
+          import calculator.visitor.Dispatch._
+          import calculator.visitor.Formatting._
+          val scheme = clause match {
+             case it: Expr        => ExprFormat(it)
+             case it: Definition  => DefinitionFormat(it)
+         }
+         println("----------")
+         println(scheme.render(40))
+         println("----------")
+         //println(scheme.render(70))
+         //println("----------")
+         clause
+    }
+
+
+    /**
+       Parser support: lift a where clause to above the whole lhs=rhs definition.
+       
+            lhs = rhs              => Equation(lhs, rhs)
+            lhs = rhs where decls  => WhereEquation(lhs, rhs, decls)
+       
+    */
+    def MakeEquation(lhs: Expr, rhs: Expr): Definition =
+        rhs match {
+          case Where(expression, equations) => WhereEquation(lhs, expression, equations)
+          case _                            => Equation(lhs, rhs)
+        }
+
+»
+
+//
+// This is the grammar pattern for a possibly-interactive language processor.
+//
+// 1. Repeatedly parse and reduce single actions (separated by NL)
+//
+// 2. Actions yield parse-automaton "shortcut"s, that tell
+// the controlling parser's top level what it should do next.
+//
+session:   Unit      = (NL)? (anAction NL)+ ENDOFFILE => ()
+
+
+anAction: Shortcut   = onePhrase { layout($onePhrase); translate($onePhrase).prettyPrint(); Instruct(()) }  // continue the session after side-effects
+                     | syntaxDef { Instruct($syntaxDef) }                                                   // Tell the scanner, via the parser, to change a lexer class
+                     | ENDOFFILE    { Accept(()) }                                                          // Stop
+
+onePhrase: TREE = expr                    => $expr
+                | equation                => $equation
+                | typeDef                 => $typeDef
+                | guardedequation         => $guardedequation
+
+
+// optional newlines
+EOL:  () = %empty => () | NL => ();
+SEMI: () = ';'    => () | NL => () | ';' NL => ()
+
+whereExpr: Expr = expr                                          => $expr
+                | expr `where`  equation                        => Where($expr, List($equation))
+                | expr `where` '{' EOL equations  EOL '}'       => Where($expr, $equations.reverse)
+
+equations: List[Definition] =   equations SEMI  equation        => $equation :: $equations
+                            |   equation                        => List($equation)
+
+equation:  Definition = lhs: pattern '=' rhs: whereExpr         => MakeEquation($lhs, $rhs)
+
+// a cases (function) cannot appear in a pattern, but can be part of a "full" expression
+// (a temporary and unsatisfactory measure to avoid rewriting the entire pattern  grammar almost identically to expression)
+expr: Expr =   cases      => $cases
+             | lambda     => $lambda
+             | expression => $expression
+
+lambda: Expr = '\' pattern: pattern guard: (guard)?  '->' expression: applicationOrLambda  => Function(List(PartialFun($pattern, $guard, $expression)))
+
+applicationOrLambda: Expr = application | lambda
+
+pattern: Expr = expression
+
+expression: Expr =
+           | application
+           | l: expression op:OPN0   EOL   r: expression => Binop($op,$l, $r)
+           | l: expression op:OPR1   EOL   r: expression => Binop($op,$l, $r)
+           | l: expression op:OPL2   EOL   r: expression => Binop($op,$l, $r)
+           | l: expression op:OPL3   EOL   r: expression => Binop($op,$l, $r)
+           | l: expression op:OPL4   EOL   r: expression => Binop($op,$l, $r)
+           | l: expression op:OPL5   EOL   r: expression => Binop($op,$l, $r)
+           | l: expression '-'       EOL   r: expression => Binop("-",$l, $r)
+           | l: expression op:OPL6   EOL   r: expression => Binop($op,$l, $r)
+           | l: expression op:OPL7   EOL   r: expression => Binop($op,$l, $r)
+           | l: expression op:OPL8   EOL   r: expression => Binop($op,$l, $r)
+           | l: expression op:OPL9   EOL   r: expression => Binop($op,$l, $r)
+
+
+application: Expr  =
+             | l: application r: simpleExpression => Apply($l, $r) %prec APPLY
+             | '-' simpleExpression               => Prefix("-", $simpleExpression)
+             | simpleExpression                   => $simpleExpression
+
+simpleExpression: Expr =
+               ID       => Id($ID)
+             | INT      => Num($INT)
+             | REAL     => Real($REAL)
+             | STRING   => Quote($STRING)
+             | '('  ')' => Tuple(Nil)
+             | '['  ']' => Sequence(Nil)
+             | '('  EOL expressions  EOL ')' => Tuple($expressions)
+             | '['  EOL expressions  EOL ']' => Sequence($expressions)
+             | error => ()
+
+
+/*
+   Guarded constructs
+*/
+
+/*
+   A guarded equational definition
+
+   1. MUST have each `| guard = answer` clause on a new line.
+   2. MUST have its last such clause followed  by a new line (or a where clause).
+   This is a consequence of my reluctance to get down and dirty with
+   Haskell- or Python-style offside/indentation rules. Consider
+   f a | guard1 = expr1
+       | guard2 = expr2
+       | ...
+       | guardN = exprN
+   g x =
+*/
+
+guardedequation: GuardedEquation = pattern: pattern '|' rhss: RHSs where: whereClause => GuardedEquation($pattern, $rhss, $where)
+
+RHS:     GuardedResult    = guard: expression '=' EOL expression: expr => GuardedResult($guard, $expression)
+                          | error => ()
+
+RHSs: List[GuardedResult] = rhs:  RHS NL                 => List($rhs)
+                          | rhs:  RHS NL '|' rhss: RHSs  => $rhs :: $rhss
+
+whereClause: List[Definition] = `where`  equation                   => List($equation)
+                             |  `where` '{' EOL equations  EOL '}'  => $equations.reverse
+                             |   %empty                             => Nil
+
+/*
+    Lambda equivalent in horizontal or vertical form
+    { x -> y | ... }
+
+    { x -> y
+    | ...
+    }
+
+    {
+    | x-> y
+    ...
+    }
+*/
+cases:        Function           = `{` alts: partialFunctions EOL '}'       => Function($alts.reverse)
+
+
+partialFunctions: List[PartialFun]  = partialFunction                          => List($partialFunction)
+                                    | partialFunctions EOL '|' partialFunction => $partialFunction :: $partialFunctions
+                                    | %empty                                   => Nil
+
+partialFunction: PartialFun  = pattern: pattern guard: (guard)?  '->' expression: expr  => PartialFun($pattern, $guard, $expression) %prec HIGHEST
+
+guard: Expr = '|' expr
+
+// Tuple/Sequence bodies
+expressions: List[Expr] =
+                  | expr ','   EOL expressions => $expr :: $expressions
+                  | expr                       => List($expr)
+
+
+//
+//  Type declarations
+//
+typeDef: TypeDef =  symbols: (symbol ',')+ '::' typeExpr => TypeDef($symbols, $typeExpr)
+
+// pro-tem. TODO: proper type expressions
+typeExpr: Expr = expression
+               | l: typeExpr "->" r: typeExpr => Binop("->", $l, $r)
+
+
+//
+//  Any infix operator for inside a "(op)" quotation
+//
+infix: String =
+              op:OPN0
+            | op:OPR1
+            | op:OPL2
+            | op:OPL3
+            | op:OPL4
+            | op:OPL5
+            | op:OPL6
+            | op:OPL7
+            | op:OPL8
+            | op:OPL9
+
+symbol: Expr = ID            => Id($ID)
+             | '(' infix ')' => Op($infix) %prec HIGHEST
+
+//
+// Experimental hook for introducing notation for a new operator: the new symbol behaves syntactically like the old
+//
+syntaxDef: List[String] = "syntax" newSymbol: STRING  oldSymbol: symbol => List("syntax", $newSymbol.body, $oldSymbol)
+
+

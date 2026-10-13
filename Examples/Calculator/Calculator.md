@@ -1,7 +1,7 @@
 ### ScalaLR Example: Calculator
 
 This is an example of the front end of a potentially interactive functional 
-calculator. It illustrates the following techniques, and the many of details alluded
+calculator. It illustrates the following techniques, and many of the details alluded
 to below can be found in the file `calculator.scalalr`
 
 1. How to embed a lexical scanner in the description of a notation. See
@@ -28,7 +28,7 @@ For detail, see:
    
 3. How to define a grammar that, in concert with the driver program for
 the resulting parser, can be used interactively. The detail is in
-the definitions below, but needs some explanation. The importat thing to
+the definitions below, but needs some explanation. The important thing to
 understand is that the Scala expression denoting the result of parsing
 a production is evaluated at the moment the production is recognised by the
 parse. It may (but usually does not) have side-effects, and its value
@@ -52,7 +52,7 @@ normally becomes the result of the production.
    the session (with a new parser ...) 
    4. If an `ENDOFFILE` is reached, then the result `(Accept(()))` of
    the corresponding production is passed up to the main loop of the program --
-   has the effect of terminating it (after possibly expressing a valediction) -- because `state=/=RUNNING`
+   and has the effect of terminating it (after possibly expressing a valediction) -- because `state=/=RUNNING`
    5. Each single phrase `(onePhrase)` described by the grammar yields the corresponding
    abstract syntax tree: this will be either an `Expr` or a `Definition`, and
    the methods `layout` and `translate` are defined to do the right thing with the
